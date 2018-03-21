@@ -1,0 +1,54 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q640: Self Numbers</h1>
+<p>在1949年印度數學家 D.R Kaprekar發現了一種數字：Self-numbers。對任何正整數 n ，定義d(n)為n加上其各數字的和。例如：d(75)=75+7+5=87。給任一個正整數    
+n 當作一個起始點，你可以產生無限的數字序列：n, d(n), d(d(n)), d(d(d(n))),…例如：如果你從33開始，下一個數字是33+3+3=39，再下一個數字是39+3+9=51，再下一個數字是51+5+1=57。所以你可以產生以下的序列：<br>    
+33, 39, 51, 57, 69, 84, 96,111, 114, 120, 123, 129, 141, ……<br>    
+<br>  
+我們稱n為d(n)的generator。在上面的例子中33是39的generator，39是51的generator，51是57的generator，以下類推。有些數有不只一個generator，例如：101有2個generators，91和100。如果一個數沒有generator，那他就是一個self-number。比100小的self-number：1, 3, 5, 7, 9, 20, 31, 42, 53, 64, 75, 86, 97<br>    
+<br>  
+本問題是：找出所有小於或等於1000000的self-numbers。<br> 
+</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>    
+<p align="left">No input.  
+</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample        
+Output</b></span></p>       
+<pre>1
+3
+5
+7
+9
+20
+31
+42
+53
+64
+ |
+ |       &lt;-- a lot more numbers
+ |
+9903
+9914
+9925
+9927
+9938
+9949
+9960
+9971
+9982
+9993
+ |
+ |
+ |
+</pre>
+      
+</body>      
+      
+</html>      

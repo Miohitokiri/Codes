@@ -1,0 +1,419 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Functional.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:15:46 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Functional</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Function（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Numerical Computation / Symbolic Computation</p>
+<p>算術當中，採用實際數值，稱作「數值計算」。採用數學符號，稱作「符號計算」。</p>
+<p>例如整數除法：</p>
+<pre>
+Numerical Computation:
+1 ÷ 3 = 0.3333333333333　（使用數字，記下答案。無法完全記錄。）
+
+Symbolic Computation:
+         1 
+1 ÷ 3 = ———　（使用數學符號：一條橫槓，代表分數，記下答案。）
+         3 
+</pre>
+<p>例如多項式乘法：</p>
+<pre>
+Numerical Computation:
+x = 2, y = 1
+(x+1)(3y+2) = (2+1)×(3×1+2) = 3×(3×1+2) = 3×(3+2) = 3×5 = 15
+
+Symbolic Computation:
+(x+1)(3y+2) = 3xy + 2x + 3y + 2
+</pre>
+<p>小學談數值計算，中學談符號計算，大家應該非常熟悉。</p>
+<p class="t">Function資料結構</p>
+<p>函數有兩種記載方式：符號記載、數值記載。</p>
+<pre>
+f(x) = x² + 2x + 1 | f(x) = { 2x   if x > 0  |   f(0.01) = 0.02  
+                   |        { -x   otherwise |   f(0.02) = 0.05  
+                   |                         |       :       :   
+ symbolic notation |    symbolic notation    | numerical notation
+</pre>
+<p>採用符號記載，函數可以輕易寫成程式碼、寫成函式。</p>
+<textarea>
+// f(x) = x² + 2x + 1
+float f(float x) {return x*x + x*2 + 1;}
+
+// f(x) = { 2x   if x > 0 
+//        { -x   otherwise
+float f(float x) {return x > 0 ? x*2 : -x;}
+</textarea>
+<p>採用數值記載，函數必須取樣、擇鄰。</p>
+<textarea>
+// f(x) = x² + 2x + 1
+float f[10] = {16, 9, 4, 1, 0, 1, 4, 9, 16, 25};
+
+// f(x) = { 2x   if x > 0 
+//        { -x   otherwise
+float f[10] = {4, 3, 2, 1, 0, 2, 4, 6, 8, 10};
+</textarea>
+<p>有兩種常見方式：</p>
+<p>一、固定距離取樣，形成正方形網格、正方體網格。</p>
+<p>二、隨機取樣，然後連接成三角形網格、四面體網格。</p>
+<img src="NumericFunction18.png">
+<blockquote>
+f[{x_, y_}] = Sin[x * y] * Cos[x + y];
+p = Flatten[Table[{i, j}, {i, -3, 3, 0.8}, {j, -3, 3, 0.8}], 1];
+q = Transpose[{p[[All,1]], p[[All,2]], N[Map[f, p]]}];
+g1 = ListPointPlot3D[q, PlotStyle -> {PointSize[Large], Black}, Filling -> Bottom, FillingStyle -> Thick, Boxed -> False, Axes -> False];
+m = DelaunayMesh[p];
+g2 = MeshRegion[q, MeshCells[m, 1], MeshCellStyle -> {{1, All} -> {Black, Thick, Opacity[0.5]}, {0, All} -> None}];
+Show[g2, g1]
+</blockquote>
+<p class="t">Function格式轉換</p>
+<p>符號轉數值：求值。數值轉符號：內插、迴歸。</p>
+<p>符號轉數值，計算學家稱作「離散化Discretization」，數學家稱作「有限元素法Finite Element Method」。</p>
+<p>數值轉符號，目前沒人討論。</p>
+<textarea>
+// 固定距離取樣
+const int X = 10, Y = 10, Z = 10;	// 取樣數目
+float f1[X];		// 一元函數（等間隔）
+float f2[X][Y];		// 二元函數（正方形網格）
+float f3[X][Y][X];	// 三元函數（正方體網格）
+
+// x² + 2x + 1
+float f(float x) {return x*x + x*2 + 1;}
+
+void discretize()
+{
+	// 從x=-5開始往右抓10點
+	float x = -5.0f;
+	for (int i=0; i<X; ++i)
+	{
+		f1[i] = f(x);
+		x += 1.0f;	// 隔1取樣
+	}
+}
+</textarea>
+<p class="t">函數運算</p>
+<p>四種組合：</p>
+<p>一、給定數值記載、求得數值記載：請參考本篇文章。</p>
+<p>二、給定數值記載、求得符號記載：我沒見過。</p>
+<p>三、給定符號記載、求得數值記載：請參考本站文件「<a href="Function2.html">Function</a>」。</p>
+<p>四、給定符號記載、求得符號記載：很困難，我沒學過。</p>
+<p class="t">微分、積分</p>
+<p>函數離散化之後，函數運算產生變化。加減乘除模大同小異，不再贅述。複合運算錯綜複雜，姑且略過。微分運算、積分運算則有許多種設定方式，以固定距離取樣為例：</p>
+<pre>
+1st-order derivative on grid (finite difference)
+     forward [f(x+h) - f(x)] / h
+    backward [f(x) - f(x-h)] / h
+     central [f(x+h/2) - f(x-h/2)] / h   (cannot be used)
+     central [f(x+h) - f(x-h)] / 2h      (modified)
+
+2nd-order derivative on grid
+     forward [f(x+2h) - 2f(x+h) + f(x)] / h²
+    backward [f(x) - 2f(x-h) + f(x-2h)] / h²
+     central [f(x+h) - 2f(x) + f(x-h)] / h²
+
+1st-order integral on grid (finite volume)
+  forward(?) [f(x-h) + f(x-2h) + ...] * h
+ backward(?) [f(x) + f(x-h) + ...] * h
+  central(?) [f(x-h/2) + f(x-3h/2) + ...] * h   (cannot be used)
+  central(?) [f(x-h) + f(x-3h) + ...] * 2h      (modified)
+</pre>
+<img src="NumericFunction19.png">
+<p>公式是以泰勒展開式推導而得，捨去後續項次。當取樣間隔小於1、接近0，後續項次迅速縮小，幾乎不會造成影響。</p>
+<p>大家傾向採用中央版本。優點是數值不會位移，缺點是微分兩次不會得到二次微分。</p>
+<pre>
+f(x + h) = f(x) / 0! + f'(x) h / 1! + f"(x) h² / 2! + ...
+f(x - h) = f(x) / 0! - f'(x) h / 1! + f"(x) h² / 2! - ...
+
+1sx-order central derivative
+f(x + h) - f(x - h) = 2 f'(x) h + ... ≈ 2 f'(x) h
+f'(x) ≈ [f(x + h) - f(x - h)] / 2 / h
+
+2nd-order central derivative
+f(x + h) + f(x - h) = 2 f(x) + f"(x) h² + ... ≈ 2 f(x) + f"(x) h²
+f"(x) ≈ [f(x + h) + f(x - h) - 2 f(x)] / h²
+</pre>
+<textarea>
+const int X = 10;	// 取樣數目
+const float h = 1.0 / X;
+float f[X+2];		// 增厚左右邊界，設定為零，方便微分
+
+void add(float f1[X+2], float f2[X+2], float g[X+2])
+{
+	g[0] = g[X+1] = 0;
+	for (int x=1; x<=X; ++x)
+		g[x] = f1[x] + f2[x];
+}
+
+void differentiate(float f[X+2], float g[X+2])
+{
+	// modified central difference
+	// [f(x+h) - f(x-h)] / 2h
+	for (int x=1; x<=X; ++x)
+		g[x] = (f[x-1] - f[x+1]) / 2;	// h設定為取樣間距
+}
+</textarea>
+<p>陣列、函數、函數離散化，三者不盡相同。舉例來說，陣列微分是a[x] - a[x-1]，函數微分是[f(x) - f(x-dx)] / dx，函數離散化的微分是[f(x+h) - f(x-h)] / 2h。</p>
+<img src="NumericFunction20.png">
+<p class="t">梯度、散度、旋度</p>
+<textarea>
+const int X = 10, Y = 10;			// 範圍
+float f[X+2][Y+2];					// 純量場
+float Fx[X+2][Y+2], Fy[X+2][Y+2];	// 向量場
+float gx[X+2][Y+2], gy[X+2][Y+2];	// 梯度
+float d[X+2][Y+2];					// 散度
+float c[X+2][Y+2];					// 旋度
+
+void gradient()
+{
+	for (int i=1; i<=X; ++i)
+		for (int j=1; j<=Y; ++j)
+		{
+			gx[i][j] = (f[i][j-1] + f[i][j+1]) / 2;
+			gy[i][j] = (f[i-1][j] + f[i+1][j]) / 2; 
+		}
+}
+
+void divergence()
+{
+	for (int i=1; i<=X; ++i)
+		for (int j=1; j<=Y; ++j)
+			d[i][j] = (Fx[i][j-1] + Fx[i][j+1]) / 2
+					+ (Fy[i-1][j] + Fy[i+1][j]) / 2; 
+}
+
+void curl()
+{
+	for (int i=1; i<=X; ++i)
+		for (int j=1; j<=Y; ++j)
+			c[i][j] = (Fy[i][j-1] + Fy[i][j+1]) / 2
+					- (Fx[i-1][j] + Fx[i+1][j]) / 2; 
+}
+</textarea>
+<textarea>
+const int X = 10, Y = 10;	// 範圍
+float f[X+2][Y+2];			// 純量場
+float g[X+2][Y+2];			// 梯度的散度
+
+void laplace()
+{
+	for (int i=1; i<=X; ++i)
+		for (int j=1; j<=Y; ++j)
+			g[i][j] = (f[i][j-1] + f[i][j+1] + f[i-1][j] + f[i+1][j]) / 4 - f[i][j];
+}
+</textarea>
+<p class="t">梯度反元素【尚無正式名稱】</p>
+<p>向量場，求梯度反元素，得純量場。</p>
+<p>梯度反元素不一定存在。向量場不含旋場（旋度是零，不含樓梯幻覺），才存在梯度反元素。</p>
+<textarea>
+// inverse of modified central difference
+const int X = 10, Y = 10;			// 範圍
+float Fx[X+2][Y+2], Fy[X+2][Y+2];	// 向量場
+float f[X+2][Y+2];					// 純量場
+
+void invgrad()
+{
+	for (int i=1; i<=X; ++i)
+		for (int j=1; j<=Y; ++j)
+			f[i][j] = f[i][j-2] + Fx[i][j-1] * 2;
+}
+</textarea>
+<p class="t">梯度偽反元素【尚無正式名稱】</p>
+<p>當向量場含有旋場，改為找平方誤差最小、又擁有梯度反元素（不含旋場）的向量場。</p>
+<p>正是散旋諧分解的散場。</p>
+<pre>
+given F, find G = grad(g)
+min sum (Fijx - Gijx)² + (Fijy - Gijy)²
+
+{ -2(Fijx - Gijx) = 0
+{ -2(Fijy - Gijy) = 0
+</pre>
+<p>「一次微分等於零」的地方是極值、鞍點。對每一處的XY兩個方向分別微分，使之為零。其中一種可能性是Poisson Equation？</p>
+<textarea>
+void project()
+{
+	memset(p, 0, sizeof(p));
+	memset(div, 0, sizeof(div));
+
+	for (int i=1; i<=N; i++)
+		for (int j=1; j<=N; j++)
+		{
+			div[i][j] = (u[i+1][j] - u[i-1][j] +
+						 v[i][j+1] - v[i][j-1]) * h/2;
+			p[i][j] = 0;
+		}
+
+	for (int k=0; k<20; k++)
+	{
+		for (int i=1; i<=N; i++)
+			for (int j=1; j<=N; j++)
+				p[i][j] = (p[i-1][j] + p[i+1][j]
+						+ p[i][j-1] + p[i][j+1]
+						- div[i][j]) / 4;
+	}
+	set_bnd ( N, 0, p );
+
+	for (int i=1; i<=N; i++)
+		for (int j=1; j<=N; j++)
+		{
+			u[i][j] -= (p[i+1][j] - p[i-1][j]) /2/h;
+			v[i][j] -= (p[i][j+1] - p[i][j-1]) /2/h;
+		}
+	set_bnd ( N, 1, u );
+	set_bnd ( N, 2, v );
+}
+</textarea>
+<p class="t">散旋諧分解</p>
+<p>散旋諧分解，散場、諧場可以求梯度反元素，從向量場變純量場，減少儲存空間。二維的情況下，旋場也可以這樣做。</p>
+<p>向量場求散度，解Poisson，得散勢；再求梯度得散場。向量場求旋度，三個值分別解Poisson得旋勢，再求旋度得旋場。向量場減散場、減旋場、得諧場。</p>
+<p>二維的情況下，旋場較好算。向量場求旋度，一個值解Poisson得旋勢，再求梯度、轉90度、取負數、得旋場。</p>
+<p>解線性方程組，大家習慣使用「<a href="LinearEquation.html">Preconditioner</a>」。偷懶的方式是實施足夠次數。</p>
+<textarea>
+// solve poisson equation with gaussian-seidel
+void poisson()
+{
+	float d = 0;
+	for (int k=0; k<100; k++)
+	{
+		for (int i=1; i<=N; i++)
+			for (int j=1; j<=N; j++)
+			{
+				temp[i][j] = a[i][j];
+
+				float s = a[i-1][j] + a[i+1][j]
+						+ a[i][j-1] + a[i][j+1];
+				a[i][j] = (b[i][j] + d*s) / (1 + 4*d);
+			}
+
+		// 統計誤差。誤差足夠小就立即結束。
+		float error = 0;
+		for (int i=1; i<=N; i++)
+			for (int j=1; j<=N; j++)
+				error += a[i][j] - temp[i][j];
+		if (error < 1e-5) break;
+	}
+}
+</textarea>
+<p class="t">延伸閱讀：複數</p>
+<p>把XY改成實虛。</p>
+<p>Schrödinger's Smoke</p>
+<p>http://www.its.caltech.edu/~achern/projects/SchrodingersSmoke/</p>
+<p>看來看去好像還是沒看懂。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Functional Equation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Function</p>
+<p>實數可以運算，函數亦可運算。</p>
+<p>函數運算有加減乘除模複合微積散旋代入，變化更多了。</p>
+<p class="t">Functional Equation</p>
+<p>普通的方程式，已知數、未知數全是實數。「函數方程式」則全是函數。</p>
+<pre>
+                d            g(x+2)
+∫ f(x) dx + 2 = ―― f(g(x)) + ――――――
+                dx            f(x)
+</pre>
+<p>絕大多數的函數，難以採用符號記載。數學家的說法是：沒有封閉式（僅使用事先指定的符號）、沒有解析式（僅使用加減乘除微積乘方開方對數等常見運算，以及πe等常見符號）、沒有代數式（僅使用加減乘除乘方開方）、……。</p>
+<p>難以採用符號記載，只好採用數值記載。函數擁有綿密的、無限多的函數點，難以計算與儲存。解法是取樣、擇鄰。選取某些x當作樣本，同時建立樣本之間的鄰居關係。</p>
+<p>函數方程式當中的實數，其實是函數，稱作「<a href="https://en.wikipedia.org/wiki/Constant_function">常數函數</a>」。</p>
+<p class="t">Functional</p>
+<p>普通的函數，輸入、輸出全是實數。「泛函數」則全是函數。</p>
+<pre>
+                          d            g(x+2)
+L(f, g) = ∫ f(x) dx + 2 - ―― f(g(x)) - ――――――
+                          dx            f(x)
+</pre>
+<p>簡單來說，「泛函數」就是函數的函數。</p>
+<p>此處的functional是一個特別的名詞。我不清楚數學家為何故意讓「泛函數（名詞）」跟「函數的（形容詞）」撞名。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Ordinary Differential Equation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">範例：古典力學</p>
+<p>真實世界的物理現象，物理學家習慣寫成函數方程式。想要用電腦模擬真實世界，設計函數方程式、解函數方程式是必備技能。</p>
+<p>比方說，記錄物體所在位置。根據人類目前所知，物體不會分身，不會同時出現在兩個位置，符合函數的概念；物體不會瞬移，不會瞬時出現在遙遠位置，符合連續的概念。因此物體所在位置可以表示成一個連續函數u。</p>
+<p>數學家創造了函數、連續，主要是為了符合人類認知。如果影分身之術、飛雷神之術成真，那麼數學家勢必要創造其他數學元件，以符合新認知。</p>
+<img src="FunctionalEquation1.html">
+<p>方才的位置，是一維數線上面的位置，是一個數值。位置可以在二維平面、三維空間，而函數輸出就是二維向量、三維向量了。</p>
+<img src="FunctionalEquation2.html">
+<p>物理課教過直線運動。位置是一維數線上的位置。位置的變化快慢，稱作速度，符合微分的概念。u′就是速度。</p>
+<img src="FunctionalEquation3.html">
+<p>物理課教過等速運動。當速度是5，可以列出等式u′ = 5。大家把5視作一個函數，而非一個實數。</p>
+<img src="FunctionalEquation4.html">
+<p>速度也可以忽快忽慢。自訂速度v，可以列出等式u′ = v。</p>
+<img src="FunctionalEquation5.html">
+<p>物理課教過等加速度運動。當自由落體，加速度是重力加速度g，g是一個常數約9.8，可以列出等式u″ = g。如果又有空氣阻力f，得到加速度a = f/m，可以列出等式u″ = g + f/m。</p>
+<img src="FunctionalEquation6.html">
+<p>加速度也可以不斷變化。當彗星撞地球，加速度是引力加速度g = Gm₁m₂ / r²，G是萬有引力常數約6.7e-11，m₁和m₂是質量，r是距離。地心座標定成0，可以列出等式u″ = Gm₁m₂ / u²。</p>
+<img src="FunctionalEquation7.html">
+<p>我們的目標就是解u，知道物體的所在位置。</p>
+<p class="t">Differential Equation</p>
+<p>「微分方程式」。數學家從微分運算開始著手，因此出現了這個稱呼。又細分為ODE：輸入變數只有一種、PDE：輸入變數超過一種。</p>
+<img src="FunctionalEquation1.html">
+<p>大家習慣先試符號解（公式解），再試數值解。詳細流程：查閱工程數學教科書，手工推導符號解，寫成程式碼。然而，大多數時候，函數很複雜，甚至函數不是多項式函數，難以手工推導符號解。何況目前也沒有特別好的演算法，能讓電腦自動推導符號解。最後只好運用下面章節的演算法，求得數值解。</p>
+<p class="t">Ordinary Differential Equation</p>
+<pre>
+           d
+f(x) + 2 = ―― f(x) + 2 g(x)
+           dx
+
+f + 2 = f' + 2g   省略x的部分，微分換成撇
+</pre>
+<p>大家為了簡潔起見，微分一次兩次三次，標記成f′ f″ f‴，右上角一撇兩撇三撇；或者標記成ḟ f̈ f⃛，上方一點兩點三點。</p>
+<p class="t">演算法（Runge-Kutta Method）</p>
+<p>一次走一步，每一步從最高次導數遞推到最低次導數。</p>
+<pre>
+Euler / Verlet
+</pre>
+<p class="t">演算法（Galerkin Method）</p>
+<p>假設正確答案是某一套函數基底的線性組合。問題變成解線性方程組。</p>
+<pre>
+http://www.sd.rub.de/downloads/Galerkin_method
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Partial Differential Equation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">範例：流體力學</p>
+<p>水中的每個位置，都有一個水分子。每個水分子都有速度，符合場的概念。注意到這裡沒有時間軸。水分子的速度可以表示成一個三維向量場u。</p>
+<p>水分子往周圍對流，那就是u = Δu。</p>
+<p>水分子受重力影響，那就是u″ = g。</p>
+<p class="t">Partial Differential Equation</p>
+<p><a href="http://www.math.harvard.edu/archive/21a_fall_15/supplements/pde/">http://www.math.harvard.edu/archive/21a_fall_15/supplements/pde/</a></p>
+<p><a href="http://heath.cs.illinois.edu/scicomp/notes/index.html">http://heath.cs.illinois.edu/scicomp/notes/index.html</a></p>
+<pre>
+Laplace Equation    Δf = 0
+Poisson Equation    Δf = ∇g
+Heat Equation       Δf = k df/dt
+Wave Equation       Δf = k d²f/dt²
+Helmholtz Equation  Δf = λf (Vibration Modes)(Dirichlet Eigenvalue)
+</pre>
+<pre>
+Hamilton-Jacobi-Bellman Equation
+</pre>
+<p>
+Poisson Equation：左右兩式相減平方最小，就是左右兩式一次微分相等；縱向與橫向加總，就是左右兩式散度相等。梯度相減平方最小，就是梯度的散度（laplace）相等。
+</p>
+<p>解方程式，是將等式重新整理成函數的格式，求根、求不動點、求特徵點。解函數方程式，如法炮製，改為求特徵函數。</p>
+<p>經典的微分方程，特徵函數通常是複數螺旋線e^it。因此任意函數的微分，可以寫成特徵函數的線性組合。</p>
+<p class="e">UVa 199</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Integral Equation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Integral Equation</p>
+<pre>
+Gauss quadrature
+Ewald summation
+http://homerreid.dyndns.org/teaching/18.330/Notes/EwaldSummation.pdf
+MCMC integration
+</pre>
+<pre>
+1/e^(x^2) sqrt(pi)
+1/x       ln(x) 發散
+1/(x^2)   pi^2 / 6  (離散版本)
+1/x!      e         (離散版本)
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Functional.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:15:53 GMT -->
+</html>

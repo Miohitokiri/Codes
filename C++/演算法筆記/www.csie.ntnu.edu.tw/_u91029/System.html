@@ -1,0 +1,94 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/System.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:16:18 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - System</title></head><body>
+<div class="a"><div class="h">
+<p class="b">System（Under Construction!）</p>
+</div><div class="c">
+<p class="t">System</p>
+<p>「系統」。輸入、輸出、函數所組成的機制。輸入、輸出是多道訊號。</p>
+<pre>
+http://www.egr.msu.edu/classes/me851/jchoi/lecture/
+http://www.princeton.edu/~stengel/MAE546Seminars.html
+</pre>
+<p><a href="http://www.gaussianwaves.com/2014/05/22/">http://www.gaussianwaves.com/2014/05/22/</a></p>
+<p>moving average model就是正常的LTI Filter。autoregressive model可以想成LTI Filter的反運算，也是LTI Filter。</p>
+<p>乘法摺積對偶性。實際計算採用Fourier Transform。闡述理論則採用Laplace Transform，迎合訊號從零開始。</p>
+<p class="t">System Identification</p>
+<p>找到適當的函數類型，盡量符合輸入與輸出。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">System Realization（Under Construction!）</p>
+</div><div class="c">
+<p class="t">System Realization</p>
+<p>找到函數，盡量符合輸入與輸出。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">System Estimation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">System Estimation</p>
+<p>找到函數與輸入，盡量符合輸出。</p>
+<p>已知輸出（果），未知輸入（因），尋找最有可能的因。</p>
+<p>函數（業）已知是Kalman Filter，未知是Hidden Markov Model。</p>
+<p>大家習慣想成是Signal Estimation的進階版本。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">System Estimation: Kalman Filter（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Linear Prediction</p>
+<p>預測數列發展。</p>
+<p class="t">Kalman Filter</p>
+<p>精髓：果的誤差，經過反濾波器，用以修正因。</p>
+<p><a href="http://www.cs.unc.edu/~welch/media/pdf/kalman_intro.pdf">http://www.cs.unc.edu/~welch/media/pdf/kalman_intro.pdf</a></p>
+<pre>
+狀態（因）   x1 x2 x3 ...            未知　（一條數列，線性遞迴關係）
+函數（指標） H1 H2 H3 ...            已知　（數列每一項皆有一個函數）
+觀察（果）   y1=H1(x1) y2=H2(x2) ... 已知　（數列每一項皆有一個輸出）
+
+狀態是自遞迴的LTI filter   xn = a1*xn-1 + a2*xn-2 + ... + ap*xn-p
+                           xn = A(xn-1, xn-2, ..., xn-p)
+狀態可以添加雜訊           xn = a1*xn-1 + a2*xn-2 + ... + ap*xn-p + q
+函數通常是同一個           H1 = H2 = H3
+函數可以推廣成LTI filter   yn = hn1*xn-1 + hn2*xn-2 + ... + hnp*xn-r
+                           yn = Hn(xn, xn-1, xn-2, ..., xn-r)
+
+從 x1 開始一個一個算到 xk，現在要算 xk 是多少：
+1. 利用遞迴式計算 xk' = A(xk-1) (此處僅以一階為例。自行初始化 x1 為零。)
+   這很直覺吧。
+2. 順手求出 yk' = Hk(xk')。
+　 通常 yk' 不等於正版 yk。這表示我們算的 xk' 不夠準，需要修正。
+3. 求出 Hk 的反濾波器 <u>Hk</u>。又稱Kalman gain Kk。
+   xk = xk' + <u>Hk</u>(yk - Hk(xk'))。
+   yk的誤差，套用反濾波器，變成xk的誤差。原本的xk'加上誤差，答案就對了。
+3.1. 為了計算反濾波器，需要 xk 的誤差的平方 pk。 (誤差的autocorrelation)
+     利用遞迴式推導出 pk' = A<sup>2</sup>(pk-1) (自行初始化 p1 為零)
+     這個式子的原理，大致上符合 Var[X*a] = Var[X] * a^2。
+3.2. 以 pk' Hk 求出 <u>Hk</u>。
+4. 修正好 xk 之後，不忘修正 pk = pk' - <u>Hk</u>(Hk(pk'))
+</pre>
+<p>為什麼要大費周章，將觀察值的誤差通過反濾波器，而不是直截了當，將觀察值通過反濾波器？我也不清楚。可能是因為添加了雜訊，不得不這樣處理。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">System Estimation: Hidden Markov Model（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Markov Chain</p>
+<p>預測數列發展。</p>
+<p class="t">Hidden Markov Model</p>
+<p>詳見本站文件「<a href="HiddenMarkovModel.html">Hidden Markov Model</a>」。</p>
+<p>一個函數，輸入和輸出都是數列。現在只知道大量的輸出數列（果），完全不清楚函數（業）和輸入數列（因）。</p>
+<p>現在假設此函數是一個Hidden Markov Model（即是假設輸入數列是Markov Chain），假設狀態數量為N、機率均等。</p>
+<p>針對一個已知的輸出數列，我們調整函數，讓該輸出數列的出現機率最大，同時求出機率多寡。（理論上應該要同時考慮所有輸出數列，讓整體的機率最大；但是這樣時間複雜度太高是指數時間，只好一次處理一個。）</p>
+<p>針對一個新的輸出數列，我們找到可能性最高的輸入數列，同時求出機率多寡。</p>
+<p class="t">用於Classification</p>
+<p>用來分類數列，數列前後項關係密切。</p>
+<p>每一種類別，各自建立一個HMM。針對一個新的輸出數列，以機率多寡來判斷其分類。</p>
+<p class="t">Conditional Random Field</p>
+<p>有向圖改成無向圖。</p>
+<p><a href="http://www.zhihu.com/question/35866596">http://www.zhihu.com/question/35866596</a></p>
+<p class="t">Policy Evaluation</p>
+<p>靜態改成動態。</p>
+<p><a href="http://www.cs.berkeley.edu/~pabbeel/cs287-fa12/slides/mdps-exact-methods.pdf">http://www.cs.berkeley.edu/~pabbeel/cs287-fa12/slides/mdps-exact-methods.pdf</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/System.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:16:18 GMT -->
+</html>

@@ -1,0 +1,1119 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/DynamicProgramming.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:58:19 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Dynamic Programming</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Dynamic Programming</p>
+<p class="w">長江後浪催前浪，一替新人趲舊人。《張協狀元》</p>
+<p class="w">資之深，則取之左右逢其原。《孟子》</p>
+</div><div class="c">
+<p class="t">Dynamic Programming</p>
+<p>先透過一個簡單的例子，感受一下動態規劃吧！</p>
+<p class="t">範例：階乘（Factorial）</p>
+<p>1 × 2 × 3 × ⋯ × N。整數1到N的連乘積。N階乘。N!。</p>
+<p>N!源自(N-1)!，如此就遞迴分割問題了。</p>
+<img src="DynamicProgramming1.png">
+<p>陣列的每一格對應每一個問題。設定第一格的答案，再以迴圈依序計算其餘答案。</p>
+<img src="DynamicProgramming2.png">
+<textarea>
+const int N = 10;
+int f[N];
+
+void factorial()
+{
+	f[0] = 0;
+	f[1] = 1;
+	for (int i=2; i<=N; ++i)
+		f[i] = f[i-1] * i;
+}
+</textarea>
+<textarea>
+const int N = 10;
+
+void factorial()
+{
+	int f = 1;
+	for (int i=2; i<=N; ++i)
+		f *= i;
+}
+</textarea>
+<p class="e">UVa 623 568 10220 10323</p>
+<p class="t">時間複雜度</p>
+<p>總共N個問題，每個問題花費O(1)時間，總共花費O(N)時間。</p>
+<p class="t">空間複雜度</p>
+<p>求1!到N!：總共N個問題，用一條N格陣列儲存全部問題的答案，空間複雜度為O(N)。</p>
+<p>只求N!：用一個變數累計乘積，空間複雜度為O(1)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: recurrence</p>
+</div><div class="c">
+<p class="t">Dynamic Programming<br>= Divide and Conquer + Memoization</p>
+<p>動態規劃是分治法的延伸。當遞迴分割出來的問題，一而再、再而三出現，就運用記憶法儲存這些問題的答案，避免重複求解，以空間換取時間。</p>
+<p>動態規劃的過程，就是反覆地讀取數據、計算數據、儲存數據。</p>
+<img src="DPRecurrence1.png">
+<pre>
+1. 把原問題遞迴分割成許多更小的問題。（recurrence）
+   1-1. 子問題與原問題的求解方式皆類似。（optimal sub-structure）
+   1-2. 子問題會一而再、再而三的出現。（overlapping sub-problems）
+2. 設計計算過程：
+   2-1. 確認每個問題需要哪些子問題來計算答案。（recurrence）
+   2-2. 確認總共有哪些問題。（state space）
+   2-3. 把問題一一對應到表格。（lookup table）
+   2-4. 決定問題的計算順序。（computational sequence）
+   2-5. 確認初始值、計算範圍。（initial states / boundary）
+3. 實作，主要有兩種方式：
+   3-1. Top-down
+   3-2. Bottom-up
+</pre>
+<p class="t">1. recurrence</p>
+<p>遞迴分割問題時，當子問題與原問題完全相同，只有數值範圍不同，我們稱此現象為recurrence，再度出現、一再出現之意。</p>
+<p>【註：recursion和recurrence，中文都翻譯為「遞迴」，然而兩者意義大不相同，讀者切莫混淆。】</p>
+<p>此處以爬樓梯問題當作範例。先前於遞歸法章節，已經談過如何求踏法，而此處要談如何求踏法數目。</p>
+<img src="Recursive8.png">
+<p>踏上第五階，只能從第四階或從第三階踏過去。因此「爬到五階」源自兩個子問題：「爬到四階」與「爬到三階」。</p>
+<img src="DPRecurrence2.png">
+<p>「爬到五階」的踏法數目，就是總合「爬到四階」與「爬到三階」的踏法數目。寫成數學式子是「f(5) = f(4) + f(3)」，其中「f(‧)」表示「爬到某階之踏法數目」。</p>
+<p>依樣畫葫蘆，得到「f(4) = f(3) + f(2)」、「f(3) = f(2) + f(1)」。</p>
+<p>「爬到兩階」與「爬到一階」無法再分割、沒有子問題，直接得到「f(2) = 2」、「f(1) = 1」。</p>
+<p>整理成一道簡明扼要的遞迴公式：</p>
+<pre>
+f(n) =
+ { 1                , if n = 1
+ { 2                , if n = 2
+ { f(n-1) + f(n-2)  , if n >= 3 and n <= 5
+</pre>
+<p>爬到任何一階的踏法數目，都可以藉由這道遞迴公式求得。n代入實際數值，遞迴計算即可。</p>
+<p>為什麼分割問題之後，就容易計算答案呢？因為分割問題時，同時也分類了這個問題的所有可能答案。分類使得答案的規律變得單純，於是更容易求得答案。</p>
+<img src="DPRecurrence3.png">
+<p class="t">2-1. recurrence</p>
+<pre>
+f(n) =
+ { 1                , if n = 1
+ { 2                , if n = 2
+ { f(n-1) + f(n-2)  , if n >= 3
+</pre>
+<img src="DPRecurrence2.png">
+<p class="t">2-2. state space</p>
+<p>想要計算第五階的踏法數目。</p>
+<p>全部的問題是「爬到一階」、「爬到二階」、「爬到三階」、「爬到四階」、「爬到五階」。</p>
+<img src="DPRecurrence4.png">
+<p>至於「爬到零階」、「爬到負一階」、「爬到負二階」以及「爬到六階」、「爬到七階」沒有必要計算。</p>
+<p class="t">2-3. lookup table</p>
+<p>建立六格的陣列，儲存五個問題的答案。</p>
+<p>表格的第零格不使用，第一格是「爬到一階」的答案，第二格是「爬到二階」的答案，以此類推。</p>
+<img src="DPRecurrence5.png">
+<p>如果只計算「爬完五階」，也可以建立三個變數交替使用。</p>
+<p class="t">2-4. computational sequence</p>
+<p>因為每個問題都依賴「階數少一階」、「階數少二階」這兩個問題，所以必須由階數小的問題開始計算。</p>
+<p>計算順序是「爬到一階」、「爬到二階」、……、「爬到五階」。</p>
+<img src="DPRecurrence6.png">
+<p class="t">2-5. initial states / boundary</p>
+<p>最先計算的問題是「爬到一階」與「爬到二階」，必須預先將答案填入表格、寫入程式碼，才能繼續計算其他問題。心算求得「爬到一階」的答案是1，「爬到二階」的答案是2。</p>
+<p>最後計算的問題是原問題「爬到五階」。</p>
+<p>為了讓表格更順暢、為了讓程式碼更漂亮，可以加入「爬到零階」的答案，對應到表格的第零格。「爬到零階」的答案，可以運用「爬到一階」的答案與「爬到兩階」的答案，刻意逆推而得。</p>
+<img src="DPRecurrence7.png">
+<p>最後可以把初始值、尚待計算的部份、不需計算的部分，統整成一道遞迴公式：</p>
+<pre>
+f(n) =
+ { 0                , if n < 0               [Exterior]
+ { 1                , if n = 0               [Initial]
+ { 1                , if n = 1               [Initial]
+ { f(n-1) + f(n-2)  , if n >= 2 and n <= 5   [Compute]
+ { 0                , if n > 5               [Exterior]
+</pre>
+<p class="e">UVa 11069</p>
+<p class="t">3. 實作</p>
+<p>直接用遞迴實作，而不使用記憶體儲存各個問題的答案，是最直接的方式，也是最慢的方式。時間複雜度是O(f(n))。問題一而再、再而三的出現，不斷呼叫同樣的函式求解，效率不彰。剛接觸DP的新手常犯這種錯誤。</p>
+<textarea>
+int f(int n)
+{
+	if (n == 0 || n == 1)
+		return 1;
+	else
+		return f(n-1) + f(n-2);
+}
+</textarea>
+<p>正確的DP，是一邊計算，一邊將計算出來的數值存入表格，以後便不必重算。這裡整理了兩種實作方式，各有優缺點：</p>
+<pre>
+1. Top-down
+2. Bottom-up
+</pre>
+<img src="DPRecurrence8.png">
+<p class="t">3-1. Top-down</p>
+<textarea>
+int table[6];	// 表格，儲存全部問題的答案。
+bool solve[6];	// 記錄問題是否已經計算完畢
+
+int f(int n)
+{
+	// [Initial]
+	if (n == 0 || n == 1) return table[n] = 1;
+
+	// [Compute]
+	// 如果已經計算過，就直接讀取表格的答案。
+	if (solve[n]) return table[n];
+
+	// 如果不曾計算過，就計算一遍，儲存答案。
+	table[n] = f(n-1) + f(n-2);	// 將答案存入表格
+	solve[n] = true;			// 已經計算完畢
+	return table[n];
+}
+
+void stairs_climbing()
+{
+	for (int i=0; i<=5; i++)
+		solve[i] = false;
+
+	int n;
+	while (cin >> n && (n >= 0 && n <= 5))
+		cout << "爬到" << n << "階，" << f(n) << "種踏法";
+}
+</textarea>
+<textarea>
+int table[6];	// 合併solve跟table，簡化程式碼。
+
+int f(int n)
+{
+	// [Initial]
+	if (n == 0 || n == 1) return 1;
+
+	// [Compute]
+	// 用 0 代表該問題還未計算答案
+//	if (table[n] != 0) return table[n];
+	if (table[n]) return table[n];
+	return table[n] = f(n-1) + f(n-2);
+}
+
+void stairs_climbing()
+{
+	for (int i=0; i<=5; i++)
+		table[i] = 0;
+
+	int n;
+	while (cin >> n && (n >= 0 && n <= 5))
+		cout << "爬到" << n << "階，" << f(n) << "種踏法";
+}
+</textarea>
+<p>這個實作方式的好處是不必斤斤計較計算順序，因為程式碼中的遞迴結構會迫使最小的問題先被計算。這個實作方式的另一個好處是只計算必要的問題，而不必計算所有可能的問題。</p>
+<p>這個實作方式的壞處是程式碼採用遞迴結構，不斷呼叫函式，執行效率較差。這個實作方式的另一個壞處是無法自由地控制計算順序，因而無法妥善運用記憶體，浪費了可回收再利用的記憶體。</p>
+<p class="e">UVa 10285 10446 10520</p>
+<p class="t">3-2. Bottom-up</p>
+<p>訂定一個計算順序，然後由最小的問題開始計算。特色是程式碼通常只有幾個迴圈。這個實作方式的好處與壞處與前一個方式恰好互補。</p>
+<p>首先建立表格。</p>
+<textarea>
+int table[6];
+</textarea>
+<textarea>
+int table[5 + 1];
+</textarea>
+<p>心算「爬到零階」的答案、「爬到一階」的答案，填入表格當中，作為初始值。分別填到表格的第零格、第一格。</p>
+<textarea>
+table[0] = 1;
+table[1] = 1;
+</textarea>
+<p>尚待計算的部份就是「爬到兩階」的答案、……、「爬到五階」的答案。通常是使用迴圈，按照計算順序來計算。</p>
+<p>計算過程的實作方式，有兩種迥異的風格。一種是「往回取值」，是常見的實作方式。</p>
+<textarea t="往回取值">
+int table[6];
+
+void dynamic_programming()
+{
+	// [Initial]
+	table[0] = 1;
+	table[1] = 1;
+
+	// [Compute]
+	for (int i=2; i<=5; i++)
+		table[i] = table[i-1] + table[i-2];
+}
+</textarea>
+<p>另一種是「往後補值」，是罕見的實作方式。</p>
+<textarea t="往後補值">
+int table[6];
+
+void dynamic_programming()
+{
+	// [Initial]
+	for (int i=0; i<=5; i++) table[i] = 0;
+	table[0] = 1;
+//	table[1] = 1;	// 剛好可以被算到
+
+	// [Compute]
+	for (int i=0; i<=5; i++)
+	{
+		if (i+1 <= 5) table[i+1] += table[i];
+		if (i+2 <= 5) table[i+2] += table[i];
+	}
+}
+</textarea>
+<p>計算完畢之後，最後印出答案。</p>
+<textarea>
+void stairs_climbing()
+{
+	dynamic_programming();
+
+	int n;
+	while (cin >> n && (n >= 0 && n <= 5))
+		cout << "爬到" << n << "階，" << f(n) << "種踏法";
+}
+</textarea>
+<p class="e">UVa 495 900 10334</p>
+<p class="t">總結</p>
+<p>第一。先找到原問題和其子問題們之間的關係，寫出遞迴公式。如此一來，便可利用遞迴公式，用子子問題的答案，求出子問題的答案；用子問題的答案，求出原問題的答案。</p>
+<p>第二。確認可能出現的問題全部總共有哪些，這樣才能知道要計算哪些問題，才能知道總共花多少時間、多少記憶體。</p>
+<p>第三。有了遞迴公式之後，就必須安排出一套計算的順序。大問題的答案，總是以小問題的答案來求得的，所以，小問題的答案是必須先算的，否則大問題的答案從何而來呢？</p>
+<p>一個好的安排方式，不但使程式碼容易撰寫，還可重複利用記憶體空間。</p>
+<p>第四。記得先將最小、最先被計算的問題，心算出答案，儲存入表格，內建於程式碼之中。一道遞迴公式必須擁有初始值，才有辦法計算其他項。</p>
+<p>第五。實作DP的程式時，會建立一個表格，在表格存入所有大小問題的答案。安排好每個問題的答案在表格的哪個位置，這樣計算時才能知道該在哪裡取值。</p>
+<p>切勿存取超出表格的元素，產生溢位情形，導致答案算錯。計算過程當中，一旦某個問題的答案出錯，就會如骨牌效應般一個影響一個，造成很難除錯。</p>
+<p class="t">範例：不重複組合（Combination）</p>
+<img src="DivideAndConquer9.png">
+<p>兩個子問題的組合數目加起來，就是原問題的組合數目。遞迴公式就是著名的巴斯卡公式（Pascal's Formula）：</p>
+<pre>
+c(n, m) =
+ { c(n-1, m-1) + c(n-1, m)  , if n > 1 and m > 1 and n >= m
+ { n                        , if m = 1
+ { 1                        , if n = 1
+</pre>
+<p class="t">範例：河內塔（Tower of Hanoi）</p>
+<img src="DivideAndConquer12.png">
+<pre>
+f(n) =
+ { f(n-1) + 1 + f(n-1)  , if n > 1
+ { 1                    , if n = 1
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: counting / optimization</p>
+</div><div class="c">
+<p class="t">範例：樓梯路線（Staircase Walk），計數問題</p>
+<p>一個方格棋盤，從左上角走到右下角，每次只能往右走一格或者往下走一格。請問有幾種走法？</p>
+<img src="DPCounting1.png">
+<p>對於任何一個方格來說，只可能「從左走來」或者「從上走來」，答案是兩者相加。</p>
+<img src="DPCounting2.png">
+<p>「從左走來」是一個規模更小的問題，「從上走來」是一個規模更小的問題，答案是兩者相加。</p>
+<img src="DPCounting3.png">
+<p>二維陣列的每一格對應每一個問題。設定第零行、第零列的答案，再以迴圈依序計算其餘答案。</p>
+<img src="DPCounting4.png">
+<p>時間複雜度分析：令X和Y分別是棋盤的長和寬。計算一個問題需要O(1)時間（兩個子問題答案相加的時間）。總共X*Y個問題，所以計算所有問題需要O(XY)時間。</p>
+<p>空間複雜度分析：總共X*Y個問題，所以需要O(XY)空間，簡單來說就是二維陣列啦！如果不需要儲存所有問題的答案，只想要得到其中一個特定問題的答案，那只需要一維陣列就夠了，也就是O(min(X, Y))空間。</p>
+<textarea>
+const int X = 8, Y = 8;
+int c[X][Y];
+
+void staircase_walk()
+{
+	// [Initial]
+	for (int i=0; i<X; i++) c[i][0] = 1;
+	for (int j=0; j<Y; j++) c[0][j] = 1;
+
+	// [Compute]
+	for (int i=1; i<X; i++)
+		for (int j=1; j<Y; j++)
+			c[i][j] = c[i-1][j] + c[i][j-1];
+
+	// 輸出結果
+	cout << "由(0,0)走到(7,7)有" << c[7][7] << 種走法;
+//	cout << "由(0,0)走到(7,7)有" << c[X-1][Y-1] << 種走法;
+
+	int x, y;
+	while (cin >> x >> y)
+		cout << "由(0,0)走到(x,y)有" << c[x][y] << 種走法;
+}
+</textarea>
+<p>節省記憶體是動態規劃當中重要的課題！</p>
+<p>如果只打算求出一個問題，那麼只需要儲存最近算出來的問題答案，讓計算過程可以順利進行就可以了。</p>
+<p>兩條陣列輪替使用，就足夠儲存最近算出來的問題答案、避免c[i-1][j]超出陣列範圍。</p>
+<textarea>
+const int X = 8, Y = 8;
+int c[2][Y];	// 兩條陣列，儲存最近算出來的問題答案。
+
+void staircase_walk()
+{
+	// [Initial]
+	for (int j=0; j<Y; ++j) c[0][j] = 1;
+
+	// [Compute]
+	for (int i=1; i<X; i++)
+		for (int j=1; j<Y; j++)
+			// 只是多了 mod 2，
+			// 外觀看起來就像兩條陣列輪替使用。
+			c[i % 2][j] = c[(i-1) % 2][j] + c[i % 2][j-1];
+
+	// 輸出結果
+	cout << "由(0,0)走到(7,7)有" << c[7 % 2][7] << 種走法;
+//	cout << "由(0,0)走到(7,7)有" << c[(X-1) % 2][Y-1] << 種走法;
+}
+</textarea>
+<p>事實上，一條陣列就夠了。也不能再少了。</p>
+<textarea>
+const int X = 8, Y = 8;
+int c[Y];	// 一條陣列就夠了
+
+void staircase_walk()
+{
+	// [Initial]
+	for (int j=0; j<Y; ++j) c[j] = 1;
+
+	// [Compute]
+	for (int i=1; i<X; i++)
+		for (int j=1; j<Y; j++)
+			c[j] += c[j-1];
+
+	// 輸出結果
+	cout << "由(0,0)走到(7,7)有" << c[7] << 種走法;
+//	cout << "由(0,0)走到(7,7)有" << c[Y-1] << 種走法;
+}
+</textarea>
+<textarea>
+const int X = 8, Y = 8;
+int c[Y];	// 一條陣列就夠了
+
+void staircase_walk()
+{
+	// [Initial]
+	c[0] = 1;	// 部分步驟移到[Compute]
+
+	// [Compute]
+	for (int i=0; i<X; i++)	// 從零開始！
+		for (int j=1; j<Y; j++)
+			c[j] += c[j-1];
+
+	// 輸出結果
+	cout << "由(0,0)走到(7,7)有" << c[7] << 種走法;
+//	cout << "由(0,0)走到(7,7)有" << c[Y-1] << 種走法;
+}
+</textarea>
+<p>如果某些格子上有障礙物呢？把此格設為零。</p>
+<p>如果也可以往右下斜角走呢？添加來源c[i-1][j-1]。</p>
+<p>如果可以往上下左右走呢？不斷繞圈子，永遠不會結束，走法無限多種。</p>
+<p class="e">UVa 10599 825 926 ICPC 4787</p>
+<p class="t">遞迴公式</p>
+<p>若瞭解遞迴關係，就不必強記遞迴公式。若瞭解圖片意義，就不必強記數學符號。</p>
+<pre>
+count(i, j) =
+ { 0                              , if i < 0 or j < 0     [Exterior]
+ { 1                              , if i = 0              [Initial]
+ { 1                              , if j = 0              [Initial]
+ { count(i-1, j) + count(i, j-1)  , if i > 0 and i < 8    [Compute]
+ {                                  and j > 0 and j < 8   [Compute]
+ { 0                              , if i >= 8 or j >= 8   [Exterior]
+
+count(i, j)：從格子 (0, 0) 走到格子 (i, j) 的走法數目。
+</pre>
+<p class="t">遞歸方向</p>
+<p>這個問題雙向都可以遞歸。對於任何一個方格來說，只可能「向右走出」或者「向下走出」。</p>
+<img src="DPCounting5.png">
+<p class="t">範例：樓梯路線（Staircase Walk），極值問題</p>
+<p>動態規劃的問題，可以分為「計數問題」和「極值問題」。方才介紹「計數問題」，現在介紹「極值問題」。</p>
+<p>一個方格棋盤，格子擁有數字。從左上角走到右下角，每次只能往右走一格或者往下走一格。請問總和最小的走法？（或者總和最大的走法？）</p>
+<img src="DPCounting6.png">
+<textarea>
+const int X = 8, Y = 8;
+int a[X][Y];
+int c[X][Y];
+
+void staircase_walk()
+{
+	// [Initial]
+	c[0][0] = a[0][0];
+	for (int i=1; i<X; i++)
+		c[i][0] = c[i-1][0] + a[i][0];
+	for (int j=1; j<Y; j++)
+		c[0][j] = c[0][j-1] + a[0][j];
+
+	// [Compute]
+	for (int i=1; i<X; i++)
+		for (int j=1; j<Y; j++)
+			c[i][j] = max(c[i-1][j], c[i][j-1]) + a[i][j];
+
+	// 輸出結果
+	cout << "由(0,0)走到(7,7)的最小總和" << c[7][7];
+//	cout << "由(0,0)走到(7,7)的最小總和" << c[X-1][Y-1];
+
+	int x, y;
+	while (cin >> x >> y)
+		cout << "由(0,0)走到(x,y)的最小總和" << c[x][y];
+}
+</textarea>
+<p>想要印出路線，另外用一個陣列，記錄從哪走來。</p>
+<textarea>
+const int X = 8, Y = 8;
+int a[X][Y];
+int c[X][Y];
+int p[X][Y];
+int out[X+Y-1];
+
+void staircase_walk()
+{
+	// [Initial]
+	c[0][0] = a[0][0];
+	p[0][0] = -1;	// 沒有源頭
+	for (int i=1; i<X; i++)
+	{
+		c[i][0] = c[i-1][0] + a[i][0];
+		p[i][0] = 0;	// 從上走來
+	}
+	for (int j=1; j<Y; j++)
+	{
+		c[0][j] = c[0][j-1] + a[0][j];
+		p[0][j] = 1;	// 從左走來
+	}
+
+	// [Compute]
+	for (int i=1; i<X; i++)
+		for (int j=1; j<Y; j++)
+			if (c[i-1][j] < c[i][j-1])
+			{
+				c[i][j] = c[i-1][j] + a[i][j];
+				p[i][j] = 0;	// 從上走來
+			}
+			else if (c[i-1][j] > c[i][j-1])
+			{
+				c[i][j] = c[i][j-1] + a[i][j];
+				p[i][j] = 1;	// 從左走來
+			}
+			else /*if (c[i-1][j] == c[i][j-1])*/
+			{
+				// 從上走來、從左走來都可以，這裡取左。
+				c[i][j] = c[i][j-1] + a[i][j];
+				p[i][j] = 1;
+			}
+
+	// 反向追蹤路線源頭
+	int n = 0;	// out size
+	for (int i=X-1, j=Y-1; i>=0 && j>=0; )
+	{
+		out[n++] = p[i][j];
+		if (p[i][j] == 0) i--;
+		else if (p[i][j] == 1) j--;
+	}
+
+	// 印出路線
+	for (int i=n-1; i>=0; --i)
+		cout << out[i];
+}
+</textarea>
+<p>額外介紹一個技巧。為了避免減一超出邊界，需要添補許多程式碼。整個棋盤往右下移動一格，就能精簡許多程式碼。</p>
+<textarea>
+const int X = 8, Y = 8;
+int a[X+1][Y+1];	// 整個棋盤往右往下移動一格
+int c[X+1][Y+1];	// 全域變數，將自動初始化為零。
+int p[X+1][Y+1];
+int out[X+Y-1];
+
+void staircase_walk()
+{
+	// [Initial]
+
+	// [Compute]
+	for (int i=1; i<=X; i++)
+		for (int j=1; j<=Y; j++)
+			if (c[i-1][j] < c[i][j-1])
+			{
+				c[i][j] = c[i-1][j] + a[i][j];
+				p[i][j] = 0;	// 從上走來
+			}
+			else /*if (c[i-1][j] >= c[i][j-1])*/
+			{
+				c[i][j] = c[i][j-1] + a[i][j];
+				p[i][j] = 1;	// 從左走來
+			}
+
+	// 反向追蹤路線源頭
+	int n = 0;	// out size
+	for (int i=X, j=Y; i>0 && j>0; )
+	{
+		out[n++] = p[i][j];
+		if (p[i][j] == 0) i--;
+		else if (p[i][j] == 1) j--;
+	}
+
+	// 印出路線
+	for (int i=n-1; i>=0; --i)
+		cout << out[i];
+}
+</textarea>
+<textarea>
+const int X = 8, Y = 8;
+int a[X+1][Y+1];	// 整個棋盤往右往下移動一格
+int c[X+1][Y+1];	// 全域變數，將自動初始化為零。
+int p[X+1][Y+1];
+int out[X+Y-1];
+
+void staircase_walk()
+{
+	// [Initial]
+
+	// [Compute]
+	const int x[2] = {1, 0};
+	const int y[2] = {0, 1};
+
+	for (int i=1; i<=X; i++)
+		for (int j=1; j<=Y; j++)
+		{
+			if (c[i-1][j] < c[i][j-1]) p[i][j] = 0;
+			else                       p[i][j] = 1;
+
+			int& d = p[i][j];
+			c[i][j] = c[i-x[d]][j-y[d]] + a[i][j];
+		}
+
+	// 反向追蹤路線源頭
+	int n = 0;	// out size
+	for (int i=X, j=Y; i>0 && j>0; )
+	{
+		int& d = p[i][j];
+		out[n++] = d;
+		i -= x[d]; j -= x[d];
+	}
+
+	// 印出路線
+	for (int i=n-1; i>=0; --i)
+		cout << out[i];
+}
+</textarea>
+<p class="t">範例：樓梯路線（Staircase Walk），極值問題</p>
+<img src="DPCounting7.png">
+<p>節省記憶體是動態規劃當中重要的課題！</p>
+<p>方才的分割方式：分割最後一步，窮舉最後一步從哪走來；方才的實作方式：由小到大的迴圈。問題答案c[i][j]，可以精簡成一維陣列。路線來源p[i][j]，無法精簡成一維陣列。</p>
+<p>想讓路線來源精簡成一維陣列，必須採用另一種分割方式：從地圖中線分割，窮舉穿過中線的所有地點；同時採用另一種實作方式：由大到小的遞迴。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: state / DAG（Under Construction!）</p>
+</div><div class="c">
+<p class="t">State / DAG</p>
+<img src="DPState1.png">
+<p>以State和DAG的觀點，重新看待動態規劃。</p>
+<p>動態規劃得類比成「<a href="State.html">狀態State</a>」：「問題」變「狀態」，「全部問題」變「狀態空間」，「遞迴關係」變「狀態轉移函式」。</p>
+<p>動態規劃得類比成「<a href="DirectedAcyclicGraph.html">有向無環圖DAG</a>」：既然遞迴關係不能循環，顯然就是DAG。「問題」變「點」，「遞迴關係」變「邊」，「計算順序」變「拓撲順序」。</p>
+<p>即便讀者不懂State和DAG也沒關係，只要抓住兩個要點：每個小問題各是一個狀態，只有數值範圍不同；狀態之間是單行道，依序求解，不能循環。</p>
+<p class="e">ICPC 5104</p>
+<p class="t">範例</p>
+<pre>
+<a href="MaximumSubarray.html">Maximum Subarray</a>
+<a href="LocationAllocationProblem.html">1D p-Center Problem</a>
+<a href="LongestIncreasingSubsequence.html">Longest Increasing Subsequence</a>
+<a href="LongestCommonSubsequence.html">Longest Common Subsequence</a>
+<a href="Palindrome.html">Longest Palindrome Substring</a>
+<a href="KnapsackProblem.html">0/1 Knapsack Problem</a>
+<a href="Path.html">Shortest Path</a>
+</pre>
+<p class="t">範例：巴斯卡三角形（Pascal's Triangle）</p>
+<img src="DPState2.png">
+<p>巴斯卡三角形左右對稱，可以精簡掉對稱部分。巴斯卡三角形逆時針轉45˚，視覺上就可以一一對應至表格。</p>
+<p>時間複雜度為O(N^2)，空間複雜度為O(N^2)。</p>
+<p class="e">UVa 369 485 10564</p>
+<p class="t">範例：矩陣相乘次序（Matrix Chain Multiplication）</p>
+<img src="DPState3.png">
+<p>一連串矩陣相乘，無論從何處開始相乘，計算結果都一樣，然而計算時間卻有差異。兩個矩陣，大小為a x b及b x c，相乘需要O(a*b*c)時間（當然還可以更快，但是此處不討論）。那麼一連串矩陣相乘，最少需要多少時間呢？</p>
+<img src="DPState4.png">
+<p>一連串矩陣，從最後一次相乘的地方分開，化作兩串矩陣相乘。考慮所有可能的分法。</p>
+<img src="DPState5.png">
+<pre>
+f(i, k) = min { f(i, j) + f(j+1, k) + r[i] * c[j] * c[k] }
+         i≤j< k
+
+f(i, k)：從第i個矩陣乘到第k個矩陣，最少的相乘次數。
+r[i]：第i個矩陣的row數目。
+c[i]：第i個矩陣的column數目。
+</pre>
+<textarea>
+int f[100][100];
+int r[100], c[100];
+
+void matrix_chain_multiplication()
+{
+	memset(array, 0x7f, sizeof(array));
+	for (int i=0; i<N; ++i)
+		array[i][i] = 0;
+
+	for (int l=1; l<N; ++l)
+		for (int i=0; i+l<N; ++i)
+		{
+			int k = i + l;
+			for (int j=i; j<k; ++j)
+				f[i][k] = min(f[i][k], f[i][j] + f[j+1][k] + r[i] * c[j] * c[k]);
+		}
+}
+</textarea>
+<p>可以調整成online版本。</p>
+<textarea>
+	for (int k=1; k<N; ++k)
+		for (int i=k-1; i>=0; --i)
+			for (int j=k-1; j>=i; --j)
+//			for (int j=i; j<k; ++j)
+				f[i][k] = min(f[i][k], f[i][j] + f[j+1][k] + r[i] * c[j] * c[k]);
+</textarea>
+<p>同類型的動態規劃問題：</p>
+<pre>
+Matrix Chain Multiplication
+Optimal Binary Search Tree
+<a href="Compression.html">Hu-Tucker Compression</a>
+<a href="Triangulation.html">Minimum Weight Triangulation of Convex Polygon</a>
+<a href="Language.html">Cocke-Younger-Kasami Algorithm</a>
+</pre>
+<p class="e">UVa 348 442</p>
+<p class="t">範例：Longest Increasing Subsequence</p>
+<p>把解答編入狀態之中。</p>
+<p>詳見「<a href="LongestIncreasingSubsequence.html">Longest Increasing Subsequence</a>」。</p>
+<p class="t">範例：Weighted Interval Scheduling Problem</p>
+<p>有了權重之後greedy就不管用了。</p>
+<p class="t">範例：Word Wrap</p>
+<img src="Greedy2.png">
+<p>一大段英文，適度換行，讓文字不超過紙張邊界，美化版面。</p>
+<p>窮舉行數，再窮舉一行擠入多少字數。自行定義留白的代價。</p>
+<p class="e">UVa 709 848 400</p>
+<p class="t">範例：二進位數字</p>
+<p class="e">ICPC 4833 5101</p>
+<p class="t">範例：Sequence Combination【尚無正式名稱】</p>
+<p>逐步消去一連串同色彩珠，找到步驟最少的消除方式。</p>
+<p class="e">UVa 10559 11523</p>
+<p class="t">範例：節省記憶體</p>
+<p class="e">ICPC 6435</p>
+<p class="t">範例：???</p>
+<pre>
+Problem J: Subway Timing
+http://www.csc.kth.se/~austrin/icpc/finals2009solutions.pdf
+</pre>
+<p class="e">ICPC 4454</p>
+<pre>
+http://codeforces.com/blog/entry/13007
+</pre>
+<p class="e">ICPC 6669</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: bitset</p>
+</div><div class="c">
+<p class="t">bitset</p>
+<img src="DPBitset1.png">
+<p>bitset是一個二進位數字，每一個bit分別代表每一件東西，1代表開啟，0代表關閉。例如現在有十個燈泡，編號設定為零到九，其中第零個、第三個、第九個燈泡是亮的，剩下來的燈泡是暗的。我們用一個10 bit的二進位數字1000001001，表示這十個燈泡的亮暗狀態。</p>
+<p>建立一個大小為2^10的陣列，便囊括了所有可能的狀態。陣列的每一格，就代表一種燈泡開關的狀態。</p>
+<textarea>
+int array[1<<10];
+array[521] = 想記錄的數字;
+/* 1000001001(2進位) = 521(10進位) */
+</textarea>
+<p>當狀態數量呈指數成長，可以利用bitset作為狀態。</p>
+<p class="e">UVa 10952 ICPC 4794</p>
+<p class="t">範例：Maximum Matching</p>
+<img src="DPBitset2.png">
+<p>以線相連的兩物，可以配對在一起。求最大配對數目暨配對方式。</p>
+<p>「<a href="Matching.html">Maximum Matching</a>」有多項式時間演算法，可是很難實作；動態規劃雖然慢了些，是指數時間演算法，但是容易實作。移除匹配成一對的點，就得到遞迴公式。</p>
+<pre>
+f[S+{i}+{j}] = max { f[S] + adj[i,j] }   i,j∉S
+f[S] = max { f[S-{i}-{j}] + adj[i,j] }   i,j∉S
+</pre>
+<p>使用bitset，已匹配標成1，未匹配標成0。時間複雜度為O(2^N * N^2)，空間複雜度為O(2^N)。</p>
+<p>這個方法需要大量記憶體，所以無法計算N很大的情況，何況編譯器也不准我們建立太大的陣列，N=28就是極限了。這個方法同時也需要大量時間，以現在的個人電腦來說，N=17就已經要花上幾分鐘才能求出答案了。</p>
+<textarea>
+// top-down DP
+const int N = 10;
+int adj[N][N];	// adjacency matrix。連線為1，否則為0。
+int dp[1<<N];	// dp table
+bool ok[1<<N];	// dp table是否已存值
+//int p[1<<N][2];	// 記錄匹配方式，此處省略。
+
+bool f(int s)
+{
+	if (s == 0) return true;
+	if (ok[s]) return dp[s];
+
+	for (int i=0; i<N; ++i)
+		for (int j=i+1; j<N; ++j)
+			if (s & ((1<<i) | (1<<j)))
+			{
+				// ss = s - {i} - {j};
+				int ss = s ^ (1<<i) ^ (1<<j);
+				dp[s] = max(dp[s], f(ss) + adj[i][j]);
+			}
+
+	ok[s] = true;
+	return dp[s];
+}
+
+int maximum_matching()
+{
+	memset(dp, 0, sizeof(dp));
+	memset(ok, false, sizeof(ok));
+	return f((1<<N)-1);
+}
+</textarea>
+<p>這個演算法可以再修正，讓時間複雜度成為O(2^N * N)。各位可以試試看。</p>
+<p class="e">UVa 10888 10911 11439 10296 11156</p>
+<p class="t">範例：Hamilton Path</p>
+<img src="DPBitset3.png">
+<p>找到一條路徑，剛好每一個點都去過一次。有可能找不到。</p>
+<p>「<a href="Circuit.html">Hamilton Path</a>」尚無多項式時間演算法。直覺的解法是backtracking，窮舉所有點的各種排列方式，一種排列方式當作一條路徑，判斷是不是Hamilton Path。</p>
+<p>運用動態規劃，可以減少計算時間。拆掉一條路徑的最後一條邊，就得到遞迴公式。需要額外維度，記錄路徑終點。</p>
+<pre>
+path[S+{j},j] = or_all { path[S,i] && adj[i,j] }   i∈S, j∉S
+path[S,j] = or_all { path[S-{j},i] && adj[i,j] }   i∈S, j∉S
+</pre>
+<p>時間複雜度為O(2^N * N^2)，空間複雜度為O(2^N)。</p>
+<textarea>
+const int N = 10;
+bool adj[N][N];		// adjacency matrix
+bool dp[1<<N][N];	// dp table
+bool ok[1<<N][N];	// dp table是否已存值
+
+bool path(int s, int s_size, int j)
+{
+	if (s_size == 1) return true;	// s只有一個位元是1
+	if (ok[s][j]) return dp[s][j];
+	ok[s][j] = true;
+
+	for (int i=0; i<N; ++i)
+		if (i != j && s & (1<<i))
+			if (path(s ^ (1<<j), s_size-1, i) && adj[i][j])
+				return dp[s][j] = true;
+
+	return dp[s][j] = false;
+}
+
+bool Hamilton_Path()
+{
+	memset(dp, false, sizeof(dp));
+	memset(ok, false, sizeof(ok));
+
+	for (int i=0; i<N; ++i)
+		if (path((1<<N)-1, N, i))
+			return true;
+	return false;
+}
+</textarea>
+<p class="e">UVa 216 10068 10496 10818 10937 10944 10605 10890 265</p>
+<p class="t">範例：不重複路線（Self-avoiding Walk）</p>
+<iframe src="http://www.youtube.com/embed/Q4gTV4r0zRs"></iframe>
+<p>先前介紹過樓梯路線（Staircase Walk）。樓梯路線問題，只能往兩個方向走，可以簡單的遞迴分割，得到多項式時間演算法。不重複路線問題，可以往四個方向走，無法簡單的遞迴分割，只有指數時間演算法。儘管如此，不重複路線還是可以使用動態規劃。</p>
+<p><a href="http://blog.sina.com.cn/s/blog_51cea4040100gmky.html">http://blog.sina.com.cn/s/blog_51cea4040100gmky.html</a></p>
+<p>中文網路稱為「插头DP」或「轮廓线DP」。</p>
+<p class="e">UVa 10572 10531 ICPC 4789 4793 Timus 1519</p>
+<p class="t">範例：Domino Tiling</p>
+<p><a href="https://github.com/indy256/olymp-docs/raw/master/dp2.pdf">https://github.com/indy256/olymp-docs/raw/master/dp2.pdf</a></p>
+<p><a href="http://www.math.ntu.edu.tw/~shing_tung/PDF/4th/04Jiang.pdf">http://www.math.ntu.edu.tw/~shing_tung/PDF/4th/04Jiang.pdf</a></p>
+<p class="e">UVa 11741</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: stack / deque</p>
+</div><div class="c">
+<p class="t">概論</p>
+<pre>
+F[n] = min/max { F[i] ⋅ W[i] + C[i] }
+       0<=i< n
+</pre>
+<p>F[n]是未知數，F[i] W[i] C[i]是已知數。計算到F[n]時，F[i]早已計算完畢，因此F[i]是已知數。</p>
+<p>這種形式的recurrence，直接計算是O(N^2)。此處介紹更快的演算法。</p>
+<p class="t">stack</p>
+<p>括號配對極值。stack保持嚴格遞增（嚴格遞減），以便即時獲取過往最大值（最小值）、即時移除已處理數值。</p>
+<pre>
+          maximize problem
+          keep monotone increasing  ---->
+      ---------------------------------------
+stack | F[2] | F[4] | F[6] |   ...   | F[10] 
+      ---------------------------------------
+                                      ^^^^^^^ extract maximum
+                clean tops until monotonicity
+                    then push new F[i] at top
+</pre>
+<p>F[i]放入尾端。放入前，先清除尾端數值，使得F[i]放入尾端之後，stack呈嚴格遞增。最大值從尾端取得。</p>
+<p class="t">範例：Largest Empty Rectangle</p>
+<p>詳見「<a href="MaximumSubarray.html">Largest Empty Rectangle</a>」。</p>
+<p class="t">範例：All Nearest Smaller Values</p>
+<p><a href="http://en.wikipedia.org/wiki/All_nearest_smaller_values">http://en.wikipedia.org/wiki/All_nearest_smaller_values</a></p>
+<p class="t">deque</p>
+<p>滑動視窗極值。deque保持嚴格遞增（嚴格遞減），以便即時獲取過往最小值（最大值）、即時移除已處理數值。</p>
+<pre>
+            minimize problem
+            keep monotone increasing  ---->
+        --------------------------------------
+deque    F[2] | F[4] | F[6] |   ...   | F[10] 
+        --------------------------------------
+        ^^^^^^                         ^^^^^^^
+     extract minimum          clean tails until monotonicity
+                              then push new F[i] at end
+</pre>
+<p>F[i]放入尾端。放入前，先清除尾端數值，使得F[i]放入尾端之後，deque呈嚴格遞增。放入後，再清除頭端數值，使得元素個數符合滑動視窗大小。最小值從頭端取得。</p>
+<p>中文網路稱為「单调队列优化」。</p>
+<p class="e">ICPC 4327</p>
+<p class="t">範例：Maxium Sum Subarray</p>
+<p>詳見「<a href="MaximumSubarray.html">Maxium Sum Subarray</a>」。</p>
+<p class="t">範例：Maximum Average Subarray</p>
+<p>詳見「<a href="MaximumSubarray.html">Maxium Average Subarray</a>」。</p>
+<p>由於斜率是關鍵，因此中文網路稱為「斜率优化」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: convex hull</p>
+</div><div class="c">
+<p class="t">概論</p>
+<pre>
+F[n] = min/max { F[i] ⋅ W[n] + C[i] }
+       0<=i< n
+</pre>
+<p>W[i]換成W[n]。前章節W[i]不隨時間n而變化，但是各有不同；本章節W[n]隨著時間n而變化，但是一律相同。</p>
+<p class="t">envelope</p>
+<p>直線y = F[i] x + C[i]、鉛直線x = W[n]，交點Y座標是F[n]。</p>
+<p>最小（大）值對應最低（高）交點。</p>
+<img src="DPConvexHull1.png">
+<p>最小（大）值位於下（上）包絡線。</p>
+<img src="DPConvexHull2.png">
+<p class="t">convex hull</p>
+<p>如果討厭包絡線，可透過點線對偶，從包絡線變成凸包。</p>
+<p>直線穿過點(F[i], -C[i])，斜率W[n]，Y軸截距是-F[n]。</p>
+<p>垂直方向翻轉，讓最小（大）值對應最低（高）截距。</p>
+<p>直線穿過點(F[i], C[i])，斜率-W[n]，Y軸截距是F[n]。</p>
+<img src="DPConvexHull3.png">
+<p>最小（大）值位於下（上）凸包的切線，跟Y軸的交點。</p>
+<img src="DPConvexHull4.png">
+<p>如果不熟悉點線對偶，可透過移項推導，得到相同結論：</p>
+<p><a href="http://www.cnblogs.com/Rlemon/p/3184899.html">http://www.cnblogs.com/Rlemon/p/3184899.html</a></p>
+<p>根據F[i]與W[n]的性質，時間複雜度隨之變化：</p>
+<p>一、W[n]皆相同：不必維護凸包，只需維護每個點在「斜率-W[n]的直線的垂直方向上」的先後順序，彷彿「单调队列优化」。一個常見的例子是W[n] = 1。O(N)。</p>
+<img src="DPConvexHull5.png">
+<p>二、F[i]與W[n]皆單調：Andrew's monotone chain維護下凸包（求最小值時）。切線斜率-W[n]遞減/增。直接從上次切點開始，往左/右找到新切點。O(N)。</p>
+<img src="DPConvexHull6.png">
+<p>三、F[i]單調：Andrew's monotone chain 維護下凸包（求最小值時）。切線斜率-W[n]會變。三分搜尋找到切點，或者二分搜尋凸包斜率找到切點。O(NlogN)。</p>
+<img src="DPConvexHull7.png">
+<p>四、無特別性質：動態凸包資料結構。O(NlogNlogN)。</p>
+<img src="DPConvexHull8.png">
+<textarea>
+http://blog.csdn.net/madaidao/article/details/40823207
+</textarea>
+<p class="e">UVa 12524 ICPC 5133</p>
+<p class="t">範例：1D p-Median Problem</p>
+<p>詳見「<a href="LocationAllocationProblem.html">p-Median Problem</a>」。</p>
+<p><a href="https://algnotes.wordpress.com/2013/10/25/p-median/">https://algnotes.wordpress.com/2013/10/25/p-median/</a></p>
+<p class="t">範例：Bounded Knapsack Problem</p>
+<p>詳見「<a href="KnapsackProblem.html">Bounded Knapsack Problem</a>」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: unimodal function</p>
+</div><div class="c">
+<p class="t">概論</p>
+<pre>
+F[n] = min/max { M[i] }   M[i] is monotone/unimodal
+       0<=i< n
+</pre>
+<p>根據M[i]的性質，時間複雜度隨之變化：</p>
+<p>一、F[n]的子問題們，其答案M[0]...M[n-1]恰好是單調函數：根本沒啥好算，最佳解顯然是第一個（最後一個）子問題。O(N)。</p>
+<p>二、F[n]的子問題們，其答案M[0]...M[n-1]恰好是單峰函數：三分搜尋山峰，或者二分搜尋斜率。O(NlogN)。</p>
+<p>三、每個問題的單峰函數，山峰位置恰好遞增（往右移動）：用同一條掃描線尋找山峰。O(N)。</p>
+<p class="t">unimodal function</p>
+<p>什麼時候會是單峰函數呢？舉兩個例子。</p>
+<pre>
+F[n] = min { max(F[i], G[i]) + 5 }
+     0<=i< n
+</pre>
+<p>F遞增、G遞減，則max(F[i], G[i]) + 5是單峰函數。不過這個例子有點蠢，山谷恰好永遠不動。</p>
+<img src="DPUnimodalFunction1.png">
+<pre>
+F[n] = min { F[i] + G[i] }
+     0<=i< n
+</pre>
+<p>F G皆是凸函數，則F[i] + G[i]是凸函數，即是單峰函數。不過這個例子也有點蠢，山谷恰好永遠不動。</p>
+<img src="DPUnimodalFunction2.png">
+<p class="t">範例：Egg Drop</p>
+<p>一堆蛋，已知耐力皆相同，不知耐力為多少。試求耐力。</p>
+<p>耐力是以樓層衡量：大於某樓層，摔下必破，無法重複使用；小於等於某樓層，摔下必不破，完全不會折損，可以重複使用。</p>
+<p>這個問題有許多變形，此處討論實驗場地是n層樓的情況：</p>
+<p>一、最少摔破幾顆蛋？需要事先準備幾顆蛋？</p>
+<p>答：一顆蛋。從一樓開始摔，逐步上樓，直到摔破為止。</p>
+<p>二、無限多蛋，運氣不好時，最少摔幾次？</p>
+<p>答：二分搜尋。F[0] = 0, F[1] = 1, F[n] = F[ceil((n-1)/2)] + 1。</p>
+<p>三、一顆蛋，運氣不好時，最少摔幾次？</p>
+<p>答：n次。耐力不幸是n樓，從一樓開始摔，要摔n次。</p>
+<p>四、兩顆蛋，運氣不好時，最少摔幾次？</p>
+<p>答：首發選在i樓。如果摔破了，剩下一顆蛋，只好從一樓開始測試；最差的情況，耐力是i-1樓，要摔i-1次。如果沒有摔破，仍是兩顆蛋，問題仍相同，範圍縮小成n-i樓。兩種情況取最大值。窮舉i，找到次數最少者。</p>
+<pre>
+F[n] = 1 +  min { max(i-1, F[n-i]) }
+          1<=i<=n
+F[n] = 1 +  min { max(i, F[n-1-i]) }   調整索引值
+          0<=i< n
+</pre>
+<p>i遞增，F[n-1-i]遞減，因此max(i, F[n-1-i])是單峰函數，而且山谷持續往右移動，可以使用掃描線解決。另外也有數學公式解：</p>
+<p><a href="https://www.ptt.cc/bbs/Prob_Solve/M.1398152375.A.C05.html">https://www.ptt.cc/bbs/Prob_Solve/M.1398152375.A.C05.html</a></p>
+<p>五、k顆蛋，運氣不好時，最少摔幾次？</p>
+<p>答：留給讀者。</p>
+<p class="e">UVa 10934 882 ICPC 4554</p>
+<p class="t">範例：Isotonic Regression</p>
+<p><a href="https://algnotes.wordpress.com/2015/01/28/isotonic-regression/">https://algnotes.wordpress.com/2015/01/28/isotonic-regression/</a></p>
+<p><a href="http://stackoverflow.com/questions/10460861/">http://stackoverflow.com/questions/10460861/</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: totally monotone matrix</p>
+</div><div class="c">
+<p class="t">概論</p>
+<pre>
+F[n] = min/max { M[i][n] }   M[i][n] is monotone/totally monotone
+       0<=i< n
+</pre>
+<p>根據M[i][n]的性質，時間複雜度隨之變化：</p>
+<p>一、M[i][n]是上三角monotone matrix：似乎沒有特別快的演算法，仍是O(N^2)。</p>
+<p>二、M[i][n]是上三角totally monotone matrix：兩個演算法，O(NlogN)與O(Nα(N))。以下只談第一個，分成凹凸兩種情況。</p>
+<p>三、M[i][n]是上三角Monge matrix：至今仍然沒有專屬演算法，大家都是沿用totally monotone matrix的演算法。</p>
+<p>Monge matrix比較常見。常見的形式是：</p>
+<pre>
+F[n] = min/max { F[i] ⋅ W[i] + C[i][n] }
+       0<=i< n
+
+(1) F[i] is non-negative
+(2) W[i] is non-negative
+(3) C[i][n] is Monge
+thus M[i][n] = F[i] ⋅ W[i] + C[i][n] is Monge (non-negative linearity)
+</pre>
+<p>區間觀點：本章節是尾端區間C[i,n]，前章節是頭端區間C[0,i]（省略了0）。</p>
+<p>時變觀點：本章節C[i][n]隨著時間n而變化（C[i][n]改寫成C[n][i]），前章節C[i]不隨時間n而變化。</p>
+<p>Monge matrix的不等式曾經稱作quadrangle inequality，因此中文網路稱為「四边形不等式优化」。</p>
+<p class="t">convex totally monotone matrix</p>
+<p>大意：直條最小值位置往上遞減。使用stack。</p>
+<p>首先畫出C[i][n]，一個上三角矩陣。圖片省略了實際數值。</p>
+<img src="DPMonotoneMatrix1.png">
+<p>計算F[1]：F[0] ⋅ W[0]加到C[0][1]即得。</p>
+<p>計算F[2]：F[0] ⋅ W[0]加到C[0][2]，F[1] ⋅ W[1]加到C[1][2]，取直條C[:][2]最小值。</p>
+<p>以此類推。時間複雜度為O(N^2)。</p>
+<img src="DPMonotoneMatrix2.png">
+<p>重新反省計算過程，改良演算法：</p>
+<p>一、算出F[i]之後，F[i] ⋅ W[i]加到對應的橫條，比較省事。由於F[i] ⋅ W[i]非負，結果仍是凸Monge矩陣，亦是凸全單調矩陣！</p>
+<p>二、計算F[i]，即是取直條最小值。隨時記錄每個直條的最小值位置，每次F[i] ⋅ W[i]加到對應的橫條，順手更新最小值位置。</p>
+<p>得到一個更容易解釋的演算法。時間複雜度仍為O(N^2)。</p>
+<img src="DPMonotoneMatrix3.png">
+<p>凸全單調矩陣（直條版本），每個子矩陣都是凸單調矩陣，直條最小值位置總是往上遞減！</p>
+<p>算出F[i]之後，從左往右更新最小值位置。最小值位置可能變i、可能不變。變與不變有著唯一一條分界線，左側一律變i，右側一律不變，以滿足遞減性質。</p>
+<p>雖然可以提早break，但是時間複雜度仍為O(N^2)。</p>
+<img src="DPMonotoneMatrix4.png">
+<p>位置相同者，合併成一個區間，最多N個區間。每當更新最小值位置，從左往右判斷每個區間的右端位置，直到遭遇不變的位置。然後二分搜尋該區間，找到分界線。</p>
+<p>使用stack實作，一筆資料有兩個參數：區間右端的直條編號、最小值位置。每回合pop一些區間、做一次二分搜尋、push一個區間。時間複雜度為O(NlogN)。</p>
+<p class="t">concave totally monotone matrix</p>
+<p>大意：直條最小值位置往下遞增。使用deque。</p>
+<p>改成從右往左更新最小值位置。時間複雜度為O(NlogN)。</p>
+<img src="DPMonotoneMatrix5.png">
+<p class="t">範例：Word Wrap</p>
+<p><a href="https://algnotes.wordpress.com/2013/10/26/word-wrap/">https://algnotes.wordpress.com/2013/10/26/word-wrap/</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dynamic Programming: interval</p>
+</div><div class="c">
+<p class="t">Knuth's optimization</p>
+<pre>
+F[i,j] =  min  { F[i,k] + F[k,j] + C[i,j] }
+        i<=k<=j
+
+C[i,j] satisfies "monge matrix" and "sorted matrix".
+                (upper trianglar)     (toward ↗)
+
+interval coverage: C[a,b] <= C[c,d] when [a,b] ⊆ [c,d]
+interval coverage: C[a,b] <= C[c,d] when c<=a<=b<=d
+    sorted matrix: ← <= → and ↓ <= ↑
+      (toward ↗)
+</pre>
+<p>四邊形不等式，得到單調性的左邊界。已排序矩陣，得到單調性的右邊界。</p>
+<p>問題依大小排列，問題的最佳分割點恰好也依大小排列。中文網路稱為「决策单调性」。</p>
+<p><a href="http://www.quora.com/What-is-Knuths-optimization-in-dynamic-programming">http://www.quora.com/What-is-Knuths-optimization-in-dynamic-programming</a></p>
+<p class="t">範例：Optimal Binary Search Tree</p>
+<p>N筆資料，欲建立成一棵「<a href="Order.html">Binary Search Tree</a>」。並且預測了每筆資料的搜尋次數。</p>
+<p>請問Binary Search Tree是什麼形狀，才能讓拜訪到的節點數量最少呢？也就是說，每個節點的「深度」乘上「搜尋次數」，總和要最小。</p>
+<img src="DPInterval1.png">
+<p>遞迴公式類似於Matrix Chain Multiplication，都是記錄區間。窮舉樹根，分割成左右兩棵子樹遞迴下去。子問題總共O(N^2)個，一個子問題要窮舉O(N)種分割點，故時間複雜度為O(N^3)。</p>
+<img src="DPInterval2.png">
+<textarea>
+// 陣列邊界左右各加一格，省去判斷陣列邊界的麻煩。
+int freq[8+2] = {0, 4, 2, 1, 2, 3, 1, 2, 1};
+
+int pre[8+2];		// 累積和
+int c[8+2][8+2];	// 實行DP所用的陣列。
+int p[8+2][8+2];	// 記錄樹根，也就是分割點。
+
+// 區間和
+int sum(int i, int j) {return pre[j] - pre[i-1];}
+
+void optimal_binary_search_tree()
+{
+	for (int i=1; i<=8; ++i)
+		pre[i] = pre[i-1] + freq[i];
+
+	for (int i=1; i<=8; ++i)
+	{
+		dp[i][i] = freq[i];
+		p[i][i] = i;
+	}
+
+	// 計算順序為online版本
+	for (int k=2; k<=8; ++k)		// 區間終點
+		for (int i=k-1; i>=1; --i)	// 區間起點
+		{
+			c[i][k] = 1e9;
+			for (int j=i; j<=k; ++j)	// 分割點
+				if (c[i][j-1] + c[j+1][k] + sum(i,k) < c[i][k])
+				{
+					c[i][k] = c[i][j-1] + c[j+1][k] + sum(i,k)
+					p[i][k] = j;
+				}
+		}
+
+	cout << "總共拜訪到的節點數量" << c[1][8];
+}
+</textarea>
+<p>由於第二層迴圈的sum(i,k)維持定值，不會影響最大值的判斷結果，所以可以挪到迴圈外面，減少加法次數，減少執行時間。</p>
+<textarea>
+	for (int k=2; k<=8; ++k)		// 區間終點
+		for (int i=k-1; i>=1; --i)	// 區間起點
+		{
+			c[i][k] = 1e9;
+			for (int j=i; j<=k; ++j)	// 分割點
+				if (c[i][j-1] + c[j+1][k] < c[i][k])
+				{
+					c[i][k] = c[i][j-1] + c[j+1][k];
+					p[i][k] = j;
+				}
+			// 挪到迴圈外面，最後再加上去。
+			c[i][k] += sum(i,k);
+		}
+</textarea>
+<p>總共O(N^2)個子問題，每個子問題必須窮舉O(N)個分割點，所以時間複雜度是O(N^3)。</p>
+<p>到這裡都和普通的Dynamic Programming沒兩樣。接下來要更進一步。</p>
+<p>每次計算一個子問題，總是得窮舉所有的分割點。然而有些分割點顯然是錯誤的，尤其是靠近區間邊界的那些分割點，實在不太可能將兩棵子樹分割的夠均勻、令總和最小。</p>
+<img src="DPInterval3.png">
+<p>相近的子問題，其分割點也很相近。子問題[a,b]，嘗試從從右端拿掉一筆資料，成為子問題[a,b-1]；子問題[a,b]、[a,b-1]的分割點很相近。</p>
+<p>為了讓左右子樹均勻，[a,b]的分割點一定要大於等於[a,b-1]的分割點，才能降低總和。小於[a,b-1]的分割點，沒有窮舉的必要，樹只會越不平衡、總和只會更大不會更小！</p>
+<p>子問題[a+1,b]的情況也十分類似，不再贅述。</p>
+<p>也就是說，子問題[a,b]的分割點，必定位於更小的子問題[a,b-1]和[a+1,b]的分割點之間。計算一個子問題，大可不必窮舉所有的分割點。</p>
+<textarea>
+			for (int j=p[i][k-1]; j<=p[i+1][k]; ++j)	// 分割點
+</textarea>
+<img src="DPInterval4.png">
+<p>觀察分割點表格，[a,b-1]是左方格子，[a+1,b]是下方格子。要計算一個分割點，窮舉範圍就是左方格子的值到下方格子的值。也就是說每一個格子都會大於等於左方格子、小於等於下方格子。</p>
+<p>每一條左上右下斜線，左上最小值是0，右下最大值是N-1，每一條斜線最多窮舉2N = O(N)個分割點。</p>
+<p>除了初始值之外，總共N-1條斜線，需要窮舉的分割點總共O(N^2)個，所以時間複雜度下降為O(N^2)。</p>
+<p class="e">UVa 10304 10003 12057 12809 ICPC 7464</p>
+<p class="t">範例：1D p-Center Problem</p>
+<p>詳見「<a href="LocationAllocationProblem.html">p-Center Problem</a>」。</p>
+<p class="t">Hu's optimization</p>
+<pre>
+F[i,j] =  min  { F[i,k] + F[k,j] + C[i]⋅C[j]⋅C[k] }
+        i<=k<=j
+</pre>
+<p>Matrix Chain Multiplication可加速至O(NlogN)。</p>
+<p>我沒有研究。</p>
+<p class="t">參考文獻</p>
+<p><a href="https://www.ptt.cc/bbs/Prob_Solve/M.1458211168.A.907.html">https://www.ptt.cc/bbs/Prob_Solve/M.1458211168.A.907.html</a></p>
+<pre>
+[slope]
+using geometric techniques to improve dynamic programming algorithms
+for the economic lot-sizing problem and extensions
+
+[totally monotone matrix 1]
+dynamic programming with convexity, concavity and sparsity
+
+[totally monotone matrix 2]
+an almost linear time algorithm for generalized matrix searching
+
+[Knuth's optimization]
+<a href="http://link.springer.com/article/10.1007/BF00264289">optimum binary search trees</a>
+
+[Hu's optimization]
+computation of matrix chain products, part I, part II
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/DynamicProgramming.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:58:36 GMT -->
+</html>

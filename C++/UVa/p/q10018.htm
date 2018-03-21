@@ -1,0 +1,50 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10018: Reverse and Add</h1>          
+<p>把一個數字反轉並相加的方法很簡單：就是把數字反轉並加上原來的數字。假如這個和不是一個迴文（指這個數字從左到右和從右到左都相同），就一直重複這個程序。舉例說明：</p> 
+<p>195 開始的數字<br> 
+591<br>
+-----<br>
+786<br>
+687<br>
+-----<br>
+1473<br>
+3741<br>
+-----<br>
+5214<br>
+4125<br>
+-----<br>
+9339 迴文出現了</p>  
+<p>在這個例子中，經過了4次相加後得到了迴文9339。幾乎對所有的整數這個方法都會得到迴文，但是也有有趣的例外。196是第1個用這個方法找不到迴文的數字，然而並沒有證明該迴文不存在。</p> 
+<p>現在給你一個開始的數字，你的任務就是求出經過多少次相加後，會產生哪一個迴文。對所有的測試資料，你可以假設：1.  
+都會有1個答案。2. 在1000個相加內都會得到答案。 3.  
+產生的迴文不會大於4294967295.</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>第1列有一個整數N（0 &lt; N &lt;= 100），代表以下有幾組測試資料。每筆測試資料一列，各有1個整數  
+P，就是開始的數字。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一測試資料，請輸出2個數字：得到迴文所需的最少次數的相加，以及該迴文。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                       
+Input</b></span></p>                              
+<pre>5
+195
+265
+750
+2
+99</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>4 9339
+5 45254
+3 6666
+1 4
+6 79497</pre> 
+                            
+</body>                            
+                            
+</html>                            

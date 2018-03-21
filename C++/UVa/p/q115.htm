@@ -1,0 +1,135 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q115: Climbing Trees</h1>          
+<p align="right">原翻譯者：untitled</p> 
+<p>這個問題的目地在討論兩個人在所謂的「家庭樹」（family tree 即族譜）裡，他們的關係為何。給你兩組名字：第一組裡有若干對名字，就是所謂的「孩子，家長 
+對」（<em>child-parent</em> pairs），也就是一對名字，前面的名字是孩子的名字，而後面的名字為其家長的名字；第二組則也有若干對名字，是「欲查詢 
+對」（query pairs），其表達格式跟前面的「孩子，家長 
+對」一樣有兩個名字。給你這兩組若干對的名字，你必須寫個程式來判斷在「欲查詢 
+對」裡，每對的那兩個人彼此關係為何。在這裡我們設定一個人只會有一個家長（雖然我們都知道每個人都有父、母親二者，但是在本問題中，我們僅以其中一人代表）</p> 
+<p>在此問題裡，我們說「孩子，家長 對」<i>p、q</i> 表示 <i>p</i> 
+是 <i>q</i> 
+的孩子。我們為了要表示出所謂的關係，我們先看下面的定義：
+<ul>
+  <li>當在輸入檔案的「孩子，家長 對」裡有 p q （或者 q p），我們說 
+    <i>p</i> 是 <i>q</i> 的 <em>0 級子孫</em> （或者 <em>0 級祖先</em>）
+  <li>當在輸入檔案的「孩子，家長 對」裡有 p r （或者 q r），而且 
+    <i>r</i> 是 <i>q</i> 的 (<i>k</i>-1) 級子孫（或者 <i>p</i> 是 <i>r</i> 
+    的 (<i>k</i>-1) 級祖先），則稱 <i>p</i> 是 <i>q</i> 的 <em><i>k</i> 
+    級子孫</em> （或者 <em><i>k</i> 級祖先</em>）</li>
+</ul>
+<p>在這個問題裡，任兩個人 <i>p</i> , <i>q</i> 
+之間的關係一定可歸類到下列四種的其中之一（如果他們有關係的話）
+<ol>
+  <li>直系子孫類（child）： child、grand child、great grand child、great 
+    great grand child，依此類推。（即：孩子、孫子、曾孫、曾曾孫 
+    ...）
+    <p>根據定義，當輸入檔案裡的「孩子，家長 對」有 p q 
+    存在（也就是 <i>p</i> 是 <i>q</i> 的 0 級子孫），則這時 <i>p</i> 
+    是 <i>q</i> 的「child」─即是「孩子」；而當 <i>p</i> 是 <i>q</i> 
+    的 1 級子孫時，我們就稱 <i>p</i> 是 <i>q</i> 的「grand child」─即是「孫子」；當 
+    <i>p</i> 是 <i>q</i> 的 (<i>n</i>+1) 級子孫，則 <i>p</i> 是 <i>q</i> 
+    的「great great ... great grand child」，其中有 <i>n</i> 個 &quot; 
+    great &quot;，然後後面接 &quot; grand child &quot;，也就是「曾曾...曾孫」的意思（其中有 
+    <i>p</i> 個 &quot; 曾 &quot; ）。
+    <p>　
+  <li>直系長輩類（parent）： parent、grand parent、great grand parent、great 
+    great grand parent，依此類推。（即：父（母）、祖父（母）、曾祖父（母）、曾曾祖父（母））<br>
+    （注意：無論是男是女，每一個人如果有家長，則必然是恰有一個）
+    <p>根據定義，當輸入檔案裡的「孩子，家長 對」有 q p 
+    存在（也就是 <i>p</i> 是 <i>q</i> 的 0 級祖先），則這時 <i>p</i> 
+    是 <i>q</i> 的「parent」─即是「父（母）」；而當 <i>p</i> 
+    是 <i>q</i> 的 1 級祖先時，我們就稱 <i>p</i> 是 <i>q</i> 的「grand 
+    parent」─即是「祖父（母）」；當 <i>p</i> 是 <i>q</i> 的 (<i>n</i>+1) 
+    級祖先，則 <i>p</i> 是 <i>q</i> 的「great great ... great grand 
+    parent」，其中有 <i>n</i> 個 &quot; great &quot;，然後後面接 
+    &quot; grand parent &quot;，也就是「曾曾...曾祖父（母）」的意思（其中有 
+    <i>p</i> 個 &quot; 曾 &quot; ）。
+    <p>　
+  <li>旁系血親類（就是非直系的遠親）（ cousin ）：<br>
+    依兩個人對其同祖先的輩分差距，可分為 0<sup>th</sup> cousin、 
+    1<sup>st</sup> cousin、 2<sup>nd</sup> cousin，依此類推；對於兩個人彼此的輩分差距又可分為 
+    once removed、twice removed、three times removed，依此類推。（ 
+    removed 有類似親等遠近關係之意）
+    <p>根據定義，只要 <i>p</i> 和 <i>q</i> 
+    有血緣關係，而且他們不是直系血親關係，那他們就是旁系血親的關係。（或者也可以這樣講，如果把 
+    family tree 當作是一個無向圖，則存在一條路徑連通 <i>p</i> 
+    與 <i>q</i>）今天將 <i>p</i> 和 <i>q</i> 
+    的共同祖先裡，輩份最小的稱作 <i>r</i> （也就是 <i>r</i> 
+    的子孫裡沒有人既是 <i>p</i> 的祖先，又是 <i>q</i> 
+    的祖先。），然後知道 <i>p</i> 是 <i>r</i> 的 <i>m</i> 
+    級子孫， <i>q</i> 是 <i>r</i> 的 <i>n</i> 級子孫。
+    <p>則我們這樣定義：<i>p</i> 和 <i>q</i> 的關係有 '' k<sup>th</sup> 
+    cousins ''，其中 k=min(n,m)（也就是 <i>k</i> 是 <i>p</i> , <i>q</i> 
+    裡面較小的那一個）；而且 <i>p</i> 和 <i>q</i> 的關係還有 
+    '' cousins removed <i>j</i> times '' ，其中 j=| n-m|（也就是 <i>j</i> 
+    為 <i>n</i> 和 <i>m</i> 差的絕對值。）
+    <p>　
+  <li>兄弟姊妹類（sibling）： 0<sup>th</sup> cousins removed 0 times 
+    就是所謂的「兄弟姊妹」。（也就是他們有同一個家長）</li>
+</ol>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入包括2個部分：第一部部分為「孩子，家長 
+對」，每對一列。包含孩子和家長的名字，名字由小寫字母及.組成。若遇到孩子的名字為 
+no.child 代表這部分的輸入結束。注意 ，&quot; no.child &quot; 
+開頭的這一對名字本身並不算在「孩子，家長 
+對」裡，它的作用只是拿來分隔「孩子，家長 
+對」和「欲查詢對」而已。另外，這部分的輸入也不會含有循環矛盾的關係，也就是不會有人既是另一人的子孫又是其祖先。</p>    
+<p>接著就是「欲查詢對」，其格式與第一組一樣，都是每列兩個名字，由小寫字母或句號組成，中間用一個以上的空白隔開。而「欲查詢對」是以 
+end-of-file 作結尾。
+<p>在輸入中，不同的名字不會超過 300 個。每個名字皆不超過 
+31 個字母長。「欲查詢對」裡最多不會超過 100 
+對名字。請參考Sample Input。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                 
+<p>對於查詢對裡的每對名字 <i>p q</i>，都必須輸出 <i>p</i> 是 <i>q</i>的什麼關係──用下面的格式：
+<ul>
+  <li>child, grand child, great grand child, great great ...great grand child
+  <li>parent, grand parent, great grand parent, great great ...great grand 
+    parent
+  <li>sibling
+  <li><i>n</i> cousin removed <i>m</i>
+  <li>no relation</li>
+</ul>
+其中第四項，如果是 &quot; <i>n</i>-cousin is removed 0 times &quot; 
+則只需輸出 <em>n cousin</em> 即可。也就是說不能輸出 <em>removed 
+0</em> 這個東西。另外，不要在數字的後面加上 <em>st, nd, rd, th</em> 
+等字樣。請參考Sample Output。  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                          
+Input</b></span></p>                                 
+<pre>alonzo.church oswald.veblen
+stephen.kleene alonzo.church
+dana.scott alonzo.church
+martin.davis alonzo.church
+pat.fischer hartley.rogers
+mike.paterson david.park
+dennis.ritchie pat.fischer
+hartley.rogers alonzo.church
+les.valiant mike.paterson
+bob.constable stephen.kleene
+david.park hartley.rogers
+no.child no.parent
+stephen.kleene bob.constable
+hartley.rogers stephen.kleene
+les.valiant alonzo.church
+les.valiant dennis.ritchie
+dennis.ritchie les.valiant
+pat.fischer michael.rabin
+mike.paterson dennis.ritchie</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                   
+Output</b></span></p>                                 
+<pre>parent
+sibling
+great great grand child
+1 cousin removed 1
+1 cousin removed 1
+no relation
+1 cousin</pre>
+                               
+</body>                               
+                               
+</html>                               

@@ -1,0 +1,655 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Compression.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:51 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Compression</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Compression</p>
+</div><div class="c">
+<p class="t">濃縮資料</p>
+<img src="Compression1.png">
+<p>如何簡明扼要的記載資料、傳述訊息呢？</p>
+<img src="Compression2.png">
+<p>縮短資料長度，減少交流時間，減少儲存空間，好處多多。</p>
+<p class="t">Compress / Decompress</p>
+<p>「壓縮」是濃縮資料，「解壓縮」是回復資料。觀念類似先前提及的「編碼」與「解碼」。</p>
+<pre>
+              compress
+Thank you! -------------> 3Q!
+           <-------------
+             decompress
+
+                 compress
+200000000美金 -------------> 兩億鎂
+              <-------------
+                decompress
+</pre>
+<p>文字、聲音、圖像、動作、感受，通通可以壓縮。</p>
+<p>資料先壓縮、再解壓縮，如果還是跟原本資料一模一樣，就叫做「無失真壓縮lossless compression」；如果不一樣就叫做「失真壓縮lossy compression」。</p>
+<p>用電腦處理資料，首重精準無誤。以下僅介紹無失真壓縮。</p>
+<p class="t">二元碼壓縮</p>
+<p>二元碼（二進位字串）縮短成另一個二元碼。</p>
+<pre>
+                              compress   
+001100111100101010100001   ------------->   10110101
+                           <-------------
+                             decompress  
+</pre>
+<p class="t">文字壓縮</p>
+<p>例如Doctor縮寫成Dr.、公共汽車簡稱為公車。</p>
+<pre>
+vs.      versus
+lol      laugh out loudly
+RTFM     read the fucking manual
+afaik    as far as I known
+¥        Japanese Yen
+</pre>
+<p>文字壓縮得視作二元碼壓縮！文字儲存於電腦當中，本質上就是ASCII或UTF-8二元碼。</p>
+<p class="t">語言壓縮</p>
+<p>長話短說的壓縮，一般認為是文學的範疇。</p>
+<pre>
+原文　　　　　　　｜壓縮　　　　　｜失真壓縮｜言簡意賅
+如果你沒勇氣陪我到｜若你畏懼陪我到｜不愛我　｜再見
+明天的明天的明天　｜大後天　　　　｜　　　　｜
+倒不如就忘了就斷了｜不如忘盡　　　｜就忘了我｜
+寂寞的昨天的昨天　｜寂寞的前天　　｜　　　　｜
+</pre>
+<p class="t">資訊壓縮</p>
+<p>古代人將壓縮和編碼視為相同，一般認為是文字學的範疇。</p>
+<p>資訊壓縮是把抽象的資訊信息變成實際的碼。設立一種編碼方式，讓碼的長度越短越好，以三言兩語詮釋大千世界。</p>
+<p>打個比方，白話文是不太理想的壓縮、文言文是更理想的壓縮；北京話是不太理想的壓縮、山東話是更理想的壓縮。</p>
+<pre>
+北京話　　　　　　｜台灣話　　　　｜閩南話　　　｜四川話　　｜山東話
+甲：是誰在樓下啊？｜甲：誰在下面？｜甲：啥咪郎？｜甲：喇國？｜甲：誰？
+乙：是我在這兒唄！｜乙：我在這裡！｜乙：喜哇啦！｜乙：使握！｜乙：俺！
+甲：你在做什麼咧？｜甲：你在幹嘛？｜甲：衝啥悔？｜甲：昨傻？｜甲：啥？
+乙：我在這小便吶！｜乙：我在小便！｜乙：棒溜啦！｜乙：潦瞭！｜乙：尿！
+</pre>
+<p>除了文字可以當作碼，圖示、手語、表情也都可以當作碼。</p>
+<p class="t">Symbol / Code</p>
+<p>資料通常很長。大家習慣逐段處理，符合電腦運作特性。</p>
+<p>一段資料構成一個「符號」，再進一步變成簡短的「碼」。常見段落設定成符號，相同的符號對應相同的碼，有利於辨認。</p>
+<img src="Compression3.png">
+<p>制定符號：尚無最佳演算法，仍有研究空間。經典演算法是Lempel-Ziv Compression。</p>
+<p>制定碼：已有最佳演算法，讓碼的總長度達到最小值！經典演算法是Arithmetic Compression、Huffman Compression。</p>
+<p>兩者相互配合，產生了各式各樣的演算法：<a href="http://en.wikipedia.org/wiki/DEFLATE">DEFLATE</a>、<a href="http://en.wikipedia.org/wiki/gzip">gzip</a>、<a href="http://en.wikipedia.org/wiki/bzip2">bzip2</a>、<a href="http://en.wikipedia.org/wiki/zopfli">zopfli</a>、<a href="http://en.wikipedia.org/wiki/brotli">brotli</a>。有興趣的讀者請自行學習。</p>
+<p>編碼與壓縮的差別：編碼時，符碼是公定的，符號長度是一個字元，碼長度是整數個byte；壓縮時，符碼是自訂的，長度不定。</p>
+<p>【註：因為逐段處理，所以沒有活用到文字先後順序。】</p>
+<p class="t">何謂好的壓縮？</p>
+<p>預先計算符碼，才能順利壓縮。符碼資訊，必須連同壓縮結果一併儲存，才能順利解壓縮。</p>
+<p>所謂好的壓縮，就是讓「壓縮後長度」加「符碼資訊長度」少於「壓縮前長度」。</p>
+<img src="Compression4.png">
+<p>順帶一提，由於必須額外儲存符碼資訊，即便使用世上最好的壓縮演算法，檔案也可能越壓越大！比方說，已經壓縮過的資料再壓縮一遍，很容易產生這種情形。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dictionary Compression</p>
+</div><div class="c">
+<p class="t">Dictionary Compression</p>
+<p>用於制定符號。</p>
+<p>常見單字、常見字根，當作符號。其餘部分則是一種字元當作一種符號。宛如查字典，通常以Trie作為字典的資料結構。時間複雜度O(N)。</p>
+<pre>
+text   | symbol
+------ | ------
+the    |   0
+that   |   1
+ing    |   2
+is     |   3
+ness   |   4
+ion    |   5
+less   |   6
+ed     |   7
+a      |   8
+b      |   9
+c      |   10
+:      :   :
+</pre>
+<style>u {border: 1px solid black;}</style>
+<pre>
+text       | symbol       int main() {
+---------- | ------           int n = 1 + 1;
+<u>int </u>       |   i              return 0;
+<u>main()</u>     |   m          }
+<u>{</u>          |   {                 ↓
+<u> </u>          |   s          ims{
+<u>    </u>       |   t          tine1p1;
+<u> + </u>        |   p          tr
+<u> = </u>        |   a          }
+<u>return 0;</u>  |   r                ↓
+<u>}</u>          |   }          ims{⤶tine1p1;⤶tr⤶}
+<u>⤶</u>          |   ⤶          
+:          :   :
+</pre>
+<p class="t">Antidictionary Compression</p>
+<p><a href="http://www.stringology.org/DataCompression/dca/index_en.html">http://www.stringology.org/DataCompression/dca/index_en.html</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Lempel-Ziv Compression</p>
+</div><div class="c">
+<p class="t">Lempel-Ziv Compression</p>
+<p>用於制定符號。有多種變形，共同精神是：</p>
+<p>依序讀取字元。遇到生字，就加入字典，然後從零開始加長單字；遇到熟字，就繼續加長單字。</p>
+<p>這個演算法基本上沒有什麼道理，但是效果卻不錯。也許裡面有什麼神奇的數學性質，不過我不清楚。</p>
+<p class="t">LZ77 / LZ78 / LZW</p>
+<p><a href="http://my.stust.edu.tw/sys/read_attach.php?id=58496">http://my.stust.edu.tw/sys/read_attach.php?id=58496</a></p>
+<p class="t">LZMA</p>
+<p><a href="http://en.wikipedia.org/wiki/LZMA">http://en.wikipedia.org/wiki/LZMA</a></p>
+<p class="t">LZO</p>
+<p><a href="http://en.wikipedia.org/wiki/Lempel?iv?berhumer">http://en.wikipedia.org/wiki/Lempel–Ziv–Oberhumer</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Run-length Compression</p>
+</div><div class="c">
+<p class="t">Run-length Compression</p>
+<p>用於制定符號。</p>
+<pre>
+aaaabbcabcbbbaaaa ---> a4b2c1a1b1c1b3a4
+</pre>
+<p>連續重複符號，精簡成兩個符號。時間複雜度O(N)。</p>
+<p>先實施「<a href="StringMatching3.html">Burrows-Wheeler Transform</a>」讓相同符號盡量靠在一起，再實施Run-length Compression，可以提升壓縮效果。</p>
+<p class="e">UVa 11541 12547 ICPC 3867</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Arithmetic Compression（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Arithmetic Compression（Range Coding）</p>
+<p>用於制定碼。</p>
+<p class="t">Compress</p>
+<p>預先統計符號出現次數，才能順利地壓縮。</p>
+<p>依序讀取符號，不斷切割區間，最後得到一個分數。分數換成二進位表示法，小數部分就是碼。</p>
+<img src="ArithmeticCompression1.html">
+<p>區間寬度設定為1。浮點數運算，遭遇精確度問題。</p>
+<img src="ArithmeticCompression2.html">
+<p>區間寬度設定為大數。大數運算，遭遇效率問題，況且我們無法預測數字需要多大。</p>
+<img src="ArithmeticCompression3.html">
+<p>區間寬度設定成整數。整數運算，沒有問題。概念上是從大數取一小段高位數來計算。除不盡就算了，不補零不再除。當位數幾乎用罄、無法分辨符號，才替換下一段高位數。</p>
+<img src="ArithmeticCompression4.html">
+<p>因為計算過程不夠精準，所以壓縮效果稍微差了一點，不過無傷大雅。時間複雜度O(N)。</p>
+<p class="t">Decompress</p>
+<p>碼和符號出現次數必須一併儲存，才能順利地解壓縮。</p>
+<p>依序讀碼，判斷位於哪個區間。時間複雜度O(N)。</p>
+<img src="ArithmeticCompression5.html">
+<p>符號長度固定為一個字元的版本。</p>
+<textarea>
+http://www.drdobbs.com/cpp/data-compression-with-arithmetic-encodin/240169251
+</textarea>
+<p>不輸出二元碼、而是輸出可見符號的版本。</p>
+<textarea>
+const char symbol[] = " !#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+int id[128];					// symbol to number
+const int B = strlen(symbol);	// 93
+const int W = 9;
+const long long R = 520411082988487293LL;	// 93^9
+
+char s[100000];	// text
+char t[100000];	// code
+
+int cdf[128], rnk[128], cnt[128];
+
+void encode(char s[], int cnt[])
+{
+	for (int i=0; s[i]; i++) cnt[s[i]]++;
+	for (int i=1; i<128; i++) cdf[i] = cdf[i-1] + cnt[i-1];
+	for (int i=1; i<128; i++) rnk[i] = rnk[i-1] + !!cnt[i];
+	int A = rnk[128-1];					// symbol type
+	int N = cdf[128-1] + cnt[128-1];	// symbol count
+
+	long long x = 0, r = R;
+	for (int i=0; s[i]; i++)
+	{
+		int c = s[i];
+		if (r >= N)
+		{
+			r /= N;
+			x += cdf[c] * r;
+			r *= cnt[c];
+		}
+		else if (r >= A)
+		{
+			x += rnk[c] - 1;
+			r  = 1;
+		}
+
+		if (r < A)
+		{
+			output(x);
+			x = 0;
+			r = R;
+		}
+	}
+
+	if (r != R || A == 1) output(x);
+}
+
+int ti = 0;
+void output(long long x)
+{
+	int b[W];
+	for (int i=W-1; i>=0; i--) {b[i] = x % B; x /= B;}
+	for (int i=0; i<W; i++) t[ti++] = symbol[b[i]];
+}
+
+void decode(char t[], int cnt[])
+{
+	for (int i=1; i<B; i++) id[symbol[i]] = i;
+	for (int i=1; i<128; i++) cdf[i] = cdf[i-1] + cnt[i-1];
+	for (int i=1; i<128; i++) rnk[i] = rnk[i-1] + !!cnt[i];
+	int A = rnk[128-1];
+	int N = cdf[128-1] + cnt[128-1];
+
+	int si = 0;	// A = 1
+	for (int i=0; t[i]; i+=W)
+	{
+		long long x = 0, r = R;
+		for (int j=0; j<W; j++) x = B * x + id[t[i+j]];
+		while (r >= A && si++ < N)
+		{
+			int c;
+			if (r >= N)
+			{
+				r /= N;
+				long long v = x / r;
+				for (c=1; c<128 && cdf[c]<=v; c++) ;
+				c--;
+				x -= cdf[c] * r;
+				r *= cnt[c];
+			}
+			else
+			{
+				for (c=1; c<128 && rnk[c]-1!=x; c++) ;
+				r = 0;
+			}
+			cout << (char)c;
+		}
+	}
+}
+
+void range_coding()
+{
+	encode(s, cnt);
+	decode(t, cnt);
+}
+</textarea>
+<p class="t">Information</p>
+<p>照理來說應該要為大家介紹什麼是「訊息」，不過還是算了。</p>
+<p>想讓「壓縮後長度」最短：符號出現次數越多，壓縮後訊息越少，令兩者成反比。訊息套用二進位表示法，即得二元碼。</p>
+<pre>
+consider symbol sequence: abaacadb
+
+　 min P(abaacadb)                             P() is information
+=> min P(a) * P(b) * ... * P(d) * P(b)         independent events
+=> min log₂(P(a) * P(b) * ... * P(d) * P(b))   binary code length
+
+objective is minimum when P(a) : P(b) : ... = 1/#(a) : 1/#(b) : ...
+</pre>
+<p>由於只知道訊息比例，不知道訊息確切大小，取巧的方式是利用符號出現次數比例，取其小數做為二元碼。</p>
+<p>符號出現次數越多，比例越大，小數位數越少，碼長越短。</p>
+<pre>
+symbol  count  ratio  binary  code  length  info ratio
+------  -----  -----  ------  ----  ------  ----------
+a       4      4/8    0.1     1     1       8/4
+b       2      2/8    0.01    01    2       8/2
+c       1      1/8    0.001   001   3       8/1
+d       1      1/8    0.001   001   3       8/1
+</pre>
+<p>為了避免碼重複，比例求前綴和。</p>
+<pre>
+symbol  count  ratio  total  binary  code
+------  -----  -----  -----  ------  ----
+a       4      4/8    4/8    0.1     1   
+b       2      2/8    6/8    0.11    11  
+c       1      1/8    7/8    0.111   111 
+d       1      1/8    8/8    1.0     0   
+</pre>
+<p>最後一個前綴和是1，二元碼是0，順序不漂亮。因此讓第一個前綴和是0。</p>
+<pre>
+symbol  count  ratio  total  binary  code
+------  -----  -----  -----  ------  ----
+a       4      4/8    0/8    0.0     0   
+b       2      2/8    4/8    0.1     1   
+c       1      1/8    6/8    0.11    11  
+d       1      1/8    7/8    0.111   111 
+</pre>
+<p>比例可能除不盡。解法是保留足夠位數，足以分辨符號即可。</p>
+<pre>
+symbol  count  ratio  total  binary       code
+------  -----  -----  -----  -----------  ----
+a       1      1/6    0/6    0.0          0   
+b       1      1/6    1/6    0.001010...  001 
+c       2      2/6    2/6    0.01010...   01  
+d       2      2/6    4/6    0.1010...    1   
+</pre>
+<p>最後講個八卦。此演算法是最好的壓縮演算法，然而此演算法最初是IBM公司的專利，大眾不得使用，造成許多遺憾。比如演算法課本，不得已改為介紹Huffman Compression。比如JPEG圖片、MPEG影片的標準規格，不得已改為採用Huffman Compression。</p>
+<p>一旦習以為常，就難以回頭了。儘管現在專利已經過期，人人都能使用Arithmetic Compression；然而Huffman Compression卻依然荼毒著大家，成為歷史共業。</p>
+<p class="e">Timus 1307</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Adaptive Arithmetic Compression</p>
+</div><div class="c">
+<p class="t">Adaptive Arithmetic Compression</p>
+<p>adaptive是隨時視情況調整。dynamic是隨時改變過去輸入資料。online是隨時處理當前輸入資料。不要混淆囉。</p>
+<p>壓縮、解壓縮的過程當中，不預先計算符號數量，而是即時更新符號數量。因此壓縮效果不如原始的Arithmetic Compression來得好。使用「<a href="Sequence.html">Sequence</a>」資料結構，時間複雜度O(NlogN)。</p>
+<p>External Memory Algorithm。適合I/O速度很慢、資料量很大的情況。例如網路傳輸，一邊等待下載、一邊解壓縮，爭取時效。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Huffman Compression</p>
+</div><div class="c">
+<p class="t">Huffman Compression</p>
+<p>用於制定碼。</p>
+<p class="t">Code Table</p>
+<p>符號與碼的對應表，稱作「碼表」。</p>
+<pre>
+symbol  | code  | code length
+------- | ----- | -----------
+a       | 011   | 3
+b       | 0011  | 4
+c       | 11111 | 5
+
+考慮abbacacc
+a出現3次、b出現2次、c出現3次
+壓縮後長度：3*3 + 4*2 + 5*3 = 9 + 8 + 15 = 32
+碼表長度：3 + 4 + 5 = 12
+</pre>
+<p>替每種符號制定獨一無二的碼，碼長皆是整數，資料壓縮後可以明確區分符碼。</p>
+<p>先前碼長是分數，此處碼長是整數。關係宛如Fractional Knapsack Problem和0/1 Knapsack Problem。因此壓縮效果不如Arithmetic Compression來得好。</p>
+<p>現在要讓「壓縮後長度」與「碼表長度」都盡量短。</p>
+<p class="t">Code Tree</p>
+<p>碼表的所有碼，存入Trie資料結構，得到「碼樹」。</p>
+<p>二元碼的情況下，碼樹是二元樹：左樹枝是0、右樹枝是1。符號位於節點上；從樹根往符號的路線是其二元碼。</p>
+<img src="CodeTree1.png">
+<p>在二元樹上面安排各個符號的位置，就能產生一組二元碼，並且保證每個碼都相異。</p>
+<p>一個碼千萬不能是另一個碼的開頭，以免解壓縮產生歧義。放到Code Tree上面來看就是：一個節點千萬不能是另一個節點的祖先。想解決這個問題，只要讓符號全部集中於樹葉！</p>
+<img src="CodeTree2.png">
+<p class="t">Code Tree的樹葉深度總和，就是「碼表長度」。</p>
+<p>碼長即樹葉深度。減少碼長即減少樹葉深度。碼長不斷減少，符號不斷挪往樹根，又要避免成為其他符號的祖先，最後符號都在樹葉，Code Tree形成滿二元樹。</p>
+<img src="CodeTree3.png">
+<p>調整滿二元樹的形狀，可以改變碼表長度。Code Tree長得越像完美二元樹，碼表長度就越短。</p>
+<pre>
+滿二元樹（full binary tree）：
+每個節點只有零個或兩個小孩的二元樹。
+
+完美二元樹（perfect binary tree）：
+每片樹葉深度都一致的二元樹。亦是滿二元樹。
+</pre>
+<p class="e">UVa 283 644</p>
+<p class="t">Code Tree的權重，刻意定義為「壓縮後長度」。</p>
+<p>符號出現次數填入樹葉，做為權重。樹葉深度乘上權重，然後加總，定義為Code Tree的權重。</p>
+<img src="CodeTree4.png">
+<p class="t">計算Code Tree的權重（Incremental Method）</p>
+<p>深度相同的樹葉，可以一併累計權重，再一併乘上深度。逐層累計權重，就得到整棵樹的權重。</p>
+<img src="CodeTree5.png">
+<p class="t">計算Code Tree的權重（Recursive Method）</p>
+<p>滿二元樹每個內部節點都有兩個小孩。滿二元樹的最深的樹葉，一定有兩片樹葉互為兄弟。</p>
+<img src="CodeTree6.png">
+<p>刪除最深、互為兄弟的兩片樹葉，遞迴縮小問題。兩片樹葉權重相加，作為新樹葉的權重，進一步得到遞迴公式：</p>
+<pre>
+遞迴式：
+原樹權重 = 新樹權重 + 左樹葉權重 + 右樹葉權重
+
+化作一般式：
+原樹權重 = 第一次刪除的左樹葉權重 + 第一次刪除的右樹葉權重 +
+　　　　   第二次刪除的左樹葉權重 + 第二次刪除的右樹葉權重 +
+　　　　　　　　　　　　　　　　　⋮
+　　　　   第N-1次刪除的左樹葉權重 + 第N-1次刪除的右樹葉權重
+</pre>
+<p class="t">Optimal Code Tree：降低壓縮後長度</p>
+<p>Code Tree是哪一種形狀，權重才會最小呢？</p>
+<p>根據方才的公式，Code Tree的權重取決於每次刪除的那兩片樹葉。每次刪除的那兩片樹葉權重越小，Code Tree權重就越小。</p>
+<img src="CodeTree7.png">
+<p>換句話說，優先聚合權重最小的兩個節點，最小的相加之後還是最小的，如此遞推下去，Code Tree權重就達到最小值，得到Optimal Code Tree。</p>
+<img src="CodeTree8.png">
+<p>以Priority Queue存放節點，就能迅速找出權重最小的兩個節點。總共2N-1個push，2N-2個pop，時間複雜度O(NlogN)。N是一開始的樹葉數目，也就是符號數目。</p>
+<textarea>
+int freq[8] = {4, 2, 1, 2, 3, 1, 2, 1};	// 符號出現次數
+
+void optimal_code_tree()
+{
+	// STL預設是Max Heap，比較函式必須相反，採用greater。
+	priority_queue<int, vector<int>, greater<int> > pq;
+
+	// 所有樹葉丟進Priority Queue
+	for (int i=0; i<8; ++i)
+		pq.push(freq[i]);
+
+	// 聚合N-1次就得到樹根了
+	int c = 0;	// Optimal Code Tree的權重
+	for (int i=0; i<8-1; ++i)
+	{
+		// 聚合兩個權重最小的節點
+		int a = pq.top(); pq.pop();
+		int b = pq.top(); pq.pop();
+		pq.push(a + b);	// 新節點丟進Priority Queue
+		c += a + b;		// 計算Optimal Code Tree的權重
+	}
+
+	cout << "最小的壓縮後長度是" << c;
+}
+</textarea>
+<p class="t">Optimal Code Tree：降低碼表長度</p>
+<p>優先聚合碼長總和最小的兩個節點。</p>
+<img src="CodeTree9.png">
+<textarea>
+int freq[8] = {4, 2, 1, 2, 3, 1, 2, 1};	// 符號出現次數
+
+struct Node
+{
+	int freq;	// 符號出現次數
+	int leaf;	// 各節點涵蓋的樹葉數量
+	int length;	// 各節點涵蓋的碼長總和
+};
+
+bool operator<(const Node& n1, const Node& n2)
+{
+	if (n1.freq != n2.freq)
+		return n1.freq > n2.freq
+	return n1.length > n2.length;
+}
+
+void optimal_code_tree()
+{
+	priority_queue<Node> pq;
+
+	for (int i=0; i<8; ++i)
+		pq.push((Node){freq[i], 1, 0});
+
+	int c = 0;
+	for (int i=0; i<8-1; ++i)
+	{
+		Node a = pq.top(); pq.pop();
+		Node b = pq.top(); pq.pop();
+		pq.push((Node){
+			a.freq + b.freq,
+			a.leaf + b.leaf,
+			a.length + b.length + a.leaf + b.leaf,
+		});
+		c += a.freq + b.freq;
+	}
+
+	cout << "最小的壓縮後長度是" << c;
+	cout << "此時，最小的碼表長度是" <<  pq.top().length;
+}
+</textarea>
+<p class="t">Compress</p>
+<p>預先統計符號出現次數，預先建立碼表，才能順利地壓縮。</p>
+<p>依序掃描符號，查碼表，將符號換成碼。時間複雜度O(N)。</p>
+<img src="CodeTree10.png">
+<textarea>
+int freq[256*2-1];		// 符號出現次數
+int parent[256*2-1];	// optimal code tree
+int left[256*2-1];		// optimal code tree
+int right[256*2-1];		// optimal code tree
+int bit[256*2-1];		// optimal code tree
+int leaf[256*2-1];		// 各節點涵蓋的樹葉數量
+int length[256*2-1];	// 各節點涵蓋的碼長總和
+vector<int> code[256];	// 碼表，但是code頭尾顛倒
+
+struct cmp
+{
+	bool operator()(const int& i, const int& j)
+	{
+		if (freq[i] != freq[j])
+			return freq[i] > freq[j];
+		return length[i] > length[j];
+	}
+};
+
+void optimal_code_tree()
+{
+	for (int i=0; i<256*2-1; ++i) freq[i] = 0;
+	for (int i=0; s[i]; ++i) freq[s[i]]++;
+
+	priority_queue<int, vector<int>, cmp> pq;
+
+	for (int i=0; i<256; ++i)
+	{
+		leaf[i] = 1;
+		length[i] = 0;
+		pq.push(i);
+	}
+
+	for (int i=256; i<256*2-1; ++i)
+	{
+		int a = pq.top(); pq.pop();
+		int b = pq.top(); pq.pop();
+		freq[i] = freq[a] + freq[b];
+		parent[a] = parent[b] = i;
+		left[i] = a; right[i] = b;
+		bit[a] = 0; bit[b] = 1;
+		leaf[i] = leaf[a] + leaf[b];
+		length[i] = length[a] + length[b] + leaf[i];
+		pq.push(i);
+	}
+
+	// 從樹葉往樹根走訪，建立碼表。
+	for (int i=0; i<256; ++i)
+	{
+		code[i].clear();
+		for (int j=i; j!=256*2-2; j=parent[j])
+			code[i].push_back(bit[j]);
+	}
+}
+
+// 符號長度固定為1個字元。
+// 正確的壓縮結果，要讓0與1成為位元。
+// 此處便宜行事，直接輸出0/1字串。
+void compress(unsigned char* s)
+{
+	optimal_code_tree(s);
+
+	for ( ; *s; s++)
+		for (int i=code[*s].size()-1; i>=0; ++i)
+			cout << code[*s][i];
+}
+</textarea>
+<p class="t">Decompress</p>
+<p>碼和碼表必須一併儲存，才能順利地解壓縮。</p>
+<p>依序掃碼，同時從樹根開始往下走訪Code Tree。一旦走到樹葉，就將碼換成符號、回到樹根。時間複雜度O(N)。</p>
+<img src="CodeTree11.png">
+<textarea>
+// 符號長度固定為1個字元。
+// 正確的壓縮結果，要讓0與1成為位元。
+// 此處便宜行事，直接輸入0/1字串。
+void decompress(unsigned char* s)
+{
+	int p = 256*2-2;
+	for ( ; *s; s++)
+	{
+		p = (*s == '0') ? left[p] : right[p];
+		if (p < 256)
+		{
+			cout << (unsigned char)p;
+			p = 256*2-2;
+		}
+	}
+}
+</textarea>
+<p class="e">UVa 240 10954 ICPC 5179 4122</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Adaptive Huffman Compression</p>
+</div><div class="c">
+<p class="t">Adaptive Huffman Compression</p>
+<p>不預先建立Optimal Code Tree。即時調整Code Tree的形狀，維持是Optimal Code Tree。</p>
+<p>讀入一個符號，符號出現次數加一，Optimal Code Tree對應的樹葉權重加一，該樹葉的祖先們權重也都要跟著加一。</p>
+<p>當有需要重新調整Optimal Code Tree的形狀，也就是指其中有一個節點權重加一之後，權重剛好超越了另一個節點的權重（換句話說，這些節點本來權重相同），導致另一個節點必須先聚合，權重加一的節點必須晚一點才能聚合，改變了Optimal Code Tree的形狀。</p>
+<p class="t">Code Tree排序所有樹葉</p>
+<p>深度相同的樹葉互相對調，Code Tree權重不變。</p>
+<p>權重小、位置淺的樹葉，權重大、位置深的樹葉，兩者對調，可讓Code Tree權重變小。</p>
+<img src="OnlineCodeTree1.png">
+<p>換句話說，權重小的樹葉儘量挪往深處，權重大的樹葉儘量挪往淺處，可讓Code Tree權重變小。</p>
+<p>進一步來說，所有樹葉依照權重由小到大排序之後，依序由深到淺安排位置、同一層則隨意安排位置（或者是刻意由左到右安排位置），可讓Code Tree權重達到區域極小值。</p>
+<p class="t">Optimal Code Tree排序所有節點</p>
+<img src="OnlineCodeTree2.png">
+<p>Optimal Code Tree則是全部節點都能如此排序。建立Optimal Code Tree時，每次都是聚合權重最小的兩個節點，因而造就了排序的性質。</p>
+<p>節點依照權重排序之後，就很容易搜尋了，能夠快速找到權重相同的節點們。</p>
+<p class="t">調整Optimal Code Tree</p>
+<p><a href="http://www.stringology.org/DataCompression/fgk/index_en.html" class="l">http://www.stringology.org/DataCompression/fgk/index_en.html</a></p>
+<p><a href="http://www.stringology.org/DataCompression/ahv/index_en.html" class="l">http://www.stringology.org/DataCompression/ahv/index_en.html</a></p>
+<p>節點權重要加一之前，就先與權重相同的節點交換位置，盡量換到最上層、最右端的位置，也就是盡量換到最靠近次大權重值的位置；這個交換不會影響Optimal Code Tree的權重、仍是Optimal Code Tree。如此一來，權重加一之後，不需要改變Code Tree的形狀，仍是Optimal Code Tree；而且所有節點依然是排序好的。</p>
+<p>別忘記該樹葉的祖先們，權重也都要加一。採用遞增法，一步一步處理：樹葉權重加一之後，再處理父親權重加一的問題。</p>
+<p>我不清楚如何得到碼表長度最短的Optimal Code Tree。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Hu-Tucker Compression</p>
+</div><div class="c">
+<p class="t">Alphabetic Code Tree</p>
+<p>符號必須由小到大、從左往右排列。</p>
+<img src="AlphabeticCodeTree1.png">
+<p>特色是：符號的大小順序，就是碼的大小順序。符號比大小，就是碼比大小──可以直接使用壓縮之後的資料比大小。</p>
+<p>有一好就有一壞，壓縮效果比起Huffman Compression就遜色了一點。</p>
+<p class="t">Alphabetic Code Tree的權重</p>
+<p>與Code Tree的權重定義相同。</p>
+<img src="AlphabeticCodeTree2.png">
+<p class="t">計算Code Tree的權重（更玄的Recursive Method）</p>
+<p>先前計算Code Tree的權重，是刪除深度相同、互為兄弟的兩片樹葉；關注節點之間的高度關係、父子關係。</p>
+<p>其實還有另外一種計算方式，是改為刪除深度相同、但是不一定要互為兄弟的兩片樹葉；改為關注高度關係、無視父子關係。最後得到類似的遞迴公式：</p>
+<pre>
+遞迴式：
+原節點集合 = 新節點集合 + 一片樹葉權重 + 另一片樹葉權重
+
+化作一般式：
+原樹權重 = 第一次刪除的樹葉權重 + 第一次刪除的另一片樹葉權重 +
+　　　　   第二次刪除的樹葉權重 + 第二次刪除的另一片樹葉權重 +
+　　　　　　　　　　　　　　　　　⋮
+　　　　   第N-1次刪除的樹葉權重 + 第N-1次刪除的另一片樹葉權重
+</pre>
+<img src="AlphabeticCodeTree3.png">
+<p class="t">Optimal Alphabetic Code Tree</p>
+<p><a href="http://www.cs.rit.edu/~std3246/thesis/node10.html">http://www.cs.rit.edu/~std3246/thesis/node10.html</a></p>
+<p><a href="http://cseweb.ucsd.edu/classes/wi06/cse202/notes-feb09.pdf">http://cseweb.ucsd.edu/classes/wi06/cse202/notes-feb09.pdf</a></p>
+<p>優先聚合權重最小的兩個節點，Alphabetic Code Tree的權重就會達到最小值，就和Optimal Code Tree一樣。</p>
+<p>但是Alphabetic Code Tree限定了樹葉的左右順序，所以每次聚合的兩個節點，如果剛好都是樹葉的話，就只能是相鄰的樹葉──如此才能維持符號的左右順序。</p>
+<p>只有樹葉必須擔心符號順序問題；樹葉一旦經過聚合之後，就不必再擔心順序問題，也不再隔開其他樹葉。</p>
+<pre>
+一、統計各個符號的出現次數。
+二、一開始有N個樹葉（節點），權重設定成符號出現次數。
+　　現在以bottom-up方式建立Optimal Alphabetic Code Tree：
+　甲、兩個權重最小的節點（不能是被隔離的兩片樹葉），相加得到新節點的權重。
+　　　此時確立了這兩個節點的深度相同（不見得互為兄弟），
+　　　同時確立了新節點深度比它們淺一層（不見得是它們的父親）。
+　乙、聚合N-1次就得到樹根了，不過只能確立所有節點的高度關係。
+　　　得到Optimal Alphabetic Code Tree的權重。
+　丙、以top-down方式，按照高度關係，確立所有節點的父子關係。
+　　　即形成Optimal Alphabetic Code Tree。
+</pre>
+<p>時間複雜度為O(NlogN)。不過實作比較複雜。</p>
+<p>【待補程式碼】</p>
+<p class="t">相似的樹</p>
+<p>這三棵樹非常相似，都是「深度」乘上「符號出現次數」，令總和最小。</p>
+<pre>
+Optimal Binary Search Tree
+所有節點都有符號出現次數，節點的位置必須按照大小排列順序。O(N^2)。
+
+Optimal Alphabetic Binary <del>Code</del> Tree
+只有樹葉擁有符號出現次數，樹葉的位置必須按照大小排列順序。O(NlogN)。
+
+Optimal Binary <del>Code</del> Tree
+只有樹葉擁有符號出現次數，樹葉的位置順序隨意。O(NlogN)。
+</pre>
+<p>實務上，符號種類數目通常很少，亦可運用OBST的O(N^2)演算法，求得OABT；程式碼結構簡單，執行時間也比較短。</p>
+<p class="e">UVa 12057 PKU 1738</p>
+<p class="t">延伸閱讀：Garcia-Wachs Algorithm</p>
+<p><a href="http://www.math.tau.ac.il/~haimk/seminar00/dana-MCBT.ppt">http://www.math.tau.ac.il/~haimk/seminar00/dana-MCBT.ppt</a></p>
+<p>演算法簡單很多，但是證明也複雜很多。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Compression.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:19:09 GMT -->
+</html>

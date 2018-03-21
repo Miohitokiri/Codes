@@ -1,0 +1,476 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Flow2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:05:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Flow</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Feasible s-t Flow</p>
+</div><div class="c">
+<p class="t">Feasible s-t Flow（s-t Flow）</p>
+<p>「可行流」是符合容量限制的流，流量最低是零，流量最高是最大流流量。「可行流」與「流」的定義完全一樣，我們常常省略「可行」兩個字。差別在於多了「可行」之後，我們專注於「找到一個流」，而非「流量是多少」。</p>
+<p class="t">容量下限（流量下限）</p>
+<p>先前只討論容量上限，未討論容量下限。容量下限大於零，水流有時無法順利的從源點流到匯點。</p>
+<p class="t">流量是零，也能滿足容量下限：幽靈循環水流</p>
+<p>一般來說，源點必須流出一些水，以滿足容量下限。入情入理。</p>
+<p>然而有時候，容量下限形成了環。源點沒有流出任何水，也能滿足容量下限：建立流量極小的一道水流，不斷繞環，以滿足容量下限。導致「憑空出現循環水流」的弔詭現象。</p>
+<p>因此數學家轉為討論「循環流」，於後面章節「Flow」介紹。</p>
+<p>或者，假設容量下限不會形成環。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Minimum s-t Flow</p>
+</div><div class="c">
+<p class="t">Minimum s-t Flow</p>
+<p>「最小流」是流量最小的流。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Minimum Cost Maximum s-t Flow</p>
+</div><div class="c">
+<p class="t">Minimum Cost Maximum s-t Flow</p>
+<p>每一條管線，除了有容量限制，還有成本（費率）。成本可以是正值（付費）、負值（補貼）、零（沒事）。水流流過管線，必須考慮費用，儘量減少開銷。</p>
+<p>一、一段水流流過一條管線的成本：邊的流量乘以成本。</p>
+<p>二、一道水流從源點到匯點的成本：路徑上每一條邊，流量乘以成本，求總和。</p>
+<p>三、一個流的成本：圖上每一條邊，流量乘以成本，求總和。</p>
+<p>「最小成本最大流」。成本最小的最大流，可能有許多個。</p>
+<img src="MinimumCostMaximums-tFlow1.png">
+<p class="e">UVa 10594 ICPC 5095 3562</p>
+<p class="t">流量是零，也能降低總成本：幽靈循環水流</p>
+<p>一般來說，源點必須流出一些水，經過負成本邊，形成負成本的擴充路徑，以降低總成本。入情入理。</p>
+<p>然而有時候，負成本邊形成了環。源點沒有流出任何水，也能降低成本：建立流量極小的一道水流，不斷繞環，以降低總成本。</p>
+<img src="MinimumCostMaximums-tFlow2.png">
+<p>負成本環，導致「憑空出現循環水流」的弔詭現象。</p>
+<p>因此數學家轉為討論「循環流」，於後面章節「Flow」介紹。</p>
+<p>或者，我們假設圖上沒有負成本環。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Minimum Cost Maximum s-t Flow: Cycle Canceling Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>圖上不可有負成本環，避免幽靈循環水流。</p>
+<pre>
+一、先找一個最大流。
+二、在剩餘網路上，不斷找負成本環，建立迴流降低成本。
+　　直到找不到負成本環為止，即是最小成本最大流。
+</pre>
+<img src="CycleCancelingAlgorithm1.png">
+<p>在一個最大流當中，建立一條封閉的迴流，不會影響總流量，也不會違反流量守恆的規則，雖然會浪費容量空間，但是有機會減少總成本。事實上可以證明，剩餘網路沒有負成本環，即是最小成本最大流，證明省略。</p>
+<p class="t">尋找負成本環</p>
+<p>有三種方式！</p>
+<p>負環：運用Label Correcting Algorithm。整個演算法過程中，最多出現C個負成本環，C是最大的管線容量上限；時間複雜度為O(VEC)，是偽多項式時間。</p>
+<p>最小環：照理說是最理想的方式，可以較快達到最小成本最大流。然而，求最小環是NP-complete問題，時間複雜度是指數時間。</p>
+<p>最小平均值環：意外的是個不錯的選擇。整個演算法過程中，最多出現O(V * E^2 * logV)個最小平均值環；時間複雜度為O(V^2 * E^3 * logV)，是多項式時間。證明省略。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Minimum Cost Maximum s-t Flow: Successive Shortest Path Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>圖上不可有負成本環，避免幽靈循環水流。</p>
+<p>仿照Ford-Fulkerson Algorithm，不斷尋找成本最小的擴充路徑。證明省略。</p>
+<img src="SuccessiveShortestPathAlgorithm1.png">
+<p class="t">一開始沒有負成本環，往後就沒有負成本環。</p>
+<p>一、一開始的剩餘網路沒有負成本環。</p>
+<p>二、成本最小的擴充路徑，擴充之後讓剩餘網路增加了逆向邊（成本隨之變號，增加了負成本邊），但是剩餘網路仍舊沒有負成本環。證明省略。</p>
+<p>如此一來，可以確保剩餘網路隨時都能實施最短路徑演算法。</p>
+<p class="t">尋找成本最小的擴充路徑</p>
+<p>溯洄沖減後，剩餘網路多出許多逆向的負成本邊，因此必須採用允許負邊的最短路徑演算法，例如Label Correcting Algorithm、Floyd-Warshall Algorithm。</p>
+<p>或者利用Johnson's Algorithm的調整權重手法，將負邊調整為非負邊。此時成本最小的擴充路徑就會變成零成本邊，擴充之後的剩餘網路，就不會多出逆向的負成本邊，而是多出逆向的零成本邊！如此一來，就可採用不允許負邊的Dijkstra's Algorithm，降低時間複雜度。</p>
+<p>一開始圖上可能有負成本邊，預先實施一次Label Correcting Algorithm調整權重，往後就可持續使用Dijkstra's Algorithm了。每次實施Dijkstra's Algorithm之後，就馬上調整權重。</p>
+<pre>
+一、用Label Correcting Algorithm調整權重，讓每條邊的成本為非負值。
+二、不斷尋找成本最小的擴充路徑，直到找不到為止：
+　甲、用Dijkstra's Algorithm尋找成本最小的擴充路徑。
+　乙、調整權重，讓每條邊的成本為非負值。
+　丙、擴充流量。
+</pre>
+<p>找一條擴充路徑需時O(V^2)，最多找O(F)條，時間複雜度為O(V^2 * F)，是偽多項式時間。</p>
+<p class="t">找出一個最小成本最大流＋流量＋成本</p>
+<textarea t="Label Correcting Algorithm">
+// edge list + adjacency lists
+// 起點、終點、剩餘容量、成本
+struct Edge {int a, b, r, w;} edge[1000];
+int en = 0;
+vector<int> adj[10];
+
+void addedge(int a, int b, int c, int w)
+{
+	// 加入一條邊
+	edge[en] = (Edge){a, b, c, +w};
+	adj[a].push_back(en++);
+	// 同時也加入反向邊
+	edge[en] = (Edge){b, a, 0, -w};
+	adj[b].push_back(en++);
+}
+
+// Label Correcting Algorithm
+int p[10], d[10];	// 最短路徑樹、最短路徑長度
+int index[10];		// 最短路徑樹對應的邊的索引值
+bool inqueue[10];	// 記錄各個點是否在queue當中
+
+void MinCostMaxstFlow(int s, int t)
+{
+	int flow = 0, cost = 0;	// 最小成本最大流的流量與成本
+
+	while (true)
+	{
+		// 實施 Label Correcting Algorithm，
+		// 從剩餘網路上面，找到成本最小的擴充路徑。
+		for (int i=0; i<10; ++i) d[i] = 1e9;
+		d[s] = 0;
+		queue<int> Q;
+		Q.push(s);
+//		inqueue[s] = true;
+
+		while (!Q.empty())
+		{
+			int a = Q.front(); Q.pop();
+			inqueue[a] = false;
+			for (int i=0; i<adj[a].size(); ++i)
+			{
+				Edge& e = edge[adj[a][i]];
+				int b = e.b;
+				if (e.r > 0 && d[a] + e.w < d[b])
+				{
+					d[b] = d[a] + e.w;
+					p[b] = a;
+					index[b] = adj[a][i];
+
+					if (!inqueue[b])
+					{
+						Q.push(b);
+						inqueue[b] = true;
+					}
+				}
+			}
+		}
+		// 已經找不到擴充路徑
+		if (d[t] == 1e9) break;
+
+		// 計算擴充路徑的流量，並且進行擴充。
+		int df = 1e9;
+		for (int a = t; a != s; a = p[a])
+		{
+			int i = index[a];
+			df = min(df, edge[i].r);
+		}
+		for (int a = t; a != s; a = p[a])
+		{
+			int i = index[a];
+			edge[i].r -= df;
+			edge[i^1].r += df;
+		}
+		flow += df;
+		cost += df * d[t];
+	}
+
+	cout << "最大流的流量是" << flow;
+	cout << "最小成本最大流的成本是" << cost;
+}
+</textarea>
+<textarea t="Floyd-Warshall Algorithm">
+typedef int Graph[10][10];	// adjacency matrix
+Graph C, F, W;				// 容量上限、流量、成本
+int p[10][10], d[10][10];	// 記錄最短路徑、最短路徑長度
+
+bool Floyd_Warshall(int s, int t)
+{
+	/* 初始化Floyd-Warshall Algorithm */
+
+	for (int i=0; i<10; ++i)
+		for (int j=0; j<10; ++j)
+			p[i][j] = j;
+
+	for (int i=0; i<10; ++i)
+		d[i][i] = 1e9;
+
+	for (int i=0; i<10; ++i)
+		for (int j=0; j<10; ++j)
+		{
+			// 看看能不能正向流動
+			if (F[i][j] < C[i][j])
+				d[i][j] = min(d[i][j], W[i][j]);
+
+			// 也看看能不能逆向沖減，成本越小越好。
+			if (F[j][i] > 0)
+				d[i][j] = min(d[i][j], W[j][i]);
+
+			// 由於成本為非負值，
+			// 逆向沖減會降低（或不變）擴充路徑的成本，
+			// 正向流動會提高（或不變）擴充路徑的成本，
+			// 一旦可以逆向沖減時，先考慮逆向沖減一定比較好。
+		}
+
+	/* 在剩餘網路上，計算出一條成本最小的擴充路徑。 */
+
+	for (int k=0; k<10; ++k)
+		for (int i=0; i<10; ++i)
+			for (int j=0; j<10; ++j)
+				if (d[i][k] + d[k][j] < d[i][j])
+				{
+					d[i][j] = d[i][k] + d[k][j];
+					p[i][j] = p[i][k];
+				}
+
+	/* 找到擴充路徑，就回傳true。 */
+
+	return d[s][t] != 1e9;
+}
+
+void MinCostMaxstFlow(int s, int t)
+{
+	memset(F, 0, sizeof(F));
+
+	int flow = 0, cost = 0;	// 最小成本最大流的流量與成本
+
+	// 不斷找成本最小的擴充路徑，直到找不到為止。
+	while (Floyd_Warshall(s, t))
+	{
+		int df = 1e9, dc = 0;
+
+		// 計算可以擴充的流量大小
+		for (int i=s, j=p[s][t]; i!=j; j=p[i=j][t])
+			// 因為逆向沖減可以降低（或不變）擴充路徑的成本，
+			// 所以如果逆向有流量，
+			// 那麼剛剛找路徑時一定是逆向沖減。
+			df = min(df, (F[j][i] ? F[j][i] : C[i][j] - F[i][j]));
+
+		// 進行擴充，順便計算成本。
+		for (int i=s, j=p[s][t]; i!=j; j=p[i=j][t])
+			if (F[j][i])
+				// 因為逆向沖減可以降低（或不變）擴充路徑的成本，
+				// 所以如果逆向有流量，
+				// 那麼剛剛找路徑時一定是逆向沖減。
+				F[j][i] -= df, dc -= W[j][i];
+			else
+				F[i][j] += df, dc += W[i][j];
+
+		flow += df;
+		cost += df * dc;
+	}
+
+	cout << "最大流的流量是" << flow;
+	cout << "最小成本最大流的成本是" << cost;
+}
+</textarea>
+<textarea t="Dijkstra's Algorithm">
+typedef int Graph[10][10];	// adjacency matrix
+Graph C, F, W;				// 容量上限、流量、成本
+int p[10], d[10];			// 最短路徑樹、最短路徑長度
+int h[10];					// 調權重函數
+
+bool Dijkstra(int s, int t)
+{
+	/* 初始化Dijkstra's Algorithm */
+
+	memset(p, -1, sizeof(p));
+	for (int i=0; i<10; ++i) d[i] = 1e9;
+
+	/* 在剩餘網路上，計算出一條成本最小的擴充路徑。 */
+
+	d[s] = 0; p[s] = -s-1;
+
+	// 切記：最短路徑演算法要跑過每一個點，
+	// 不能遇到終點（匯點）就馬上結束，
+	// 這樣會無法調整每一條邊的權重。
+	// （至於從源點流不到的點，就不用理它了，反正不影響流量。）
+	// （溯洄沖減後會多出逆向邊。原先流得到的點，沖減之後還是流得到。）
+	for (int k=0; k<10; ++k)
+	{
+		int a = -1, min = 1e9;
+		for (int i=0; i<10; ++i)
+			if (p[i] < 0 && d[i] < min)
+				min = d[a = i];
+
+		if (a == -1) break;
+		p[a] = -p[a]-1;
+
+		for (int i=a, j=0; j<10; ++j)
+		{
+			if (p[j] >= 0) continue;
+
+			// 先嘗試逆向沖減，可以降低（或不變）成本。
+			int d1 = d[i] - (W[j][i] + h[j] - h[i]);
+			if (F[j][i] > 0 && d1 < d[j])
+				d[j] = d1, p[j] = -i-1;
+
+			// 再嘗試正向流動
+			int d2 = d[i] + (W[i][j] + h[i] - h[j]);
+			if (F[i][j] < C[i][j] && d2 < d[j])
+				d[j] = d2, p[j] = -i-1;
+		}
+	}
+
+	/* 調整剩餘網路的每一條邊（包括逆向邊）的權重成為非負值，
+	   下次就又可以使用Dijkstra's Algorithm了。 */
+
+	for (int i=0; i<10; ++i)
+		if (h[i] < 1e9)		// 從源點流不到的點就不理它了
+			h[i] += d[i];	// 累加這次的最短路徑長度即可
+
+	/* 找到擴充路徑，就回傳true。 */
+
+	return p[t] >= 0;
+}
+
+void MinCostMaxstFlow(int s, int t)
+{
+	memset(F, 0, sizeof(F));
+	memset(h, 0, sizeof(h));
+
+	int flow = 0; cost = 0;	// 最小成本最大流的流量與成本
+
+	// 不斷找成本最小的擴充路徑，直到找不到為止。
+	// （假設一開始就沒有負成本邊，不必先調整權重。）
+	while (Dijkstra(s, t))
+	{
+		int df = 1e9, dc = 0;
+
+		// 計算可以擴充的流量大小
+		for (int j=t, i=p[t]; i!=j; i=p[j=i])
+			// 因為逆向沖減可以降低（或不變）擴充路徑的成本，
+			// 所以如果逆向有流量，
+			// 那麼剛剛找路徑時一定是逆向沖減。
+			df = min(df, (F[j][i] ? F[j][i] : C[i][j] - F[i][j]));
+
+		// 更新擴充路徑上每一條管線的流量，
+		// 順便計算擴充路徑的成本。
+		for (int j=t, i=p[t]; i!=j; i=p[j=i])
+			if (F[j][i])
+				// 因為逆向沖減可以降低（或不變）擴充路徑的成本，
+				// 所以如果逆向有流量，
+				// 那麼剛剛找路徑時一定是逆向沖減。
+				F[j][i] -= df, dc -= W[j][i];
+			else
+				F[i][j] += df, dc += W[i][j];
+
+		flow += df;
+		cost += df * dc;
+	}
+
+	cout << "最大流的流量是" << flow;
+	cout << "最小成本最大流的成本是" << cost;
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Minimum Cost Maximum s-t Flow: Primal-Dual Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>圖上不可有負成本環，避免幽靈循環水流。</p>
+<p>仿照Blocking Flow Algorithm，每回合找到全部的成本最小的擴充路徑。</p>
+<p>利用最短路徑長度，調整圖上所有邊的權重成為非負數之後，此時最短路徑上的邊就是零成本邊。在零成本邊所構成的圖當中，找最大流，便可以一次找到全部的成本最小的擴充路徑。</p>
+<p>時間複雜度我也不知道。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Flow</p>
+</div><div class="c">
+<p class="t">註記</p>
+<p>Flow與s-t Flow是兩個不同的概念。然而古代人當初定義問題時，卻將兩者都稱作Flow，從此之後便混淆不清了。</p>
+<p>Cut與s-t Cut亦有類似情況。古代人當初沒有Cut的概念，將s-t Cut直接稱作Cut。不過自從有人發表Cut的演算法之後，眾人便開始注重用詞了。</p>
+<p>以下章節，Flow譯作「流」或「循環流」，s-t Flow譯作「源匯流」。</p>
+<p class="t">Flow</p>
+<p>從現在起，水流不再從源點流到匯點，水流改為不斷循環。</p>
+<img src="Flow1.png">
+<img src="Flow2.png">
+<p>要計算總流量，可將水流分解成數個環，以環流量的總和作為總流量。每次挑一條有水流的邊開始尋找環，最多分解成E個環。</p>
+<p class="t">Supply / Demand</p>
+<p>「供點」有水注入、「需點」有水洩出，彷彿源點與匯點。圖上可以有多個供點與需點，供水量總和必須等於需水量總和，才有機會形成可行流。</p>
+<p>圖上每一點皆有供需水量：supply的供需水量為正值，該點流出多於流入；demand的供需水量為負值，該點流入多於流出；其他的點的供需水量為零，流入等於流出。</p>
+<pre>
+供需水量 = 流出水量 - 流入水量
+</pre>
+<img src="Flow3.png">
+<p>導入supply與demand之後，總流量的定義就不明確了。這裡姑且定義成：supply的總和，再加上不受supply與demand影響的循環流流量。</p>
+<p class="t">最大流最小割定理、可行流定理</p>
+<p>導入水流流量：任意一個割，甲側流往乙側的水量總和，等於乙側流往甲側的水量總和。</p>
+<p>導入容量上限：任意一個割，甲側流往乙側的水量總和，小於等於甲側到乙側的容量總和。最大流流量，小於等於任何一個「管線容量的最小s-t割」！</p>
+<p>導入供需水量：任意一個割，甲側的供需水量總和，必須小於等於甲側到乙側的容量總和，才能形成可行流。</p>
+<p>導入容量下限：任意一個割，甲側到乙側的容量下限總和，必須小於等於甲側到乙側的容量上限總和、也要小於等於乙側到甲側的容量上限總和，才能形成可行流。</p>
+<p class="t">容量下限變成零</p>
+<p>有向邊的容量下限，得移轉至supply與demand。</p>
+<p>預先流水，水量等於容量下限：</p>
+<img src="MinimumCostFlow2.png">
+<p>必須記錄每條邊的預流水量與耗費成本，以利之後還原。</p>
+<p class="t">容量上限變成無限大</p>
+<p>其實沒有必要移除容量上限──最大流演算法皆支援容量上限。不過還是介紹一下吧。</p>
+<p>移除容量下限後，可以進一步移除容量上限。容量上限添加至終點，然後回沖：</p>
+<img src="MinimumCostFlow3.png">
+<p>移除容量上限後，變成二分圖，得以設計更簡潔的資料結構與演算法。</p>
+<img src="MinimumCostFlow4.png">
+<p class="t">負成本變成正成本</p>
+<p>運用溯洄沖減，可以把負成本變成正成本。</p>
+<p>預先流水，水量等於容量上限：</p>
+<img src="MinimumCostFlow5.png">
+<p>必須記錄每條邊的預流水量和耗費成本，以利之後還原。</p>
+<p class="t">無向邊變成有向邊</p>
+<p>無向邊得同時雙向流動。一條無向邊可以改為兩條方向相反的有向邊，可是必須共用容量上下限。</p>
+<img src="MinimumCostFlow6.png">
+<p>成本非負、沒有容量下限：為了降低成本，來回水流可以變成單向水流。上述兩條方向相反的有向邊，大可不必共用容量上限，宛如普通的有向邊。</p>
+<p>成本非負、擁有容量下限：預先在無向邊上來回流動，滿足容量下限。流量是容量下限的一半，可以是0.5。如果流量只能是整數，則可以類比為0/1 Knapsack Problem，屬於NP-complete問題。</p>
+<p>成本為負：同上。流量是實數，就來回流動。流量是整數，NP-Complete。</p>
+<p class="t">歸約</p>
+<pre>
+Feasible s-t Flow -> Feasible Flow -> Maximum s-t Flow
+導入成本，依然如此。
+</pre>
+<p>可行源匯流化作可行循環流。匯點到源點增加一條管線，容量上限無限大（圖上所有邊的容量上限總和），成本無限小。</p>
+<img src="Flow5.png">
+<p>可行循環流化作最大源匯流。新增源點與匯點，源點接至supply，容量上限為供水量；demand接至匯點，容量上限為需水量。然後嘗試求最大源匯流，若源點管線與匯點管線皆滿溢，則有可行循環流，反之則無。拆除新增管線，最大源匯流就變成可行循環流。</p>
+<img src="Flow6.png">
+<p class="t">總結</p>
+<p>流的問題總是可以簡化成：有容量上限、無容量下限、成本非負、有向邊，許多supply和demand。</p>
+<p>無論流動方式是循環流、源匯流，無論最佳化目標是最大流、最小流、可行流，都可以歸約成Minimum Cost Maximum s-t Flow。</p>
+<p class="e">UVa 11647 1259 ICPC 3787 4722 5131</p>
+<p class="t">Feasible Flow</p>
+<p>「可行流」。符合供需水量、容量上下限的流。</p>
+<p>直覺的方式，就是歸約。進階的方式，就是瞭解歸約過程之後，直接以原圖實施計算，不歸約、不改圖。</p>
+<p>承襲Maximum s-t Flow演算法，額外考慮flow、supply、demand等新概念。</p>
+<p>不斷尋找起點為supply、終點為demand的擴充路徑，進行擴充後就根據水量減損supply、增益demand，直到圖上沒有supply與demand為止。</p>
+<p class="t">Maximum Flow</p>
+<p>「最大流」。流量最大的可行流。</p>
+<p>一、首先隨便找出一個可行流，然後不斷找擴充環。</p>
+<p>根據最大流最小割定理，剩餘網路沒有擴充環，即是最大流。</p>
+<p>二、窮舉所有兩點之間容量s-t割，取最小值。【尚待確認】</p>
+<p class="t">Minimum Flow</p>
+<p>「最小流」。流量最小的可行流。</p>
+<p>一、堅持使用擴充路徑而不是擴充走道，即得最小流。【尚待確認】</p>
+<p>二、首先隨便找出一個可行流，然後不斷消去擴充環。【尚待確認】</p>
+<p>我找不到任何有關最小流的正確性證明！</p>
+<p class="t">Minimum Cost Flow</p>
+<p>「最小成本流」。成本最小的可行流。</p>
+<img src="MinimumCostFlow1.png">
+<p>承襲Minimum Cost Maximum s-t Flow演算法。</p>
+<p>Cycle Canceling Algorithm：先找到任意一個可行流，再以負成本環進行擴充。</p>
+<p>Successive Shortest Path Algorithm與Primal-Dual Algorithm：不斷尋找起點為excess、終點為deflict、成本最小的擴充路徑，直到所有excess與deflict成為零。如果excess與deflict沒有同時成為零，則沒有可行流。</p>
+<p class="t">Excess / Deficit</p>
+<p>「餘水點」水量超出平衡，「缺水點」水量低於平衡。當圖上有excess與deficit，表示流量不平衡，不是可行流。</p>
+<pre>
+餘缺水量 = 當前流入水量 - 當前流出水量 + 供需水量 
+</pre>
+<img src="Flow4.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Multi-commodity Flow</p>
+</div><div class="c">
+<p class="t">k Vertex-disjoint Paths<br>k Edge-disjoint Paths</p>
+<p>給定k組起點與終點，找齊k條路徑，點（邊）皆相異；除了起點與終點。可能找不到。</p>
+<img src="Multi-commodityFlow1.png">
+<p>Flow問題，源點與匯點不必對應，P問題。</p>
+<p>此問題，起點與終點必須對應，NP-complete問題。</p>
+<p>差別在於交叉路徑。Flow問題，運用溯洄沖減，交叉路徑總是變成不交叉路徑。此問題則不然。</p>
+<img src="Multi-commodityFlow2.png">
+<p class="e">UVa 11301</p>
+<p class="t">k Vertex-disjoint s-t Paths<br>k Edge-disjoint s-t Paths</p>
+<p>給定一組起點與終點，找出k條路徑，點（邊）皆相異；除了起點與終點。起點都是同一點、終點都是同一點，無所謂對不對應。可能找不到。</p>
+<p>解法是Maximum s-t Flow。</p>
+<p class="e">UVa 10806 ICPC 4259 4271</p>
+<p>進階版本，這k條路徑的權重總和必須最小。</p>
+<p>解法是Minimum Cost Maximum s-t Flow。</p>
+<p class="e">UVa 11823 1236 ICPC 3570</p>
+<p class="t">Multi-commodity Flow</p>
+<p>指定多組供點、需點，必須對應。</p>
+<p>流量是實數，P問題。流量是整數，NP-Complete問題，大家改為研究速度飛快的近似演算法。</p>
+<p><a href="http://arxiv.org/pdf/1304.2338v1.pdf">http://arxiv.org/pdf/1304.2338v1.pdf</a></p>
+<p><a href="http://www.cs.berkeley.edu/~vazirani/pubs/partitioning.pdf">http://www.cs.berkeley.edu/~vazirani/pubs/partitioning.pdf</a></p>
+<p>源匯流必須避免幽靈循環水流，限制圖上沒有容量下限環、沒有負成本環。為求方便，大家習慣討論循環流。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Flow2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:06:17 GMT -->
+</html>

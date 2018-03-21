@@ -1,0 +1,2953 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/AlgorithmDesign.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:57:18 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Algorithm Design</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Incremental Method</p>
+<p class="w">不積跬步，無以至千里。不積小流，無以成江海。《荀子》</p>
+</div><div class="c">
+<p class="t">Incremental Method</p>
+<p>「遞增法」是符合電腦運作特性的方法。電腦執行程式，一次只做一個動作，完成了一件事才做下一件事。當一個問題太大太多時，化整為零、一個一個解決吧！</p>
+<p>合抱之木，生於毫末；九層之臺，起於累土；千里之行，始於足下。謹以此句與大家共勉。</p>
+<p class="t">範例：加總數字</p>
+<p>無論電腦再怎麼強，還是得一個一個累加數字。</p>
+<img src="Incremental1.png">
+<textarea>
+void summation()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	int sum = 0;
+	for (int i=0; i<5; i++)
+		sum += array[i];
+
+	cout << "總和是" << sum;
+}
+</textarea>
+<textarea>
+int summation(int array[], int n)
+{
+	int sum = 0;
+	for (int i=0; i<n; i++)
+		sum += array[i];
+	return sum;
+}
+</textarea>
+<p class="t">範例：複製字串</p>
+<p>無論電腦再怎麼強，還是得逐字複製。</p>
+<img src="Incremental2.png">
+<textarea>
+void copy()
+{
+	char s[15] = "incremental";
+	char t[15];
+
+	int i;
+	for (i=0; s[i] != '\0'; i++)
+		t[i] = s[i];
+	t[i] = '\0';
+
+	cout << "原本字串" << s;
+	cout << "複製之後的字串" << t;
+}
+</textarea>
+<textarea>
+void copy(char* s, char* t)
+{
+	int i;
+	for (i=0; s[i]; i++)
+		t[i] = s[i];
+	t[i] = '\0';
+}
+</textarea>
+<p class="t">範例：選擇排序法（Selection Sort）</p>
+<p>找到第一小的數字，放在第一個位置；再找到第二小的數字，放在第二個位置。一次找一個數字，如此下去就會把所有數字按照順序排好了。</p>
+<img src="Incremental3.png">
+<textarea>
+void selection_sort()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	for (int i=0; i<5; i++)
+	{
+		// 從尚未排序的數字當中，找到第i小的數字。
+		int min_index = i;
+		for (int j=i+1; j<5; j++)
+			if (array[j] < array[min_index])
+				min_index = j;
+
+		// 把第i小的數字，放在第i個位置。
+		swap(array[i], array[min_index]);
+	}
+
+	// 印出排序結果。
+	for (int i=0; i<5; i++)
+		cout << array[i];
+}
+</textarea>
+<textarea>
+void selection_sort(int array[], int n)
+{
+	for (int i=0; i<n; i++)
+	{
+		// 從尚未排序的數字當中，找到第i小的數字。
+		int min_index = i;
+		for (int j=i+1; j<n; j++)
+			if (array[j] < array[min_index])
+				min_index = j;
+
+		// 把第i小的數字，放在第i個位置。
+		swap(array[i], array[min_index]);
+	}
+}
+</textarea>
+<p class="t">範例：印出直角三角形</p>
+<p>多字成行，多行成直角三角形。由細微的東西開始，一件一件組起來。</p>
+<img src="Incremental4.png">
+<textarea>
+// 多字成行
+void print_line(int n)	// n 是一行的長度
+{
+	for (int i=1; i<=n; i++) cout << '@';
+	cout << '\n';
+}
+
+// 多行成直角三角形
+void print_triangle(int n)	// n 是行數
+{
+	for (int i=n; i>=1; i--) print_line(i);
+}
+</textarea>
+<p class="e">UVa 488 10038 10107 10370</p>
+<p class="t">範例：人潮最多的時段（Interval Partitioning Problem）</p>
+<p>一群訪客參加宴會，我們詢問到每一位訪客的進場時刻與出場時刻，請問宴會現場擠進最多人的時段。</p>
+<p>換個角度想，想像會場門口裝著一支監視器。有訪客進入，會場就多一人；有訪客離開，會場就少一人。如此就很容易統計會場人數。遞增的標的是時刻，而不是訪客。</p>
+<p>【註：這個技巧在中文網路上暱稱為「離散化」。】</p>
+<img src="Incremental5.png">
+<textarea>
+struct Guest {int arrival, leave;} g[10];
+
+bool cmp(const int& i, const int& j)
+{
+	return abs(i) < abs(j);
+}
+
+void maximum_guest()
+{
+	vector<int> time;
+	for (int i=0; i<10; i++)
+	{
+		time.push_back(+g[i].arrival);
+		time.push_back(-g[i].leave);
+	}
+
+	sort(time.begin(), time.end(), cmp);
+
+	int n = 0, maximum = 0;
+	for (int i=0; i<time.size(); i++)
+	{
+		if (time[i] >= 0)
+			n++;
+		else
+			n--;
+
+		maximum = max(maximum, n);
+	}
+	cout << "人潮最多的時段有" << maximum << "人";
+}
+</textarea>
+<p>此處僅找出人數。找出人潮最多的時段，就留給各位自行嘗試吧。</p>
+<p class="e">UVa 688 972 10613 10585 10963</p>
+<p class="e">UVa 308 837</p>
+<p class="t">範例：儲存座標</p>
+<p>遞增的標的，主為點，次為座標軸。</p>
+<img src="Incremental6.png">
+<textarea>
+struct Point {float x, y;} p[5] =
+{
+	{0, 1}, {1, 2}, {3, 0}, {2, 2}, {3, 1}
+};
+</textarea>
+<p>遞增的標的，主為座標軸，次為點。</p>
+<img src="Incremental7.png">
+<textarea>
+float x[5] = {0, 1, 3, 2, 3};
+float y[5] = {1, 2, 0, 2, 1};
+</textarea>
+<p class="t">範例：印出轉換成小寫的字串</p>
+<img src="Incremental8.png">
+<p>有需要改變的，只有大寫字母──如果是大寫字母，就轉換成小寫字母並且印出；如果不是大寫字母，就直接印出。</p>
+<textarea>
+void print_lowercase()
+{
+	char s[15] = "Hello World!";
+
+	for (int i=0; s[i]; i++)
+		if (s[i] >= 'A' && s[i] <= 'Z')
+			cout << s[i] - 'A' + 'a';
+		else
+			cout << s[i];
+}
+</textarea>
+<p>也可以一步一步進行：（一）複製一份字串（二）字串統一換成小寫（三）印出字串。</p>
+<textarea>
+void print_lowercase()
+{
+	char s[15] = "Hello World!";
+	char t[15];
+
+	// 第一波：複製字串
+	for (int i=0; s[i]; i++)
+		t[i] = s[i];
+
+	// 第二波：換成小寫
+	for (int i=0; s[i]; i++)
+		if (t[i] >= 'A' && t[i] <= 'Z')
+			t[i] = t[i] - 'A' + 'a';
+
+	// 第三波：印出字串
+	cout << t;
+}
+</textarea>
+<textarea>
+void print_lowercase()
+{
+	char s[15] = "Hello World!";
+	char t[15];
+
+	// 每一波的程式碼可以自行包裝成為函式，
+	// 亦可套用內建函式庫。
+	my_copy(s, t);		// 複製字串
+	my_lowercase(t);	// 換成小寫
+	cout << t;			// 印出字串
+}
+</textarea>
+<p>第一種解法稱作one-pass，資料只會讀取一遍。讀取資料的同時，也一口氣處理掉所有事情。</p>
+<p>第二種解法稱作multi-pass，資料會重複讀取許多遍。所有事情劃分成數個階段，逐步處理，每個階段只專心處理一件事情。</p>
+<p>one-pass的優點是：程式碼簡短、執行時間也短。缺點是：程式碼不易編修。</p>
+<p>multi-pass的優點是：程式碼一目了然，容易編修、測試、除錯；程式碼可以包裝成為函式，也有機會套用內建函式庫。缺點是：需要額外的暫存記憶體。</p>
+<p>這兩種方式各有利弊。程式員必須自行取捨。</p>
+<p class="t">範例：對調數字</p>
+<p>利用一個變數，暫存其中一個數字，以便對調。</p>
+<img src="Incremental9.png">
+<textarea>
+void swap_int()
+{
+	int a = 0, b = 1;
+
+	// 交換a與b
+	int temp = a;
+	a = b;
+	b = temp;
+
+	cout << a << ' ' << b;
+}
+</textarea>
+<textarea>
+void swap_int(int& a, int& b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+</textarea>
+<p class="t">範例：對調陣列</p>
+<p>節省記憶體的方法：採用遞增法，逐一對調數字。</p>
+<img src="Incremental10.png">
+<textarea>
+void swap_int_array()
+{
+	int a[5] = {3, 6, 9, -8, 1};
+	int b[5] = {9, 8, 7, 6, 5};
+
+	// one-pass
+	for (int i=0; i<5; i++)
+	{
+		int temp = a[i];
+		a[i] = b[i];
+		b[i] = temp;
+	}
+}
+</textarea>
+<p>浪費記憶體的方法：建立一條陣列，暫存其中一條陣列。</p>
+<img src="Incremental11.png">
+<textarea>
+void swap_int_array()
+{
+	int a[5] = {3, 6, 9, -8, 1};
+	int b[5] = {9, 8, 7, 6, 5};
+
+	// multi-pass
+	int temp[5];
+	for (int i=0; i<5; i++) temp[i] = a[i];
+	for (int i=0; i<5; i++) a[i] = b[i];
+	for (int i=0; i<5; i++) b[i] = temp[i];
+}
+</textarea>
+<textarea>
+void swap_int_array()
+{
+	int a[5] = {3, 6, 9, -8, 1};
+	int b[5] = {9, 8, 7, 6, 5};
+
+	// multi-pass
+	int temp[5];
+	my_copy(a, temp);
+	my_copy(b, a);
+	my_copy(temp, b);
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Memoization</p>
+<p class="w">惟事事，乃其有備，有備無患。《書經》</p>
+</div><div class="c">
+<p class="t">Memoization</p>
+<p>「記憶法」是符合電腦運作特性的方法。電腦擁有大量儲存空間。只要將計算過的數值，儲存於記憶體，往後就能直接使用記憶體儲存的資料，不必再浪費時間重複計算一遍。</p>
+<pre>
+Memoization（Tabulation）
+演算法執行過程之中，即時更新數值，儲存於記憶體。
+例如堆疊的大小。
+
+Preprocessing（Precalculation）
+演算法開始之時，預先計算數值，儲存於記憶體。
+例如圓周率、字串的長度、質數的表格。
+</pre>
+<p>如果要儲存大量的、同性質的數值，我們可以將這些數值整理成一個表格（通常是陣列），以方便查閱──稱作「查詢表lookup table」。例如質數表便是一個「查詢表」。</p>
+<p class="t">範例：陣列大小</p>
+<p>使用一個變數，記錄資料數量，以便迅速地增加資料。</p>
+<img src="Memoization1.png">
+<textarea>
+void array_size()
+{
+	int array[100];
+	int n = 0;		// 使用一個變數，記錄資料數量。
+	array[n++] = 3;	// 以便迅速地增加資料。
+	array[n++] = 6;
+	array[n++] = 9;
+	cout << n;
+}
+</textarea>
+<p>C++程式語言的標準函式庫的stack，事實上也額外隱含了一個變數，記錄資料數量。當堆疊塞入資料、彈出資料的時候，也就是呼叫push函式、呼叫pop函式的時候，就默默更新資料數量。</p>
+<textarea>
+void stack_size()
+{
+	stack<int> s;		// C++ STL <stack>
+	s.push(1);			// 默默地n++
+	s.pop();			// 默默地--n
+	cout << s.size();	// 把n印出來
+}
+</textarea>
+<p class="t">範例：加總數字</p>
+<p>利用一個變數，累計數字的總和。</p>
+<img src="Memoization2.png">
+<textarea>
+void summation()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	int sum = 0;
+	for (int i=0; i<5; i++)
+		sum += array[i];
+
+	cout << "總和是" << sum;
+}
+</textarea>
+<textarea>
+int summation(int array[], int n)
+{
+	int sum = 0;
+	for (int i=0; i<n; i++)
+		sum += array[i];
+	return sum;
+}
+</textarea>
+<p class="t">範例：統計字母數量</p>
+<p>建立26格的陣列，讓字母a到z依序對應陣列的每一格，作為lookup table。一邊讀取字串，一邊累計字母出現次數。</p>
+<img src="Memoization3.png">
+<textarea>
+void count_letter_frequency()
+{
+	char s[15] = "Hello World!";
+	int c[26] = {};
+
+	// 字母一律換成小寫
+	for (int i=0; s[i]; i++)
+		if (s[i] >= 'A' && s[i] <= 'Z')
+			s[i] = s[i] - 'A' + 'a';
+
+	// 統計字母數量
+	for (int i=0; s[i]; i++)
+		if (s[i] >= 'a' && s[i] <= 'z')
+			c[s[i] - 'a']++;
+
+	// 印出統計結果
+	for (int i=0; i<26; i++)
+		cout << char('a'+i) << ':' << c[i] << '\n';
+}
+</textarea>
+<p class="e">UVa 10260 10082 10222 12626</p>
+<p class="t">範例：統計數字數量</p>
+<p>當數字範圍太大，無法建立那麼大的陣列，可以改用hash table、binary search tree等等資料結構作為lookup table。</p>
+<img src="Memoization4.png">
+<textarea>
+void histogram()
+{
+	int array[10] =
+	{
+		1, 3, 4, 10, 11,
+		1000000000, 23, 99, 123, 514
+	};
+//	int c[1000000000] = {};
+	map<int, int> c;	// binary search tree
+
+	// 統計數字數量
+	for (int i=0; i<10; i++)
+		c[array[i]]++;
+
+	// 印出統計結果
+	for (auto i: c)
+		cout << i.first << ':' << i.second << '\n';
+}
+</textarea>
+<p class="e">UVa 11572 141</p>
+<p class="t">範例：計數排序法（Counting Sort）</p>
+<p>建立足夠長的陣列，讓數字對應陣列的每一格，作為lookup table。統計每個數字的出現次數。由小到大讀取lookup table，順便排序數字。</p>
+<img src="Memoization5.png">
+<textarea>
+void counting_sort()
+{
+	int array[5] = {3, 6, 9, 9, 1};
+	int c[9 + 1] = {};
+
+	// 統計數字數量
+	for (int i=0; i<5; i++)
+		c[array[i]]++;
+
+	// 由小到大讀取lookup table，順便排序數字。
+	for (int j=0, i=0; j<10 && i<5; j++)
+		while (c[j] > 0)
+		{
+			c[j]--;
+			array[i++] = j;
+		}
+}
+</textarea>
+<p class="t">範例：求1到n的全部整數的立方和，n的範圍由1到10。</p>
+<img src="Memoization6.png">
+<p>以直接的方式，累加每個立方數。（儘管這個問題有公式解，但是為了方便舉例，所以這裡不採用公式解。）</p>
+<textarea>
+int sum_of_cubes(int n)
+{
+	int sum = 0;
+	for (int i=1; i<=n; i++)
+		sum += i * i * i;
+	return sum;
+}
+
+void print_sum_of_cubes()
+{
+	int n;
+	while (cin >> n && n > 0)
+		cout << sum_of_cubes(n);
+}
+</textarea>
+<p>使用Memoization。建立11格的陣列，每一格依序對應0到10的立方數，作為lookup table。一旦計算完畢，就儲存至表格；往後就直接讀取表格，不需重複計算。</p>
+<textarea>
+int sum_of_cubes(int n)
+{
+	// 其值為 0 表示沒有存入答案
+	static int answer[10 + 1] = {};
+
+	// 如果已經計算過，就直接讀取表格的答案。
+	if (answer[n] != 0) return answer[n];
+
+	// 如果不曾計算過，就計算一遍，儲存答案。
+	int sum = 0;
+	for (int i=1; i<=n; i++)
+		sum += i * i * i;
+	return answer[n] = sum;
+}
+
+void print_sum_of_cubes()
+{
+	int n;
+	while (cin >> n && n > 0)
+		cout << sum_of_cubes(n);
+}
+</textarea>
+<p>使用Preprocessing。</p>
+<textarea>
+void print_sum_of_cubes()
+{
+	// 預先建立立方數表格
+	int cube[10 + 1];
+	for (int i=1; i<=10; i++)
+		cube[i] = i * i * i;
+
+	int n;
+	while (cin >> n && n > 0)
+	{
+		// 直接讀取表格的立方數
+		int sum = 0;
+		for (int i=1; i<=n; i++)
+			sum += cube[i];
+		cout << sum;
+	}
+}
+</textarea>
+<p>Preprocessing當然也可以直接算答案啦。</p>
+<textarea>
+int sum_of_cubes(int n)
+{
+	int sum = 0;
+	for (int i=1; i<=n; i++)
+		sum += i * i * i;
+	return sum;
+}
+
+void print_sum_of_cubes()
+{
+	// 預先計算所有答案
+	int answer[10 + 1];
+	for (int i=1; i<=10; i++)
+		answer[i] = sum_of_cubes(i);
+
+	// 直接讀取表格的答案
+	int n;
+	while (cin >> n && n > 0)
+		cout << answer[n];
+}
+</textarea>
+<p>最後是Preprocessing的極致。</p>
+<textarea>
+void print_sum_of_cubes()
+{
+	// 預先計算答案，寫死在程式碼裡面。
+	int answer[10 + 1] =
+	{
+		0, 1, 9, 36, 100, 225,
+		441, 784, 1296, 2025, 3025
+	};
+
+	// 直接讀取表格的答案
+	int n;
+	while (cin >> n && n > 0)
+		cout << answer[n];
+}
+</textarea>
+<p class="e">UVa 10738 10894</p>
+<p class="t">範例：印出方框</p>
+<p>建立二維陣列：陣列的格子，依序對應視窗的文字。</p>
+<img src="Memoization7.png">
+<p>不直接印出方框，而是間接填至陣列。不必數空白鍵，只需兩條水平線和兩條垂直線。</p>
+<textarea>
+void print_square_border()
+{
+	// 建立記憶體
+	char array[5][5];
+
+	// 預先填入空白鍵
+	for (int i=0; i<5; i++)
+		for (int j=0; j<5; j++)
+			array[i][j] = ' ';
+
+	// 填入方框：兩條水平線、兩條垂直線
+	// 即便相互重疊也無所謂
+	for (int i=0; i<5; i++) array[0][i] = '@';
+	for (int i=0; i<5; i++) array[4][i] = '@';
+	for (int i=0; i<5; i++) array[i][0] = '@';
+	for (int i=0; i<5; i++) array[i][4] = '@';
+
+	// 印出方框
+	for (int i=0; i<5; i++)
+	{
+		for (int j=0; j<5; j++)
+			cout << array[i][j];
+		cout << '\n';
+	}
+}
+</textarea>
+<p class="e">UVa 105 706</p>
+<p class="t">範例：拆開迴圈（Loop Unrolling）</p>
+<img src="Memoization8.png">
+<p>迴圈語法的功能是：一段指令，重覆實施數次，但是每次都稍微變動一點點。</p>
+<p>事實上，我們可以反璞歸真，拆開迴圈，還原成數行指令。如此一來，就節省了迴圈每次累加變數的時間，也節省了迴圈每次判斷結束條件的時間。</p>
+<p>拆開迴圈是一種Preprocessing，預先計算迴圈變量、預先計算迴圈結束條件。</p>
+<p>拆開迴圈之後，雖然提高了程式的執行速度，但是降低了程式可讀性。程式員必須自行取捨。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Enumeration</p>
+<p class="w">愚者千慮，必有一得。《史記》</p>
+</div><div class="c">
+<p class="t">Enumeration</p>
+<p>「枚舉法」利用了電腦無與倫比的計算速度。找到不確定的變數，枚舉所有可能性，逐一判斷正確性。</p>
+<pre>
+Enumerate
+一筆一筆列出所有資料。
+對應到程式語言的for。
+
+Search
+瀏覽所有資料，找出需要的部份。
+對應到程式語言的for加if。
+</pre>
+<p>收集充分資訊，就能解決問題。</p>
+<img src="Enumeration1.png">
+<p class="t">範例：枚舉一百個平方數</p>
+<p>採用直接法：依序枚舉數字1到100；枚舉過程當中，將數字平方得到平方數。</p>
+<img src="Enumeration2.png">
+<textarea>
+void generate_squares()
+{
+	for (int i=1; i<=100; i++)
+		cout << i*i << "是平方數";
+}
+</textarea>
+<p>採用試誤法：依序枚舉數字1到∞；枚舉過程當中，判斷數字是不是平方數。</p>
+<img src="Enumeration3.png">
+<textarea>
+void generate_squares()
+{
+	for (int i=1; i<=100*100; i++)
+	{
+		int sqrt_i = sqrt(i);
+		if (sqrt_i * sqrt_i == i)
+			cout << i << "是平方數";
+	}
+}
+</textarea>
+<p class="t">範例：尋找陣列裡的最小值</p>
+<p>由小到大枚舉陣列索引值，逐一比較陣列元素。</p>
+<img src="Enumeration4.png">
+<textarea>
+void find_minimum()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	int min = 2147483647;
+	for (int i=0; i<5; i++)	// 枚舉索引值
+		if (array[i] < min)	// 比較元素
+			min = array[i];	// 隨時記錄最小值
+
+	cout << "最小的數字是" << min;
+}
+</textarea>
+<textarea>
+int find_minimum(int array[], int n)
+{
+	int min = 2147483647;
+	for (int i=0; i<n; i++)	// 枚舉索引值
+		if (array[i] < min)	// 比較元素
+			min = array[i];	// 隨時記錄最小值
+	return min;
+}
+</textarea>
+<p class="t">範例：尋找陣列裡的特定數字</p>
+<p>找到所有特定數字：瀏覽一遍所有數字。</p>
+<img src="Enumeration5.png">
+<textarea>
+void find_all_number()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	for (int i=0; i<5; i++)	// 枚舉
+		if (array[i] == 6)	// 搜尋
+			cout << i << ':' << array[i] << '\n';
+}
+</textarea>
+<p>找到其中一個特定數字：一旦找到，立即停止瀏覽，以節省時間。</p>
+<img src="Enumeration6.png">
+<textarea>
+void find_number()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	for (int i=0; i<5; i++)	// 枚舉
+		if (array[i] == 6)	// 搜尋
+		{
+			cout << i << ':' << array[i];
+			break;
+		}
+}
+</textarea>
+<textarea>
+int find_number(int array[i], int n, int num)
+{
+	for (int i=0; i<n; i++)
+		if (array[i] == num)
+			return i;
+	return -1;
+}
+</textarea>
+<p class="t">範例：尋找二維陣列裡的特定數字</p>
+<img src="Enumeration7.png">
+<p>多個元素成為一個橫條、多個橫條成為一個陣列。內層先枚舉元素，外層再枚舉橫條，就能枚舉所有元素。</p>
+<p>方才是由內而外、由小到大進行思考，其實也可以由外而內、由大到小進行思考：外層先枚舉每一個橫條，內層再枚舉一個橫條的每一個元素，就能枚舉所有元素。</p>
+<textarea>
+bool find(int n)
+{
+	int array[3][5] =
+	{
+		{3, 6, 9, -8, 1},
+		{2, 4, 6, 8, 10},
+		{11, 7, 5, 3, 2}
+	};
+
+	// 外層枚舉每一個橫條
+	for (int i=0; i<3; i++)
+		// 內層枚舉一個橫條的每一個元素
+		for (int j=0; j<5; j++)
+			// 就能枚舉所有元素
+			if (array[i][j] == n)
+				return true;
+	return false;
+}
+</textarea>
+<p>此處再介紹一種特別的思考方式：第一層枚舉每一個橫條，第二層枚舉每一個直條，就能枚舉所有直條與橫條的交錯之處。</p>
+<p>雖然前後兩個思考方式完全不同，但是前後兩支程式碼卻完全相同。</p>
+<textarea>
+bool find(int n)
+{
+	int array[3][5] =
+	{
+		{3, 6, 9, -8, 1},
+		{2, 4, 6, 8, 0},
+		{7, 5, 3, 2, 1}
+	};
+
+	// 第一層枚舉每一個橫條
+	for (int i=0; i<3; i++)
+		// 第二層枚舉每一個直條
+		for (int j=0; j<5; j++)
+			// 就能枚舉所有橫條與直條交錯之處
+			if (array[i][j] == n)
+				return true;
+	return false;
+}
+</textarea>
+<p class="t">範例：平面上距離最近的兩個點（Closest Pair）</p>
+<img src="Enumeration8.png">
+<p>第一層枚舉第一個點，第二層枚舉第二個點。為了避免重複枚舉相同的一對點，第二層只枚舉索引值更高的點。</p>
+<textarea>
+void closest_pair()
+{
+	float point[10][2] =
+	{
+		{3, 3}, {1, 5}, {4, 6}, {2, 8}, {9, 9},
+		{2, 1}, {7, 2}, {6, 5}, {9, 4}, {5, 9}
+	};
+
+	// 距離最近的兩個點的距離
+	float d = 1e9;
+
+	// 枚舉第一點
+	for (int i=0; i<10; i++)
+		// 枚舉第二點
+		for (int j=i+1; j<10; j++)
+		{
+			// 計算第一點到第二點的距離
+			float dx = point[i][0] - point[j][0];
+			float dy = point[i][1] - point[j][1];
+			float dij = sqrt(dx * dx + dy * dy);
+
+			// 記錄最短的距離
+			if (dij < d) d = dij;
+		}
+	cout << "距離是" << d;
+}
+</textarea>
+<p>可以把計算距離的程式碼，抽離出來成為一個函式。好處是程式碼變得清爽許多，增加程式碼可讀性。壞處是大量呼叫函式，導致執行速度變慢。</p>
+<textarea>
+struct Point {float x, y;};
+
+// 計算兩點之間的距離
+float dist(Point& a, Point& b)
+{
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	return sqrt(dx * dx + dy * dy);
+}
+
+void closest_pair()
+{
+	Point point[10] =
+	{
+		{3, 3}, {1, 5}, {4, 6}, {2, 8}, {9, 9},
+		{2, 1}, {7, 2}, {6, 5}, {9, 4}, {5, 9}
+	};
+
+	float d = 1e9; 
+	for (int i=0; i<10; i++) 
+		for (int j=i+1; j<10; j++)
+			// 記錄最短的距離
+			d = min(d, dist(point[i], point[j]));
+
+	cout << "距離是" << d;
+}
+</textarea>
+<p>魚與熊掌不可兼得，這兩種程式碼各有優缺點，沒有絕對的好壞。程式員必須自行取捨。</p>
+<p class="t">範例：字串匹配（String Matching）</p>
+<p>從長字串之中，找到短字串的出現位置。</p>
+<img src="Enumeration9.png">
+<p>第一層先枚舉所有可以匹配的位置，第二層再枚舉所有需要匹配的字元。</p>
+<textarea>
+void string_matching()
+{
+	char text[15] = "It's a pencil.";
+	char pattern[6] = "a pen";
+
+	// 枚舉所有可以匹配的位置
+	for (int i=0; i<14; i++)
+	{
+		// 枚舉所有需要匹配的字元
+		bool match = true;
+		for (int j=0; j<5; j++)
+			if (text[i+j] != pattern[j])
+				match = false;
+
+		if (match)
+			cout << "短字串出現在第" << i << "個字元";
+	}
+}
+</textarea>
+<p>因為短字串不會超出長字串末段，所以第一層枚舉範圍可以再略微縮小。</p>
+<p>因為只要一個相異字元，就足以表明匹配位置錯誤，所以第二層的枚舉過程可以提早結束。</p>
+<textarea>
+void string_matching()
+{
+	char text[14] = "It's a pencil.";
+	char pattern[6] = "a pen";
+
+	// 仔細估量枚舉範圍
+	for (int i=0; i<14-6+1; i++)
+	{
+		bool match = true;
+		for (int j=0; j<5; j++)
+			if (text[i+j] != pattern[j])
+			{
+				match = false;
+				break;
+			}
+
+		if (match)
+			cout << "短字串出現在第" << i << "個字元";
+	}
+}
+</textarea>
+<p class="t">範例：統計字母數量</p>
+<img src="Enumeration10.png">
+<p>第一層先枚舉26種英文字母，第二層再枚舉字串的所有字元，計算一種字母的數量。</p>
+<textarea>
+void count_letter()
+{
+	char s[15] = "Hello World!";
+
+	// 字母統一換成小寫
+	for (int i=0; s[i]; i++)
+		if (s[i] >= 'A' && s[i] <= 'Z')
+			s[i] = s[i] - 'A' + 'a';
+
+	// 枚舉26種英文字母
+	for (int i=0; i<26; i++)
+	{
+		// 枚舉字串的所有字元
+		int c = 0;
+		for (int j=0; s[j]; j++)
+			if (s[j] == 'a' + i)
+				c++;
+
+		// 印出一種字母的數量
+		cout << (char)('a' + i) << ':' << c;
+	}
+}
+</textarea>
+<p>先前曾經介紹過統計字母數量的範例。先前範例當中，雖然耗費記憶體空間，但是執行速度快──簡單來說就是空間大、時間小。此處範例當中，則是空間小，時間大，恰恰相反。這兩種方式各有優缺點，程式員必須自行取捨。</p>
+<p class="t">範例：反轉字串</p>
+<img src="Enumeration11.png">
+<p>兩個枚舉，一個從頭到尾，一個從尾到頭，步調相同，逐步對調字元。雖然是兩個枚舉，卻只有一個迴圈。</p>
+<textarea>
+void reverse_string()
+{
+	char s[15] = "Hello World!";
+
+	// 兩個枚舉，一個從頭到尾，一個從尾到頭。
+	for (int i=0, j=12; i<j; i++, j--)
+		swap(s[i], s[j]);
+
+	cout << "反轉之後的字串是" << s;
+}
+</textarea>
+<textarea>
+void reverse(char* s)
+{
+	int n = strlen(s);
+	for (int i=0; i<n/2; i++)
+		swap(s[i], s[n-1-i]);
+}
+</textarea>
+<p class="e">UVa 1595</p>
+<p class="t">範例：尋找總和為10的區間</p>
+<p>假設陣列元素只有正數。</p>
+<img src="Enumeration12.png">
+<p>兩個枚舉，枚舉區間左端以及枚舉區間右端，都是從頭到尾，保持一左一右，視情況輪流枚舉。雖然是兩個枚舉，卻只有一個迴圈。</p>
+<textarea>
+void find_interval()
+{
+	int array[5] = {3, 6, 1, 7, 2};
+
+	int sum = 0;
+	for (int i=0, j=-1; j<5; )	// 枚舉區間[i, j]
+	{
+		if (sum > 10)
+		{
+			// 總和太大，區間左端往右縮短。
+			sum -= array[i];
+			i++;
+		}
+		else if (sum < 10)
+		{
+			// 總和太小，區間右端往右伸長。
+			j++;
+			sum += array[j];
+		}
+		else if (sum == 10)
+		{
+			// 總和剛好，
+			// 區間左端往右縮短，
+			// 亦得區間右端往右伸長。
+			// 任選一種皆可。
+//			sum -= array[i];
+//			i++;
+			j++;
+			sum += array[j];
+		}
+
+		if (sum == 10)
+			cout << '[' << i << ',' << j << ']';
+	}
+}
+</textarea>
+<textarea>
+void find_interval(int array[], int n, int num)
+{
+	int sum = 0;
+	for (int i=0, j=0; j<=n; )	// 枚舉區間[i, j)
+	{
+		if (sum > num)
+			sum -= array[i++];
+		else
+			sum += array[j++];
+
+		if (sum == num)
+			cout << '[' << i << ',' << j-1 << ']';
+	}
+}
+</textarea>
+<p>讀者可以想想看：陣列元素若有零、有負數，是否要調整枚舉方式？</p>
+<p class="e">UVa 972 10464 11536 11572</p>
+<p class="t">範例：尋找陣列之中的最小值，陣列已經由小到大排序</p>
+<p>找到其中一個最小值：經常整理房間，尋找東西就快；預先排序資料，搜尋速度就快。</p>
+<img src="Enumeration13.png">
+<textarea>
+void find_minimum()
+{
+	int array[5] = {3, 3, 6, 6, 9};
+	cout << "最小的數字是" << array[0];
+}
+</textarea>
+<p>找到所有最小值：讀者請自行嘗試。</p>
+<p class="t">範例：尋找陣列之中的特定數字，陣列已經由小到大排序</p>
+<p>找到其中一個特定數字：首先找到陣列中央的數字，依其數字大小，繼續搜尋左半段或者右半段。</p>
+<img src="Enumeration14.png">
+<textarea>
+void find_number()
+{
+	int array[15] =
+	{
+		2, 3, 5, 7, 11,
+		13, 17, 19, 23, 29,
+		31, 37, 41, 43, 47
+	};
+
+	int left = 0, right = 15-1;
+	while (left <= right)
+	{
+		int mid = (left + right) / 2;
+		if (array[mid] < 29)
+			left = mid + 1;		// 繼續搜尋剩下的右半段
+		else if (array[mid] > 29)
+			right = mid - 1;	// 繼續搜尋剩下的左半段
+		else if (array[mid] == 29)
+		{
+			// 找到了其中一個數字
+			cout << mid << ':' << array[mid];
+			return;
+		}
+	}
+
+	cout << "找不到29";
+}
+</textarea>
+<p>找到所有特定數字：讀者請自行嘗試。</p>
+<p class="t">範例：平面上距離最近的兩個點（Closest Pair）</p>
+<img src="Enumeration15.png">
+<p>找到距離最近的其中一對點：預先依照X座標排序所有點，搜尋得以略過大量情況。</p>
+<textarea>
+struct Point {float x, y;};
+
+// 計算兩點之間的距離
+float dist(Point& a, Point& b)
+{
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	return sqrt(dx * dx + dy * dy);
+}
+
+bool cmp(const Point& i, const Point& j)
+{
+	return i.x < j.x;
+}
+
+void closest_pair()
+{
+	Point point[10] =
+	{
+		{3, 3}, {1, 5}, {4, 6}, {2, 8}, {9, 9},
+		{2, 1}, {7, 2}, {6, 5}, {9, 4}, {5, 9}
+	};
+
+	// 依照X座標排序所有點
+	sort(point, point+10, cmp);
+
+	float d = 1e9; 
+	for (int i=0; i<N; i++)
+		for (int j=i+1; j<N; j++)
+		{
+			// 兩個點的X座標已經相距太遠，直接略過，
+			// 繼續枚舉下一個左端點。
+			if (p[j].x - p[i].x > d) break;
+			d = min(d, dist(point[i], point[j]));
+		}
+
+	cout << "距離是" << d;
+}
+</textarea>
+<p>找到距離最近的每一對點：讀者請自行嘗試。</p>
+<p class="t">範例：英文單字從單數變複數</p>
+<p>枚舉各種情況，寫成大量判斷式。</p>
+<img src="Enumeration16.png">
+<textarea>
+void plural(string s)
+{
+	int n = s.length();
+	if (s.back() == 'y')
+		cout << s.substr(0, n-1) << "ies";
+	else if (s.back() == 's' || s.back() == 'x')
+		cout << s << "es";
+	else if (s.substr(n-2) == "sh" || s.substr(n-2) == "ch")
+		cout << s << "es";
+	else if (s.substr(n-3) == "man")
+		cout << s.substr(0, n-3) << "men";
+	else
+		cout << s << 's';
+}
+</textarea>
+<p class="t">範例：小畫家倒墨水（Flood Fill Algorithm）</p>
+<p>電腦圖片可以想成是一張方格紙，每個方格都填著一種顏色。現在要實現小畫家倒墨水的功能：以某一格為起點，只要相鄰方格顏色一樣，就染成同一個顏色。</p>
+<img src="Enumeration17.png">
+<p>運用大量指令，枚舉上下左右四個方向；運用遞迴，枚舉相鄰同色方格。</p>
+<p>必須避免已經枚舉過的方格又重複枚舉，否則程式在有生之年都不會結束。</p>
+<textarea>
+int image[10][10];	// 圖片的大小為 10x10
+
+void flood(int x, int y, int new_color, int old_color)
+{
+	if (x>=0 && x<10 && y>=0 && y<10)	// 不能超出邊界
+		if (image[x][y] == old_color)	// 同色方格才枚舉
+		{
+			// 染色
+			image[x][y] = new_color;
+			// 枚舉上下左右四個方向
+			flood(x+1, y, new_color, old_color);
+			flood(x-1, y, new_color, old_color);
+			flood(x, y+1, new_color, old_color);
+			flood(x, y-1, new_color, old_color);
+		}
+}
+
+void ink()
+{
+	// 在座標(7,6)的方格，淋上1號顏色。
+	flood(7, 6, 1, image[7][6]);
+}
+</textarea>
+<p>大量指令，亦得寫成一個迴圈。</p>
+<textarea>
+void flood(int x, int y, int new_color, int old_color)
+{
+	if (x>=0 && x<10 && y>=0 && y<10)
+		if (image[x][y] == old_color)
+		{
+			image[x][y] = new_color;
+
+			// 寫成一個迴圈
+			for (int i=0; i<4; i++)
+			{
+				static int dx[4] = {1, -1, 0, 0};
+				static int dy[4] = {0, 0, 1, -1};
+				flood(x + dx[i], y + dy[i], new_color, old_color);
+			}
+		}
+}
+</textarea>
+<p>多層判斷式，亦得拆解成一層一層的判斷式。</p>
+<textarea>
+void flood(int x, int y, int new_color, int old_color)
+{
+	if (!(x>=0 && x<10 && y>=0 && y<10)) return;
+	if (image[x][y] != old_color) return;
+
+	image[x][y] = new_color;
+
+	for (int i=0; i<4; i++)
+	{
+		static int dx[4] = {1, -1, 0, 0};
+		static int dy[4] = {0, 0, 1, -1};
+		flood(x + dx[i], y + dy[i], new_color, old_color);
+	}
+}
+</textarea>
+<p class="e">UVa 260 280 352 469 572 601 657 776 782 784 785 871 10267 10336 10946</p>
+<p class="e">ICPC 4792 5130</p>
+<p class="t">Straightforward Method / Trial and Error</p>
+<p>「直接法」，直接算出答案。例如按照流程進行得到答案、套用公式計算答案、直接印出答案。</p>
+<p class="e">UVa 488 10055 10370 10878 10929</p>
+<p>「嘗試錯誤法」、「試誤法」，針對答案進行Enumerate與Search。有些困難的問題，難以直接推導答案，既然推導不出來，就慢慢測試答案、慢慢驗算吧──確立答案的範圍，窮舉所有可能的答案，再從中搜尋正確答案。</p>
+<p class="e">UVa 10167 10125 296 846 714</p>
+<p>直接法和試誤法剛好相反。直接法是由題目本身下手，推導答案；試誤法則是從答案下手，讓答案迎合題目需求。</p>
+<img src="Enumeration18.png">
+<p class="t">範例：暴力攻擊（Brute Force Attack）</p>
+<p>破解密碼最簡單的方法叫做「暴力攻擊」。不知道密碼規律的情況下，無法直接推導正確密碼，只好以試誤法一一檢驗所有可能的密碼，從中找出正確密碼。</p>
+<img src="Enumeration19.png">
+<p class="t">範例：單向函數（One-way Function）</p>
+<p>「單向函數」是一種特別的函數，給定輸入很容易算出輸出，但是給定輸出卻很難算出輸入。</p>
+<img src="Enumeration20.png">
+<p>舉例來說，令一個函數的輸入是兩個質數，輸出是兩個質數的乘積。給定兩個質數可以輕易的在多項式時間內算出乘積，然而給定兩質數的乘積卻需要指數時間才能完成質因數分解。</p>
+<p>如果給定一個單向函數的輸入，求其輸出，就適合用直接法，套用函數快速算得答案；如果給定一個單向函數的輸出，求其輸入，就適合用試誤法，嘗試各種輸入並套用函數快速驗證答案。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Iterative Method</p>
+<p class="w">道生一，一生二，二生三，三生萬物。《老子》</p>
+</div><div class="c">
+<p class="t">Iterative Method</p>
+<p>繁中「疊代法」、簡中「递推法」。不斷利用目前求得的數值，再求得新數值。</p>
+<p class="e">UVa 997</p>
+<p class="t">範例：字串變整數</p>
+<img src="Iterative1.png">
+<p>直覺的方式是遞增法。個、十、百、千、萬、……，每個位數分別乘上10的次方，通通加起來。此處按照高位數到低位數的順序進行處理，以符合字串的儲存順序。</p>
+<img src="Iterative2.png">
+<textarea>
+// 計算字串長度
+int string_length(char* s)
+{
+	int n = 0;
+	while (s[n]) n++;
+	return n;
+}
+
+// 計算10的exp次方
+int pow10(int exp)
+{
+	int n = 1;
+	for (int i=0; i<exp; i++)
+		n *= 10;
+	return n;
+}
+
+void string_to_integer()
+{
+	char s[10] = "26962869";
+
+	// 預先計算字串長度。
+	int length = string_length(s);
+
+	// 依序處理高位數到低位數。
+	int n = 0;
+	for (int i=0; i<length; i++)
+		n += (s[i] - '0') * pow10(length - 1 - i);
+
+	cout << n;
+}
+</textarea>
+<p>更好的方式是遞推法！由高位數到低位數、也就是由左到右讀取字串，每讀取一個字元，就將數值乘以十、加上當前字元的對應數字。</p>
+<img src="Iterative3.png">
+<textarea>
+void string_to_integer()
+{
+	char s[10] = "26962869";
+
+	int n = 0;
+	for (int i=0; s[i]; i++)
+		n = n * 10 + s[i] - '0';
+
+	cout << n;
+}
+</textarea>
+<p>同一個問題，有著不同的解法。有著程式碼很長、執行速度很慢的方法，也有著程式碼很短，執行速度很快的方法。一支程式的好壞，除了取決於正確性和可讀性之外，同時也取決於計算方法。</p>
+<p class="e">UVa 759</p>
+<p class="t">範例：秦九韶演算法（Horner's Rule）</p>
+<p>多項式函數，代入數值。一乘一加，不斷更迭，求得函數值。完全不需要次方運算。</p>
+<img src="Iterative4.png">
+<p class="t">範例：除法</p>
+<p>不斷乘以十、除以除數，就是一種遞推。</p>
+<img src="Iterative5.png">
+<p class="t">範例：牛頓法（Newton's Method）</p>
+<p>找到連續函數等於零的位置。一開始隨便設定一個位置，不斷利用斜率求出下一個位置，就是一種遞推。</p>
+<pre>
+Xn+1 = Xn - f(Xn) / f'(Xn)
+</pre>
+<img src="Iterative6.png">
+<p class="t">範例：3n+1猜想（Collatz Conjecture）</p>
+<p>猜想的內容是這樣的：有一個整數，如果是偶數，就除以2；如果是奇數，就乘以3再加1。一個整數不斷這樣操作下去，最後一定會變成1。這個操作的過程就是一種遞推。</p>
+<img src="Iterative7.png">
+<p>至今尚未有人能夠證明其正確性。有趣的是，目前也尚未檢查出任何反例。</p>
+<p class="e">UVa 100 371 694</p>
+<p class="t">範例：生命遊戲（Cellular Automaton）</p>
+<p>一個二維的方格平面，每個格子都有一個細胞，可能是活的，可能是死的。細胞的生命狀況，隨時間變動，變動規則如下：</p>
+<pre>
+復活：一個死的細胞，若是它的八個鄰居，有三個細胞是活的，則在下一刻復活。
+存活：一個活的細胞，若是它的八個鄰居，有兩個或三個細胞是活的，則在下一刻存活。
+死於孤單：一個活的細胞，若是它的八個鄰居，只有零個或一個細胞是活的，則在下一刻死亡。
+死於擁擠：一個活的細胞，若是它的八個鄰居，有四個以上的細胞是活的，則在下一刻死亡。
+</pre>
+<img src="Iterative8.png">
+<p>實作時，我們可以弄兩張地圖，第一張地圖儲存現在這個時刻的狀態，第二張地圖儲存下一個時刻的狀態。兩張地圖交替使用，以節省記憶體空間。</p>
+<p>細胞的變動規則，包裝成一個函式，讓程式碼易讀。</p>
+<p>至今尚未有人能夠預測細胞最終會滅亡或延續。</p>
+<textarea>
+void go(int x, int y, bool map1[100][100], bool map2[100][100])
+{
+	int n = 八個鄰居中，還活著的細胞數目;
+
+	if (!map1[x][y])
+		if (n == 3)					// 復活
+			map2[x][y] = true;
+		else						// 仍舊死亡
+			map2[x][y] = map1[x][y];
+	else
+		if (n == 2 || n == 3)		// 存活
+			map2[x][y] = true;
+		else if (n == 0 || n == 1)	// 死於孤單
+			map2[x][y] = false;
+		else if (n >= 4)			// 死於擁擠
+			map2[x][y] = false;
+}
+
+void cellular_automata()
+{
+	bool map[2][100][100];
+
+	map[0][50][50] = true;	// 自行設定一些活的細胞
+	map[0][50][51] = true;
+	map[0][51][50] = true;
+
+	for (int t=0; t<100; ++t)
+		for (int x=0; x<100; ++x)
+			for (int y=0; y<100; ++y)
+				go(x, y, map[t%2], map[(t+1)%2]);
+}
+</textarea>
+<p class="e">UVa 447 457 10443 10507</p>
+<p class="t">範例：蘭頓的螞蟻（Langton's Ant）</p>
+<p>跟生命遊戲相似，不過這個遊戲更神奇。</p>
+<pre>
+一、格子有黑與白兩種顏色。
+二、螞蟻走入白格則右轉，走入黑格則左轉。
+三、螞蟻離開格子時，格子顏色顛倒。
+</pre>
+<p>驚人的是，乍看完全沒有規律的路線，卻在10647步之後開始循環。原因至今不明。</p>
+<a href="../../commons.wikimedia.org/wiki/File_LangtonsAntAnimated.html"><img src="Iterative9.gif" width="236" height="236"></a>
+<p class="e">UVa 11664 ICPC 7478 7479</p>
+<p class="t">範例：數學歸納法（Mathematical Induction）</p>
+<p>數學歸納法的第二步驟，就是證明可不可以遞推！第二步驟的證明過程中一定會用到遞推！</p>
+<pre>
+1. 先證明 n = 1 成立。（有時候不見得要從1開始。）
+2. 假設 n = k 成立，證明 n = k+1 也會成立。
+
+當 1. 2. 得證，就表示 n = 1 ... ∞ 全部都成立。
+</pre>
+<p class="t">範例：插入排序法（Insertion Sort）</p>
+<p>從表面上來看是遞增法與枚舉法：第一層是遞增法，逐一把每個數字插入到左方已排序的陣列。第二層是枚舉法，搜尋插入位置；再將大量數字往右挪，以騰出空間插入數字。</p>
+<p>但是從另一個角度來看，利用目前排序好的陣列，再求出更長的陣列，其實就是遞推法。</p>
+<img src="Iterative10.png">
+<p class="t">範例：以試除法建立質數表</p>
+<p>從表面上來看是兩層的枚舉法：第一層先枚舉正整數，一一試驗是否為質數；第二層再枚舉所有已知質數，一一試除。</p>
+<p>但是從另一個角度來看，利用目前求得的質數，再求出更多質數，其實就是遞推法。</p>
+<p class="t">範例：十分逼近法</p>
+<p>數線分割成十等份區間，從中找出正確區間，把對應的小數位數添到答案末端，然後不斷十等分下去。</p>
+<p>利用目前求得的小數，再求出更多的小數，其實就是遞推法。</p>
+<img src="Iterative11.png">
+<p class="t">範例：書塔（Book Stacking Problem）</p>
+<p>將書本一本一本疊起來，成為一座斜塔，越斜越好。</p>
+<img src="Iterative12.png">
+<p>對於任何一本書來說，其上方所有書本的整體重心，必須落在這本書上，這本書才能平穩地支撐住上方所有書本。</p>
+<p>將書本插入到書塔底部，讓書塔的重心落在書本邊緣，就可以讓書塔最斜。插入書本到書塔底部之後，就更新書塔的重心位置，以便稍後插入下一本書本。</p>
+<p>不斷插入書本到書塔底部、更新書塔重心，運用先前的書塔求得新的書塔──這段過程就是一種遞推。</p>
+<p class="t">範例：交卷</p>
+<p>考試結束了，學生要交卷，老師要收卷。大家將手上的考卷，不斷傳遞給其他人，不斷匯集給老師。一個人不能同時交卷和收卷，一個人不能同時交卷給多人（搗亂），一個人不能同時向多人收卷（手忙腳亂）。假設每個人交卷速度一致，請讓整個過程越短越好。</p>
+<img src="Iterative13.png">
+<p>每個人隨時都在收卷交卷，一定最省時。老師亦然，一直處於收卷狀態，一定最省時。</p>
+<p>遞增的標的，選定為老師。老師每次收卷，直接複製貼上前面幾次收卷的部屬方式，是最好的──這段過程就是一種遞推。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Recursive Method</p>
+<p class="w">易有太極，是生兩儀。兩儀生四象，四象生八卦。《易傳》</p>
+</div><div class="c">
+<p class="t">Recursive Method</p>
+<p>繁中「遞迴法」、簡中「递归法」。重複運用相同手法，縮減問題範圍，直到釐清細節。</p>
+<p class="e">UVa 10994 10212 10471 10922</p>
+<p class="t">範例：碎形（Fractal）</p>
+<p>利用相同手法繪圖，繪圖範圍越來越精細。</p>
+<p>圖中的碎形稱作Sierpinski triangle。凡是尖端朝上的正三角形，就在當中放置一個尖端朝下的正三角形；放置之後，圖形就變得更細膩，範圍就變得更小了。</p>
+<img src="Recursive1.png">
+<p>圖中的碎形稱作Kosh snowflake。一條邊三等分，去除中段，朝外補上兩段，形成尖角。</p>
+<img src="Recursive2.png">
+<p>圖中的碎形稱作Pythagorean tree。不斷繪製正方形、直角三角形，看起來像是一棵茂密的樹。</p>
+<canvas id="Fractal" width="500" height="300"></canvas>
+<script>
+var loop = 1;
+document.getElementById('Fractal').onclick = function(){DrawPythagoreanTree(280, 298, 350, 298, loop = loop % 12 + 1);};
+
+DrawPythagoreanTree(280, 298, 350, 298, 1);
+function DrawPythagoreanTree(x1, y1, x2, y2, loop) {
+	var c = document.getElementById('Fractal');
+	var ctx = c.getContext('2d');
+
+	ctx.clearRect(0, 0, c.width, c.height);
+	ctx.font = "32pt Arial";
+	ctx.textBaseline = "top";
+	ctx.strokeStyle = "rgb(0,127,0)";
+	ctx.strokeText("Click Me !", 0, 0);
+
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.strokeStyle = "rgb(0,127,0)";
+	ctx.stroke();
+
+	DrawSquare(ctx, x1, y1, x2, y2, loop);
+}
+
+function DrawSquare(ctx, x1, y1, x2, y2, loop) {
+	if (loop <= 0) return;
+
+	var dx = x2 - x1;
+	var dy = y2 - y1;
+
+	var x3 = x2 + dy; 
+	var y3 = y2 - dx;
+
+	var x4 = x1 + dy;
+	var y4 = y1 - dx;
+
+	ctx.beginPath();
+	ctx.moveTo(x2, y2);
+	ctx.lineTo(x3, y3);
+	ctx.lineTo(x4, y4);
+	ctx.lineTo(x1, y1);
+	ctx.stroke();
+
+	DrawTriangle(ctx, x4, y4, x3, y3, loop);
+}
+
+function DrawTriangle(ctx, x1, y1, x2, y2, loop) {
+	if (loop <= 0) return;
+
+	var a = 4, b = 3;
+	var c = a * a + b * b;
+
+	var dx = x2 - x1;
+	var dy = y2 - y1;
+
+	var x3 = x1 + (dx * a + dy * b) * a / c;
+	var y3 = y1 - (dx * b - dy * a) * a / c;
+
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x3, y3);
+	ctx.lineTo(x2, y2);
+	ctx.stroke();
+
+	DrawSquare(ctx, x1, y1, x3, y3, loop - 1);
+	DrawSquare(ctx, x3, y3, x2, y2, loop - 1);
+}
+</script>
+<p class="e">UVa 177 10609</p>
+<p class="t">範例：質因數分解（Integer Factorization）</p>
+<p>不斷抽取出質因數，使數值不斷變小，直到成為質因數。</p>
+<img src="Recursive3.png">
+<p class="t">範例：L形磁磚</p>
+<p>有一個邊長為2的3次方的正方形，右上角缺了一角邊長為1的正方形。現在要以L形磁磚貼滿這個缺了一角的正方形，該如何貼呢？</p>
+<img src="Recursive4.png">
+<p>巧妙地將一塊L形磁磚放在中央的位置，就順利的把正方形切成四個比較小的、亦缺了一角的正方形。接下來只要遞迴處理四個小正方形，就解決問題了。</p>
+<p>這個問題也可以改成缺口在任意一處，各位可以想想看怎麼解。</p>
+<p class="e">UVa 10230</p>
+<p class="t">範例：輾轉相除法（Euclid's Algorithm）</p>
+<p>兩個數字輪流相除、求餘數，最後就得到最大公因數（greatest common divisor, gcd）。相信大家小時候都有學過。</p>
+<img src="Recursive5.png">
+<p>我們可以把最大公因數想像成磚塊、把兩個數字都看成是最大公因數的倍數。</p>
+<p>兩數相減所得的差值，一定是最大公因數的倍數。更進一步來說，兩數相除所得的餘數，一定是最大公因數的倍數。輾轉相除法的過程當中，兩數自始至終都是最大公因數的倍數。</p>
+<p>運用這個性質，我們把兩數相除、求餘數，使得原始數字不斷縮小，直到得到最大公因數。真是非常巧妙的遞歸法！</p>
+<textarea>
+// 運用程式語言的迴圈語法。
+int gcd(int a, int b)
+{
+	// 令 a 比 b 大，比較容易思考。
+	while (b != 0)
+	{
+		int t = a % b;
+		a = b;
+		b = t;
+	}
+	return a;
+}
+</textarea>
+<textarea>
+// 運用程式語言的遞迴語法。
+int gcd(int a, int b)
+{
+	// 令 a 比 b 大，比較容易思考。
+	if (b == 0)
+		return a;
+	else
+		return gcd(b, a % b);
+}
+</textarea>
+<p>注意到，遞推法、遞歸法，不等於程式語言中的迴圈、遞迴。遞推法、遞歸法是分析問題的方法，用來得到計算過程、用來得到演算法。至於編寫程式時，我們可以自由地採用迴圈或者遞迴。</p>
+<p class="t">範例：過橋問題（Bridge and Torch Problem）</p>
+<p>月黑風高的夜晚，有一座不長不短的獨木橋，只能同時容兩人併行。</p>
+<p>此時正好有四個寂寞難耐、悲苦淒涼，事實上是窮極無聊的四個人路經此地。他們手邊僅帶著一支手電筒，想要通過這危險的獨木橋。那橋下可是暗潮洶湧，一失足成千古恨，奔流到海不復回。</p>
+<p>幸好四人閒閒沒事就常走這座橋，對路況簡直熟悉到不行，閉著眼睛走都可以，於是乎四人知道自己過橋分別需時1分鐘、2分鐘、5分鐘、10分鐘。但是不管他們的腳程不可思議的快、莫名其妙的慢，四人都是貪生怕死之徒，手上沒有握著手電筒的話，誰都不敢過橋；四人也都是視財如命之徒，就是誰也不想浪費錢，去附近的便利商店買支手電筒，寧可摔到水裡隨波逐流環遊世界去。</p>
+<p>最後他們只好協議說，一次兩人同時持手電筒過橋，再請其中一人送回手電筒，沒事做的人就在橋邊哭爹喊娘等手電筒回來，如此一來四人最終都能夠順利過橋。</p>
+<p>兩人同時過橋時必須配合走得慢的人的速度，請問全員過橋最快要多久時間？</p>
+<p>有一些規矩你是知道的，例如不能把手電筒用丟的丟過河，不能四個人疊羅漢一起過橋，不能把橋拆了做木筏之類的。</p>
+<img src="Recursive6.png">
+<p>題目終於說完了，現在來談解題手法：</p>
+<p>腳程快的人送手電筒回來那是最好的；相對地，腳程慢的人就應該讓他留在彼岸不要回來。不管先走後走，人人都還是要過橋，所以先試試看把腳程最慢的人送到對岸吧！</p>
+<p>當人數眾多，至少四人時，令A與B是最快與次快，C與D是次慢與最慢。讓最慢的兩個人過橋主要有兩種方式，第一種是AB去A回、CD去B回，第二種是AD去A回、AC去A回，至於其它方式所花的時間恰好跟這兩種方式一樣。採用比較快的那一種方式，讓最慢的兩個人過橋之後，問題範圍就縮小了。</p>
+<textarea>
+// 各個人的腳程由慢到快排序
+int a[8] = {1, 2, 5, 10, 15, 16, 30, 31};
+
+void bridge_and_torch()
+{
+	int n, t = 0;
+	for (n=8-1; n>=3; n-=2)
+	{
+		int t1 = a[0] + a[1]*2 + a[n];
+		int t2 = a[0]*2 + a[n-1] + a[n];
+		t += min(t1, t2);
+	}
+
+	if (n == 2) t += a[0] + a[1] + a[2];
+	else if (n == 1) t += a[1];
+	else t += a[0];
+
+	cout << "所有人過橋的總時間為" << t;
+}
+</textarea>
+<p class="e">UVa 10037</p>
+<p class="t">遞推法、遞歸法，一體兩面，同時存在。</p>
+<p>遞推法與遞歸法恰好顛倒：遞推法是針對已知，逐步累積，直至周全；遞歸法是針對未知，反覆拆解，直至精確。</p>
+<p>遞推法是由小到大，遞歸法是由大到小。</p>
+<img src="Recursive7.png">
+<p class="t">範例：秦九韶演算法（Horner's Rule）</p>
+<p>遞推法是不斷配x，擴增已知；遞歸法是不斷提x，減少未知。</p>
+<pre>
+a * x^2 + b * x^1 + c
+
+Iterative Method:
+{a} * x^2 + b * x^1 + c
+{a, *x} * x^1 + b * x^1 + c
+{a, *x, +b} * x^1 + c
+{a, *x, +b, *x} + c
+{a, *x, +b, *x, +c}
+
+Recursive Method:
+{a * x^2 + b * x^1 + c}
+{a * x^2 + b * x^1}, +c
+{a * x^1 + b}, *x, +c
+{a * x^1}, +b, *x, +c
+{a}, *x, +b, *x, +c
+</pre>
+<p>雖然遞推法與遞歸法的推理方向是相反的，但是遞推法與遞歸法的計算方向是一樣的，兩者都是由小範圍算到大範圍。</p>
+<pre>
+Iterative Method:
+a, *x, +b, *x, +c
+
+Recursive Method:
+a, *x, +b, *x, +c
+</pre>
+<p class="e">UVa 498 10268</p>
+<p class="t">範例：爬樓梯</p>
+<p>眼前有五階樓梯，一次只能踏一階或踏兩階，那麼爬到五階總共有哪幾種踏法？例如(1,1,1,1,1)是其中一種踏法，(1,2,2)是另一種踏法。</p>
+<img src="Recursive8.png">
+<p>這個問題可以用遞推法，也可以用遞歸法。</p>
+<p>首先採用遞推法。試著只爬少少的幾階樓梯，觀察一下踏法。</p>
+<p>爬到一階的踏法：很明顯的只有一種，(1)。</p>
+<p>爬到兩階的踏法：有兩種，(1,1)和(2)。</p>
+<p>爬到三階的踏法：因為一次只能踏一階或踏兩階，所以只可能從第一階或從第二階踏上第三階。只要綜合(爬到一階的踏法,2)與(爬到兩階的踏法,1)，就是爬到三階的踏法。</p>
+<p>爬到四階的踏法：同理，綜合(爬到兩階的踏法,2)與(爬到三階的踏法,1)即得。</p>
+<p>遞推下去，就可求出爬到五階的踏法。</p>
+<pre>
+Forward Iterative Method:
+爬到一階　(1)
+爬到兩階　(1,1) (2) 
+爬到三階　即是(爬到一階,2)與(爬到二階,1)
+　　　　　(1,2)
+　　　　　(1,1,1) (2,1)
+爬到四階　即是(爬到二階,2)與(爬到三階,1)
+　　　　　(1,1,2) (2,2)
+　　　　　(1,2,1) (1,1,1,1) (2,1,1)
+爬到五階　即是(爬到三階,2)與(爬到四階,1)
+　　　　　(1,2,2) (1,1,1,2) (2,1,2)
+　　　　　(1,1,2,1) (2,2,1) (1,2,1,1) (1,1,1,1,1) (2,1,1,1)
+</pre>
+<p>前面是採用上樓梯的順序進行遞推，由第一階遞推到第五階。也可以採用下樓梯的順序進行遞推，由第五階遞推到第一階。</p>
+<pre>
+Backward Iterative Method:
+降到四階　(1)
+降到三階　(1,1) (2)
+降到二階　即是(2,降到四階)與(1,降到三階)
+　　　　　(2,1)
+　　　　　(1,1,1) (1,2)
+降到一階　即是(2,降到三階)與(1,降到二階)
+　　　　　(2,1,1) (2,2)
+　　　　　(1,2,1) (1,1,1,1) (1,1,2)
+降到平面　即是(2,降到二階)與(1,降到一階)
+　　　　　(2,2,1) (2,1,1,1) (2,1,2)
+　　　　　(1,2,1,1) (1,2,2) (1,1,2,1) (1,1,1,1,1) (1,1,1,2)
+</pre>
+<p>有一些問題，比如爬樓梯問題，雙向都可以遞推。數值由小到大的方向稱為「正向」或「順向」（forward），數值由大到小的方向稱為「反向」或「逆向」（backward）。</p>
+<p>接著採用遞歸法。由踏出的最後一步開始分析。</p>
+<p>要「爬到五階」，最後一步一定是踏上第五階。要踏上第五階，只可能從第四階和第三階踏過來，也就是綜合(爬到四階的踏法,1)與(爬到三階的踏法,2)。</p>
+<p>但是我們尚不知如何「爬到四階」和「爬到三階」，所以只好再分別研究「爬到四階」與「爬到三階」。不斷追究到「爬到一階」與「爬到兩階」的時候，就能確認答案了！</p>
+<pre>
+Forward(?) Recursive Method:
+爬到五階　即是(爬到四階,1)與(爬到三階,2)
+爬到四階　即是(爬到三階,1)與(爬到二階,2)
+爬到三階　即是(爬到二階,1)與(爬到一階,2)
+爬到兩階　(2) (1,1)
+爬到一階　(1)
+</pre>
+<p>當然也可以雙向遞歸。就不贅述了。</p>
+<p class="t">範例：格雷碼（Gray Code）</p>
+<pre>
+Iterative Method:
+GrayCode(n-1)的每個數字，最高位數加一個0。
+GrayCode(n-1)的每個數字，高位數與低位數整個顛倒，然後在最高位數加一個1。
+兩者銜接起來就是GrayCode(n)。
+
+Recursive Method:
+GrayCode(n)的每個數字，分成兩類。
+第一類最高位數是0，把最高位數拿掉後，即形成GrayCode(n-1)。
+第二類最高位數是1，把最高位數拿掉後，即形成GrayCode(n-1)。
+</pre>
+<p>也可以用最低位數為主，進行遞推、遞歸，生成順序不同的Gray Code。Gray Code具有循環的特性，有多種遞推、遞歸方式，不分正向與逆向。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Divide and Conquer</p>
+<p class="w">凡治眾如治寡，分數是也。鬥眾如鬥寡，形名是也。《孫子》</p>
+</div><div class="c">
+<p class="t">Divide and Conquer</p>
+<p>「分治法」，分割問題、各個擊破。將一個大問題，分割成許多小問題。如果小問題還是很難，就繼續分割成更小的問題，直到問題變得容易解決。</p>
+<p>分割出來的小問題，稱作「子問題subproblem」。解決一個問題，等價於解決所有子問題。</p>
+<p>用樹狀圖表達原問題與子問題的關係，最好不過！</p>
+<img src="DivideAndConquer1.png">
+<p>分治法著重分割問題的方式──要怎麼分割問題，使得子問題簡單又好算？各位讀者可以藉由本文的範例，體會分割問題的方式。</p>
+<p class="t">範例：分解動作</p>
+<p>想要學習「從中場帶球上籃」，我們可以將此動作分割為「跑步運球」、「跑步收球」、「單手將球放入籃框」等動作，分別學習。每一項動作都熟練之後，組合起來便是帶球上籃了。</p>
+<p>如果覺得「跑步運球」還是太難，可以更細分成「原地運球」、「走動運球」、「運球時護球」等動作，克服了之後便能夠順利解決「跑步運球」的問題了。</p>
+<img src="DivideAndConquer2.png">
+<p class="t">範例：方格法求面積</p>
+<p>左邊為原問題，右邊放大並細分的圖是其中一個子問題。</p>
+<img src="DivideAndConquer3.png">
+<p class="t">範例：分類數數</p>
+<p>左邊最大的框框是原問題，將原問題的數字進行分類後再統計，分類後的每一個框框都是一個子問題。</p>
+<img src="DivideAndConquer4.png">
+<p class="e">UVa 11038</p>
+<p class="t">Recursive Method</p>
+<p>在分治法當中，亦得遞迴地分割問題，其實就是遞歸法。</p>
+<img src="DivideAndConquer5.png">
+<p>程式碼細分為三個階段：Divide、Conquer、Combine。Divide階段是把原問題分割成小問題，Conquer階段是解決小問題，Combine階段是運用小問題的解答，整理出原問題的解答。</p>
+<img src="DivideAndConquer6.png">
+<textarea>
+divide_and_conquer(原問題)
+{
+	/* Divide */
+	先將原問題分割成許多小問題;
+
+	/* Conquer */
+	遞迴呼叫函式，求得子問題的解;
+	解答1 = divide_and_conquer(子問題1);
+	解答2 = divide_and_conquer(子問題2);
+	......
+
+	/* Combine */
+	用小問題的解答，算出原問題的解答;
+	原問題解答 = 解答1 + 解答2 + ......;
+
+	return 原問題解答;
+}
+</textarea>
+<p class="e">UVa 620 10101 10144 10998</p>
+<p class="t">範例：合併排序法（Merge Sort）</p>
+<img src="DivideAndConquer7.png">
+<p>Divide階段：資料分割成兩堆。</p>
+<p>Conquer階段：兩堆資料各自從事Merge Sort。</p>
+<p>Combine階段：兩堆已排序過的資料，合併成一堆。</p>
+<p class="t">範例：快速排序法（Quicksort）</p>
+<img src="DivideAndConquer8.png">
+<p>Divide階段：挑選一個數字當作基準，把資料分割成左右兩堆，使得左堆數字小於基準，右堆數字大於基準，基準數字置於左右兩堆中間。</p>
+<p>Conquer階段：左右兩堆資料各自從事Quicksort。</p>
+<p>Combine階段：不做任何事。</p>
+<p class="t">範例：不重複組合（Combination）</p>
+<p>從N個人抓M個人出來組團，有哪些組合方式呢？</p>
+<img src="DivideAndConquer9.png">
+<p>N個人當中的其中一個人，叫做甲君好了，我們將原問題分割成兩種情形：甲君在團中、甲君不在團中。</p>
+<pre>
+甲君在團中，演變成剩下N-1個人要再抓M-1個人出來組團。
+甲君不在團中，演變成剩下N-1個人仍要抓M個人出來組團。
+</pre>
+<p>綜合這兩個子問題的組合方式，就得到答案。</p>
+<p class="t">範例：河內塔（Tower of Hanoi）</p>
+<p>三根柱子、一疊盤子，盤子大小皆不同（盤子中間還得打個洞，這樣盤子才能穿在柱子上）。所有盤子都疊在第一根柱子，大的在下面，小的在上面。現在要將整疊盤子移到第三根柱子，並且保持原來的大小順序。每次只能搬動一個盤子到別根柱子，而且大的盤子一定要保持在小的盤子下面。</p>
+<img src="DivideAndConquer10.png">
+<p>想要移動最大的盤子到第三根柱子，必須先挪開上方整疊盤子到第二根柱子。移動上方整疊盤子，正好與原問題相同、而少了一個盤子，可以視作子問題。</p>
+<img src="DivideAndConquer11.png">
+<p>嘗試以此子問題解決原問題，解題過程因而簡化成三個步驟：一、上方整疊盤子移到第二根柱子；二、最大的盤子移到第三根柱子；三、方才的整疊盤子移到第三根柱子。</p>
+<img src="DivideAndConquer12.png">
+<textarea>
+int p[5];	// 盤子所在的柱子。第i小的盤子放在第p[i]根柱子。
+
+void move(int n, int t)	// 將前n小的盤子移到第t根柱子
+{
+	if (n == 0) return;
+	move(n-1, 6-p[n]-t);
+	cout << "從" << p[n] << "移到" << t;
+	p[n] = t;
+	move(n-1, t);
+}
+
+void tower_of_hanoi()
+{
+	// 五個盤子，都疊在第一根柱子。
+	for (int i=1; i<=5; i++) p[i] = 1;
+	// 五個盤子，從第一根柱子移到第三根柱子。
+	move(5, 3);
+}
+</textarea>
+<p class="e">UVa 10017</p>
+<p class="t">Prune and Search</p>
+<p>「修剪搜尋法」是分治法的特例。去除不重要的子問題，只搜尋重要的子問題。</p>
+<img src="DivideAndConquer13.png">
+<p class="e">UVa 920</p>
+<p class="t">範例：二分搜尋法（Binary Search）</p>
+<img src="DivideAndConquer14.png">
+<p>這是在已排序陣列裡面搜尋數字的方法。陣列由中央切成兩邊，一邊數字較小、一邊數字較大。這兩邊一定有一邊不是我們所要的，可以去除，只需要繼續尋找其中一邊。</p>
+<p class="e">UVa 10077</p>
+<p class="t">範例：尋找陣列裡第k大的數</p>
+<img src="DivideAndConquer15.png">
+<p>運用Quicksort的分割手法，把陣列切成兩邊，一邊數字較小、一邊數字較大。這兩邊一定有一邊不是我們所要的，可以去除，只需要繼續尋找其中一邊。</p>
+<p class="t">範例：尋找假幣（Counterfeit Coin Problem）</p>
+<p>一堆硬幣，當中一枚硬幣是假幣，重量比真幣輕，肉眼無法分辨差異。手邊的工具僅有一台天平，但沒有砝碼，該如何藉由天平判斷假幣？</p>
+<p>當硬幣總數為一，那麼該幣就是假幣。當硬幣總數為二，則兩枚硬幣分別放在天平兩端秤重，較輕的一端就是假幣。當硬幣總數為三以上，一定有辦法找出假幣，以下介紹兩種策略。</p>
+<p>採用遞增法。每次取兩枚硬幣，放在天平兩端秤重。當天平平衡，表示這兩枚硬幣都是真幣，接著繼續處理剩餘硬幣。當天平傾斜，比較輕的硬幣就是假幣。</p>
+<img src="DivideAndConquer16.png">
+<p>採用分治法。兩枚硬幣放在天平兩端秤重，當天平平衡，表示這兩枚硬幣都是真幣。接著只剩下N-2枚硬幣要尋找假幣──問題遞迴縮小了！</p>
+<p>剩下N-2枚，太多了一點。一次取多一點硬幣，同時放在天平兩端秤，問題就能縮小更多了！</p>
+<p>把所有硬幣平均分成三份，取兩份放在天平兩端秤重。當天平平衡，表示剩下的一份含有假幣，問題一次便縮小為1/3。當天平傾斜，表示比較輕的一份含有假幣，問題一次便縮小為1/3。</p>
+<img src="DivideAndConquer17.png">
+<p>讀者可以想想看：如果硬幣數量不是三的倍數怎麼辦？如果一開始不知道假幣與真幣孰輕孰重怎麼辦？</p>
+<p class="e">UVa 12732 12733</p>
+<p class="t">Marriage before Conquest</p>
+<pre>
+ Yu-Han 說道：
+ 2014/1/11 at 9:00
+ 
+分享一下最近看到的技巧 – “marriage-before-conquest"
+在做Divide and conquer中，遞迴求解的部份解答可以用來加速剩下的計算。
+
+一個簡單的例子是
+http://www.geeksforgeeks.org/sorted-linked-list-to-balanced-bst/
+把已排序的單向鏈結串列轉成平衡的二元搜尋樹。
+
+如果是用很直接的找中點然後分半遞迴求解，
+時間複雜度是O(n lg n)，
+但是實際上建立完左半邊的時候，就可以直接得到中點，
+因此就可以使得時間複雜度降為O(n)。
+
+一個稍困難的例子是，給定二維空間中的點集合S，
+我們稱點p為S中的maxima，
+如果在S中沒有任何點的x座標以及y座標同時都大於點p的x座標與y座標。
+問題是要把所有maxima找出來。
+
+基於Divide and conquer的技巧，利用x座標等分成兩半分別找出maxima，
+然後把在子問題中是maxima但是在考慮整體時不是maxima的點刪除，
+如此的時間複雜度可達到O(n lg n)。
+
+使用marriage-before-coquest的技巧，
+可以把時間複雜度降到O(n lg h)，h為maxima的個數。
+方法是先計算右半邊的maxima，
+然後利用右半邊的maxima把左半邊中不可能成為全體的maxima的點先刪除，
+最後才計算左半邊。
+
+同樣的技巧也可以用在convex hull上達到O(n lg h)的時間複雜度。
+
+ Yu-Han 說道：
+ 2014/1/11 at 23:51
+
+以convex hull為例子的話，
+是prune-and-search和marriage before conquest的綜合應用。
+當有了右半邊的convex hull的點，要刪除左半邊不可能為convex hull的點時，
+需要使用線性規劃（利用prune-and-search），
+或是自己設計一個prune-and-search的方法。
+所以marriage before conquest和prune-and-search是不同的技巧。
+
+除了這三個例子之外，我也找不太到其他marriage-before-conquest的範例了。
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Greedy Method</p>
+<p class="w">今朝有酒今朝醉，明日愁來明日愁。《羅隱．自遣》</p>
+<p class="w">博觀而約取，厚積而薄發。《蘇軾．稼說送張琥》　</p>
+</div><div class="c">
+<p class="t">Greedy Method</p>
+<p>「貪心法」。以Incremental Method或Iterative Method製造答案的方法，大致上分為兩類：</p>
+<pre>
+一、填答案：從沒有答案開始，逐步填滿答案。
+二、改答案：先隨便弄個答案，逐步修飾答案。
+</pre>
+<pre>
+一、觀察問題特徵，擬定一個填答案、改答案的原則。
+二、隨便挑幾個特例，手算一下。
+　　如果答案都對，就大膽假設此原則是正確的。
+　　（也可以嘗試證明此原則必定正確。）
+三、實作程式碼，把答案算出來。
+</pre>
+<p class="e">UVa 120 311 410 514 538 668 757 10148 10201 10249 10366 10382 10440 10602 10716 10718 10982 ICPC 3752 4788</p>
+<p class="t">範例：找零錢</p>
+<p>你去商店買東西，你掏出了一張一百元，買了一包23元的零食。店員須找零錢給你，但是你希望店員找給你的硬幣數目越少越好，如此口袋會輕一點。那麼店員會給你幾個硬幣呢？</p>
+<img src="Greedy1.png">
+<p>填答案的原則是：先找給你面額較高的硬幣。</p>
+<p>金額越少，找給你的硬幣數目也就越少。先找給你面額較高的硬幣，金額下降的最多──如此一來，往後找給你的硬幣數目就一定是最少了。</p>
+<p>注意到：當錢幣面額很特別時，這個方法才正確。詳情請參考「<a href="KnapsackProblem.html">Change-Making Problem</a>」。</p>
+<p class="t">範例：文章換行（Word Wrap）</p>
+<p>一大段的英文段落，適當的將文章換行，讓文字不超過紙張邊界，盡量節省紙張空間。</p>
+<img src="Greedy2.png">
+<p>填答案的原則是：字儘量往前擠，擠不下就換行。</p>
+<p class="t">範例：騎士周遊問題（Knight's Tour）</p>
+<p>西洋棋盤上，請找到一條路線，讓騎士恰好經過棋盤上每一格各一次。</p>
+<a href="../../commons.wikimedia.org/wiki/File_Knight%27s_tour_anim_2.html"><img src="Greedy3.gif" width="204" height="204"></a>
+<p>填答案的原則是：走向出路選擇較少的格子。如果遇到出路選擇一樣多的格子，就走向位於下方的格子。如果又遇到一樣低的格子，就走向位於左方的格子。</p>
+<img src="Greedy4.png">
+<p>這種填答案的方式，耗盡死路，保留活路，將來走入死胡同的機會就變少了。有一種「置之死地而後生」的味道。</p>
+<p>注意到：這個方法不一定會成功。我們根本無法證明這個方法會成功，只是乍看起來比較容易成功。</p>
+<p>我們當下所做的最佳決定，以長遠的眼光來看，不一定是最佳決定。儘管貪心法不見得得到正確的、最好的答案，卻是個快速得到答案的好方法。</p>
+<p class="t">範例：活動選擇問題（Activity Selection Problem）</p>
+<p>暑假到了，有好多好多有趣的營隊可以參加囉！攀岩、潛水、單車環島團、吉他營、電腦營、……，每個營隊都好有趣，好想每個營隊都參加──可是卻有好多營隊的活動期間都互相卡到，沒辦法同時參加。到底要參加哪些營隊活動才好呢？當然是越多種越好！</p>
+<img src="Greedy5.png">
+<p>填答案的原則很簡單：優先選擇最早結束的活動，就能剩下最多時間來安排其他活動。</p>
+<p>仔細分成兩種情況進行討論：一、最早結束的活動，與其他活動的時間不重疊；二、最早結束的活動，與某些活動的時間重疊。</p>
+<p>一的狀況下，參加最早結束的活動，顯然是最理想的──憑空多參加了一個活動，又不耽誤到其他活動。</p>
+<p>此觀念可以用Recursive Method詮釋：去除最早結束的活動、遞迴縮小問題。</p>
+<img src="Greedy6.png">
+<p>二的狀況下，最早結束的活動、以及時間與之重疊的活動當中，只能選擇其中一個參加。此時參加最早結束的活動，得以剩下比較多的時間，仍是最理想的。</p>
+<p>此觀念可以用Recursive Method詮釋：去除最早結束的活動、去除因而無法參加的活動，遞迴縮小問題。</p>
+<img src="Greedy7.png">
+<p>填答案的原則是：所有活動按照結束時間排序，依序參加活動。如果時間允許就參加，如果時間衝突就不參加。</p>
+<img src="Greedy8.png">
+<p class="e">UVa 10020 ICPC 4328 5105</p>
+<p class="t">範例：函數的區域最小值</p>
+<img src="Greedy9.png">
+<p>改答案的原則是：一開始x隨意設定一個數值，例如設定x = 0。微調x值，並且計算f(x)──如果f(x)減少，就更新x；如果f(x)沒減少，就不更新x。不斷修改x值，最後就到達區域最小值。</p>
+<p class="t">範例：交換相鄰數字的排序法</p>
+<img src="Greedy10.png">
+<p>改答案的原則是：每當發現相鄰兩個數字，左邊數字大於右邊數字，兩個數字就交換位置。</p>
+<p>不斷交換位置，導致大數字逐漸往右端移動、小數字逐漸往左端移動，最後一定能完成排序。</p>
+<p>讀者可以想想看：交換任意兩個數字的排序法，成立嗎？</p>
+<p>順帶一提，排序過程反向操作，可以得到一個結論：排序過的陣列，經由兩兩相鄰交換，一定可以得到各種排列方式。</p>
+<p class="t">範例：荷蘭國旗問題（Dutch National Flag Problem）</p>
+<p><a href="http://www.iis.sinica.edu.tw/~scm/ncs/2010/10/dutch-national-flag-problem/" class="l">http://www.iis.sinica.edu.tw/~scm/ncs/2010/10/dutch-national-flag-problem/</a></p>
+<p><a href="http://www.iis.sinica.edu.tw/~scm/ncs/2010/10/dutch-national-flag-problem-2/" class="l">http://www.iis.sinica.edu.tw/~scm/ncs/2010/10/dutch-national-flag-problem-2/</a></p>
+<p><a href="http://www.iis.sinica.edu.tw/~scm/ncs/2010/10/dutch-national-flag-problem-3/" class="l">http://www.iis.sinica.edu.tw/~scm/ncs/2010/10/dutch-national-flag-problem-3/</a></p>
+<p class="t">範例：工作排程問題（Single Machine Scheduling, Minimize the Number of Tardy Jobs）（1||∑Ui）</p>
+<p>有一位苦命上班族，要馬上處理臨時指派的N份工作。經驗老到的他，馬上就精準的估計出每份工作各要花掉多少時間，可是每份工作都有不同的完工期限，這造成有些工作可能會來不及完成。他做事專心，要求品質，一次只處理一份工作，一份一份接著做；來不及完成的工作，乾脆放棄不做。</p>
+<p>請找出一種排程，讓如期完成的工作最多（也就是讓逾期完成的工作最少），順便讓總工時越短越好。</p>
+<img src="Greedy11.png">
+<p>合理排程之相鄰交換性質：</p>
+<p>一個合理排程，其中某兩個如期完成的工作A與B，A與B緊鄰完成，A早做B晚做，A期限晚B期限早（或期限相同），則A與B對調位置之後，仍是一個合理排程。分析如下：</p>
+<pre>
+A與B視作一體進行交換：排程裡的其他工作皆不受影響。
+A放到B的位置：A的期限比B還晚，B都能如期完成了，所以A也能如期完成。
+B放到A的位置：B提早做，更能如期完成。
+</pre>
+<img src="Greedy12.png">
+<p>一個合理排程，不斷地進行相鄰交換，終會形成「工作依照期限排序」的合理排程！反之亦然！小心，不相鄰則不可貿然交換。</p>
+<p>因此，我們只需著眼於「工作依照期限排序」的合理排程。</p>
+<p class="e">UVa 10026 11389</p>
+<p>填答案的原則是：所有工作依照期限排序，依序加入排程。一次加入一個工作，一旦發現逾期，立即從排程當中抽掉工時最長的工作。</p>
+<img src="Greedy13.png">
+<pre>
+已經加入N個工作，排程裡有M個工作。
+排程裡的工作，是前N個工作的最佳解。也就是說：
+α. 這M個工作，全部如期完成。
+β. 前N個工作之中，如期完成的工作數量最多就是M。
+γ. 前N個工作之中，這M個工作總工時最短。
+</pre>
+<p>以數學歸納法證明之。假設N成立，當第N+1個工作加入排程，有兩種情況。</p>
+<p>一、沒有發生逾期：</p>
+<p>這M個工作，本來就是如期完成、工作數量最多、總工時最短的最佳選擇。第N+1個工作加入之後，αβγ依然成立。</p>
+<p>二、發生逾期，立即抽出工時最長的工作：</p>
+<p>這M個工作，已經能如期完成。抽出工時最長的工作，補上工時稍短（或相等）的第N+1個工作，更能如期完成了。α成立。</p>
+<p>這M個工作，總工時已經是最短了，還是無法添加第N+1個工作，不得已抽掉一個工作，工作數量已經盡量多了。β成立。</p>
+<p>抽出工時最長的工作，總工時下降最多。γ成立。</p>
+<textarea>
+struct Job {int time, due;} job[10];
+priority_queue<int> pq;
+
+bool cmp(const Job& j1, const Job& j2)
+{
+	return j1.due < j2.due;
+}
+
+void Moore_Hodgson()
+{
+	sort(job, job+10, cmp);
+
+	int t = 0;
+	for (int i=0; i<10; i++)
+	{
+		pq.push(job[i].time);
+		t += job[i].time;
+		if (t > job[i].due) t -= pq.top(), pq.pop();
+	}
+
+	cout << "如期完成的工作數量，最多為" << pq.size();
+	cout << "逾期完成的工作數量，至少為" << 10 - pq.size();
+}
+</textarea>
+<textarea>
+struct Job
+{
+	int time, due;
+	bool operator<(const Job& j) const
+	{
+		return due < j.due;
+	}
+} job[10];
+
+int heap[10], size = 0;
+
+void Moore_Hodgson()
+{
+	sort(t, t+10);
+
+	int t = 0;
+	for (int i=0; i<10; i++)
+	{
+		heap[size++] = job[i].time;
+		push_heap(heap, heap+size);
+		t += job[i].time;
+
+		if (t > job[i].due)
+		{
+			t -= heap[0];
+			pop_heap(heap, heap+size);
+			size--;
+		}
+	}
+
+	cout << "如期完成的工作數量，最多為" << size;
+	cout << "逾期完成的工作數量，至少為" << 10 - size;
+}
+</textarea>
+<p class="e">UVa 10154 ICPC 3277 4850</p>
+<p class="t">範例：工作排程問題（2-Machine Flowshop Scheduling）（F2||Cmax）</p>
+<p>兩台機器，N份工作，一台機器一次只能處理一個工作。每份工作必須先經過初號機處理一段時間，再經過貳號機處理一段時間，才算處理完畢。</p>
+<p>請找出一種排程，迅速完成所有工作。</p>
+<img src="Greedy14.png">
+<pre>
+1. 建立兩個空的List，叫做L1和L2。
+2. 從N個工作、2N個工時當中，不斷挑出工時最短的工作。
+   如果最短工時是初號機的工時，該工作加到L1前端。
+   如果最短工時是貳號機的工時，該工作加到L2後端。
+3. L1 L2，即是排程。
+</pre>
+<pre>
+1. 建立兩個空的List，叫做L1和L2。
+2. 對每一個工作，若初號機工時小於貳號機工時，該工作加到L1，反之則加到L2。
+3. L1照初號機工時由小到大排序。
+   L2照貳號機工時由大到小排序。
+4. L1 L2，即是排程。
+</pre>
+<textarea>
+int c1[10];
+int c2[10];
+
+bool cmp1(const int& i, const int& j) {return c1[i] < c1[j];}
+bool cmp2(const int& i, const int& j) {return c2[i] > c2[j];}
+
+void Johnson()
+{
+	vector<int> l1, l2;
+	for (int i=0; i<10; i++)
+		if (c1[i] < c2[i])
+			l1.push_back(i);
+		else
+			l2.push_back(i);
+
+	sort(l1.begin(), l1.end(), cmp1);
+	sort(l2.begin(), l2.end(), cmp2);
+
+	vector l = l1 + l2;
+	int t1 = 0, t2 = 0;
+	for (int i=0; i<l.size(); i++)
+	{
+		t1 += c1[l[i]];
+		t2 = max(t1, t2) + c2[l[i]];
+	}
+	cout << "總完成時間為" << t2 << endl;
+}
+</textarea>
+<p class="e">UVa 11269 11729</p>
+<p class="t">範例：平面上距離最近的兩個點（Closest Pair）</p>
+<p>採用遞增法，逐次增加一個點；採用枚舉法，計算新點到其他點的距離。每當發現更近的兩個點，下次即可減少橫向搜尋範圍。</p>
+<p>運用目前得到的答案，藉此得到更好的答案！可以看作是間接地、改答案的原則。</p>
+<img src="Greedy15.png">
+<p>另外，還可以減少縱向搜尋範圍。除了新點以外，兩點之間的距離，至少都是上次的最短距離，不能太密太擠。在橫向搜尋範圍之內，進行縱向排序（採用即時排序的資料結構，效率較佳），只需檢查新點的上兩點、下兩點，就一定能檢查到半圓內所有點！</p>
+<p>儘管無法直接得到正確的點，但是只需檢查少數幾點！可以看作是間接地、填答案的原則。</p>
+<img src="Greedy16.png">
+<p class="e">UVa 10245 ICPC 7581</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Scaling Algorithm</p>
+<p class="w">古之欲明明德於天下者，先治其國。　　　　</p>
+<p class="w">　　　　　欲治其國者，先齊其家。　　　　</p>
+<p class="w">　　　　　欲齊其家者，先修其身。　　　　</p>
+<p class="w">　　　　　欲修其身者，先正其心。《禮記》</p>
+</div><div class="c">
+<p class="t">Fixed Parameter Algorithm</p>
+<p>「固定參數演算法」。當問題太過困難，就增加限制，將部分變數改成常數。</p>
+<p class="t">範例：三維函數繪圖</p>
+<p>一、固定X值，計算Y值Z值；嘗試各種X值。</p>
+<p>二、固定Y值，計算X值Z值；嘗試各種Y值。</p>
+<p>三、固定Z值，計算X值Y值；嘗試各種Z值。</p>
+<a href="http://stackoverflow.com/questions/1526898/"><img src="FixedParameter1.gif"></a>
+<p class="t">Scaling Algorithm</p>
+<p>「縮放演算法」。將數值拆解為不同數量級，每個數量級分別計算一次答案，並且累計每次計算成果。</p>
+<p class="t">範例：乘法</p>
+<p>數量級從小到大：乘數拆解為不同數量級，先以個位數相乘一次，再以十位數相乘一次，……，再以最高位數相乘一次，累加起來，得到正確結果。</p>
+<img src="Scaling1.png">
+<p class="t">範例：基數排序法（Radix Sort）</p>
+<p>數量級從小到大：所有數字先以個位數排序一次，再以十位數排序一次，……，再以最高位數排序一次，得到正確結果。</p>
+<img src="Scaling2.png">
+<p>數量級從大到小：所有數字先以最高位數排序一次，再以前兩高位數排序一次，……，再以全部位數排序一次，得到正確結果。</p>
+<img src="Scaling3.png">
+<p>改善計數排序法的效率，不必建立一長串陣列。</p>
+<p class="t">範例：多重解析度匹配（Multiscale Matching）</p>
+<p>從宏觀到微觀，從粗糙到細膩。短字串跳N格實施匹配。若足夠相似，才跳N/2格實施匹配。……。若足夠相似，才跳1格實施匹配。</p>
+<img src="Scaling4.png">
+<p>改善匹配的效率，不必每次都比對一大串字元。</p>
+<p class="t">範例：Shell排序法（Shell Sort）</p>
+<p>從宏觀到微觀，從粗糙到細膩。跳N個數字為同一組，每組分別實施插入排序法。跳N/2個數字為同一組，各組分別實施插入排序法。……。跳1個數字為同一組，所有數字實施插入排序法。</p>
+<img src="Scaling5.png">
+<p>改善插入排序法的效率，不必每次都挪動一大串數字。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">External Memory Algorithm</p>
+<p class="w">士農工商四民者，國之石，民也。　　　　　　</p>
+<p class="w">不可使雜處，雜處則其言哤，其事亂。《管子》</p>
+</div><div class="c">
+<p class="t">Cache-oblivious Algorithm</p>
+<p>儲存容量大，存取時間長；儲存容量小，存取時間短。魚與熊掌不可兼得。自然而然形成階層式架構：暫存器、快取、記憶體、硬碟，儲存容量越來越大，存取時間越來越久。</p>
+<p>需要計算的變數，儲存在暫存器；不在暫存器，就找快取；不在快取，就找記憶體；不在記憶體，就找硬碟。</p>
+<p>簡中譯作寄存器、缓存、内存、硬盘。</p>
+<img src="Cache1.png">
+<p>對中央處理器來說，最花時間的動作，不是運算，而是從記憶體讀入資料到快取、從快取寫出資料到記憶體。</p>
+<p>每當變數不在快取，就從記憶體載入資料到快取，載入變數所在的那一個區塊。區塊大小等於通道容量，區塊位置似乎固定不變。</p>
+<img src="Cache2.png">
+<p>「快取無視演算法」目的是減少載入次數。實際的通道容量、快取容量，端看硬體規格，無法預知。我們只能盡量集中變數，以減少載入次數。</p>
+<p>「快取無視演算法」的名稱由來是：考慮記憶體與快取，但是不知道通道容量、快取容量。以現代眼光來看，顯然詞不達意。</p>
+<p class="t">範例：陣列與串列</p>
+<p>陣列在記憶體裡是連續的。串列在記憶體裡通常不是連續的。</p>
+<img src="Cache3.png">
+<p>枚舉陣列元素，偶爾載入區塊，不會重複載入，速度快。</p>
+<img src="Cache4.png">
+<p>枚舉串列元素，經常載入區塊，甚至重複載入，速度慢。</p>
+<img src="Cache5.png">
+<p class="t">範例：變數型態</p>
+<p>int = 4 byte，short = 2 byte，雖然儲存空間不一樣大，但是加法運算卻一樣快，都是一單位時間。</p>
+<p>雖然兩數加法一樣快，但是多數總和就不一樣快。short array空間小，區塊少，速度快。</p>
+<img src="Cache6.png">
+<textarea>
+short sum(short array[1000])
+{
+	// short array，空間小，區塊少，速度快。
+	short n = 0;
+	for (int i=0; i<1000; i++)
+		n += array[i];
+	return n;
+}
+</textarea>
+<textarea>
+int sum(int array[1000])
+{
+	// int array，空間大，區塊多，速度慢。
+	int n = 0;
+	for (int i=0; i<1000; i++)
+		n += array[i];
+	return n;
+}
+</textarea>
+<p class="t">範例：二維陣列的總和</p>
+<p>依序枚舉二維陣列的所有元素，累計總和。</p>
+<img src="Cache7.png">
+<p>枚舉橫條元素，偶爾載入區塊，不會重複載入，速度快。</p>
+<p>枚舉直條元素，經常載入區塊，甚至重複載入，速度慢。</p>
+<textarea>
+int sum(int array[1000][1000])
+{
+	// 橫條為主，速度快。
+	// 外層枚舉每一個橫條，內層枚舉一個橫條的每一個元素。
+	int n = 0;
+	for (int i=0; i<1000; i++)
+		for (int j=0; j<1000; j++)
+			n += array[i][j];
+	return n;
+}
+</textarea>
+<textarea>
+int sum(int array[1000][1000])
+{
+	// 直條為主，速度慢。
+	// 外層枚舉每一個直條，內層枚舉一個直條的每一個元素。
+	int n = 0;
+	for (int j=0; j<1000; j++)
+		for (int i=0; i<1000; i++)
+			n += array[i][j];
+	return n;
+}
+</textarea>
+<p class="t">範例：小畫家倒墨水（Flood Fill Algorithm）</p>
+<p>建立二維陣列，一一對應盤面格子。區塊形成橫條。一個格子，左右通常是相同區塊，上下通常是不同區塊。墨水填充過程，經常載入區塊。</p>
+<p>
+建立一維陣列，重新對應盤面格子。區塊從橫條變方塊，減少載入次數。</p>
+<img src="Cache8.png">
+<p>
+想要改變區塊形狀，就要改變陣列索引值與盤面格子的對應。</p>
+<img src="Cache9.png">
+<p class="t">External Memory Algorithm</p>
+<p>方才討論了快取與記憶體的讀寫。「外部記憶體演算法」則是考慮記憶體與硬碟的讀寫。</p>
+<p>實務上，硬碟也可以是光碟、隨身碟、雲碟。簡中譯作光盘、闪存盘、云盘。</p>
+<p class="t">範例：動態陣列（Dynamic Array）</p>
+<img src="Memory1.png">
+<p>不知資料多寡，只好準備一塊記憶體空間，暫存資料。每當空間滿了，才擴充空間。</p>
+<p>C++程式語言的標準函式庫的vector，即是動態陣列。</p>
+<textarea>
+void dynamic_array()
+{
+	vector<int> v;
+	v.push(3);
+	v.push(6);
+	v.push(9);
+	v.push(-8);
+	v.push(1);
+}
+</textarea>
+<p class="t">範例：緩衝區（Buffer）</p>
+<img src="Memory2.png">
+<p>不知資料生成時刻，只好準備一塊記憶體空間，暫存資料。每當資料夠了，才處理資料。</p>
+<p>printf/scanf、cin/cout，內含緩衝區。</p>
+<textarea>
+void print()
+{
+	printf("It's a pencil.");
+	flush(stdout);			// 立即清空緩衝區
+	setbuf(stdout, NULL);	// 不使用緩衝區
+
+	cout << "It's a pencil.";
+	cout << flush;			// 立即清空緩衝區
+	cout << endl;			// 等同 cout << '\n' << flush;
+	cout.unitbuf();			// 每次都清空緩衝區（不使用緩衝區）
+};
+</textarea>
+<p class="t">範例：合併排序法（Merge Sort）</p>
+<p>排序硬碟資料。</p>
+<p>一、資料分段排序：每段資料符合記憶體容量，假設分成了k段。k段資料分別讀入、排序、寫出。</p>
+<img src="Memory3.png">
+<p>二、資料合併排序：記憶體配置k塊輸入、1塊輸出緩衝區。k段資料合併成排序資料。</p>
+<img src="Memory4.png">
+<p>在步驟一，當資料分段太多，則遞迴處理。</p>
+<img src="Memory5.png">
+<p class="t">範例：桶子排序法（Bucket Sort）</p>
+<p>排序硬碟資料。</p>
+<img src="Memory6.png">
+<p>一、資料分類排序：記憶體配置1塊輸入、k塊輸出緩衝區。一段資料分散於k個桶子，依照數字大小。</p>
+<p>二、資料分段排序：k段資料分別讀入、排序、寫出。</p>
+<p>在步驟二，當一段資料太長，則遞迴處理。</p>
+<p class="t">範例：選擇排序法暨二分搜尋法<span style="letter-spacing:-1px">（Selection Sort & Binary Search）</span></p>
+<p>不排序硬碟資料，不使用其他硬碟空間，直接輸出排序結果。</p>
+<img src="Memory7.png">
+<p>篩選最小的數字們、排序、輸出。以二分搜尋法，調整篩選範圍。如果硬碟未讀完、緩衝區已滿溢，則減少篩選範圍，重新來過；如果硬碟已讀完，緩衝區未滿溢，則排序、輸出、更新篩選範圍。</p>
+<p>小心處理同一數字數量非常多的情況。</p>
+<textarea>
+int MIN = -1000000000;	// 數字的最小值
+int MAX = +1000000000;	// 數字的最大值
+const int M = (1 << 18);
+const int N = (1 << 19);
+int in[M];				// 篩選前的數字
+int out[N];				// 篩選後的數字
+
+// 讀取檔案裡面所有數字，篩選大於等於L、小於等於R的數字。
+int read(ifstream& fin, int L, int R)
+{
+	int n = 0;
+	fin.clear();			// 回復讀寫狀態
+	fin.seekg(0, fin.beg);	// 回到檔案開頭
+
+	while (true)
+	{
+		// 讀取檔案裡面的數字
+		fin.read((char*)in, sizeof(int)*M);
+		int c = fin.gcount() / sizeof(int);
+		if (c <= 0) break;	// 沒有數字就結束
+
+		// 篩選數字
+		for (int i = 0; i < c; i++)
+			if (in[i] >= L && in[i] <= R)
+				if (L == R)
+				{
+					if (n < N) out[n++] = in[i];
+					else n++;	// 同一數字出現許多次
+				}
+				else
+				{
+					if (n < N) out[n++] = in[i];
+					else return -1;	// 存不下
+				}
+	}
+	return n;
+}
+
+// 選擇排序法暨二分搜尋法
+// 屢次從檔案裡面篩選最小的數字們、排序、輸出。
+// 如果記憶體滿溢，則將篩選範圍減半，重新來過。
+void sort_file()
+{
+	ifstream fin("number.in", ios::binary);
+	ofstream fout("number.out", ios::binary);
+
+	// 選擇排序法暨二分搜尋法
+	for (int L = MIN, R = MAX; L <= R; )
+	{
+		int M = (L + R) / 2;
+		int n = read(fin, L, M);
+
+		if (n < 0)			// 記憶體滿溢。篩選範圍減半。
+			R = M;
+		else if (n == 0)	// 查無數字。處理另一半範圍。
+			L = M + 1;
+		else				// 記憶體未滿溢。排序。輸出。
+		{
+			if (L == M)
+			{
+				for ( ; n > N; n -= N)
+					fout.write((char*)out, sizeof(int)*N);
+				if (n > 0)
+					fout.write((char*)out, sizeof(int)*n);
+			}
+			else
+			{
+				sort(out, out + n);
+				fout.write((char*)out, sizeof(int)*n);
+			}
+
+			// 處理其餘範圍
+			L = M + 1;
+			R = MAX;
+		}
+	}
+
+	fin.close();
+	fout.close();
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Parallel Algorithm（Under Construction!）</p>
+<p class="w">眾心成城，眾口鑠金。《國語》</p>
+</div><div class="c">
+<p class="t">Parallel Algorithm</p>
+<p>「循序Sequential」就是逐一計算，「平行Parallel」就是一齊計算，兩者是相對概念。</p>
+<p>「平行演算法」。當計算順序無所謂時，就可以使用多個計算器一齊計算。優點是減少計算時間，缺點是增加硬體、增加電力。</p>
+<img src="Parallel1.html">
+<p>詳細架構是：一份記憶體，多個計算器。一份記憶體一齊傳遞資料給各個計算器，多個計算器一齊計算，多個計算器一齊傳遞資料給一份記憶體。</p>
+<p>計算器又有兩種類型：多個計算器只能一齊執行相同指令（例如GPU），多個計算器可以分頭執行不同指令（例如多核心處理器）。前者富含巧思，後者缺乏變化，所以我們只談前者。</p>
+<img src="Parallel2.html">
+<p class="t">範例：複製字串</p>
+<p>理論：各個字元分頭複製，時間複雜度從O(N)變O(1)。</p>
+<img src="Parallel2.html">
+<p>實務：字串切成數段，分頭複製。</p>
+<img src="Parallel3.html">
+<textarea>
+void copy()
+{
+	char s[15] = "incremental";
+	char t[15];
+
+	int i;
+	#pragma omp parallel for
+	for (i=0; s[i]; i++)
+		t[i] = s[i];
+	t[i] = '\0';
+
+	cout << "原本字串" << s;
+	cout << "複製之後的字串" << t;
+}
+</textarea>
+<p>因為作業系統建立執行緒需要大量時間與空間，所以平行計算不一定比循序計算好。程式員必須自行取捨。</p>
+<p class="t">範例：加總數字</p>
+<p>理論：數字雙雙相加，時間複雜度從O(N)變O(logN)。</p>
+<img src="Parallel3.html">
+<p>實務：陣列切成數段，分頭計算總和。最後累加各段總和。</p>
+<img src="Parallel4.html">
+<textarea>
+void summation()
+{
+	int array[5] = {3, 6, 9, -8, 1};
+
+	// 陣列切成兩段，分頭計算總和。
+	int sum = 0;
+	#pragma omp parallel for num_thread(2) schedule(static) reduction(+:sum)
+	for (int i=0; i<5; i++)
+		sum = sum + array[i];
+
+	cout << "總和是" << sum;
+}
+</textarea>
+<p class="t">範例：矩陣相乘</p>
+<p>理論：簡單起見，討論N×N方陣。兩層的平行化，外層是乘積矩陣的每一個元素，內層是兩串數列點對點相乘，時間複雜度從O(N^3)變O(1)。</p>
+<p>實務：執行緒數量高達O(N^3)，不但跟循序計算沒兩樣，而且還得額外浪費設置執行緒的時間與空間，弄巧成拙、過猶不及。大家習慣放棄數列相乘的平行化。</p>
+<img src="Parallel5.html">
+<textarea>
+void matrix_multiply(float A[N*N], float B[N*N], float C[N*N])
+{
+	int i, j, k;
+	#pragma omp parallel for collapse(2) private(k)
+	for (i=0; i<N; i++)
+		for (j=0; j<N; j++) 
+		{
+			// 放棄數列相乘的平行化
+			for (k=0; k<N; k++)
+				C[N*i+j] += A[N*i+k] * B[N*k+j];
+		}
+}
+</textarea>
+<p>相同資料重複傳遞很多份到各個執行緒，改為每次計算一塊區域。</p>
+<img src="Parallel6.html">
+<textarea>
+const int N, P, M;		// matrix dimensions
+float A[N*P], B[P*M], C[N*M];
+int NB = 0;				// number of blocks
+int Nb = N / NB;		// block dimensions
+int Pb = P / NB;
+int Mb = M / NB;
+
+void clear_block(float* C, int gapC, int Nb, int Mb)
+{
+	for (int i=0; i<Nb; i++) 
+		for (int j=0; j<Mb; j++)
+			// C[i][j] = 0;
+			C[i * gapC + j] = 0.0;
+}
+
+void multiply_block(float* A, float* B, float* C, int gapA, int gapB, int gapC)
+{
+	for (int i=0; i<N; i++)
+		for (int j=0; j<M; j++)
+		{
+			// C[i][j] += A[i][k] * B[k][j];
+			float t = C[i*gapC + j];
+			for (int k=0; k<P; k++)
+				t += A[i*gapA + k] * B[k*gapB + j];
+			C[i*gapC + j] = t;
+		}
+}
+
+void matrix_multiply()
+{
+	int ib, jb, kb;
+	#pragma omp parallel for private(jb,kb) schedule(static)
+	for (ib=0; ib<NB; ib++)
+		for (jb=0; jb<NB; jb++)
+		{
+			// Cb[ib][jb] = 0;
+			float* ptrC = C + ib * Nb * M + jb * Mb;
+			clear_block(ptrC, M, Nb, Mb);
+
+			// Cb[ib][jb] = Ab[ib][kb] * Bb[kb][jb];
+			for (kb=0; kb<NB; kb++)
+				multiply_block(
+					A + ib * Nb * P + kb * Pb,
+					B + kb * Pb * M + jb * Mb,
+					ptrC,
+					P, M, M
+				);
+		}
+}
+</textarea>
+<p class="t">範例：生命遊戲</p>
+<p>理論：兩層的平行化，外層是地圖的每一個細胞，內層是八個鄰居細胞數量總和，時間複雜度從O(XY * 8)變O(log8)。</p>
+<p>實務：大家習慣放棄放棄平行化細胞求和。</p>
+<img src="Parallel7.html">
+<p class="t">範例：Hamilton Path</p>
+<p>理論：如果能夠建立N!個執行緒，時間複雜度就從O(N!)變O(N)──可是要去哪裡生那麼多個執行緒？即便是平行化也無法快速解決NP-Complete問題。</p>
+<img src="Parallel8.html">
+<p class="t">Distributed Algorithm</p>
+<p>「分散式演算法」。Parallel Algorithm和External Memory Algorithm合體。</p>
+<p>https://paper.dropbox.com/doc/Google-DCJ--MnMwtOSSmcM4ZaEzFOpNF</p>
+<p class="t">範例：哲學家用餐問題（Dining Philosophers Problem）</p>
+<p>資源控管。</p>
+<p>Paxos。</p>
+<p class="t">範例：多工（Multiplexing）</p>
+<p>通道控管。</p>
+<p>CSMA</p>
+<p>https://www.zhihu.com/question/26743389/answer/33983737</p>
+<p class="t">範例：共時（Clock Synchronization）</p>
+<p>時間同步。</p>
+<p>https://en.wikipedia.org/wiki/Clock_synchronization</p>
+<p class="t">範例：尚無正式翻譯（Sketching）</p>
+<p>分配律。協作。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Randomized Algorithm</p>
+<p class="w">有過物者必濟，故受之以既濟。《易傳》</p>
+<p class="w">致中和，天地位焉，萬物育焉。《禮記》</p>
+</div><div class="c">
+<p class="t">Randomized Algorithm</p>
+<p>「隨機化演算法」。隨便的計算數值、計算順序。難得糊塗。</p>
+<p class="t">範例：隨機數字（Random Number）</p>
+<p>隨機數字又稱亂數。亂七八糟、毫無章法、什麼都有可能。</p>
+<img src="Randomized1.png">
+<p>如何製造亂數呢？沒人知道！數學家尚未釐清「亂」是什麼。計算學家則創造了形形色色的算式，偽造亂數，聊勝於無。</p>
+<p>簡易算式：乘上一數、加上一數，遞推下去。</p>
+<textarea>
+int rand()
+{
+	// 使用unsigned int，即便溢位也不會當機。
+	static unsigned int seed = 0;
+	// 乘上一數、加上一數。
+	seed = seed * 1103515245U + 12345U;
+	// 符合int上限範圍，得到[0, 2^31-1]之間的亂數。
+	return int(seed % 2147483648U);
+}
+</textarea>
+<p>C程式語言的內建函式庫，已經有亂數了。</p>
+<textarea>
+void random_number()
+{
+	// 設定亂數表，之後才能使用rand()。
+	srand(time(0));
+
+	// 印出10個亂數，範圍是整數0到整數4。
+	for (int i=0; i<10; i++)
+		cout << rand() % 5;
+}
+</textarea>
+<p class="t">範例：雜湊函數（Hash Function）</p>
+<p>一種特別的函數：數字變成特定範圍數字。</p>
+<img src="Randomized2.png">
+<p>雜湊函數應用廣泛，衍生許多變化，其中一種經典變化是：數字變成特定範圍亂數。隨便導致分散──亂數四散，不會太集中。</p>
+<textarea>
+int hash(int num, int range)
+{
+	// 以給定的資料，製造一個亂數，位於[0, range-1]。
+	unsigned int hash = num;	// num是負數也沒關係
+	hash = hash * 1103515245U + 12345U;
+	return int(hash % 2147483648U) % range;
+}
+</textarea>
+<p>C++程式語言的內建函式庫，已經有雜湊函數了，但是不是亂數版本。不會變成亂數，而是變成原本數字，喜感十足。</p>
+<textarea>
+void hash_function()
+{
+	// 印出數字0到9的雜湊值，位於[0, 2^31-1]。
+	hash<int> int_hash;
+	for (int i=0; i<10; i++)
+		cout << int_hash(i);
+
+	// 印出數字0到9的雜湊值，位於[0, 2^31-1]。
+	for (int i=0; i<10; i++)
+		cout << hash<int>{}(i);
+}
+</textarea>
+<p class="t">範例：雜湊表（Hash Table）</p>
+<p>以簡短陣列儲存資料，以雜湊函數決定儲存位置。隨便導致分散──資料四散，不會太集中。</p>
+<img src="Randomized3.png">
+<p>優點是搜尋迅速，只需瀏覽少數資料，不必瀏覽全部資料。</p>
+<textarea>
+const int range = 5;
+
+void add_number(vector<int>& table[range], int num)
+{
+	// 以雜湊函數決定存放位置
+	int h = hash(num, range);
+	// 儲存至陣列
+	table[h].push_back(num);
+}
+
+bool find_number(vector<int>& table[range], int num)
+{
+	// 只需瀏覽少數資料，不必瀏覽全部資料。
+	int h = hash(num, range);
+	for (auto x: table[h])	// 窮舉
+		if (x == num)		// 搜尋
+			return true;
+	return false;
+}
+</textarea>
+<p class="t">範例：均勻隨機數字（Uniform Random Number）</p>
+<p>亂數雖分散，卻不見得均勻。於是計算學家另行創造算式，偽造均勻亂數。由於需要背景知識，此處不多提。</p>
+<p>又亂、又均勻，很匪夷所思吧！譯作亂數真的沒問題嗎？</p>
+<img src="Randomized4.png">
+<p>C++程式語言的內建函式庫，已經有均勻亂數了。</p>
+<textarea>
+void random_number()
+{
+	// 亂數生成器
+	default_random_engine g;
+ 
+	// 均勻亂數，範圍[0, 5)。
+	uniform_int_distribution<int> rand(0, 4);
+ 
+	// 印出10個亂數，範圍是整數0到整數4。
+	for (int i=0; i<10; i++)
+		cout << rand(g);
+}
+</textarea>
+<p class="t">範例：隨機抽樣（Random Sampling）</p>
+<p>隨機挑選一物，機率均等。</p>
+<img src="Randomized5.png">
+<textarea>
+// 差勁的做法。不均勻。
+int random_sampling(int array[], int n)
+{
+	srand(time(0));
+	return array[rand() % n];
+}
+
+// 比較優秀的做法。比較均勻。
+int random_sampling(int array[], int n)
+{
+	default_random_engine g;
+	uniform_int_distribution<int> rand(0, n-1);
+	return array[rand(g)];
+}
+</textarea>
+<p class="t">範例：隨機混洗（Random Shuffle）</p>
+<p>隨機排列，打亂順序，機率均等。</p>
+<img src="Randomized6.png">
+<textarea>
+void random_shuffle(int array[], int n)
+{
+	srand(time(0));
+
+	// 數字0到n-1
+	int permutate[n];
+	for (int i=0; i<n; i++) permutate[i] = i;
+
+	// 逐次挑出一個數字
+	for (int i=0; i<n-1; i++)
+	{
+		// 剩下的數字，隨機挑出一個數字（的位置）。
+		int j = i + rand() % (n - i);
+		// 挑出的數字，挪至前面。
+		swap(permutate[i], permutate[j]);
+	}
+
+	// 重新排列
+	int temp[n];
+	for (int i=0; i<n; i++) temp[i] = array[i];
+	for (int i=0; i<n; i++) array[permutate[i]] = temp[i];
+}
+</textarea>
+<p>與其先排列再交換，不如直接交換。</p>
+<img src="Randomized7.png">
+<textarea>
+void random_shuffle(int array[], int n)
+{
+	srand(time(0));
+
+	// 逐次挑出一個數字
+	for (int i=0; i<n-1; i++)
+	{
+		// 剩下的數字，隨機挑出一個數字（的位置）。
+		int k = i + rand() % (n - i);
+		// 挑出的數字，挪至前面。
+		swap(array[i], array[k]);
+	}
+}
+</textarea>
+<p class="t">範例：隨機化搜尋法（Randomized Search）</p>
+<p>隨便挑一個位置，直到找到為止、直到無處可尋為止。程式可能永不結束。</p>
+<img src="Randomized8.png">
+<textarea>
+int randomized_search(int array[], int n, int num)
+{
+	srand(time(0));
+
+	// 建立表格，記錄已經找過的位置。
+	// 一開始所有位置皆未找過。
+	bool visit[n] = {};
+
+	// 錯誤的實作方式。
+	// 程式可能永不結束，儘管機率趨近0。
+	for (int i=0; i<n; i++)
+	{
+		int j;
+		do j = rand() % n; while (visit[j]);
+		if (array[j] == num) return j;
+		visit[j] = true;
+	}
+	return -1;
+}
+</textarea>
+<p>從其餘位置當中隨便挑一個位置，直到找到為止、直到無處可尋為止。程式一定結束。</p>
+<img src="Randomized9.png">
+<textarea>
+int randomized_search(int array[], int n, int num)
+{
+	srand(time(0));
+
+	for (int i=0; i<n-1; i++)
+	{
+		// 從其餘位置當中隨便挑一個位置
+		int j = i + rand() % (n - i);
+		if (array[j] == num) return j;
+		// 已經找過的數字，挪至前面，永不再找。
+		swap(array[i], array[j]);
+	}
+	return -1;
+}
+</textarea>
+<p>綜觀過程，是以一種順序讀取各個數字。因此隨機的計算順序，可以等價交換成隨機的輸入順序、循序的計算順序。</p>
+<img src="Randomized10.png">
+<textarea>
+int randomized_search(int array[], int n, int num)
+{
+	// 隨機排列
+	random_shuffle(array, array+n);
+
+	// 循序搜尋
+	for (int i=0; i<n; i++)
+		if (array[i] == num)
+			return i;
+	return -1;
+}
+</textarea>
+<textarea>
+int randomized_search(int array[], int n, int num)
+{
+	// 額外建立索引值、指標，避免改變陣列內容。
+	int index[n];
+	for (int i=0; i<n; i++)
+		index[i] = i;
+
+	// 隨機的計算順序
+	random_shuffle(index, index+n);
+
+	for (int i=0; i<n; i++)
+		if (array[index[i]] == num)
+			return i;
+	return -1;
+}
+</textarea>
+<p>搜尋次數的期望值是(n+1)/2。</p>
+<pre>
+正確數字在每個位置的出現機率都一樣多，都是1/n。
+正確數字出現在第1個位置，讀取第1個數字就能找到。
+正確數字出現在第i個位置，讀取第i個數字才能找到。
+  (1/n) * 1 + (1/n) * 2 + ... + (1/n) * n
+= (1/n) * (1+...+n)
+= (1/n) * (1+n)*n/2
+= (1+n)/2
+</pre>
+<p class="t">範例：隨機化排序法（Randomized Sort）</p>
+<p>隨便挑兩個位置，若數字順序不對則交換，直到無處可尋為止。</p>
+<img src="Randomized11.png">
+<p>交換次數的期望值是多少呢？</p>
+<p>只挑相鄰位置，期望值會比較少嗎？</p>
+<p>儘管缺乏實用價值，但是如果你會分析，麻煩教我。</p>
+<p class="t">範例：矩陣乘法驗算（Matrix Product Verification）</p>
+<p>矩陣乘法，通盤檢查太久，抽樣檢查較快。</p>
+<p>第二個矩陣，隨機挑選一個向量來驗算。驗算一次，僥倖通過機率是(n-1)/n；驗算k次，僥倖通過機率是(n-k)/n。</p>
+<img src="Randomized12.png">
+<p>第二個矩陣，隨機挑選多個向量，以向量總和來驗算。驗算一次，僥倖通過機率是1/2；驗算k次，僥倖通過機率是(1/2)^k。效果好多了。</p>
+<img src="Randomized13.png">
+<p class="t">範例：集合相似度（Set Similarity）</p>
+<p>此處將集合相似度設為交聯比：交集大小除以聯集大小。</p>
+<p>交集與聯集，通盤計算需額外記憶體，抽樣計算以節省記憶體。</p>
+<img src="Randomized14.png">
+<p>考慮資料結構，集合有兩種儲存方式：循序儲存、索引儲存。</p>
+<p>如果是循序儲存，隨機挑選一個數字，判斷是不是交集元素、聯集元素。大量抽樣，統計比例。累計越多次，答案越準確。</p>
+<img src="Randomized15.png">
+<p>陣列還可以改成雜湊表，節省搜尋時間。</p>
+<textarea>
+const int range = 10;
+
+double set_similarity(vector<int>& A[range],
+                      vector<int>& B[range])
+{
+	srand(time(0));
+
+	int c = 0;	// 交集大小
+	int d = 0;	// 聯集大小
+
+	for (int i=0; i<5; i++)	// 抽樣5次
+	{
+		int x = rand();
+		bool inA = find_number(A, x);	// 搜尋雜湊表
+		bool inB = find_number(B, x);
+		if (inA && inB) c++;
+		if (inA || inB) d++;
+	}
+
+	return (double)c / d;
+}
+</textarea>
+<p>如果是索引儲存，隨機抽樣改成隨機排列，然後挑選首個標記位置來比對。</p>
+<img src="Randomized16.png">
+<p>隨機排列還可以改成雜湊函數，節省排列時間。</p>
+<textarea>
+// MinHash
+double set_similarity(bool A[], bool B[], int range)
+{
+	int c = 0;	// 交集大小
+	int d = 0;	// 聯集大小（和抽樣次數一樣，其實可以省略。）
+
+	for (int i=0; i<5; i++)	// 抽樣5次
+	{
+		// 創造新的雜湊函數（此處沒有實作，這是虛擬碼。）
+		int (*hash)(int,int) = new_hash_function();
+
+		int headA = 2147483647;
+		for (int j=0; j<range; j++)
+			if (A[j])
+				headA = min(headA, hash(j, range));
+
+		int headB = 2147483647;
+		for (int j=0; j<range; j++)
+			if (B[j])
+				headB = min(headB, hash(j, range));
+
+		if (headA == headB) c++;
+		d++;
+	}
+
+	return (double)c / d;
+}
+</textarea>
+<p class="t">範例：快速排序法（Quicksort）</p>
+<p>挑選一個數字當作基準，所有數字分成大的一邊和小的一邊，遞迴下去。</p>
+<p>無論挑選哪一個數字當作基準，最終都會得到正確結果。</p>
+<img src="Randomized17.png">
+<p>然而，隨機挑選基準，不是最好的方式。挑選中位數當作基準，讓數字對半分，讓遞迴次數最少，才是最好的方式。</p>
+<p>中位數無法預測。實務上是將陣列三等份，以三個中央數的中位數當作基準。因為上一層遞迴已經數字分成兩邊、大致排序過了，所以這種方式更容易接近中位數。</p>
+<p class="t">範例：平面上距離最近的兩個點（Closest Pair）</p>
+<p>挑選一個點對距離當作方格寬度，建立方格紙。最近點對只會在相同方格、相鄰方格。窮舉田字，窮舉田字裡面所有點對，取距離最小者。</p>
+<p>無論挑選哪一個距離當作寬度，最終都會得到正確結果。</p>
+<img src="Randomized18.png">
+<p>然而，隨機挑選距離，不是最好的方式。實務上是挑選最近距離三倍以下的距離當作方格寬度。做法請參考：</p>
+<p><a href="https://www.cs.cmu.edu/~ckingsf/class/02713/lectures/lec31-random.pdf">https://www.cs.cmu.edu/~ckingsf/class/02713/lectures/lec31-random.pdf</a></p>
+<p class="t">範例：最小包圍圓（Smallest Enclosing Circle）</p>
+<p>包圍所有點的圓，越小越好。做法請參考：</p>
+<p><a href="http://www.cs.uu.nl/docs/vakken/ga/slides4b.pdf">http://www.cs.uu.nl/docs/vakken/ga/slides4b.pdf</a></p>
+<img src="Randomized19.png">
+<p>以遞增法求最小包圍圓，逐次添加一點，並且調整最小包圍圓。若新點在圓內，不做任何事；若新點在圓外，則新點一定在新圓上，但是本來的點就不一定在新圓上了。於是得到新問題：已知一點在圓上，求最小包圍圓。接著又得到新問題：已知兩點在圓上，求最小包圍圓。已知兩點時，以枚舉法掃描所有點，找到最遠的點。</p>
+<p>添加一點的時間複雜度分成兩種情況：圓不變、圓變動。因為無法預測變動，所以窮舉各種結果、反推變動機率。各種結果是新圓上有兩點、有三點。現有i點、已知一點在圓上，因此新點導致新圓的機率是(2-1)/i、(3-1)/i。添加一點的平均時間複雜度是O(1)，添加N點的平均時間複雜度是O(N)。原始問題以此類推，平均時間複雜度是O(N)。</p>
+<p class="t">Streaming Algorithm</p>
+<p>現在是資訊爆炸的年代，資料不斷增加。「串流演算法」就是處理源源不絕的輸入資料。大家關注的有：</p>
+<pre>
+online：隨時處理資料，甚至隨時計算正確答案。
+one-pass：只讀取一次資料，盡量計算正確答案。
+memory-bounded：資料無法盡數儲存，盡量計算正確答案。
+</pre>
+<p class="t">範例：統計數字數量</p>
+<p>先排序，再統計。</p>
+<img src="Streaming1.png">
+<textarea>
+void histogram(int array[], int n)
+{
+	sort(array, array+n);
+
+	int c = 1;
+	for (int i=1; i<n; i++)
+		if (array[i] != array[i-1])
+		{
+			// 印出統計結果
+			cout << array[i-1] << ':' << c << '\n';
+			// 重新計數
+			c = 1;
+		}
+	// 印出統計結果
+	cout << array[n-1] << ':' << c << '\n';
+}
+</textarea>
+<p>變成串流。建立陣列，根據數值大小，累計至對應位置。</p>
+<img src="Streaming2.png">
+<textarea>
+void histogram(istream& in)
+{
+	int c[1000000] = {};
+
+	int num;
+	while (in >> num)
+	{
+		c[num]++;
+		cout << c[num];
+	}
+}
+</textarea>
+<p>減少記憶體。格子少於數值範圍，只好使用雜湊函數。相異數字可能存入相同格子，無法精確統計。</p>
+<img src="Streaming3.png">
+<textarea>
+void histogram(istream& in)
+{
+	int c[10] = {};	// 統計表格，範圍0到9。
+
+	int num;
+	while (in >> num)
+	{
+		// 以雜湊函數決定累計位置。
+		int h = hash(num, 10);
+		c[h]++;
+		cout << c[h];
+	}
+}
+</textarea>
+<p>建立多個統計表格，使用不同雜湊函數，分散風險。推定最小值為統計結果。</p>
+<img src="Streaming4.png">
+<textarea>
+int hash1(int num) {return num % 10;}
+int hash2(int num) {return num % 9;}
+int hash3(int num) {return num * num % 10;}
+
+// Count-Min Sketch
+void histogram(istream& in)
+{
+	// 3個統計表格
+	int c[3][10] = {};
+	// 3種雜湊函數
+	int (*hash[3])(int) = {hash1, hash2, hash3};
+
+	int num;
+	while (in >> num)
+	{
+		int count_min = 2147483647;
+		for (int i=0; i<3; i++)
+		{
+			// 以雜湊函數決定累計位置，分散風險。
+			int h = hash[i](num);
+			c[i][h]++;
+			// 取最小值
+			count_min = min(count_min, c[i][h]);
+		}
+		cout << count_min;
+	}
+}
+</textarea>
+<p class="t">範例：相異數字個數</p>
+<p>先排序，再統計。</p>
+<img src="Streaming5.png">
+<textarea>
+int count_distinct(int array[], int n)
+{
+	sort(array, array+n);
+
+	int x = 0;
+	if (n > 0) x = 1;
+	for (int i=1; i<n; i++)
+		if (array[i] != array[i-1])
+			x++;
+	return x;
+}
+</textarea>
+<p>變成串流。建立陣列，根據數值大小，累計至對應位置。</p>
+<textarea>
+void count_distinct(istream& in)
+{
+	int c[1000000] = {};
+
+	int x = 0;
+	int num;
+	while (in >> num)
+	{
+		if (!c[num]) x++;
+		c[num]++;
+		cout << x;
+	}
+}
+</textarea>
+<p>減少記憶體。格子少於數值範圍，只好使用雜湊函數。相異數字可能存入相同格子，無法精確統計。</p>
+<textarea>
+void count_distinct(istream& in)
+{
+	int c[10] = {};	// 統計表格，範圍0到9。
+
+	int num;
+	while (in >> num)
+	{
+		// 以雜湊函數決定累計位置。
+		int h = hash(num, 10);
+		if (!c[h]) x++;
+		c[h]++;
+		cout << x;
+	}
+}
+</textarea>
+<p>再減少記憶體。建立二進位數值當作答案。每讀一個數字，最低位第1位改成1的機率是1/2，第i位改成1的機率是1/2ⁱ。推定低位數連續的1再加一是答案。</p>
+<textarea>
+void count_distinct(istream& in)
+{
+	srand(time(0));
+
+	unsigned int mask = 0;
+	int num;
+	while (in >> num)
+	{
+		for (int i=0; i<32; i++)
+			if (rand() % (1 << i) < 1)
+				mask |= (1U << i);
+
+		int lsb0 = __builtin_ctz(mask + 1U);
+		cout << (1 << lsb0);
+	}
+}
+</textarea>
+<textarea>
+// Flajolet-Martin Sketch
+void count_distinct(istream& in)
+{
+	unsigned int mask = 0;
+	int num;
+	while (in >> num)
+	{
+		// 簡化成每次只修改一個位數。
+		// 數尾端有多少個零，修改對應位數。
+		int h = hash(num, 32);
+		int i = (h > 0 ? __builtin_ctz(h) : 32);
+		mask |= (1U << i);
+
+		// 經實驗發現除以0.77351效果很好。
+		int lsb0 = __builtin_ctz(mask + 1U);
+		cout << floor(double(1 << lsb0) / 0.77351));
+	}
+}
+</textarea>
+<p class="t">範例：尋找陣列裡的最小值</p>
+<p>趁早找到最小值，不想看遍全部數字。</p>
+<img src="Streaming6.png">
+<p>前n/e個，記錄最小值。第n/e + 1個以後，如果小於最小值，就推定為答案。</p>
+<p>實際應用：找伴侶、買水果、炒短線。</p>
+<textarea>
+// Gilbert-Mosteller Strategy
+int find_minimum(int array[], int n)
+{
+	int k = floor((double)n / exp(1));
+	int min = 2147483647;
+	for (int i=0; i<k; i++)
+		if (array[i] < min)
+			min = array[i];
+
+	for (int i=k; i<n; i++)
+		if (array[i] < min)
+			return array[i];
+	return min;
+}
+</textarea>
+<p class="t">範例：隨機抽樣（Random Sampling）</p>
+<p>隨機挑選一物，機率均等。</p>
+<img src="Streaming7.png">
+<textarea>
+int random_sampling(int array[], int n)
+{
+	srand(time(0));
+	return array[rand() % n];
+}
+</textarea>
+<p>變成串流。使用動態陣列。</p>
+<textarea>
+void random_sampling(istream& in)
+{
+	vector<int> array;	// 動態陣列
+
+	int num;
+	for (int i=0; in >> num; i++)
+	{
+		array.push_back(num);
+		cout << array[rand() % (i+1)];
+	}
+}
+</textarea>
+<p>節省記憶體，只需儲存一物。從1開始編號，遭遇第i物時，儲存機率1/i，捨棄機率1 - 1/i。</p>
+<p>最終得到第i物的條件是：保留第i物，捨棄第i+1物到第n物。機率恰是1/n：</p>
+<pre>
+   1           1             1                   1
+  ——— * ( 1 - ——— ) * ( 1 - ——— ) * ... * ( 1 - ——— )
+   i          i+1           i+2                  n 
+
+   1     i    i+1         n-1    1
+= ——— * ——— * ——— * ... * ——— = ———
+   i    i+1   i+2          n     n
+</pre>
+<p>最終得到各物的機率，推導過程如法炮製，機率均是1/n。</p>
+<textarea>
+// Reservoir Sampling
+void random_sampling(istream& in)
+{
+	srand(time(0));
+
+	int result = 0, num;
+	for (int i=0; in >> num; i++)
+	{
+		if (rand() % (i+1) < 1)
+			result = num;
+		cout << result;
+	}
+}
+</textarea>
+<p class="t">範例：隨機混洗（Random Shuffle）</p>
+<p>遭遇第i物時，第i物與後面挑一物對調。</p>
+<img src="Randomized7.png">
+<textarea>
+// 產生[0,x)的隨機整數。
+inline int rand(int x) {return rand() % x;}
+
+// 產生[x,y)的隨機整數。
+inline int rand(int x, int y) {return x + rand(y - x);}
+
+// Fisher-Yates Shuffle
+void random_shuffle(int array[], int n)
+{
+	srand(time(0));
+
+	for (int i=0; i<n-1; i++)
+		swap(array[i], array[rand(i, n)]);
+}
+</textarea>
+<p>隨機混洗可以串流嗎？我也不知道。哎喲隨便啦。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/AlgorithmDesign.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:58:10 GMT -->
+</html>

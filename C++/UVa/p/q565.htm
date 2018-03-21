@@ -1,0 +1,144 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q565: Pizza Anyone?</h1>             
+<p>你負責替你的朋友們訂披薩。他們每個人都告訴你他想要什麼，不想要什麼。當然，他們也都瞭解只有一個披薩，或許不可能所有的需求都能實現。你能訂一個披薩，這個披薩能滿足每個人至少一項需求嗎？</p>     
+<p>賣披薩的店提供了以下16種配方，你可以選擇要不要某一種配方在披薩上：</p>     
+<div align="center">
+  <table cellPadding="3" border="1">
+    <tbody>
+      <tr>
+        <td align="middle"><b>配方代碼</b></td>
+        <td align="left"><b>配方名稱</b></td>
+      </tr>
+      <tr>
+        <td align="middle">A</td>
+        <td align="left">Anchovies（鯷魚）</td>
+      </tr>
+      <tr>
+        <td align="middle">B</td>
+        <td align="left">Black Olives（黑橄欖）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">C</td> 
+        <td align="left">Canadian Bacon（加拿大培根）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">D</td> 
+        <td align="left">Diced Garlic（蒜頭切塊）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">E</td> 
+        <td align="left">Extra Cheese（額外的Cheese）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">F</td> 
+        <td align="left">Fresh Broccoli（新鮮甘藍菜）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">G</td> 
+        <td align="left">Green Peppers（青椒）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">H</td> 
+        <td align="left">Ham（火腿）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">I</td> 
+        <td align="left">Italian Sausage（義大利香腸）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">J</td> 
+        <td align="left">Jalapeno Peppers</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">K</td> 
+        <td align="left">Kielbasa</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">L</td> 
+        <td align="left">Lean Ground Beef（牛肉）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">M</td> 
+        <td align="left">Mushrooms（香菇）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">N</td> 
+        <td align="left">Nonfat Feta Cheese</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">O</td> 
+        <td align="left">Onions（洋蔥）</td> 
+      </tr> 
+      <tr> 
+        <td align="middle">P</td> 
+        <td align="left">Pepperoni</td> 
+      </tr> 
+    </tbody> 
+  </table> 
+</div> 
+<p>你的每個朋友提供你他想要或不想要的配方，以下面的格式表示：</p>       
+<pre>+O-H+P;</pre> 
+<p>表示他想要配方O，或者不想要配方H，或者想要配方P。而</p> 
+<pre>-E-I-D+A+J;</pre> 
+<p>表示他不想要配方E，或者不想要配方I，或者不想要配方D，或者想要配方A，或者想要配方J。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入含有多組測試資料。每組測試資料包含了1到12位朋友的需求，每個朋友一列。</p>                   
+<p>若遇到僅含有一個 .  
+的一列，代表此組測試資料結束。請參考Sample Input。</p>                    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                     
+<p>對每組測試資料輸出一列，輸出披薩上的配方代碼（按字母順序輸出），使這個披薩能滿足每個人至少一項需求。如果答案不只一種組合，輸出任何一種組合都可以。</p>                
+<p>如果沒有任何一種配方組合可以滿足每個人至少一項需求，請輸出 
+：</p>                
+<pre>No pizza can satisfy these requests.</pre>                
+<p>輸出格式請參考Sample Output。</p>                 
+<table border="1" width="100%" cellpadding="5">                    
+  <tr>                    
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                    
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                   
+  </tr>                                   
+  <tr>                                   
+    <td width="50%">                       
+      <pre>+A+B+C+D-E-F-G-H;
+-A-B+C+D-E-F+G+H;
+-A+B-C+D-E+F-G+H;
+.
++A+B+C+D;
++E+F+F+H;
++A+B-G;
++O+J-F;
++H+I+C;
++P;
++O+M+L;
++M-L+P;
+.
++A+B+C+D;
++E+F+F+H;
++A+B-G;
++P-O;
++O+J-F;
++H+I+C;
++P;
++O;
++O+M+L;
+-O-P;
++M-L+P;
+.</pre>  
+    </td>                                
+    <td width="50%">                          
+      <pre>Toppings:
+Toppings: CELP
+No pizza can satisfy these requests.
+</pre>  
+    </td>                               
+  </tr>                               
+</table>                               
+                                                                 
+</body>                                                                 
+                                                                 
+</html>                                                                 

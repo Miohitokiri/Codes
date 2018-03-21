@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q155: All Squares</h1>          
+<p>在幾何上，任何正方形都有一個唯一的中心點。在畫有格子線的平面上，只有在正方形的邊長為奇數時才成立。因為任何一個奇數都可以寫成2k+1。所以若我們定義某一個正方形的大小為k，也就是表示他的邊長為2k+1。現在我們要依照下面的規則來定義一個正方形所構成的圖案：</p>  
+<ol>
+  <li>最大的正方形大小為k（也就是說邊長2k+1）並且被放置在一個大小為1024的正方形的正中央。（也就是說整個可以使用的區域為一個邊長2049的正方形，如以座標表示，此區域左上角座標為（0,0），右下角座標為（2048,2048））</li>
+  <li>可以允許使用的正方形大小最小為1,最大為512。因此  
+    1&lt;= k &lt;= 521。</li> 
+  <li>所有 k&gt;1 的正方形，以其4個角為中心點各有一個大小為 
+    k  
+    div 2 的正方形（在這裡div指的是整數的除法，例如：9 div 2  
+    = 4）</li> 
+</ol>
+<p>因此，給你一個k值，根據以上的規則，我們可以畫出一個唯一的圖案。而螢幕上的每一個點可能落在0個或多個正方形中。（我們定義若點剛好落在邊上，亦視為落在此正方形中）。所以如果最大的正方形的k=15，我們可以畫出以下的圖案：</p>
+<p align="center"><img border="0" src="p155.gif"></p>  
+<p>寫一個程式，讀入k及某一個點的座標，輸出該點總共被多少個正方形所包圍。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，每列有3個整數。分別代表k及一個點的座標。最後一列的內容為3個0，代表輸入結束。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料輸出一列。輸出該點總共被多少個正方形所包圍，輸出長度為3，靠右對齊。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>500 113 941
+300 100 200
+300 1024 1024
+0 0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>  5
+  0
+  1</pre>
+<pre>　</pre>
+                            
+</body>                            
+                            
+</html>                            

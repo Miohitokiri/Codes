@@ -1,0 +1,48 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/BipartiteGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:24 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Bipartite Graph</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Bipartite Graph</p>
+</div><div class="c">
+<p class="t">Bipartite Graph</p>
+<p>「二分圖」。可以分成兩群點，兩群點之間有邊，兩群點內部無邊。</p>
+<img src="BipartiteGraph1.png">
+<p>二分圖可以重新繪製，讓所有點分成左右兩側，只有左右之間有邊。通常有許多種分法。</p>
+<img src="BipartiteGraph2.png">
+<p>二分圖沒有奇環（奇數條邊的環）、只有偶環（偶數條邊的環）。沿著邊走，一往一返，必為偶數。</p>
+<img src="BipartiteGraph3.png">
+<p>樹、有向無環圖沒有環，二分圖則是沒有奇環。二分圖也是十分重要的特例，往往存在速度極快的演算法，例如「<a href="Matching.html">Matching</a>」以及「<a href="Domination.html">Vertex Cover</a>」的演算法。</p>
+<p class="t">Directed Bipartite Graph</p>
+<p>「有向二分圖」鮮少討論。</p>
+<p class="t">現實生活當中的Bipartite Graph</p>
+<p>現實生活有許多圖是二分圖。</p>
+<p>配對的概念：男生女生聯誼配對，是二分圖。運動比賽兩隊人馬對決，是二分圖。鬼腳圖，是二分圖。一個蘿蔔一個坑，是二分圖。</p>
+<img src="BipartiteGraph4.png">
+<p>輪替的概念：西洋棋盤，點是格子，邊是上下左右相鄰關係，黑格白格形成二分圖；邊是八方向相鄰，則不是二分圖。國王移動，是二分圖。騎士移動，是二分圖。</p>
+<img src="BipartiteGraph5.png">
+<p>交叉的概念：西洋棋盤，點是行列，邊是格子，是二分圖。兩層迴圈，是二分圖。</p>
+<img src="BipartiteGraph6.png">
+<p class="t">Bipartite Graph資料結構</p>
+<p>當資料結構是adjacency matrix，可以進行精簡。就這樣。</p>
+<img src="BipartiteGraph7.png">
+<p class="t">Bipartite Graph Recognition</p>
+<p>檢查一張圖是不是二分圖，方法很簡單：確認圖上是否有奇環，沒有奇環就是二分圖。</p>
+<p>把圖重新畫成樹的形狀，就容易找環了！把圖重新畫成樹的形狀，利用Graph Traversal即可，無論是DFS或BFS都行！</p>
+<p>在樹上標記深度。然後檢查圖上每一條邊，看看端點是否一奇一偶，就能判斷是否有奇環。</p>
+<img src="BipartiteGraph8.png">
+<p>最後有件事值得一提。確認一張圖只有偶環、沒有奇環（二分圖），是P問題，有著快速的演算法。確認一張圖沒有偶環、只有奇環，卻是NP-complete問題，目前沒有快速的演算法。非常不可思議！</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Level Graph</p>
+</div><div class="c">
+<p class="t">Level Graph</p>
+<p>「分層圖」。所有點可以分成許多層，所有邊只連接相鄰的層，所有邊皆朝向更高的層。</p>
+<img src="LevelGraph1.png">
+<p>很明顯地，樹、森林、有向無環圖、二分圖都是分層圖的特例。</p>
+<p>分層圖容易設計有效率的演算法，諸如Dynamic Programming、Parallelized Algorithm。然而現實生活鮮少出現分層圖。</p>
+<p>運用分層圖，得以設計一些特別的演算法，例如「<a href="Path2.html">Path</a>」以及「<a href="Flow.html">Flow</a>」的演算法。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/BipartiteGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:34 GMT -->
+</html>

@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q271: Simply Syntax</h1>          
+<p align="right">原翻譯者：kcwu</p>
+<p>在 Hedonia 島上的官方語言是 Hedonian 語。有位 Hedonian 
+語言學教授發現她的許多學生並未弄明白 Hedonian 
+語的語法規則。她實在是厭煩了訂正學生的語法錯誤，所以她決定要她的學生們寫個程式，能夠檢查出他們寫的句子中的語法錯誤。就跟 
+Hedonian 人的天性一樣，Hedonian 
+語的文法規則也相當單純，規則如下：
+<dl compact>
+  <dt>0.
+  <dd>這個語言中僅有 <tt>p</tt> 到 <tt>z</tt>，還有 <tt>N</tt>，<tt>C</tt>，<tt>D</tt>，<tt>E</tt>，<tt>I</tt> 
+    這幾個字母。
+  <dt>1.
+  <dd>從 <tt>p</tt> 到 <tt>z</tt> 
+    中，任何一個字母都是一個正確的句子。
+  <dt>2.</dt>
+  <dd>如果 <i>s</i> 是一個正確的句子，那麼 <tt>N</tt><i>s</i> 
+    也是。
+  <dt>3.</dt>
+  <dd>如果 <i>s</i> 及 <i>t</i> 都是正確的句子，那麼 <tt>C</tt><i>st</i>, 
+    <tt>D</tt><i>st</i>, <tt>E</tt><i>st</i> 還有 <tt>I</tt><i>st</i> 
+    也都是正確的句子。
+  <dt>4.</dt>
+  <dd>0. 到 3. 是檢查一個句子是否合乎語法僅有的規則。</dd>
+</dl>
+<p>你被要求寫程式檢查一個句子是否滿足上述的規則 0. 到 4.。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+輸入中含有許多句子，每個句子一列，都只含有 <tt>p</tt> 到 <tt>z</tt> 
+還有 <tt>N</tt>, <tt>C</tt>, <tt>D</tt>, <tt>E</tt>, <tt>I</tt>這幾個字母。你可以假設每個句子至多有 
+256 個字母，至少 1 個字母。 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                         
+對於一個格式正確的句子輸出 <tt>YES</tt>，對於一個錯誤的句子則輸出 
+<tt>NO</tt>。       
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                    
+Input</b></span></p>                                           
+<pre>Cp
+Isz
+NIsz
+Cqpq
+IzIst
+IIszz
+IIszIsz
+IIszIIIszzIsz
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNCst
+zN
+zzI
+st
+z</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                             
+Output</b></span></p>                                           
+<pre>NO
+YES
+YES
+NO
+YES
+YES
+YES
+YES
+YES
+NO
+NO
+NO
+YES</pre>
+                                         
+</body>                                         
+                                         
+</html>                                         

@@ -1,0 +1,115 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/PlanarGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:40 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Planar Graph</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Planar Graph</p>
+</div><div class="c">
+<p class="t">Planar Graph</p>
+<img src="PlanarGraph1.png">
+<p>一張圖，畫在平面上，點不重疊、邊不交叉，稱作「平面圖」。</p>
+<p>先前在「<a href="Graph.html">Graph</a>」提及了同構的概念：一張圖可以挪動點與邊。一張平面圖，就算挪動點與邊，使得點重疊、邊交叉，也還是平面圖。反過來說，一張圖，畫在平面上，挪動點與邊，使得點不重疊、邊不交叉，也算是平面圖。</p>
+<p>那有沒有球面圖呢？那有沒有立體不打結圖呢？應該有吧。</p>
+<p class="t">Euler Characteristic</p>
+<img src="PlanarGraph2.png">
+<p>凡是點、邊、面這些基本元件之間的數量關係，就稱作Euler Characteristic。歐拉是第一位想到這件事情的數學家。</p>
+<p>平面圖當中，則有V+F=E+2這個數量關係，其中V代表點數、E代表邊數、F代表面數。</p>
+<p>進階版本是V+F=E+C+1，其中C代表連通分量數目。</p>
+<p>你會證明嗎？:-)</p>
+<p class="e">UVa 10178</p>
+<p class="t">Dual Graph</p>
+<img src="PlanarGraph3.png">
+<p>設計平面圖演算法時，「對偶圖」是相當重要的工具。</p>
+<p>一張平面圖當中，面與面的相鄰關係表示成一張圖，就得到對偶圖。對偶圖當中，面與面的相鄰關係表示成一張圖，就得到原來的平面圖。</p>
+<p>原圖和對偶圖可以互相轉換成為對方。原圖和對偶圖擁有相等的資訊量，只是以不同形態呈現。</p>
+<p>有向圖的情況比較特別：對偶圖從右往左穿越邊；橋與自環無法判斷左右，對偶圖以逆時針方向穿越邊。此定義亦可改成從左往右、順時針。</p>
+<img src="PlanarGraph4.png">
+<p>運用同構的概念，挪動原圖的點與邊，就會得到另外一種對偶圖。對偶圖可能有許多種，而且不見得同構！</p>
+<p>由於缺乏優美規律，因此談論對偶圖時，習慣忽略同構。</p>
+<img src="PlanarGraph5.png">
+<p>最特別的對偶圖例子，就是橋（bridge）與自環（loop）。舉例來說，原圖是一棵樹，對偶圖是一個點以及一大堆自環；各種樹對應各種自環包覆方式。</p>
+<p>由於缺乏優美規律，因此談論對偶圖時，習慣忽略橋與自環。原圖凡是無橋、無自環，對偶圖即是無橋、無自環。</p>
+<p>圖論當中，有許多對偶方式。最名聞遐邇的對偶方式，就是平面對偶。於是Dual Graph這個名詞，就留給了平面對偶所得到的圖；其他對偶方式則有其他名稱。</p>
+<p class="e">UVa 11706</p>
+<p class="t">Planar Graph資料結構</p>
+<p><a href="http://en.wikipedia.org/wiki/Doubly_connected_edge_list">http://en.wikipedia.org/wiki/Doubly_connected_edge_list</a></p>
+<p class="t">Planar Graph Recognition（Boyer & Myrvold, 2004）</p>
+<p><a href="http://en.wikipedia.org/wiki/Planarity_testing">http://en.wikipedia.org/wiki/Planarity_testing</a></p>
+<p>要判定一張圖是不是平面圖，老一輩將之轉換成排列順序問題，運用PQ Tree或PC Tree資料結構求解，規則複雜難以實作。</p>
+<p>後來出現簡易的演算法，運用Depth-first Search就能完成，時間複雜度O(V+E)：</p>
+<p><a href="http://jgaa.info/accepted/2004/BoyerMyrvold2004.8.3.pdf">http://jgaa.info/accepted/2004/BoyerMyrvold2004.8.3.pdf</a></p>
+<p class="e">UVa 10768</p>
+<p class="t">Mininum Spanning Tree（Matsui, 1994）</p>
+<img src="PlanarGraph6.png">
+<p>原圖的最小生成森林以外的邊，就是對偶圖的最大生成樹。</p>
+<p>原圖的每一種最小生成森林、對偶圖的每一種最大生成樹，一一對應。</p>
+<p>證明：一、視樹為牆。樹無環，故面有出口、面皆連通。二、生成樹須連通，故任兩面僅能有一條通路，否則兩條以上通路將切斷生成樹連通。三、生成森林無須連通，但是兩生成子樹的兩面，其通路必經最外面（可想成樹根），故任兩面仍僅有一條通路。四、承一二三，所有面連通、任兩面只有一條通路，即是生成樹！五、牆最小，非牆則最大，故得最大生成樹。</p>
+<p>演算法原理類似「<a href="SpanningTree.html">Borůvka's Algorithm</a>」，同時考慮原圖和對偶圖，同時計算原圖的最小生成樹、對偶圖的最大生成樹。</p>
+<pre>
+一、隨時刪除所有自己連向自己的邊，也就是刪除所有自環。
+二、重複以下步驟V次：
+　口、原圖以及對偶圖，一定找得到一個度數小於4的點，稱作a點。
+　口、如果a點在原圖上：
+　　甲、原圖a點所屬的生成子樹，找權重最小的聯外邊ab。
+　　乙、原圖的最小生成樹有邊ab。
+　　丙、原圖收縮邊ab、對偶圖刪除邊ab。兩圖隨時保持對偶。
+　口、如果a點在對偶圖上：
+　　甲、對偶圖a點所屬的生成子樹，找權重最大的聯外邊ab。
+　　乙、對偶圖的最大生成樹有邊ab。
+　　丙、對偶圖收縮邊ab、原圖刪除邊ab。兩圖隨時保持對偶。
+</pre>
+<p>因為度數小於4，找最小鄰邊的時間複雜度就下降為O(1)，總時間複雜度就下降為O(V+E)，到達了下限。</p>
+<pre>
+平面圖：V+F=E+C+1
+原圖以及對偶圖的總度數：2E + 2E' = 4E
+原圖以及對偶圖的總點數：V + V' = V + F = E+C+1
+原圖以及對偶圖，一個點的平均度數：4E / (E+C+1) < 4
+原圖以及對偶圖，一定至少有一個點，其度數小於等於平均度數，也就是小於4。
+</pre>
+<p>由於要維護原圖和對偶圖的資料結構，還要隨時找到度數小於4的點，所以此演算法的實際運行速度，遠比一般圖的最小生成樹演算法來得慢。</p>
+<p>儘管此演算法並不實用，但是此演算法開啟了一條道路，讓我們知道各種圖論問題一旦搬到平面圖上，只要運用對偶圖、度數等等性質，時間複雜度就會有很大的改進。</p>
+<p>至於有向圖的版本，我不知道有沒有人研究。</p>
+<p class="t">Shortest Path</p>
+<p><a href="http://courses.csail.mit.edu/6.889/">http://courses.csail.mit.edu/6.889/</a></p>
+<p class="e">ICPC 6438</p>
+<p class="t">Minimum Cut / Maximum Flow</p>
+<p>http://www.cnblogs.com/yejinru/archive/2013/04/19/3031731.html</p>
+<pre>
+Klein
+
+Multiple-source shortest paths in planar graphs
+build O(nlogn)  query O(logn)
+
+Multiple-Source Single-Sink Maximum Flow in
+Directed Planar Graphs in O(diameter * nlogn) Time
+http://arxiv.org/pdf/1104.4728.pdf
+</pre>
+<p class="e">ICPC 3661</p>
+<p class="t">Clique</p>
+<p>http://tmtacm.blogspot.tw/2016/01/i.html</p>
+<p class="t">備忘</p>
+<pre>
+平面圖判定           O(n)
+最小生成樹           O(n)
+st最短路徑(無負邊)   O(n * sqrt(log(n)))
+st最短路徑(負邊)     O(n^1.5)
+st最大割             O(n^1.5 * log(n))
+st最小割             = st最短路徑
+st最大流             = st最短路徑
+最小割               = ∅-join
+最小環基底           = Gomory–Hu tree
+st嚴格次短路徑       O(n^3)
+完美匹配計數         FKT algorithm
+G is Eulerian iff dual(G) is bipartite.
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Euclidean Graph</p>
+</div><div class="c">
+<p class="t">Euclidean Graph</p>
+<p>邊的權重，等於二維平面的直線距離。請參考計算幾何領域。</p>
+<p>儘管Euclidean Graph是二維平面上的圖，但是它跟前面提到的平面圖，沒有任何關係。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/PlanarGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:46 GMT -->
+</html>

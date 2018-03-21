@@ -1,0 +1,38 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q191: Intersection</h1>          
+<p>給你一線段及一矩形的座標資料，請你寫一個程式來判斷此線段與矩形是否有相交。</p>  
+<p>例如：線段2端點座標(4,9)(11,2)，矩形左下座標(1,1)，右上座標(7,5)。從下圖可知無相交。</p>  
+<p><img border="0" src="p191.gif" width="217" height="190"></p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個正整數代表以下有幾組測試資料。</p>    
+<p>每組測試資料一列，含有8個整數。前4個分別代表線段2端點的座標(x,y)。第5及第7個整數中較小的為矩形左下角的x座標，較大的為矩形右上角的x座標。第6及第8個整數中較小的為矩形左下角的y座標，較大的為矩形右上角的y座標。Sample 
+Input中的前3個測試資料的座標圖均為上圖。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出一列。T代表有相交，F代表無相交。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>6
+4 9 11 2 1 5 7 1
+4 9 11 2 7 5 1 1
+4 9 11 2 1 1 7 5
+4 9 8 2 1 5 7 1
+4 9 7 5 1 5 7 1
+2 2 3 3 1 5 7 1</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>F
+F
+F
+T
+T
+T</pre>
+                            
+</body>                            
+                            
+</html>                            

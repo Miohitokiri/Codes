@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10131: Is Bigger Smarter ?</h1>          
+<p>有些人認為大象是越大隻的越聰明。為了要反證這項說法，你想要用收集到的大象資料列出一個大象數目最大的子集合，在這個子集合中，大象的體重是漸增的，而智商是漸減的。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>只有一組測試資料，包含了最多1000隻大象的體重及智商的資料。每隻大象一列，有2個整數W<sub>i</sub>及S<sub>i</sub>（介於1和10000之間）分別代表第i隻大象的體重及智商。大象的編號從1開始。</p>  
+<p>不同的大象可能有相同的重量，相同的智商，或相同的重量及智商。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>第一列輸出一個整數 n，代表你可以找到的子集合最大的大象數目。接下來的 
+n 列，每列有一個正整數，代表某隻大象的編號。</p> 
+<p>如果這n個正整數是a1,a2,....an，那它應該要符合</p> 
+<p>W<sub>a1</sub> &lt; W<sub>a2</sub> &lt; ...... &lt; W<sub>an</sub> ，且</p> 
+<p>S<sub>a1</sub> &gt; S<sub>a2</sub> &gt; ...... &gt; S<sub>an</sub></p> 
+<p>解答可能不只一個，請輸出其中任何一個即可。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Input</b></span></p>                              
+<pre>6008 1300
+6000 2100
+500 2000
+1000 4000
+1100 3000
+6000 2000
+8000 1400
+6000 1200
+2000 1900</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>4
+4
+5
+9
+7</pre>
+                            
+</body>                            
+                            
+</html>                            

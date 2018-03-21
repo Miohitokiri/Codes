@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q257: Palinwords</h1>          
+<p>在英文字中，迴文（palindrome）的意思一個字從左讀到右和從右讀到左都是一樣的，例如：mumdadmum、abba都是迴文。所以根據這個定義，空字串（&quot;&quot;），一個字元的字串（例如：&quot;a&quot;）和包含2個相同字元的字串（例如：&quot;aa&quot;）都是迴文。而迴文的長度就是該字串的長度。<p>一個迴文字（palinword）是指一個字中含有至少2個迴文（palindrome），且這2個迴文的長度至少為3。在這裡，迴文（palindrome）出現的位置並不是那麼重要，同一個迴文（palindrome）出現在不同的位置並不被視為另一個迴文，例如：&quot;<font color="#FF0000">aba</font>xyz<font color="#FF0000">aba</font>&quot;就不是迴文字。另外，一個迴文也不可以被包含於另一迴文中，例如：mum這個迴文被包含於amuma這個迴文中，所以amuma也不是迴文字。但是迴文卻可以有部分重疊，例如：amama這個字是個迴文字，因為含有這2個長度3的迴文：ama、mam（ma重疊了）。更多的例子請參考Sample  
+Input和Sample Output。<p>你的任務是讀入一些字，如果該字為迴文字就輸出。 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                   
+輸入含有許多字（每個字為連續的英文字母A~Z所組成，每列可能含有0到多個字，但是每列的長度最多255個字元）。字與字之間以1個以上不等的空白字元相隔。請參考Sample Input。  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                           
+按照輸入字的順序輸出。如果該字為迴文字（palinword）則輸出此字（每字一列），否則不輸出。        
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                       
+Input</b></span></p>                                              
+<pre>MOEILIJKHEDEN INVOER
+VERNEDEREN
+AMUMA AMAMA MUMMUM
+AMATRAMA AAAA
+ABATRABAR
+DUMMY
+WORDS
+ABAXYZABA</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                
+Output</b></span></p>                                              
+<pre>MOEILIJKHEDEN
+VERNEDEREN
+AMAMA
+MUMMUM</pre>   
+                                            
+</body>                                            
+                                            
+</html>                                            

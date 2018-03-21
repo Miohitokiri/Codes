@@ -1,0 +1,50 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10491: Cows and Cars</h1>            
+<p>在某些電視節目中有比賽的遊戲，參賽者被要求多扇門其中的一個門，門後有各種不同的禮物。現在你就是參賽者，你面臨的挑戰如下：在你面前有3扇門，其中2扇門之後各有一隻牛，另一扇門之後則有你想要的禮物─1部車。在你選了一扇門但是還沒打開之前，主持人會給你一個機會，他會打開一扇藏有牛的門（他絕不會開到藏有車的門，因為他知道車在哪裡），然後問你要不要換另一扇門。你可以選擇保持原來的選擇，也可以改變你的選擇到另一扇還沒打開的門。</p>
+<p>在這個例子中，如果你選擇換，那你贏得車子的機率有2/3（很難相信吧！），因為有兩種可能情況：</p>
+<ol>
+  <li>假如你一開始選擇的門後是牛（這種情況有2/3的機會），那麼你後來換的門後一定是車子，因為另一隻牛的門已經被主持人打開了。</li>
+  <li>假如你一開始選的車子的門（這種情況有1/3的機會），那你換了之後一定是牛。</li>
+</ol>
+<p>這個問題是上面比賽的一般化：</p>
+<ul>
+  <li>牛的數目是可變的。</li>
+  <li>車的數目是可變的（牛的數目+車的數目=門的數目）</li>
+  <li>主持人打開的門的數目是可變的（記住：他絕不會開到藏有車的門）</li>
+</ul>
+<p>你的任務是算出，如果選擇換一扇門，贏得一部車的機率是多少。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，含有3個整數：NCOWS NCARS NSHOW，分別代表牛的數目、車的數目、主持人打開的門的數目。其範圍為：</p>         
+<p>1 &lt;= NCOWS &lt;= 10000<br> 
+1 &lt;= NCARS &lt;= 10000<br> 
+0 &lt;= NSHOW &lt; NCOWS</p>         
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                       
+<p>對每組測試資料請輸出一列，假如你選擇換一扇門後贏得一部車的機率。輸出到小數點後5位。</p>       
+<table border="1" width="100%" cellpadding="5">        
+  <tr>        
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>           
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>          
+  </tr>          
+  <tr>          
+    <td width="50%">  
+      <pre>2 1 1
+5 3 2
+2000 2700 900</pre> 
+    </td>         
+    <td width="50%">   
+      <pre>0.66667
+0.52500
+0.71056</pre> 
+    </td>        
+  </tr>        
+</table>        
+                                          
+</body>                                          
+                                          
+</html>                                          

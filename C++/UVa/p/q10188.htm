@@ -1,0 +1,82 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10188: Automated Judge Script</h1>          
+<p>大家都知道，程式設計比賽的裁判們通常是很嚴苛並且懶惰的。所以他們希望你可以幫他們自動判斷來自世界各地的程式好手所寫的程式的結果為何。你所需要做的是寫一個程式來判斷參賽者程式的輸出與標準答案之間的關係。判斷的結果有Accepted, 
+Presentation Error, Wrong Answer三種。分別定義如下：</p>    
+<p><b>Accepted:</b> 
+由於我們裁判是非常嚴苛的，所以你的輸出一定要跟標準答案一模一樣，也就是說所有的字元得相同，並且有相同的次序，才會給Accepted。</p>   
+<p><b>Presentation Error:</b> 如果你不是Accepted，但是在數字字元（0~9）方面相同，並且數字字元也有相同的次序，我們會給你Presentation 
+Error。例如：15&nbsp;&nbsp; 0和150會得到Presentation Error，但是15 0和1 
+05將會得到Wrong Answer。</p>   
+<p><b>Wrong Answer:</b> 不是以上2種狀況就得到Wrong Answer。</p>   
+<p>關於這些定義，你應該仔細參考Sample Input, Sample Output。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料的第一列有一個正整數 n（n &lt; 
+100），代表標準答案的列數。接下來有n列，代表標準答案。然後有一列含有一個正整數 
+m（m &lt; 100），代表參賽者程式的輸出的列數。在接下來有m列，代表參賽者程式的輸出。</p>     
+<p>n=0代表輸入結束。每一列的長度不會超過100。請參考Sample 
+Input。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，請輸出這是第幾組測試資料以及參賽者程式的輸出與標準答案之間的關係（Accepted, 
+Presentation Error, Wrong Answer其中之一）。請參考Sample Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                              
+Input</b></span></p>                              
+<pre>3 
+Input Set #1: YES 
+Input Set #2: NO 
+Input Set #3: NO 
+2 
+123 
+ABCDE FG 
+2
+The answer is: 10
+The answer is: 5
+2
+The answer is: 10
+The answer is: 5
+2
+The answer is: 10
+The answer is: 5
+2
+The answer is: 10
+The answer is: 15
+2
+The answer is: 10
+The answer is:  5
+2
+The answer is: 10
+The answer is: 5
+3
+Input Set #1: YES
+Input Set #2: NO
+Input Set #3: NO
+3
+Input Set #0: YES
+Input Set #1: NO
+Input Set #2: NO
+1
+1 0 1 0
+1
+1010
+1
+The judges are mean!
+1
+The judges are good!
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Run #1: Presentation Error
+Run #2: Accepted
+Run #3: Wrong Answer
+Run #4: Presentation Error
+Run #5: Wrong Answer
+Run #6: Presentation Error
+Run #7: Presentation Error</pre>
+                            
+</body>                            
+                            
+</html>                            

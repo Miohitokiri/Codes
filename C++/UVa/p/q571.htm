@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q571: Jugs</h1>          
+<p>在電影「終極警探 3（Die Hard 3）」中布魯斯威利（Bruce   
+Willis）和山謬傑克森（Samuel L. Jackson）遇到壞蛋設下的謎題：給一個3加侖和5加侖的桶子，要求他們必須在5加侖的桶子中裝4加侖的水。現在你的任務就是解決這個問題。</p>   
+<p>給你2個桶子A、B和無限供應的水，你可以做3個動作：（1）把一個桶子裝滿水（2）把一個桶子的水倒光（3）把一個桶子的水倒到另一個桶子中。把水從一個桶子倒到另一個桶子的動作停止有2個可能的原因：第一個桶子的水倒光了或第二個桶子的水滿了。例如：A有5加侖的水，B有6加侖的水且B的容量為8加侖，則當把A的水倒到B後，B就滿了（8加侖）而A中還剩3加侖。在本問題中，給你Ca,Cb,N。Ca,Cb分別代表A桶子和B桶子的容量而N是我們要求的目標。我們希望你的程式輸出一連串的動作之後，可以得到N加侖的水（不論在A或B中都可以）。這一連串的動作包含：</p>  
+<pre>fill A
+fill B
+empty A
+empty B
+pour A B
+pour B A
+success</pre> <p>
+在這裡，&quot;pour A B&quot;代表把A的水倒到B中，而&quot;success&quot;代表任務已經完成了。<b>你可以假設給你的輸入一定有解答。</b>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                
+<p>每組測試資料一列，含有3個正整數Ca,Cb,N。（0 &lt; Ca &lt;= Cb，N 
+&lt;= Cb &lt;= 1000）</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                   
+<p>每組測試資料輸出一連串的動作（總是以success作為結束），使得可以得到N加侖的水（不論在A或B中都可以）。請參考Sample Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                                    
+<pre>3 5 4
+5 7 3
+1 1 1</pre>      
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                      
+Output</b></span></p>                                    
+<pre>fill B
+pour B A
+empty A
+pour B A
+fill B
+pour B A
+success
+fill A
+pour A B
+fill A
+pour A B
+success
+fill A
+success</pre>   
+                                  
+</body>                                  
+                                  
+</html>                                  

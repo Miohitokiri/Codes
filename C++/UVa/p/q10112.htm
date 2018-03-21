@@ -1,0 +1,50 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10112: Myacm Triangles</h1>          
+<p align="center"><img border="0" src="p10112.gif" width="167" height="137"></p>  
+<p>在古代的Myacm文化中，考古學家發現存在有一些柱子（從4到15根），這些柱子形成的區域稱為力場。然而，大部分的古文物都被發現存在於一種power 
+triangle中，也就是位於3根柱子形成的區域，並且在這個區域中（包括邊線）沒有任何其他的柱子存在，而且這塊區域的面積是所有符合前面條件的區域中最大的一塊。每一個力場只會有一個power 
+triangle。</p>  
+<p>現在你的任務就是給你這些柱子的座標資料，要請你幫助考古學家們找到power 
+triangle。</p>  
+<p>給你一個很有用的公式: (<i>x</i><sub>1</sub>, <i>y</i><sub>1</sub>), 
+(<i>x</i><sub>2</sub>, <i>y</i><sub>2</sub>), (<i>x</i><sub>3</sub>, <i>y</i><sub>3</sub>)此3個點所形成的面積為以下式子的絕對值。</p>
+<blockquote>
+  0.5 × [(<i>y</i><sub>3</sub> <font face="Symbol">-</font> <i>y</i><sub>1</sub>)(<i>x</i><sub>2</sub> 
+  <font face="Symbol">-</font> <i>x</i><sub>1</sub>) <font face="Symbol">-</font> 
+  (<i>y</i><sub>2</sub> <font face="Symbol">-</font> <i>y</i><sub>1</sub>)(<i>x</i><sub>3</sub> 
+  <font face="Symbol">-</font> <i>x</i><sub>1</sub>)]
+</blockquote>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料的第1列有1個整數n（4 &lt;= n &lt;= 15），代表此力場中柱子的數目。接下來的n列每列有柱子的編號及座標。柱子的編號從A開始，所有的座標值均是介於0~99的整數。n=0時代表輸入結束。最上方的圖形即為Sample 
+Input的第1組測試資料。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每組測試資料請輸出形成power triangle的3根柱子的編號，按編號有小到大。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Input</b></span></p>                              
+<pre>6
+A 1 0
+B 4 0
+C 0 3
+D 1 3
+E 4 4
+F 0 6
+4
+A 0 0
+B 1 0
+C 99 0
+D 99 99
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>BEF
+BCD</pre>
+                            
+</body>                            
+                            
+</html>                            

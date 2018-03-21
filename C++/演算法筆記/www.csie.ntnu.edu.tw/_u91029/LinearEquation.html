@@ -1,0 +1,818 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/LinearEquation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Linear Equation</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Linear Equations</p>
+</div><div class="c">
+<p class="t">Linear Equation</p>
+<p>「線性方程式」。僅由變數的加法、變數的倍率組成的方程式。</p>
+<pre>
+1 x + 2 y - 5 z = 5
+</pre>
+<p class="t">System of Linear Equations</p>
+<p>「線性方程組」。許多道線性方程式同時成立。</p>
+<pre>
+{ 1 x + 2 y - 5 z = 5
+{ 2 x + 4 y + 6 z = 1
+{ 3 x + 1 y + 7 z = 4
+</pre>
+<p>線性方程組求解，等同矩陣求解。儘管標題是Linear Equations，但是接下來要談的都是矩陣求解。</p>
+<pre>
+{ 1 x + 2 y - 5 z = 5        [ 1 2 -5 ] [ x ]   [ 5 ]
+{ 2 x + 4 y + 6 z = 1  ===>  [ 2 4  6 ] [ y ] = [ 1 ]
+{ 3 x + 1 y + 7 z = 4        [ 3 1  7 ] [ z ]   [ 4 ]
+                                 A        x⃗       y⃗
+</pre>
+<p>求根、求不動點、求特徵點、求解是等價的，使得矩陣求解有著各式各樣的演算法。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Equations: Gaussian Elimination</p>
+</div><div class="c">
+<p class="t">Linear Equations與等量公理</p>
+<p>這裡預設大家已經相當熟悉線性方程組的計算手法：利用等量公理，由上往下把變數消光光，變成階梯狀；然後由下往上解出每個變數。還不太熟悉的讀者，先回憶一下吧！這個計算手法就叫做「高斯消去法」。</p>
+<iframe src="http://www.youtube.com/embed/E3smq4ujIxs"></iframe>
+<p class="t">演算法（Gaussian Elimination）</p>
+<p>現在，以矩陣的相關術語，重新解釋「高斯消去法」。</p>
+<p>把一個矩陣，化成對角線元素皆為一的上三角矩陣。</p>
+<img src="GaussianElimination1.png">
+<p>按照字典順序窮舉一對一對的row，每窮舉出一對row，就處理這兩個row──求出首項係數的倍率，以上方row消去下方row，使下方row的首項係數變成零。</p>
+<p>有一個特殊情況是，當上方row的首項係數是零的時候，就要考慮與下方row交換，讓上方row的首項係數盡量不是零。</p>
+<p>這個交換row的動作稱作pivoting，不為零的那一個首項係數稱作pivot，包含pivot的那一個row稱作pivot row。</p>
+<p>高斯消去法的過程，以row的角度來看，只有三種row運算：倍率、相減、交換。但是實作時，我們通常不會特地寫一個row的資料結構、定義這三種運算，因為程式結構太過複雜的話，程式執行時間也會變長。實作時，通常是自己慢慢數索引值，小心的從二維陣列中取得元素，逐步完成row運算。</p>
+<p>時間複雜度是O(N^2 * M)，N×M為矩陣的大小。由於一般情況都是討論方陣較多，N與M相等，所以會把時間複雜度寫成O(N^3)。</p>
+<p>下面提供方陣的高斯消去法程式碼；至於一般矩陣的高斯消去法，就留給大家自行練習。</p>
+<textarea>
+double matrix[10][10];
+
+void gaussian_elimination()
+{
+	for (int i=0; i<10; ++i)
+	{
+		// 如果上方row的首項係數為零，則考慮與下方row交換。
+		if (matrix[i][i] == 0)
+			for (int j=i+1; j<10; ++j)
+				if (matrix[j][i] != 0)
+				{
+					// 交換上方row與下方row。
+					for (int k=i; k<10; ++k)
+						swap(matrix[i][k], matrix[j][k]);
+					break;
+				}
+
+		if (matrix[i][i] == 0) continue;
+
+		// 上方row的首項係數調整成一。目的是為了讓對角線皆為一。
+		double t = matrix[i][i];	// 首項係數
+		for (int k=i; k<10; ++k)
+			matrix[i][k] /= t;
+
+		// 窮舉並消去下方row。
+		for (int j=i+1; j<10; ++j)
+			if (matrix[j][i] != 0)
+			{
+				double t = matrix[j][i];
+				for (int k=i; k<10; ++k)
+					matrix[j][k] -= matrix[i][k] * t;
+			}
+	}
+}
+</textarea>
+<p class="t">解線性方程組</p>
+<p>矩陣參數化、完成高斯消去法之後，使用Iterative Method，從最後一個row開始，把目前解出的未知數反覆代入到上一個row，求得每一個未知數。</p>
+<img src="GaussianElimination2.png">
+<p>這個計算過程，是從最後一個未知數開始計算，而不是從第一個未知數開始計算，故命名為「逆向代入back substitution」。逆向代入的時間複雜度是O(N^2)。</p>
+<p>如果要讓逆向代入的誤差變小，可以在進行高斯消去法的時候，總是把首項係數絕對值最大的row，挪到最上方，再消去餘下的row。</p>
+<img src="GaussianElimination3.png">
+<textarea>
+double matrix[10][10+1];	// 參數化的矩陣
+double x[10];				// 線性方程組的解
+
+void back_substitution()
+{
+	for (int i=10-1; i>=0; --i)
+	{
+		double t = 0;
+		for (int k=i+1; k<10; ++k)
+			t += matrix[i][k] * x[k];
+		x[i] = (matrix[i][10] - t) / matrix[i][i];
+	}
+}
+</textarea>
+<p class="e">UVa 10109 10524 10828 ICPC 3563</p>
+<p class="t">演算法（Gauss-Jordan Elimination）</p>
+<p>「高斯喬登消去法」是延伸版本。把原矩陣的對角線化成一、其餘元素化為零。</p>
+<img src="GaussianElimination5.png">
+<p>時間複雜度與高斯消去法相同，仍是O(N^3)。</p>
+<p>解線性方程組，論效率，高斯消去法是比較好的選擇：高斯消去法暨逆向代入的總步驟數，比高斯喬登消去法還要少。論程式碼長度，高斯喬登消去法是比較好的選擇：只消修改一下高斯消去法的消去範圍，即可得到解，而不必逆向代入。</p>
+<p class="t">LUP Decomposition</p>
+<p><a href="http://ccjou.wordpress.com/2010/09/01/">http://ccjou.wordpress.com/2010/09/01/</a></p>
+<p>「LUP分解」是利用高斯消去法，將一個方陣化為下三角矩陣L、上三角矩陣U、列交換矩陣P，三者的乘積。時間複雜度為O(N^3)。</p>
+<p>有時候列交換矩陣P恰好等於單位矩陣I，而不需要把列交換矩陣P寫下來，此時「LUP分解」可簡單稱作「LU分解」。</p>
+<p>LUP分解的最大特色是解線性方程組Ax = b，當A固定，b有許多組要解，每次求解僅需時O(N^2)。若是單純地使用高斯消去法，針對每一組不同的b，每次求解皆需時O(N^3)。</p>
+<pre>
+一、row交換矩陣，調換參數向量的維度順序。
+二、下三角矩陣，順向代入（forward substitution）。
+三、上三角矩陣，逆向代入（back substitution）。
+</pre>
+<p class="t">Cholesky Decomposition</p>
+<p>對稱正定矩陣的LU分解。L與U剛好互相對稱。</p>
+<p>時間複雜度仍為O(N^3)，但是步驟數量較少。</p>
+<p class="t">計算一個方陣的inverse</p>
+<p>一般是利用「高斯喬登消去法」。</p>
+<p>高斯消去法最初的用途是解線性方程組。線性代數開始流行之後，才用來計算矩陣的inverse和determinant。</p>
+<img src="GaussianElimination6.png">
+<textarea>
+double matrix[10][10*2];	// 參數化的矩陣
+
+bool gauss_jordan_elimination()
+{
+	// 填好參數化的部分
+	for (int i=0; i<10; ++i)
+		for (int j=0; j<10; ++j)
+			matrix[i][10+j] = 0;
+
+	for (int i=0; i<10; ++i)
+		matrix[i][10+i] = 1;
+
+	// 開始進行高斯喬登消去法
+	// 內容幾乎與高斯消去法相同
+	for (int i=0; i<10; ++i)
+	{
+		if (matrix[i][i] == 0)
+			for (int j=i+1; j<10; ++j)
+				if (matrix[j][i] != 0)
+				{
+					for (int k=i; k<10*2; ++k)
+						swap(matrix[i][k], matrix[j][k]);
+					break;
+				}
+
+		// 反矩陣不存在。
+		if (matrix[i][i] == 0) return false;
+
+		double t = matrix[i][i];
+		for (int k=i; k<10*2; ++k)
+			matrix[i][k] /= t;
+
+		// 消去時，所有的row都消去。
+		for (int j=0; j<10; ++j)
+			if (i != j && matrix[j][i] != 0)
+			{
+				double t = matrix[j][i];
+				for (int k=i; k<10*2; ++k)
+					matrix[j][k] -= matrix[i][k] * t;
+			}
+	}
+	return true;
+}
+</textarea>
+<p class="t">計算一個方陣的determinant</p>
+<p>一般是利用「高斯消去法」。</p>
+<p>進行高斯消去法的過程當中，保留pivot row的原有倍率。最後的上三角矩陣，其對角線元素的乘積，便是determinant。</p>
+<img src="GaussianElimination4.png">
+<p>如果矩陣裡都是整數，那麼determinant也會是整數。要避免浮點數誤差，可以使用輾轉相除法進行消去。時間複雜度是O(N^3 * logC)，C是過程當中，絕對值最大的首項係數。</p>
+<textarea>
+int matrix[10][10];
+
+void rowgcd(int* a, int* b, int i)
+{
+	if (abs(a[i]) < abs(b[i]))
+		swap(a, b);
+
+	while (b[i] != 0)
+	{
+		int t = a[i] / b[i];
+		for (int k=i; k<10; ++k)
+			a[k] -= b[k] * t;
+		swap(a, b);
+	}
+}
+
+int determinant()
+{
+	int det = 1;
+	for (int i=0; i<10; ++i)
+	{
+		for (int j=i+1; j<10; ++j)
+		{
+			// 輾轉相除法進行消去。
+			rowgcd(matrix[i], matrix[j], i);
+
+			// 把非零的row，挪到當前的row。
+			if (matrix[i][i] == 0 && matrix[j][i] != 0)
+			{
+				for (int k=i; k<10; ++k)
+					swap(matrix[i][k], matrix[j][k]);
+
+				// 兩行交換，determinant會相差一負號。
+				det *= -1;
+			}
+		}
+
+		// determinant等於上三角方陣的對角線乘積。
+		det *= matrix[i][i];
+		if (det == 0) break;
+	}
+	return det;
+}
+</textarea>
+<p class="e">UVa 684</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Equations: Eigendecomposition</p>
+</div><div class="c">
+<p class="t">Linear Equations與Linear Transform</p>
+<p>線性方程組可以寫成矩陣乘法的形式。</p>
+<pre>
+{ 1 x + 2 y - 5 z = 5        [ 1 2 -5 ] [ x ]   [ 5 ]
+{ 2 x + 4 y + 6 z = 1  ===>  [ 2 4  6 ] [ y ] = [ 1 ]
+{ 3 x + 1 y + 7 z = 4        [ 3 1  7 ] [ z ]   [ 4 ]
+                                 A        x⃗       y⃗
+</pre>
+<p>線性方程組得視作線性變換（函數），解線性方程組得視作逆向線性變換（反函數）。</p>
+<pre>
+                                                 -1
+[ 1 2 -5 ] [ x ]   [ 5 ]        [ x ]   [ 1 2 -5 ] [ 5 ]
+[ 2 4  6 ] [ y ] = [ 1 ]  ===>  [ y ] = [ 2 4  6 ] [ 1 ]
+[ 3 1  7 ] [ z ]   [ 4 ]        [ z ]   [ 3 1  7 ] [ 4 ]
+    A        x⃗       y⃗           x⃗         A⁻¹      y⃗
+</pre>
+<p>一旦求得反矩陣，即可輕鬆解線性方程組。</p>
+<pre>
+solve Ax⃗ = y⃗  ===>  find A⁻¹, then x⃗ = A⁻¹y⃗
+</pre>
+<p>計算反矩陣，使用高斯喬登消去法，時間複雜度O(N^3)。</p>
+<p>不過與其採用高斯喬登消去法求反矩陣、再用反矩陣解線性方程組，不如直接採用高斯消去法解線性方程組。就當作是學個想法吧。</p>
+<p class="t">Eigendecomposition</p>
+<p>線性變換的精髓：求得在特徵向量上的分量，分別伸縮，伸縮倍率是特徵值。逆向線性變換的精髓：逆向縮放，縮放倍率變成倒數。</p>
+<pre>
+             -1          T
+A   = Q  Λ  Q   = Q  Λ  Q 
+
+ -1       -1 -1       -1 T
+A   = Q  Λ  Q   = Q  Λ  Q 
+</pre>
+<p>矩陣實施特徵分解，求反矩陣，再拿來解線性方程組。</p>
+<p>以特徵值來判斷是否存在反矩陣。特徵值皆不為零，則有反矩陣。就這樣子。</p>
+<p>不過與其採用特徵分解求反矩陣、再用反矩陣解線性方程組，不如直接採用高斯消去法解線性方程組。就當作是學個想法吧。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Equations: Cramer's Rule</p>
+</div><div class="c">
+<p class="t">Linear Equations與Geometry</p>
+<p>線性方程式得視作幾何元件：點、線、面、……。</p>
+<img src="Cramer%27sRule1.png">
+<blockquote>
+ContourPlot3D[1 x + 2 y - 5 z == 5, {x, -5, 5}, {y, -5, 5}, {z, -5, 5}, Boxed -> False, Axes -> False, Mesh -> None]
+</blockquote>
+<p>線性方程組得視作一堆幾何元件的交集。</p>
+<img src="Cramer%27sRule2.png">
+<blockquote>
+f := 1 x + 2 y - 5 z - 5; g := 2 x + 4 y + 6 z - 1; h := 3 x + 1 y + 7 z - 4; ContourPlot3D[{f == 0, g == 0, h == 0}, {x, -5, 5}, {y, -5, 5}, {z, -5, 5}, Boxed -> False, Axes -> False, Mesh -> None, ContourStyle -> Directive[Opacity[0.5]]]
+</blockquote>
+<p class="t">數學公式（Cramer's Rule）</p>
+<p>兩線交點的演算法：求得平行四邊形的面積，以面積比例求得交點位置。請參考本站文件「<a href="Point.html">Intersection</a>」。</p>
+<img src="Cramer%27sRule3.png">
+<p>「克拉瑪公式」則是此演算法的高維度版本，形成了非常漂亮的公式解！求得超平行體的容積，以容積比例求得解。</p>
+<pre>
+linear equations:
+  Ax⃗ = y⃗
+
+solution:
+  { x = det(Aˣ) / det(A)
+  { y = det(Aʸ) / det(A)
+  { z = det(Aᶻ) / det(A)
+
+unisolvance:
+   Ax⃗ = y⃗ has a unique solution   iff   det(A) ≠ 0
+
+example:
+  { 1 x + 2 y - 5 z = 5        [ 1 2 -5 ] [ x ]   [ 5 ]
+  { 2 x + 4 y + 6 z = 1  ===>  [ 2 4  6 ] [ y ] = [ 1 ]
+  { 3 x + 1 y + 7 z = 4        [ 3 1  7 ] [ z ]   [ 4 ]
+                                   A        x⃗       y⃗
+         _ y⃗                  _ y⃗                  _ y⃗
+       [|5| 2 -5 ]       [ 1 |5|-5 ]       [ 1  2 |5|]
+  Aˣ = [|1| 4  6 ]  Aʸ = [ 2 |1| 6 ]  Aᶻ = [ 2  4 |1|]
+       [|4| 1  7 ]       [ 3 |4| 7 ]       [ 3  1 |4|]
+         ‾                    ‾                    ‾
+</pre>
+<p>determinant是矩陣當中所有向量所構成的超平行體的容積。時間複雜度等於N+1次determinant的時間複雜度，O(N^4)。</p>
+<p class="t">Determinant</p>
+<p>determinant起初用來判定一個線性方程組是否有解、解是多少，因而稱作「決定因子」。古人沒有意識到determinant是容積。</p>
+<p>雖然字面意義是「決定因子」，不過中文教科書譯作「行列式」。真是異想天開的翻譯啊！</p>
+<p><a href="http://mathworld.wolfram.com/DeterminantExpansionbyMinors.html">http://mathworld.wolfram.com/DeterminantExpansionbyMinors.html</a></p>
+<p>行列式的計算過程是：先刪除一橫行，接著分別刪除每一直行，形成N-1個(N-1)×(N-1)子矩陣，添上正負號。原矩陣的行列式，等於這些子矩陣的行列式總和。每個子矩陣各自遞迴下去，直到N=1。1×1矩陣的行列式，等於矩陣元素。時間複雜度O(N!)。</p>
+<p>N = 2 or 3的時候比較特別，可以直接累加所有「左上右下斜線」的乘積、累減「右上左下斜線」的乘積。中學數學課程有教。</p>
+<p>計算行列式，也可以使用高斯消去法，時間複雜度O(N^3)。</p>
+<p>不過與其採用高斯消去法求行列式、再用行列式解線性方程組，不如直接採用高斯消去法解線性方程組。就當作是學個想法吧。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Equations: Preconditioner</p>
+</div><div class="c">
+<p class="t">演算法（Jacobi Method）</p>
+<p>運用Fixed Point Iteration求解。</p>
+<pre>
+[ 4  3 ] [ x ] = [ 1 ]
+[ 2  5 ] [ y ]   [ 2 ]
+
+{ 4x + 3y = 1  => { x = (1 - 3y) / 4
+{ 2x + 5y = 2     { y = (2 - 2x) / 5
+
+[ x₀ ] = [ 0 ] 隨便設定一個初始值
+[ y₀ ]   [ 0 ]
+    
+[ x₁ ] = [ (1 - 3y₀) / 4 ]
+[ y₁ ]   [ (2 - 2x₀) / 5 ]
+    
+[ x₂ ] = [ (1 - 3y₁) / 4 ]
+[ y₂ ]   [ (2 - 2x₁) / 5 ]
+</pre>
+<p>三維版本。</p>
+<pre>
+[ 4  3 -1 ] [ x ]   [ 1 ]
+[ 2  5  1 ] [ y ] = [ 2 ]
+[-2 -2  6 ] [ z ]   [ 3 ]
+
+{  4x + 3y -  z = 1     { x = (1 - 3y +  z) / 4
+{  2x + 5y +  z = 2  => { y = (2 - 2x -  z) / 5
+{ -2x - 2y + 6z = 3     { z = (3 + 2x + 2y) / 6
+
+[ x₀ ]   [ 0 ]
+[ y₀ ] = [ 0 ] 隨便設定一個初始值
+[ z₀ ]   [ 0 ]
+
+[ x₁ ]   [ (1 - 3y₀ +  z₀) / 4 ]
+[ y₁ ] = [ (2 - 2x₀ -  z₀) / 5 ]
+[ z₁ ]   [ (3 + 2x₀ + 2y₀) / 6 ]
+</pre>
+<p>任意維度。</p>
+<pre>
+      Ax = b
+(D+L+U)x = b             D是對角線、L是下三角、U是上三角
+      Dx = b - (L+U)x
+       x = D⁻¹ [b - (L+U)x]
+</pre>
+<pre>
+x₀ = 隨便設定一個初始值
+xₖ₊₁ = D⁻¹ [b - (L+U)xₖ]
+</pre>
+<p>時間複雜度是O(N^2 * T)，N是方陣維度，T是遞推次數。</p>
+<p>判斷收斂，檢查D⁻¹(L+U)的特徵值的絕對值是不是都小於1。</p>
+<pre>
+x = D⁻¹ [b - (L+U)x]
+x = D⁻¹b - D⁻¹(L+U)x
+</pre>
+<p>滿足strictly diagonally dominant就保證收斂。不滿足時，可能收斂、也可能不收斂。</p>
+<pre>
+for each row, |Aii| > ∑ |Aij|
+                     j≠i
+</pre>
+<p class="t">演算法（Gauss-Seidel Method）</p>
+<p>每回合依序計算x、y、z，剛出爐的數字，馬上拿來使用，加快收斂速度。</p>
+<pre>
+[ 4  3 -1 ] [ x ]   [ 1 ]
+[ 2  5  1 ] [ y ] = [ 2 ]
+[-2 -2  6 ] [ z ]   [ 3 ]
+
+{  4x + 3y -  z = 1     { x = (1 - 3y +  z) / 4
+{  2x + 5y +  z = 2  => { y = (2 - 2x -  z) / 5
+{ -2x - 2y + 6z = 3     { z = (3 + 2x + 2y) / 6
+
+[ x₀ ]   [ 0 ]
+[ y₀ ] = [ 0 ] 隨便設定一個初始值
+[ z₀ ] = [ 0 ]
+
+[ x₁ ]   [ (1 - 3y₀ +  z₀) / 4 ]
+[ y₁ ] = [ (2 - 2x₁ -  z₀) / 5 ]
+[ z₁ ]   [ (3 + 2x₁ + 2y₁) / 6 ]
+依序計算x₁、y₁、z₁，剛出爐的數字，馬上拿來使用，加快收斂速度。
+</pre>
+<pre>
+xₖ₊₁ = D⁻¹ (b - Uxₖ - Lxₖ₊₁)
+</pre>
+<p class="t">演算法（Successive Over Relaxation）</p>
+<p>原數值、新數值，以固定比例混合。</p>
+<pre>
+[ x₁ ]   [ (1-w) * x₀ + w * (1 - 3y₀ +  z₀) / 4 ]
+[ y₁ ] = [ (1-w) * y₀ + w * (2 - 2x₁ -  z₀) / 5 ]
+[ z₁ ]   [ (1-w) * z₀ + w * (3 + 2x₁ + 2y₁) / 6 ]
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Least Squares</p>
+</div><div class="c">
+<p class="t">Linear Least Squares（Linear Least Squares Equations）</p>
+<p>唯一解是稀奇的，無解、多解是普遍的。無解、多解時，可以改為找到平方誤差最小的解。</p>
+<pre>
+solve Ax = b
+
+ overdetermined system: 等式太多 -> 無解 -> 改求‖Ax - b‖²最小的解
+underdetermined system: 等式太少 -> 多解 -> 改求‖x‖²最小的解
+</pre>
+<p>等式太多、等式太少（中學數學的講法是：變數少於等號、變數多於等號），兩種情況分別處理。嚴格來說，必須預先消去所有等價的、多餘的等式，以rank大小、矩陣大小來區分這兩種情況。</p>
+<p>一、等式太多因而無解：方程組每一道等式，求得等號左右兩邊的差的平方；累計所有等式，總和越小越好。</p>
+<p>二、等式太少因而多解：解的每一項的平方，總和越小越好。</p>
+<p>Least意指「盡量小」，Squares意指「平方和」。</p>
+<p>平方誤差的優勢是：循規蹈矩，成為一個參考指標，誤差高低可以拿來比較，科學多了。缺陷是：計算速度慢。</p>
+<p>平方誤差比起絕對值誤差，有兩個好處：一、讓每道等式的誤差保持均勻，不會有某道等式誤差特別高。二、「一次微分等於零」容易推導數學公式。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Least Squares: Decomposition</p>
+</div><div class="c">
+<p class="t">三種數學公式</p>
+<p>函式庫兜一兜，答案就出來了，大可不必深究細節。</p>
+<pre>
+solve overdetermined system Ax = b   minimize ‖Ax - b‖²
+
+       T    -1  T          T       T
+x = ( A  A )   A  b     ( A A x = A b )   Normal Equation
+
+     -1 T
+x = R  Q  b             ( A = Q R )       QR Decomposition
+
+        +  T                       T
+x = V  Σ  U  b          ( A = U Σ V )     Singular Value Decomposition
+
+     +
+x = A  b                                  Pseudoinverse
+</pre>
+<pre>
+solve underdetermined system Ax = b   minimize ‖x‖²
+
+     T      T -1  
+x = A  ( A A )   b                        Normal Equation
+
+         T -1              T
+x = Q ( R )   b         ( A = Q R )       QR Decomposition
+
+        +  T               T       T
+x = U  Σ  V  b          ( A = U Σ V )     Singular Value Decomposition
+</pre>
+<textarea>
+https://eigen.tuxfamily.org/dox-devel/group__LeastSquares.html
+</textarea>
+<p class="e">Timus 1668</p>
+<p class="t">數學公式（Normal Equation）</p>
+<p><a href="http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf">http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf</a></p>
+<p>線性代數經典公式！視作最佳化問題，以微分求極值。</p>
+<p>「一次微分等於零」的地方是極值、鞍點。因為平方誤差是開口向上的拋物面，所以「一次微分等於零」的地方必是最小值，而非最大值、鞍點。</p>
+<p>以下只證明等式太多的情況。時間複雜度O(N^3)。</p>
+<pre>
+solve  Ax = b
+                 2
+minimize ‖Ax - b‖
+
+∂          2
+―― ‖Ax - b‖ = 0                     「一次微分等於零」的地方是最小值
+∂x
+  ∂
+[ ―― (Ax - b) ] [ 2(Ax - b) ] = 0   微分連鎖律
+  ∂x
+ T
+A  [ 2(Ax - b) ] = 0                微分
+
+ T       T
+A A x = A b                         同除以2、展開、移項
+
+       T    -1  T  
+x = ( A  A )   A  b                 移項。注意到A的向量們必須線性獨立！
+</pre>
+<p>注意到最後一步，A的向量們必須線性獨立（事先清除冗餘的、無意義的變數），AᵀA才有反矩陣。</p>
+<p class="t">數學公式（QR Decompostion）</p>
+<p><a href="http://www.cs.cornell.edu/courses/cs322/2007sp/notes/qr.pdf">http://www.cs.cornell.edu/courses/cs322/2007sp/notes/qr.pdf</a></p>
+<p>A = QR。將矩陣拆開成正規正交矩陣Q、零餘部分R。正規正交矩陣Q不影響最小值，最小值取決於零餘部分R。</p>
+<p>以下只證明等式太多的情況。等式太少的情況，改為分解A的轉置矩陣Aᵀ = QR。</p>
+<p>時間複雜度O(N^3)。但是計算量比Normal Equation少。</p>
+<pre>
+solve  Ax = b
+
+              2
+min ‖ Ax - b ‖
+
+       T          2
+min ‖ Q (Ax - b) ‖         正規正交矩陣，變換後長度不變
+
+       T       T   2
+min ‖ Q A x - Q b ‖        展開
+
+             T   2          T     T
+min ‖ R x - Q b ‖          Q A = Q Q R = R
+
+                 T     2
+    ‖ [ R₁ x - Q₁ b ] ‖    R = [ R₁ ]  區分出零，讓R₁是方陣
+min ‖ [          T  ] ‖        [ 0  ]  區分上段和下段
+    ‖ [    0 - Q₂ b ] ‖ 
+
+            T
+令 R₁ x - Q₁ b = 0         此式有唯一解，可為零
+               T   2
+令最小值是 ‖ Q₂ b ‖ 
+
+         T
+R₁ x = Q₁ b                移項
+
+     -1  T
+x = R₁ Q₁ b                移項
+</pre>
+<p class="t">數學公式（Singular Value Decompostion）</p>
+<p>和QR分解的手法如出一轍。</p>
+<p>以下只證明等式太多的情況。等式太少的情況，改為分解A的轉置矩陣Aᵀ = UΣVᵀ。</p>
+<p>時間複雜度O(N^3 + NK)。我不確定實務上是否比較快。</p>
+<pre>
+solve  Ax = b
+
+              2
+min ‖ Ax - b ‖
+
+       T          2
+min ‖ U (Ax - b) ‖       正規正交矩陣，變換後長度不變
+
+       T       T   2
+min ‖ U A x - U b ‖      展開
+
+         T     T   2      T     T     T      T
+min ‖ Σ V x - U b ‖      U A = U U Σ V  = Σ V 
+
+      T     T
+令 Σ V x - U b = 0       此式有唯一解，可為零
+
+   T     T
+Σ V x = U b              移項
+
+        +  T
+x = V  Σ  U  b           移項
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Least Squares: Optimization</p>
+</div><div class="c">
+<p class="t">三種最佳化演算法</p>
+<p>梯度下降法：適用一次可微函數；牛頓法：適用二次可微函數；兩種混和。</p>
+<p class="t">演算法（Conjugate Gradient Method）</p>
+<p>採用最佳化演算法Gradient Method，針對平方誤差進行改良，速度更快。</p>
+<p>平方誤差的矩陣形式，即是對稱正定矩陣。</p>
+<pre>
+http://www.cs.ucsb.edu/~gilbert/cs219/cs219Spr2013/Slides/cs219-CgIntro.pptx
+http://graphics.stanford.edu/courses/cs205a-15-spring/assets/lecture_slides/cg_i.pdf
+</pre>
+<p class="t">演算法（Gauss-Newton Algorithm）</p>
+<p>採用最佳化演算法Newton Method，針對平方誤差進行改良，速度更快。</p>
+<p class="t">演算法（Levenberg-Marquardt Algorithm）</p>
+<p>視情況使用Conjugate Gradient Method或者Gauss-Newton Algorithm，兩害相權取其輕。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Least Squares: Regularization</p>
+</div><div class="c">
+<p class="t">使用正則化</p>
+<p>線性方程組，無解、多解時，我們增加限制條件，以得到唯一解。以下以無解為例。</p>
+<pre>
+                                  2
+solve Ax = b     minimize ‖Ax - b‖ 
+</pre>
+<p>我們可以再添加其他限制條件。</p>
+<pre>
+                                  2
+solve Ax = b     minimize ‖Ax - b‖      subject to f(x) ≥ 0
+</pre>
+<p>運用Regularization，限制條件併入最佳化的對象。</p>
+<pre>
+                                  2
+solve Ax = b     minimize ‖Ax - b‖ + α f(x)   (α ≥ 0)
+</pre>
+<p>α理應是未知數，不過此處改成了一個自訂數值。我們視問題需要，訂立適當數值。數值越小，限制條件的影響力就越小，類似於加權平均的概念。</p>
+<p>求最小值，權重的絕對大小不重要，考慮相對大小即可。我們習慣把第一個限制的權重定為1，節省一個權重數值。</p>
+<p class="t">Tikhonov Regularization</p>
+<p>線性方程組，有許多式子和變數。可能有其中一群變數與式子構成無解、另一群構成唯一解、剩下一群構成多解。更有甚者，切割一些群結果無解變多解、整併某些群結果多解變無解。</p>
+<p>無法釐清是無解、多解的時候，那就兩個限制一起上吧。</p>
+<pre>
+                                   2        2
+solve Ax = b      minimize ‖Ax - b‖  + α ‖x‖    (α ≥ 0)
+</pre>
+<pre>
+∂            2        2        
+―― [ ‖Ax - b‖  + α ‖x‖  ] = 0    「一次微分等於零」的地方是極值、鞍點
+∂x                               二次函數、恆正，必得最小值
+   T         T
+2 A A x - 2 A b + 2 α x = 0      展開
+
+   T               T                             T
+( A A + α I ) x = A b            移項，左式即是 A A 的對角線加上 α
+</pre>
+<p>左式是實數對稱正定方陣，有唯一解。時間複雜度O(N^3)。</p>
+<p class="t">Homogeneous Linear Equations</p>
+<p>討論特例b = 0的情況。當b = 0，則x = 0，缺乏討論意義。於是添加限制「x長度（的平方）為1」，增進討論意義。</p>
+<pre>
+solve Ax = 0
+             2
+minimize ‖Ax‖
+              2
+subject to ‖x‖ = 1
+</pre>
+<pre>
+             2         2
+minimize ‖Ax‖ - λ ( ‖x‖ - 1 )     Lagrange multiplier
+
+∂        2         2
+―― [ ‖Ax‖ - λ ( ‖x‖ - 1 ) ] = 0   「一次微分等於零」的地方是極值、鞍點
+∂x                                 二次函數，必得極值
+   T
+2 A A x - 2 λ x = 0               展開
+
+ T
+A A x = λ x                       移項，此即特徵向量的格式
+</pre>
+<p>答案是AᵀA的最小的特徵值的特徵向量！又因為AᵀA是實數對稱正半定方陣，所以特徵值都是正數、零。</p>
+<p>欲求最小的特徵值，可以採用QR Iteration或Lanczos Iteration演算法求得所有特徵值，再挑出最小的，時間複雜度O(N^3 + N^2 * K)。亦可採用Singular Value Decomposition的演算法，不必計算AᵀA，節省一點時間。</p>
+<p class="t">Basis Pursuit（Lasso）</p>
+<p>改成L¹ norm，討論多解的情況。NP-hard。</p>
+<pre>
+solve Ax = b      minimize ‖x‖₁     [underdetermined system]
+</pre>
+<p>解法是改寫成線性規劃問題：</p>
+<p><a href="http://www4.ncsu.edu/~kksivara/masters-thesis/kristen-thesis.pdf">http://www4.ncsu.edu/~kksivara/masters-thesis/kristen-thesis.pdf</a></p>
+<p class="t">Basis Pursuit Denoising</p>
+<p>兩個限制一起上，無解採用L² norm、多解採用L¹ norm。走火入魔。</p>
+<pre>
+                                   2        2
+solve Ax = b      minimize ‖Ax - b‖  + α ‖x‖₁    (α ≥ 0)
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Inequalities</p>
+</div><div class="c">
+<p class="t">Linear Inequalities</p>
+<p>線性不等式組。許多道線性不等式同時成立。</p>
+<p>正是計算幾何「<a href="Half-planeIntersection.html">Half-plane Intersection</a>」推廣到高維度，所有解形成一個凸多胞形，也可能形成開放區間、退化、空集合。</p>
+<p>目前沒有演算法。大家習慣採用稍後提到的線性規劃，將凸多胞形硬是位移至第一象限（各個變數加上一個足夠大的數值，代換成新變數），以符合線性規劃的格式。</p>
+<p>也有人適度乘上負號，調整成Ax > b的格式，套用高斯消去法，但是不知道正不正確。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Programming（Under Construction!）</p>
+</div><div class="c">
+<p class="t">楔子</p>
+<p>現代社會經常使用線性規劃。舉凡經濟交易、交通運輸、工業生產，都能看到線性規劃的應用。雖然線性規劃不是電資科系的學習重點，卻是商管科系的專業必修。</p>
+<p>一些經典數學領域，例如組合最佳化、排程理論，除了傳統的組合算法，也能用線性規劃解題，有過之而無不及。</p>
+<p>專著如《Understanding and Using Linear Programming》。工具如LINDO。</p>
+<p class="t">Linear Programming</p>
+<p>「線性規劃」。目標函數、約束條件都是線性函數，只考慮第一象限。</p>
+<img src="LinearProgramming1.html">
+<p>幾何意義，請參考計算幾何「<a href="Half-planeIntersection.html">Half-plane Intersection</a>」。目標函數：一個方向向量。約束條件：半平面。可行解：半平面交集。最佳解：半平面交集的頂點、邊、面。</p>
+<p>因為解是凸函數，所以可以設計極快的演算法！</p>
+<img src="LinearProgramming2.html">
+<blockquote>
+https://reference.wolfram.com/language/ref/RegionPlot3D.html
+</blockquote>
+<pre>
+max f(x)     ---> min -f(x)
+max min f(x) ---> max g(x) s.t. f(x) > g(x)
+</pre>
+<p class="t">演算法（Simplex Algorithm）</p>
+<p><a href="http://ocw.mit.edu/courses/aeronautics-and-astronautics/16-410-principles-of-autonomy-and-decision-making-fall-2010/lecture-notes/MIT16_410F10_lec17.pdf">http://ocw.mit.edu/courses/aeronautics-and-astronautics/16-410-principles-of-autonomy-and-decision-making-fall-2010/lecture-notes/MIT16_410F10_lec17.pdf</a></p>
+<p>一、變成線性方程組。目標函數，預設答案，視作等式。約束條件，不等式添加變數，成為等式。</p>
+<p>二、求可行解。取原點做為可行解：原始變數設為0，添加變數設為b。如果原點不是可行解：添加變數為負數，有兩種解法。</p>
+<p>二甲、兩階段法。添加變數為負值者，替其添加暫時變數。奢望暫時變數是0，故新增目標函數：最小化暫時變數加總。以高斯消去法消去暫時變數，使之為0，令新目標函數變成約束條件。最後刪去暫時變數。</p>
+<p>二乙、大M法。添加變數為負值者，替其添加暫時變數。目標函數，減去暫時變數，並且乘上巨大係數，使得最佳解的暫時變數必為零。</p>
+<p>三、求最佳解。貪心法，藉由高斯消去法，等價調整約束條件，逐步提高目標函數值。幾何意義是：可行解，沿邊走，朝向目標函數的方向。</p>
+<p>
+三甲、高維度的情況下，運氣非常不好時，可能走進一大片鞍點，在山腰平原上鬼打牆。解法是小小擾動b，摧毀鞍點。</p>
+<p>【待補程式碼】</p>
+<textarea>
+const float ∞ = 1e30;	// 無限大
+const int n = 10;		// 變數數量
+const int m = 5;		// 不等式數量
+
+// max cx   subject to ax <= b, x >= 0
+// assume x = 0 is feasible solution
+float a[m][n+m], b[m], c[n+m], x[n+m];
+
+void init()
+{
+	memset(a, 0, sizeof(a));
+	memset(b, 0, sizeof(b));
+	memset(c, 0, sizeof(c));
+	memset(x, 0, sizeof(x));
+
+	for (int j = 0; j < n; j++)
+		cin >> c[j];
+
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+			cin >> a[i][j];
+		cin >> b[i];
+	}
+
+	// m道式子，擴充m個變數
+	for (int i = 0; i < m; i++)
+		a[i][n+i] = 1;
+}
+
+void pivot(int& row, int& col)
+{
+	// 從c當中找出需要消滅的變數
+	float max = -∞;
+	for (int j = 0; j < n + m; j++)
+		if (c[j] > 0)
+		{
+			// 找到b/a最小的row
+			// 實施消去之後，其他row的b仍是正數
+			// 將來得以繼續增加z、繼續消去c的變數。
+			float min = ∞;
+			int min_row = -1;
+			for (int i = 0; i < m; i++)
+				if (a[i][j] > 0)
+					if (b[i] / a[i][j] < min)
+					{
+						min = b[i] / a[i][j];
+						min_row = i;
+					}
+
+			// 找到讓z增加最多的column
+			if (max < min * c[j])
+			{
+				max = min * c[j];
+				col = j, row = min_row;
+			}
+		}
+}
+
+float eliminate(int row, int col)
+{
+	float e = a[row][col];
+	for (int j = 0; j < n + m; j++)
+		a[row][j] /= e;
+	b[row] /= e;
+
+	for (int i = 0; i < m; i++)
+	{
+		if (i == row) continue;
+		float t = a[i][col];
+		for (int j = 0; j < n + m; j++)
+			a[i][j] -= t * a[row][j];
+		b[i] -= t * b[row];
+	}
+
+	float t = c[col];
+	for (int j = 0; j < n + m; j++)
+		c[j] -= t * a[row][j];
+
+	return b[row] * t;
+}
+
+void simplex()
+{
+	init();
+
+	float z = 0;
+//	for (int i = 0; i < n + m; ++i)
+	while (true)
+	{
+		int row = -1, col = -1;
+		pivot(row, col);
+		if (col == -1) break;
+		z += eliminate(row, col);
+	} 
+	return z;
+}
+</textarea>
+<p>每步需時O(N(M+N))。</p>
+<p>N個變數（維度）、M道不等式（刻面），可行解至多C(M,N)個頂點。根據「<a href="http://mathoverflow.net/questions/127423/">Upper Bound Theorem</a>」，可行解至多M^floor(N/2)個頂點。</p>
+<p>單形法至多走M^floor(N/2)步，最差時間複雜度是指數時間。</p>
+<p>單形法平均走M步，平均時間複雜度是多項式時間。</p>
+<p>一種很差的情況是「<a href="https://en.wikipedia.org/wiki/Klee?inty_cube">Klee-Minty Cube</a>」，需要走2^N - 1步，但是遭遇機率極低。</p>
+<p class="e">UVa 10498 ICPC 7584 7836</p>
+<p class="t">演算法（Interior Algorithm）（Barrier Method）</p>
+<p>梯度下降法。約束條件取log，以Regularization添入原式，效果是擠壓邊界、調整路徑。</p>
+<pre>
+f(x) + log(g(x))
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Semidefinite Programming</p>
+</div><div class="c">
+<p class="t">Semidefinite Programming</p>
+<p>「正定規劃」。線性凸函數。有興趣的讀者請自行研究。</p>
+<p><a href="users.iems.northwestern.edu/_nocedal/book/index.html">users.iems.northwestern.edu/~nocedal/book/index.html</a></p>
+<pre>
+LP ⊂ QP ⊂ SOCP ⊂ SDP
+</pre>
+<pre>
+linear programming
+min cᵀx   s.t. Ax ≤ b, x ≥ 0
+
+quadratic programming
+min 1/2 xᵀQx + cᵀx   s.t. Ax ≤ b
+
+second order cone programming
+min fᵀx   s.t. ‖Aᵢx + bᵢ‖ ≤ cᵢᵀx + dᵢ, Fx = g
+
+semidefinite programming
+min C●X   s.t. Aᵢ●X ≤ bᵢ, X ≽ 0 (positive semi-definite)
+min tr(CX)   s.t. tr(AᵢX) ≤ bᵢ, X ≽ 0
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/LinearEquation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:20 GMT -->
+</html>

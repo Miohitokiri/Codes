@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q111: History Grading</h1>          
+<p>在資訊科學中有一些是關於在某些條件限制下，找出一些計算的最大值。</p>  
+<p>以歷史考試來說好了，學生被要求對一些歷史事件根據其發生的年代順序來排列。所有事件順序都正確的學生無疑的可以得滿分。但是那些沒有全對的人又該如何給分呢？以下有2種可能的給分方式：</p>  
+<ol>
+  <li>每個與標準答案的順序相同的事件得1分</li>
+  <li>每個在最長（但不一定要連續）的序列事件中，其相對的順序亦可以在標準答案發現者，每個事件得1分。</li>
+</ol>
+<p>舉例說明：如果有4個事件其發生時間的順序依次是1 2 3 4（就是標準答案啦，意思是第1個事件發生順序為1，第2個事件發生的順序為2，......）。所以如果學生回答此4個事件發生的順序依次是1 
+3 2 4的話，根據上面第1種方法可以得2分（第1個及第4個事件）。但是如果以上面第2種方法可以得3分（1 
+2 4或者1 3 4其相對的順序可以在標準答案發現）</p>  
+<p>在本問題中，請你寫一個程式以第2個方法算出學生該得多少分。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>只考一次試，所以輸入的第1列有一個整數n（2 &lt;= n &lt;= 20）代表此次歷史考試有多少個事件要排序。第2列為標準答案，有n個正整數c<sub>1</sub>,c<sub>2</sub>,......c<sub>n</sub>，（其內容為1到n的某種排列），c<sub>1</sub>代表第1個事件發生的順序，c<sub>2</sub>代表第2個事件發生的順序，依此類推。</p>    
+<p>從第3列開始每列為一學生的答案，每列有n個正整數r<sub>1</sub>,r<sub>2</sub>,......r<sub>n</sub>，（其內容亦為1到n的某種排列），r<sub>1</sub>代表學生回答第1個事件發生的順序，r<sub>2</sub>代表學生回答第2個事件發生的順序，依此類推。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一學生的答案，輸出其所得的分數。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>10
+3 1 2 4 9 5 10 6 8 7
+1 2 3 4 5 6 7 8 9 10
+4 7 2 3 10 6 9 1 5 8
+3 1 2 4 9 5 10 6 8 7
+2 10 1 3 8 4 9 5 7 6</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>6
+5
+10
+9</pre>
+                            
+</body>                            
+                            
+</html>                            

@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10003: Cutting Sticks</h1>          
+<p>你的任務是替一家叫Analog Cutting Machinery (ACM)的公司切割木棍。切割木棍的成本是根據木棍的長度而定。而且切割木棍的時候每次只切一段。</p>  
+<p>很顯然的，不同切割的順序會有不同的成本。例如：有一根長10公尺的木棍必須在第2、4、7公尺的地方切割。這個時候就有幾種選擇了。你可以選擇先切2公尺的地方，然後切4公尺的地方，最後切7公尺的地方。這樣的選擇其成本為：10+8+6=24。因為第一次切時木棍長10公尺，第二次切時木棍長8公尺，第三次切時木棍長6公尺。但是如果你選擇先切4公尺的地方，然後切2公尺的地方，最後切7公尺的地方，其成本為：10+4+6=20，這成本就是一個較好的選擇。</p>  
+<p>你的老闆相信你的電腦能力一定可以找出切割一木棍所需最小的成本。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料3列，第一列有1個整數L（L&lt;1000），代表需要切割的木棍的長度。第二列有一個整數N（N&lt;50），代表需要切的次數。第三列有N個正整數C<sub>i</sub>（0 
+&lt; C<sub>i</sub> &lt; L）代表木棍需被切割的地方。這N個整數均不相同，且由小到大排列好。</p>    
+<p>L=0代表輸入結束。請參考Sample Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出最小的切割成本。請參考Sample 
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>100
+3
+25 50 75
+10
+4
+4 5 7 8
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>The minimum cutting is 200.
+The minimum cutting is 22.</pre>
+                            
+</body>                            
+                            
+</html>                            

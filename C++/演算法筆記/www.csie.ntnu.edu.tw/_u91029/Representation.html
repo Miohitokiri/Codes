@@ -1,0 +1,1083 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Representation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:15:02 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Representation</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Representation</p>
+</div><div class="c">
+<p class="t">Representation / Factorization</p>
+<p>「重新表示」。數據套用函數，轉換成其他姿態，重新呈現。</p>
+<p>「分解」。重新表示的反向操作，揭露數據原本姿態。</p>
+<img src="Representation1.png">
+<p>重新表示：已知原數據，求新數據、求函數。</p>
+<p>分解：已知新數據，求原數據、求函數。</p>
+<img src="Representation2.png">
+<p>當函數擁有反函數，只要移項一下，重新表示、分解其實是同一個問題，沒有主從之分。</p>
+<img src="Representation3.png">
+<p class="t">Matrix Representation / Matrix Factorization</p>
+<p>當函數是矩陣，則有三種套用函數的方式。</p>
+<p>一、矩陣乘在數據左邊：數據們實施線性變換。</p>
+<img src="Representation4.png">
+<p>二、矩陣乘在數據右邊：數據們的加權平均值。</p>
+<img src="Representation5.png">
+<p>三、矩陣相加：數據們加上誤差。</p>
+<img src="Representation6.png">
+<p>數據可以是一維，甚至多維。數據可以是一筆，甚至多筆。</p>
+<p>一筆數據是一個直條。矩陣乘在左邊，原數據與新數據從左往右依序一一對應。矩陣乘在右邊，權重與新數據一一對應。矩陣相加，原數據、新數據、誤差一一對應。</p>
+<p>不熟悉線性代數的讀者，請參考本站文件「<a href="Matrix.html">Basis</a>」，複習一下「矩陣切成直條」的觀點。</p>
+<p class="t">備註</p>
+<p>representation通常是指「數據的等價呈現方式」，而不是這裡提到的「數據套用函數變成新數據」。</p>
+<p>factorization通常是指「乘法的反向操作」，而不是這裡提到的「新數據分解成函數和原數據」。</p>
+<p>這裡的定義是從機器學習領域來的，而該領域常常胡亂造詞。按理應當另造新詞，然而我並未發現更適切的詞彙，只好姑且沿用。</p>
+<p class="t">備註</p>
+<p>矩陣乘法其實是函數複合。多個矩陣連乘，併成一個矩陣，這是「函數複合composition」。一個矩陣，拆成多個矩陣連乘，這是「函數分解decomposition」。函數複合的反向操作是函數分解。</p>
+<p>儘管representation factorization外觀如同composition decomposition，但是其意義是數據、而非函數。本質略有差異。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Principal Component Analysis</p>
+</div><div class="c">
+<p class="t">Principal Component Analysis</p>
+<p>Y = AX。已知數據X，求新數據Y、求轉換矩陣A。</p>
+<img src="PrincipalComponentAnalysis1.png">
+<p>YYᵀ = I。令新數據Y的維度是正規正交：相同維度的點積是1，相異維度的點積是0。既是單位向量、又互相垂直。</p>
+<img src="PrincipalComponentAnalysis2.png">
+<p>一個維度視作一個向量；兩個向量的點積，得到一個值；所有兩兩向量的點積，排列成矩陣。</p>
+<img src="PrincipalComponentAnalysis3.png">
+<p class="t">推導過程</p>
+<pre>
+{ Y = AX
+{ YYᵀ = I
+given X. find A and Y.
+                       _____________________________________________ 
+YYᵀ             = I   | XXᵀ is a real matrix.                       |
+AX(AX)ᵀ         = I   | XXᵀ is a square matrix.                     |
+AXXᵀAᵀ          = I   | XXᵀ is a symmetric matrix.                  |
+A(XXᵀ)Aᵀ        = I   | XXᵀ is a positive semi-definite.            |
+A(EDE⁻¹)Aᵀ      = I   | thus XXᵀ has real non-negative eigenvalues. |
+A(E√D)(√DE⁻¹)Aᵀ = I   | thus XXᵀ has orthonormal eigenbasis.        |
+A = √D⁻¹E⁻¹           | let XXᵀ = EDE⁻¹ (E⁻¹ = Eᵀ)                  |
+A = √D⁻¹Eᵀ             ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ 
+</pre>
+<p>XXᵀ是實數對稱正半定方陣，得以實施特徵分解。</p>
+<p>E是特徵向量們（特徵基底），恰為正規正交矩陣，其轉置矩陣恰為反矩陣。而且都是實數。</p>
+<p>D是特徵值們，恰為對角線矩陣。而且都是實數、都非負數。</p>
+<p>欲求A，就想辦法讓A和Aᵀ能夠抵消EDEᵀ，使之成為I。特徵基底求反矩陣，特徵值先開根號再求倒數，如此就湊出了A。</p>
+<p>欲求Y，只消計算AX。</p>
+<p>正確答案不只一種。特徵向量對調次序、顛倒方向，特徵值開根號時取正值、取負值，都是正確答案。</p>
+<p>補充一下，正確答案的左邊乘上任意的正規正交矩陣，仍是正確答案。但由於這類答案並不實用，大家總是無視這類答案。</p>
+<p class="t">數據減去平均值</p>
+<p>當X的中心（平均值）位於原點，則Y的中心也將位於原點。</p>
+<img src="PrincipalComponentAnalysis4.png">
+<p>大家總是預先將X減去平均值，將X的中心挪至原點。好處是：一、降低數值範圍，以減少浮點數運算誤差。二、具備直線擬合效果，詳見後面章節。</p>
+<p>X減去平均值之後，XXᵀ和YYᵀ變成「維度的共變異矩陣」。</p>
+<p class="t">演算法（Eigendecomposition）</p>
+<p>一、每筆數據減去其平均值。</p>
+<p>二、求得維度之間（不是數據之間）的共變異矩陣。</p>
+<p>三、共變異矩陣實施特徵分解。</p>
+<pre>
+X = {(1,2,3), (4,5,6), (5,0,4), (3,3,3), (7,5,9)}
+
+    [ 1 4 5 3 7 ]   [ x₁ x₂ x₃ x₄ x₅ ]   [ |  |  |  |  |  ]
+X = [ 2 5 0 3 5 ] = [ y₁ y₂ y₃ y₄ y₅ ] = [ p₁ p₂ p₃ p₄ p₅ ]
+    [ 3 6 4 3 9 ]   [ z₁ z₂ z₃ z₄ z₅ ]   [ |  |  |  |  |  ]
+
+    [ 4 4 4 4 4 ]
+X̄ = [ 3 3 3 3 3 ]
+    [ 5 5 5 5 5 ]
+
+            [           ]   [ —— d₁ —— ]
+X̂ = X - X̄ = [   3 × 5   ] = [ —— d₂ —— ]
+            [           ]   [ —— d₃ —— ]
+
+       [ d₁⋅d₁ d₁⋅d₂ d₁⋅d₃ ]   [       ]
+X̂ X̂ᵀ = [ d₂⋅d₁ d₂⋅d₂ d₂⋅d₃ ] = [ 3 × 3 ] = E D Eᵀ
+       [ d₃⋅d₁ d₃⋅d₁ d₃⋅d₃ ]   [       ]
+
+    [       ]       [ λ₁ 0  0  ]
+E = [ 3 × 3 ]   D = [ 0  λ₂ 0  ]
+    [       ]       [ 0  0  λ₃ ]
+
+              [ 1/√λ₁   0     0   ] [       ]
+A = √D⁻¹ Eᵀ = [   0   1/√λ₂   0   ] [ 3 × 3 ]
+              [   0     0   1/√λ₃ ] [       ]
+</pre>
+<textarea>
+#include "Eigen/Core"
+#include "Eigen/Geometry"
+#include "Eigen/Dense"
+using namespace Eigen;
+
+void PCA()
+{
+	const int N = 5;
+	MatrixXf X(3, N);
+	X << 1, 4, 5, 3, 7,
+		 2, 5, 0, 3, 5,
+		 3, 6, 4, 3, 9;
+
+	X.colwise() -= X.rowwise().mean();		// 減去平均值
+	Matrix3f C = X * X.transpose();			// 共變異矩陣
+	SelfAdjointEigenSolver<Matrix3f> es(C);	// 特徵分解
+	MatrixXf D = es.eigenvalues();			// 特徵值
+	Matrix3f E = es.eigenvectors();			// 特徵向量
+	Matrix3f A = D.cwiseSqrt().cwiseInverse().asDiagonal()
+               * E.transpose();
+	MatrixXf Y = A * X;
+	cout << Y;
+}
+</textarea>
+<p class="t">演算法（Singular Value Decomposition）</p>
+<p>X實施奇異值分解，恰好可以取代XXᵀ實施特徵分解。</p>
+<p>X的奇異值、基底，恰好可以兜出XXᵀ的特徵值、特徵基底。</p>
+<pre>
+X = UΣVᵀ
+XXᵀ = UΣVᵀ(UΣVᵀ)ᵀ = UΣVᵀVΣᵀUᵀ = UΣΣᵀUᵀ = U(ΣΣᵀ)Uᵀ = EDEᵀ
+ΣΣᵀ = D, U = E
+</pre>
+<p>一般來說，實數對稱正半定方陣XXᵀ的特徵分解，比普通矩陣X的奇異值分解來得快。可是當X是超大矩陣的情況下，預先計算XXᵀ相當費時，而奇異值分解不必計算XXᵀ，逆轉勝。</p>
+<p class="t">演算法（EM-PCA）（Direct Linear Transformation）</p>
+<pre>
+Generate random matrix A. Loop over until A converge to PCA basis:
+  E-step:  X = A⁺Y  = (A Aᵀ)⁻¹ Aᵀ Y
+  M-step:  A = Y X⁺ = X (XᵀX )⁻¹ Xᵀ 
+</pre>
+<p>明明是Fixed Point Iteration，結果被叫做EM Algorithm。</p>
+<p>我不清楚這是否比奇異值分解來的快。</p>
+<p class="t">幾何意義</p>
+<p>PCA找到了全新的垂直座標軸：原點是數據中心、座標軸是特徵基底、座標軸單位長度是特徵值平方根。</p>
+<img src="PrincipalComponentAnalysis5.png">
+<p>所有數據一齊位移、旋轉（與鏡射）、縮放（與鏡射）。</p>
+<p>一、位移：數據中心位移至原點。</p>
+<p>二、旋轉：以特徵基底，逆向旋轉數據。</p>
+<p>三、縮放：各維度除以各特徵值平方根。</p>
+<p>最後，各維度的平均數均為0，變異數均為1。</p>
+<img src="PrincipalComponentAnalysis6.png">
+<p>正確答案不只一種。特徵向量（連同特徵值）對調次序，效果是鏡射暨旋轉。特徵向量顛倒方向、特徵值變號，效果是鏡射。</p>
+<p>正確答案可以包含鏡射，也可以不包含鏡射。如果討厭鏡射，就讓特徵基底成為右手座標系、讓特徵值平方根皆是正值。</p>
+<p>補充一下，正確答案的左邊乘上任意的正規正交矩陣，也就是旋轉（與鏡射），仍是正確答案。但由於這類答案並不實用，大家總是無視這類答案。</p>
+<img src="PrincipalComponentAnalysis7.png">
+<p class="t">讓特徵基底成為右手座標系</p>
+<p>一、標準座標軸（單位矩陣I），是右手座標系。</p>
+<p>二、右手座標系經過旋轉，仍是右手座標系。</p>
+<p>三、偶數次鏡射，得視作旋轉。</p>
+<p>四、右手座標系經過偶數次鏡射，仍是右手座標系。</p>
+<p>五、右手座標系經過奇數次鏡射，若再增加一次鏡射，就是右手座標系。</p>
+<img src="PrincipalComponentAnalysis8.png">
+<p>determinant可以判斷鏡射次數。det(E) = +1是偶數次，det(E) = -1是奇數次。當det(E) = -1，則再增加一次鏡射，就是右手座標系。例如任取一個特徵向量顛倒方向（元素通通添上負號）。</p>
+<p class="t">幾何特性</p>
+<p>一、所有數據投影到座標軸之後的變異數，第一座標軸最大，第二座標軸次大（須垂直於先前座標軸），……。</p>
+<p>也就是說，座標軸的方向，就是數據最散開的方向。</p>
+<img src="PrincipalComponentAnalysis9.png">
+<p>二、所有數據到座標軸的距離平方和，第一座標軸最小，第二座標軸次小（須垂直於先前座標軸），……。此即直線擬合！</p>
+<p>也就是說，座標軸的垂直方向，就是數據最聚合的方向。</p>
+<img src="PrincipalComponentAnalysis10.png">
+<p>座標軸總是穿越原點。當數據沒有預先減去平均值，則座標軸不會穿越數據中心，不過仍然具備前述性質。此即「必須穿越原點的直線擬合」！進一步改變原點，則可以製作「必須穿越任意點的直線擬合」。</p>
+<img src="PrincipalComponentAnalysis11.png">
+<p class="t">數學證明</p>
+<p>首先引入先備知識：Ax²求最大值、最小值。A是實數對稱正半定方陣。當x長度為1，答案是A的最大的、最小的特徵值暨特徵向量。</p>
+<pre>
+     T                 2
+max x A x   subject ‖x‖ = 1
+ x
+     T            2
+max x A x - λ (‖x‖ - 1)          Lagrange's multiplier
+ x
+
+∂     T            2
+―― [ x A x - λ (‖x‖ - 1) ] = 0   derivative = 0
+∂x
+
+2 A x - 2 λ x = 0                expand (A is symmetric)
+
+A x = λ x                        transposition
+
+A 最大的特徵值暨特徵向量就是正解。
+</pre>
+<p>投影之後變異數最大、數據散開性證明：</p>
+<pre>
+                                 2
+max ∑ ‖proj pᵢ - (1/n) ∑ proj pⱼ‖    subject to ‖v‖ = 1
+ v  i    v             j   v
+
+               2
+max ∑ ‖proj pᵢ‖    subject to ‖v‖ = 1
+ v  i    v
+
+            2 
+max ∑ ‖pᵢ∙v‖       subject to ‖v‖ = 1
+ v  i
+
+         T  2
+max ∑ ‖pᵢ v‖       subject to ‖v‖ = 1
+ v  i
+
+      T  2
+max ‖X v‖          subject to ‖v‖ = 1
+ v
+
+     T   T 
+max v X X v        subject to ‖v‖ = 1
+ v
+
+     T    T
+max v (X X ) v     subject to ‖v‖ = 1
+ v
+
+   T
+X X 最大的特徵值暨特徵向量就是正解。
+</pre>
+<p>距離平方和最小、直線擬合、數據聚合性證明：</p>
+<pre>
+                    2
+min ∑ ‖pᵢ - proj pᵢ‖     subject to ‖v‖ = 1
+ v  i         v
+
+                     2
+min ∑ ‖pᵢ - (pᵢ∙v) v‖    subject to ‖v‖ = 1
+ v  i
+
+          2          2        2   2
+min ∑ ‖pᵢ‖ - 2 ‖pᵢ∙v‖ + ‖pᵢ∙v‖ ‖v‖    subject to ‖v‖ = 1
+ v  i
+
+          2        2 
+min ∑ ‖pᵢ‖ - ‖pᵢ∙v‖      subject to ‖v‖ = 1
+ v  i
+
+              2 
+min ∑ - ‖pᵢ∙v‖           subject to ‖v‖ = 1
+ v  i
+
+            2 
+max ∑ ‖pᵢ∙v‖             subject to ‖v‖ = 1
+ v  i
+
+   T
+X X 最大的特徵值暨特徵向量就是正解。
+</pre>
+<p class="t">Low-rank Principal Component Analysis</p>
+<p>關於轉換矩陣A，先前討論方陣，現在討論矩陣。low-rank是指矩陣的rank比較小，外觀看起來是直條不足或者橫條不足。</p>
+<p>轉換矩陣不再擁有反矩陣，但是仍擁有廣義反矩陣，重新表示、分解仍是同一個問題。為了清楚說明，以下將兩者皆列出。</p>
+<p>重新表示版本：令新數據維度小於原數據維度，降低資訊量。</p>
+<p>答案是A = √D⁻¹Eᵀ，保留大的、捨棄小的特徵值暨特徵向量。</p>
+<img src="PrincipalComponentAnalysis12.png">
+<p>分解版本：令原數據維度小於新數據維度，降低資訊量。</p>
+<p>答案是A = E√D，保留大的、捨棄小的特徵值暨特徵向量。</p>
+<img src="PrincipalComponentAnalysis13.png">
+<p>如果式子再添加一個誤差項，稱作Factor Analysis。雞肋。</p>
+<p class="t">程式碼</p>
+<textarea>
+// 保留大的特徵值暨特徵向量，此例為保留前兩個。
+MatrixXf D = es.eigenvalues().tail(2);			// 特徵值
+MatrixXf E = es.eigenvectors().rightCols(2);	// 特徵向量
+</textarea>
+<p class="t">幾何意義</p>
+<p>PCA找到了一組新的垂直座標軸，而Low-rank PCA僅保留了特徵值較大的座標軸。</p>
+<img src="PrincipalComponentAnalysis14.png">
+<p>所有數據一齊位移、投影（與鏡射）、縮放（與鏡射）。</p>
+<p>因為捨棄了一些座標軸，所以旋轉必須重新解讀為投影：數據投影至僅存的特徵基底。</p>
+<img src="PrincipalComponentAnalysis15.png">
+<blockquote>
+p = RandomVariate[MultinormalDistribution[{0,0,0}, {{3,1,1},{1,2,1},{1,1,1}}], 12] / 3;
+ListPointPlot3D[p, PlotStyle -> PointSize[Large], BoxRatios->{1,1,1}];
+p = {{-0.0561955,-0.00847422,0.453698},{-0.334564,-0.272408,-0.238724},{-0.567886,0.0607641,0.265588},{0.502573,-0.344719,-0.296151},{0.19767,0.450711,0.0407837},{-0.0795941,-0.316957,-0.129278},{0.388671,0.00273937,0.330277},{0.0718672,-0.0904262,0.213121},{0.0928513,-0.312574,0.213095},{0.0484546,0.251097,-0.522902},{0.0447417,0.575007,-0.0364518},{-0.308589,0.00523944,-0.293056}};
+o = Mean[p];
+p = p - Table[o, Length[p]];
+e = Eigenvectors[N[Transpose[p] . p]];
+normal = e[[3,All]];
+q = p - (Dot[p, normal] * Table[normal, Length[p]]);
+l = Transpose[{p,q}];
+pl = InfinitePlane[{0,0,0} , e[[1;;2,All]] ];
+axis = {{{-2,0,0},{2,0,0}},{{0,-2,0},{0,2,0}},{{0,0,-2},{0,0,2}}};
+Graphics3D[{Black, Thickness[0.015], Line[axis], Black, Specularity[White, 10], Sphere[p, 0.05], Thickness[0.025], CapForm["Butt"], RGBColor[255,192,0], Line[l], RGBColor[192,0,0], Opacity[0.5], EdgeForm[None], pl}, PlotRange -> {{-.6,.6},{-.6,.6},{-.6,.6}}, Boxed -> False]
+r = Transpose[{Dot[p, e[[1,All]]], Dot[p, e[[2,All]]]}];
+Graphics[{Black, PointSize[0.05], Point[r]}, PlotRange -> {{-.6,.6},{-.6,.6},{-.6,.6}}, Boxed -> False]
+</blockquote>
+<p class="t">幾何特性</p>
+<p>除了先前提及的散開性、聚合性，又多了一個逼真性。</p>
+<p>三、所有數據投影到座標軸空間的距離平方總和最小。</p>
+<p>也就是說，座標軸所在位置，令數據投影之後的失真最少。</p>
+<img src="PrincipalComponentAnalysis16.png">
+<p class="t">數學證明</p>
+<p>首先引入先備知識：對角線矩陣D，套用正規正交矩陣Q，trace只會減少，或者不變（當正規正交矩陣Q是單位矩陣I）。</p>
+<p>幾何觀點：向量們形成標準座標軸，長度不必是1。經過旋轉或翻轉，則會偏離標準座標軸，使得座標值減少，總和也減少。</p>
+<pre>
+max tr( Q D )
+
+令 Q = I 以得到最大值
+</pre>
+<p>投影前後距離平方和最小、數據逼真性證明：</p>
+<pre>
+(Ǎ: remove some columns from square matrix A)
+
+             T   2               T
+min ‖ X - B̌ B̌ X ‖    subject to B̌ B̌ = I
+
+                T  T         T
+min tr( (X - B̌ B̌ X)  (X - B̌ B̌ X) )        trace of inner product
+
+         T       T   T     T   T   T
+min tr( X X - 2 X B̌ B̌ X + X B̌ B̌ B̌ B̌ X )   expand
+
+         T     T   T                       T
+min tr( X X - X B̌ B̌ X )                   B̌ B̌ = I
+
+           T   T
+min tr( - X B̌ B̌ X )                       remove constant
+
+         T   T
+max tr( X B̌ B̌ X )                         multiply -1
+
+           T   T
+max tr( B̌ B̌ X X )                         cyclic property of trace
+
+           T     T
+max tr( B̌ B̌ E D E )                       eigendecomposition
+
+         T   T
+max tr( E B̌ B̌ E D )                       cyclic property of trace
+
+    T   T
+令 E B̌ B̌ E = Ǐ 以得到最大值 Ď
+
+令 B̌ = Ě 以得到最大值 Ď
+
+   T
+X X 較大的特徵值和特徵向量就是正解。
+</pre>
+<p class="t">精髓</p>
+<p>從不同角度看數據，時聚時散。不斷滾動數據，重新找一個視角，讓數據看起來最散開、最聚合。注意到，是聚散，不是寬窄。</p>
+<style>canvas {border: 1px solid black;}</style>
+<div class="i"><canvas id="PCA2D" width="200" height="200"></canvas> <canvas id="PCA3D" width="200" height="200"></canvas></div>
+<script src="three.min.js"></script>
+<script src="jsfeat-min.js"></script>
+<script>
+function DrawPointArray(ctx, p, rgb) {
+	ctx.fillStyle = rgb;
+	ctx.lineWidth = 1.5;
+	for (var i = 0; i < p.length; ++i) {
+		ctx.beginPath();
+		ctx.arc(p[i][0], p[i][1], 3, 0, Math.PI * 2, true);
+		ctx.fill();
+	}
+}
+
+function DrawArrow(ctx, x1, y1, x2, y2, len, angle, gap, rgb) {
+	var slope = Math.atan2(y2 - y1, x2 - x1);
+	x1 += gap * Math.cos(slope);
+	y1 += gap * Math.sin(slope);
+	x2 -= gap * Math.cos(slope);
+	y2 -= gap * Math.sin(slope);
+	ctx.save();
+	ctx.strokeStyle = rgb;
+	ctx.fillStyle = rgb;
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.stroke();
+	ctx.beginPath();
+	ctx.moveTo(x2, y2);
+	ctx.lineTo(x2 - len * Math.cos(slope-angle), y2 - len * Math.sin(slope-angle));
+	ctx.lineTo(x2 - len * Math.cos(slope+angle), y2 - len * Math.sin(slope+angle));
+	ctx.fill();
+	ctx.restore();
+}
+
+function DrawXY(ctx, scalarX, scalarY) {
+	DrawArrow(ctx, -scalarX, 0, +scalarX, 0, 8, Math.PI / 5, 0, "black");
+	DrawArrow(ctx, 0, -scalarY, 0, +scalarY, 8, Math.PI / 5, 0, "black");
+	ctx.save();
+	ctx.font = "16pt Arial";
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillStyle = "black";
+	ctx.fillText("x", +scalarX+8, 0);
+	ctx.textBaseline = "bottom";
+	ctx.scale(1, -1);
+	ctx.fillText("y", 0, -scalarY-8);
+	ctx.scale(1, -1);
+	ctx.restore();
+}
+</script>
+<script>
+function pca(x) {
+	var n = x.length;
+	var d = x[0].length;
+
+	// centralize
+	var xm = x[0].slice().fill(0);
+	for (var i=0; i<n; ++i) for (var j=0; j<d; ++j) xm[j] += x[i][j];
+	for (var i=0; i<d; ++i) xm[i] /= n;
+
+	// covariance matrix
+	var X = new jsfeat.matrix_t(n, d, jsfeat.F64_t | jsfeat.C1_t);
+	for (var i=0; i<n; ++i) for (var j=0; j<d; ++j)
+		X.data[j*n+i] = x[i][j] - xm[j];
+	var C = new jsfeat.matrix_t(d, d, jsfeat.F64_t | jsfeat.C1_t);
+	jsfeat.matmath.multiply_AAt(C, X);
+	var evectors = new jsfeat.matrix_t(d, d, jsfeat.F64_t | jsfeat.C1_t);
+	var evalues  = new jsfeat.matrix_t(1, d, jsfeat.F64_t | jsfeat.C1_t);
+	jsfeat.linalg.eigenVV(C, evectors, evalues);
+
+	// eigenvector is filled row by row
+	return [xm, evectors.data.slice()];
+}
+</script>
+<script>
+var PCA2D = function() {
+	var canvas = document.getElementById('PCA2D');
+	var ctx    = canvas.getContext('2d');
+
+	var x = [[4,5  ],[16,4 ],[9,8  ],[3,16 ],[8,14 ],
+			 [17,11],[23,9 ],[8,19 ],[16,16],[23,14],
+			 [5,24 ],[13,25],[19,22],[26,21],[29,16],
+			 [13,30],[22,31],[28,27],[32,23],[38,19],
+			 [30,32],[37,28]];
+
+	for (var i=0; i<x.length; ++i)
+		for (var j=0; j<x[j].length; ++j)
+			x[i][j] *= 4.5;
+
+	var [c, ev] = pca(x);
+
+	// coordinate system;
+	ctx.lineWidth = 2;
+	ctx.translate(0, canvas.height);
+	ctx.scale(1, -1);
+	ctx.translate(canvas.width/2 - c[0], canvas.height/2 - c[1]);
+	ctx.save();
+
+	// mouse control
+	var theta = 0;
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+	canvas.onmousemove = function(event) {
+		var dx = event.layerX - canvas.width/2;
+		var dy = event.layerY - canvas.height/2;
+		theta = Math.atan2(-dy, dx);
+		draw();
+	}
+
+	draw();
+	function draw() {
+		ctx.save();
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.restore();
+
+		ctx.save();
+		ctx.translate(+c[0], +c[1]);
+		ctx.rotate(theta);
+		ctx.translate(-c[0], -c[1]);
+		const t = 50;
+		DrawXY(ctx, 170, 150);
+		DrawPointArray(ctx, x, "black");
+		DrawArrow(ctx, c[0], c[1], c[0] + ev[0] * t, c[1] + ev[1] * t, 8, Math.PI / 5, 0, "#CC5500");
+		DrawArrow(ctx, c[0], c[1], c[0] + ev[2] * t, c[1] + ev[3] * t, 8, Math.PI / 5, 0, "#00CC55");
+		ctx.restore();
+	}
+}();
+</script>
+<script>
+var PCA3D = function(){
+	var canvas = document.getElementById('PCA3D');
+	var renderer = new THREE.WebGLRenderer({canvas: canvas, alpha: true});
+	var scene = new THREE.Scene();
+	var camera = new THREE.PerspectiveCamera();
+	scene.add(camera);
+
+	var radius = 75;
+	var n = 50;
+	var p = new Array(n);
+	for (var i = 0; i < n; ++i) {
+		var x = radius * Math.random() * 0.3;
+		var y = radius * Math.random() * 0.9;
+		var z = radius * Math.random() * 0.6;
+		p[i] = [x,y,z];
+	}
+	var [c, ev] = pca(p);
+
+	var particles = new THREE.Geometry();
+	for (var i = 0; i < n; ++i) {
+		var x = p[i][0], y = p[i][1], z = p[i][2];
+		particles.vertices.push(new THREE.Vector3(x,y,z));
+	}
+	var manager = new THREE.LoadingManager();
+	manager.onLoad = function(){ renderer.render( scene, camera ); }
+	var loader = new THREE.TextureLoader(manager);
+	var texture = loader.load('material/point.png');
+	var material = new THREE.PointsMaterial({
+		color: 'yellow',
+		size: 10,
+		map: texture,
+		transparent: true,
+		alphaTest: 0.2
+	});
+	var particleSystem = new THREE.Points(particles, material);
+	scene.add(particleSystem);
+
+	var dir1 = new THREE.Vector3( ev[0], ev[1], ev[2] ).normalize();
+	var dir2 = new THREE.Vector3( ev[3], ev[4], ev[5] ).normalize();
+	var dir3 = new THREE.Vector3( ev[6], ev[7], ev[8] ).normalize();
+	var center = new THREE.Vector3( c[0], c[1], c[2] );
+	var arrowHelper1 = new THREE.ArrowHelper( dir1, center, 20, 0xCC5500, 4, 4 );
+	var arrowHelper2 = new THREE.ArrowHelper( dir2, center, 20, 0x00CC55, 4, 4 );
+	var arrowHelper3 = new THREE.ArrowHelper( dir3, center, 20, 0x5500CC, 4, 4 );
+	arrowHelper1.line.material.linewidth = 3;	// bug
+	arrowHelper2.line.material.linewidth = 3;	// bug
+	arrowHelper3.line.material.linewidth = 3;	// bug
+	scene.add( arrowHelper1 );
+	scene.add( arrowHelper2 );
+	scene.add( arrowHelper3 );
+	var axisHelper = new THREE.AxisHelper( radius * 2 );
+	scene.add( axisHelper );
+
+	var depth = radius * 1.2;
+	var angle_x = 0.5;
+	var angle_y = 0.5;
+	function updateCamera() {
+		camera.position.x = center.x + depth * Math.cos(angle_y) * Math.cos(angle_x);
+		camera.position.y = center.y + depth * Math.sin(-angle_x);
+		camera.position.z = center.z + depth * Math.sin(angle_y);
+		camera.up.set( 0, 0, 1 );
+		camera.lookAt( center );
+	}
+	updateCamera();
+	renderer.render(scene, camera);
+
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+	canvas.onmousemove = function(event) {
+		angle_x = (event.layerX-canvas.width/2)/(canvas.width/2);
+		angle_y = (event.layerY-canvas.height/2)/(canvas.height/2);
+		updateCamera();
+		renderer.render(scene, camera);
+	}
+}();
+</script>
+<p class="t">延伸應用</p>
+<p>whitening：實施PCA，位移、旋轉、縮放。將數據範圍大致調整成單位圓，方便比對數據。觀念類似於normalization。</p>
+<img src="PrincipalComponentAnalysis17.png">
+<p>orientation：實施PCA，位移、旋轉、略過縮放。功效是重設座標軸，擺正數據。</p>
+<img src="PrincipalComponentAnalysis18.png">
+<p>alignment：兩堆數據各自實施PCA，特徵值由大到小排序，特徵向量一一對應，得知數據對應關係。</p>
+<img src="PrincipalComponentAnalysis19.png">
+<p>embedding：實施Low-rank PCA，捨棄小的特徵值暨特徵向量，只做投影。功效是降維、壓縮，而且是誤差最小的方式。</p>
+<img src="PrincipalComponentAnalysis20.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Alignment</p>
+</div><div class="c">
+<p class="t">Alignment（Registration）</p>
+<p>「對齊」。找到一個函數，讓一堆數據經過函數變換之後，盡量符合另一堆數據。已知原數據、新數據，求函數。</p>
+<img src="Alignment1.png">
+<p>函數具有特殊限制，否則缺乏討論意義。以下僅討論相似形。</p>
+<img src="Alignment2.png">
+<pre>
+     rigid：剛體。函數僅包含位移、旋轉。
+similarity：相似形。函數僅包含位移、旋轉、整體縮放（包含翻轉）。
+    affine：仿射。函數僅包含位移、旋轉、縮放、歪斜。
+</pre>
+<p class="t">Error</p>
+<p>兩堆數據通常不一致。強硬地對齊，就會有「誤差」。</p>
+<p>兩堆數據的誤差，有許多種衡量方式：</p>
+<img src="Alignment3.png">
+<pre>
+一、窮舉甲堆到乙堆的所有兩兩配對，累計距離。
+二、窮舉甲堆每一筆數據，分別找到乙堆之中距離最近的那筆數據，累計距離。
+三、窮舉乙堆每一筆數據，分別找到甲堆之中距離最近的那筆數據，累計距離。
+四、二與三相加。
+五、二與三聯集。
+六、上述誤差，改為只累計前K短的距離。
+七、上述誤差，只考慮互相鄰近的K筆數據。（部分銜接的效果）
+</pre>
+<p>隨隨便便就能發明一大堆誤差公式。重點在於計算時間長短、銜接密合程度。哪種誤差比較好？目前還沒有定論。</p>
+<p class="t">演算法（Principal Component Analysis）</p>
+<p>兩堆數據各自計算PCA座標軸，然後對齊。</p>
+<pre>
+http://www.cs.tau.ac.il/~dcor/Graphics/cg-slides/svd_pca.pptx
+http://www.cse.wustl.edu/~taoju/cse554/lectures/lect07_Alignment.pdf
+http://perception.inrialpes.fr/~Horaud/Courses/pdf/Horaud_3DS_5.pdf
+</pre>
+<p>兩堆數據各自求得共變異矩陣，實施特徵分解。兩邊的特徵向量，依照特徵值大小一一對應。</p>
+<p>最佳的位移量：數據中心的差距。最佳的旋轉量：特徵向量的夾角。最佳的縮放量：特徵值平方根的比例。</p>
+<p>特徵向量不具方向性。指定每個特徵向量的方向，滿足右手座標系，才能求得旋轉矩陣，不含鏡射。</p>
+<p>一種想法是窮舉各種可能的方向，從中找到旋轉角度最小者。</p>
+<p>另一種想法是檢查determinant。det(E) = +1，是右手座標系。det(E) = -1，只要再讓任意一個特徵向量顛倒方向，就是右手座標系。選擇最小的特徵值的特徵向量，讓誤差增加最少。</p>
+<p>PCA座標軸容易因outlier而歪斜。是非常不精準的方法。</p>
+<textarea>
+#include "Eigen/Geometry"
+#include "Eigen/Core"
+#include "Eigen/Eigenvalues"
+using namespace Eigen;
+
+void alignment()
+{
+	// 建立甲堆：隨便設定一些數據
+	const int N = 10;
+	MatrixXf X(3, N);
+	X << 0, 0, 0, 0, 1, 1, 2, 3, 3, 4,
+		 0, 1, 1, 1, 2, 3, 4, 4, 5, 6,
+		 0, 2, 3, 4, 5, 6, 8, 9, 8, 7;
+
+	// 建立乙堆：甲堆隨便旋轉縮放一下得到乙堆
+	Vector3f axis(2,3,4);
+	Matrix3f T( AngleAxisf(0.1 * M_PI, axis.normalized()) );
+	VectorXf Y = T * X * 3;
+
+	// 甲堆PCA
+	X.colwise() -= X.rowwise().mean();
+	Matrix3f Cxx = X * X.transpose();
+	SelfAdjointEigenSolver<Matrix3f> eigenX(Cxx);
+
+	// 乙堆PCA
+	Y.colwise() -= Y.rowwise().mean();
+	Matrix3f Cyy = Y * Y.transpose();
+	SelfAdjointEigenSolver<Matrix3f> eigenY(Cyy);
+
+	// 特徵向量必須重新指定方向，形成右手座標系。
+	// 必須窮舉各種可能的方向，找到旋轉角度最小的。
+	// 我不知道怎麼做，此處省略。
+	......
+
+	// 位移
+	Vector3f t = Y.col(0) - X.col(0);
+
+	// 旋轉
+	Matrix3f R = eigenY.eigenvectors()
+			   * eigenX.eigenvectors().transpose();
+
+	// 縮放
+	float s = sqrt(eigenY.eigenvalues()(0,0)
+				 / eigenX.eigenvalues()(0,0));
+}
+</textarea>
+<p class="t">演算法（Procrustes Analysis）</p>
+<p>當兩堆數據一樣多，並且預先知道數據對應關係，就有更精準的做法。</p>
+<pre>
+https://igl.ethz.ch/projects/ARAP/svd_rot.pdf
+http://perception.inrialpes.fr/~Horaud/Courses/pdf/Horaud_3DS_6.pdf
+</pre>
+<pre>
+    [ x1.x x2.x ... xN.x ]       [ y1.x y2.x ... yN.x ]
+X = [ x1.y x2.y ... xN.y ]   Y = [ y1.y y2.y ... yN.y ]
+    [ x1.z x2.z ... xN.z ]       [ y1.z y2.z ... yN.z ]
+                                  _____________________ 
+solve s R X + t = Y              | t: translate vector |
+                            2    | s: scalar vector    |
+minimize ‖ Y - (s R X + t) ‖     | R: rotation matrix  |
+                                  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ 
+then t = Ȳ - s R X̄
+      2      T         T          2        2
+     s = ∑ Ŷi Ŷi ÷ ∑ X̂i X̂i = ‖ Ŷ ‖<sub>F</sub> ÷ ‖ X̂ ‖<sub>F</sub>
+            T                  T       T
+     R = V U    with C₃ₓ₃ = X̂ Ŷ = U Σ V 
+</pre>
+<p>令函數是位移、旋轉、縮放三個步驟。方便起見，把位移改為最終步驟。數據套用函數之後，令誤差越小越好。誤差訂為對應數據的距離的平方的總和。</p>
+<p>最佳的位移量：兩堆數據各自的平均值相減，相減之前先讓第一個平均值套用函數。最佳的縮放量：兩堆數據各自的變異數相除。最佳的旋轉量：兩堆數據各自減去平均值（中心位移至原點）、除以變異數（大小縮放為相等），求得維度的共變異矩陣，實施奇異值分解，然後VUᵀ矩陣相乘，即是旋轉矩陣。</p>
+<p>R是正規正交矩陣，功效是旋轉暨鏡射。大家通常不想鏡射。若要避免鏡射，則必須滿足右手座標系。</p>
+<p>det(R) = +1，是右手座標系。det(R) = -1，只要再讓任意一個向量顛倒方向，就是右手座標系。選擇最小的特徵值所對應的向量，讓誤差增加最少。</p>
+<textarea>
+#include "Eigen/Core"
+#include "Eigen/Geometry"
+#include "Eigen/SVD"
+#include "Eigen/LU"
+using namespace Eigen;
+
+void alignment()
+{
+	// 建立甲堆：隨便設定一些數據
+	const int N = 10;
+	MatrixXf X(3, N);
+	X << 0, 0, 0, 0, 1, 1, 2, 3, 3, 4,
+		 0, 1, 1, 1, 2, 3, 4, 4, 5, 6,
+		 0, 2, 3, 4, 5, 6, 8, 9, 8, 7;
+
+	// 建立乙堆：甲堆隨便旋轉縮放一下得到乙堆
+	Vector3f axis(2,3,4);
+	Matrix3f A( AngleAxisf(0.1 * M_PI, axis.normalized()) );
+	MatrixXf Y = A * X * 3;
+
+	// 甲堆與乙堆之間的共變異矩陣
+	MatrixXf Xc = X;
+	MatrixXf Yc = Y;
+	Xc.colwise() -= Xc.rowwise().mean();
+	Yc.colwise() -= Yc.rowwise().mean();
+	Matrix3f Cxy = Xc * Yc.transpose();
+
+	// 奇異值分解（因為不是對稱矩陣，所以無法使用特徵分解。）
+	JacobiSVD<Matrix3f> svd(Cxy, ComputeFullU|ComputeFullV);
+
+	// 旋轉
+	Matrix3f R = svd.matrixV() * svd.matrixU().transpose();
+	if (R.determinant() < 0) R.col(2) *= -1;
+
+	// 縮放
+	float s = sqrt(Y.squaredNorm() / X.squaredNorm());
+
+	// 位移
+	Vector3f t = Y.col(0) - (s * (R * X.col(0)));
+
+	// 對齊
+	X = (s * (R * X)).colwise() + t;
+	cout << X << endl;
+	cout << Y << endl;
+}
+</textarea>
+<p class="t">演算法（Iterative Closest Point）</p>
+<pre>
+一、初始化：
+　甲、實施PCA，求得對齊函數。
+　乙、甲堆套用函數。讓甲堆靠近乙堆。
+二、重複此步驟，直到最近點不變為止：
+　甲、甲堆每一點各自找到在乙堆的最近點，建立對應關係。
+　　　無視其餘點，實施PA，求得對齊函數。
+　乙、甲堆套用函數。讓甲堆更加靠近乙堆。
+</pre>
+<p>尋找最近點，簡易的方式是窮舉法，進階的方式是乙堆套用分割區域的資料結構，諸如Uniform Grid、KD-Tree。請參考本站文件「<a href="Region.html">Region</a>」。</p>
+<p class="t">演算法（RANSAC）</p>
+<pre>
+一、甲堆隨機抓幾點，乙堆隨機抓幾點，點數一樣多，推定它們依序一一對應。
+　　以這些點實施PA，求得對齊函數。
+二、計算「甲堆套用函數」與「乙堆」的誤差大小。
+三、重複一二，取誤差最小者。
+</pre>
+<p>絕聖棄智，民利百倍。</p>
+<p class="t">Manifold Alignment</p>
+<p><a href="https://en.wikipedia.org/wiki/Manifold_alignment">https://en.wikipedia.org/wiki/Manifold_alignment</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Embedding（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Embedding（Dimensionality Reduction）</p>
+<p>「嵌入」。更換數據所在空間。例如從三維換成二維。例如從二維換成三維。例如從球面換成平面。例如從曲面換成環面。</p>
+<img src="Embedding1.html">
+<p>嵌入方式有許多種。例如投影就是其中一種嵌入方式。例如訂立座標系統並且實施座標轉換，也是其中一種嵌入方式。</p>
+<img src="Embedding2.html">
+<p>嵌入時，我們通常希望儘量保留數據的原始特性。特性可以是數據的聚散程度、數據之間的距離遠近。計算學家針對各種特性，設計各種演算法。</p>
+<img src="Embedding3.html">
+<p>這裡先不談太廣，僅討論最簡單的情況：數據從N維空間換成M維空間。細分為三種情況：維度變小、維度不變、維度變大。</p>
+<p>後兩者缺乏討論意義──數據不變、數據補零不就好了。因此我們僅討論維度變小。此時「嵌入」的意義就變成了：找到一個函數，讓一堆數據經過函數變換，減少數據維度。</p>
+<img src="Embedding4.html">
+<p class="t">演算法（Principal Component Analysis）</p>
+<p>嵌入時，採用垂直投影。</p>
+<p>實施Low-rank PCA，保留大的、捨棄小的特徵值暨特徵向量，只做投影、略過位移、略過縮放。</p>
+<textarea>
+void PCA()
+{
+	const int N = 5;
+	MatrixXf X(3, N);
+	X << 1, 4, 5, 3, 7,
+		 2, 5, 0, 3, 5,
+		 3, 6, 4, 3, 9;
+
+	Matrix3f C = X * X.transpose();			// 共變異矩陣
+	SelfAdjointEigenSolver<Matrix3f> es(C);	// 特徵分解
+	MatrixXf E = es.eigenvectors().rightCols(2);// 降成二維
+	MatrixXf R = E.transpose();	// 旋轉矩陣（投影矩陣）
+	MatrixXf Y = R * X;
+	cout << Y;
+}
+</textarea>
+<p class="t">演算法（Metric Multidimensional Scaling）</p>
+<p>嵌入時，盡量保留所有點對距離。</p>
+<p>首先計算原數據X的兩兩距離，做為新數據Y的兩兩距離。而兩兩距離可以寫成「距離矩陣」：Mᵢⱼ = ‖pᵢ - pⱼ‖。</p>
+<p>問題變成：已知距離矩陣M、求得數據Y。</p>
+<p>Mᵢⱼ² = ‖qᵢ - qⱼ‖² = ‖qᵢ‖² + ‖qⱼ‖² - 2‖qᵢ ∙ qⱼ‖，橫條擁有相同‖qᵢ‖²，直條擁有相同‖qⱼ‖²。嘗試消去它們：每個橫條減去橫條總平均，然後每個直條減去直條總平均。不失一般性，假設原點位於數據中心，qᵢ總和是0，如此便剩下-2‖qᵢ ∙ qⱼ‖這一項。全部元素再除以-2，得到‖qᵢ ∙ qⱼ‖。最終形成了矩陣YᵀY，好算多了！簡言之：距離平方矩陣Mᵢⱼ²，行列中心化，除以-2，變成矩陣YᵀY。</p>
+<p>問題變成：給定YᵀY，求得Y。</p>
+<p>仿照PCA的手法，YᵀY實施特徵分解，得到答案Y = √DEᵀ。保留大的、捨棄小的特徵值和特徵向量，以符合新維度，同時也讓誤差最小。</p>
+<pre>
+YᵀY = EDEᵀ = E√D√DEᵀ = (E√D)(√DEᵀ) = (√DEᵀ)ᵀ(√DEᵀ)
+</pre>
+<p>還有另一種手法，YᵀY實施Cholesky分解（對稱矩陣的LU分解），得到答案Y = Lᵀ。然而降維時誤差大，沒人這樣做。</p>
+<pre>
+YᵀY = LLᵀ
+</pre>
+<textarea>
+void MDS()
+{
+	const int N = 5;
+	MatrixXf X(3, N);
+	X << 1, 4, 5, 3, 7,
+		 2, 5, 0, 3, 5,
+		 3, 6, 4, 3, 9;
+
+	MatrixXf M2(N, N);
+	for (int i=0; i<N; ++i)
+		for (int j=0; j<N; ++j)
+			M2(i,j) = (X.col(i) - X.col(j)).squaredNorm();
+
+	M2.colwise() -= M2.rowwise().mean();
+	M2.rowwise() -= M2.colwise().mean();
+	M2 /= -2;
+
+	SelfAdjointEigenSolver<MatrixXf> es(M2);
+	MatrixXf D = es.eigenvalues().tail(2);
+	MatrixXf E = es.eigenvectors().rightCols(2);
+	MatrixXf Y = D.cwiseSqrt().asDiagonal()
+			   * E.transpose();
+	cout << Y;
+}
+</textarea>
+<p>最後順帶一提，此算法跟「<a href="Curve.html">Mesh Smoothing</a>」似乎有關聯。</p>
+<p class="t">演算法（Random Projection）</p>
+<p><a href="https://en.wikipedia.org/wiki/Random_projection">https://en.wikipedia.org/wiki/Random_projection</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Johnson?indenstrauss_lemma">https://en.wikipedia.org/wiki/Johnson–Lindenstrauss_lemma</a></p>
+<p>線性變換的本質是旋轉、鏡射、伸縮座標軸，數據的相對位置不變。隨便找個線性變換做為嵌入函數，都能大致保留數據的相對位置，但是會大幅改變數據的相對距離。</p>
+<p>而隨機導致分散，分散導致正交，正交導致距離不變。</p>
+<p>Johnson-Lindenstrauss Lemma。</p>
+<p>絕聖棄智，民利百倍。</p>
+<p class="t">Manifold Embedding（Manifold Learning）</p>
+<p>更換數據所在空間，從流形換成N維空間。</p>
+<p>對付流形的手法主要是：一、取樣。二、建立鄰居關係（不見得是平面圖、三角剖分、網格）。三、鄰居關係盡量保持不變。</p>
+<p>缺點是矩陣運算時間複雜度O(N^3)太高。</p>
+<pre>
+Isomap: All Pair Shortest Path + Metric Multidimensional Scaling
+Locally Linear Embedding: Weighted Average of Neighbor
+Self-organizing Map: 1-layer Neural Network
+Auto-encoder: Neural Network
+</pre>
+<pre>
+https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction
+http://www.cs.utah.edu/~piyush/teaching/spectral_dimred.pdf
+http://www.cad.zju.edu.cn/reports/流形学习.pdf
+http://web.stanford.edu/class/ee378b/lect-9.pdf
+http://www.cs.cmu.edu/~liuy/distlearn.htm
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Independent Component Analysis</p>
+</div><div class="c">
+<p class="t">Independent Component Analysis</p>
+<p>Y = XA。已知數據X，求新數據Y、求轉換矩陣A。</p>
+<img src="IndependentComponentAnalysis1.png">
+<p>YᵀY = I。令新數據Y是正規正交：相異數據的點積是0，相同數據的點積是1。</p>
+<img src="IndependentComponentAnalysis2.png">
+<p>一筆數據視作一個向量；兩個向量的點積，得到一個值；所有兩兩向量的點積，排列成矩陣。</p>
+<img src="IndependentComponentAnalysis3.png">
+<p class="t">推導過程</p>
+<pre>
+{ Y = XA
+{ YᵀY = I
+given X. find A and Y.
+                       _____________________________________________ 
+YᵀY             = I   | XᵀX is a square matrix.                     |
+(XA)ᵀXA         = I   | XᵀX is a symmetric matrix.                  |
+AᵀXᵀXA          = I   | XᵀX is a real matrix.                       |
+Aᵀ(XᵀX)A        = I   | XᵀX is a positive semi-definite matrix.     |
+Aᵀ(EDE⁻¹)A      = I   | thus XᵀX has real non-negative eigenvalues. |
+Aᵀ(E√D)(√DE⁻¹)A = I   | thus XᵀX has orthonormal eigenbasis.        |
+A = E √D⁻¹            | let XᵀX = EDE⁻¹ (E⁻¹ = Eᵀ)                  |
+                       ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ 
+</pre>
+<p>PCA：Y = AX，YYᵀ = I，XXᵀ = EDEᵀ，A = √D⁻¹Eᵀ。</p>
+<p>ICA：Y = XA，YᵀY = I，XᵀX = EDEᵀ，A = E√D⁻¹。</p>
+<p>PCA矩陣在左，維度獨立。ICA矩陣在右，數據獨立。<p>
+<p>如同PCA，ICA也是預先將X減去平均值。X減去平均值之後，XᵀX和YᵀY變成「數據的共變異矩陣」。</p>
+<p class="t">Low-rank Independent Component Analysis</p>
+<p>重新表示版本：令新數據數量小於原數據數量，降低資訊量。</p>
+<p>答案是A = E√D⁻¹，保留大的、捨棄小的特徵值暨特徵向量。</p>
+<img src="IndependentComponentAnalysis4.png">
+<p>分解版本：令原數據數量小於新數據數量，降低資訊量。</p>
+<p>答案是A = √DEᵀ，保留大的、捨棄小的特徵值暨特徵向量。</p>
+<img src="IndependentComponentAnalysis5.png">
+<p class="t">PCA與ICA互為轉置</p>
+<p>原數據X、新數據Y、轉換矩陣A通通轉置之後實施PCA，等同於直接實施ICA。PCA和ICA對調亦如是。</p>
+<pre>
+Y  = A X   , Y Yᵀ = I     PCA
+--------------------------------------------------
+Yᵀ = AᵀXᵀ  , YᵀYᵀᵀ= I     PCA: transpose X Y A
+Yᵀ = (XA)ᵀ , YᵀY  = I     PCA: transpose X Y A
+Y  = X A   , YᵀY  = I     ICA
+</pre>
+<p>寫成數學公式就是PCA(Xᵀ)ᵀ = ICA(X)、PCA(X) = ICA(Xᵀ)ᵀ、PCA(X)ᵀ = ICA(Xᵀ)，每個式子意義都相同。</p>
+<p>當數據形成對稱矩陣，那麼ICA與PCA完全相同。然而一般不會遇到這種事，比中彩券還難。</p>
+<p class="t">備註：直式改成橫式</p>
+<p>因為線性變換已經規定將矩陣乘在左邊，所以矩陣乘在右邊挺彆扭。於是數學家就想到，把左式右式一齊轉置，使得矩陣乘在左邊，方便討論；但是缺點是數據和矩陣須排列成橫條，更加彆扭。順帶一提，幾乎所有ICA文獻都採用此形式。</p>
+<p>Y = XA。Yᵀ = (XA)ᵀ。Yᵀ = AᵀXᵀ。數據須改成橫條。通常重新標記成S = AX或者進一步移項為X = WS。</p>
+<img src="IndependentComponentAnalysis6.png">
+<p>YᵀY = I。(YᵀY)ᵀ = Iᵀ。YᵀY = I。還是跟原本一樣。通常重新標記成SSᵀ = I。</p>
+<img src="IndependentComponentAnalysis2.png">
+<p>另外，除了原本的YᵀY = I，幾乎所有ICA文獻都額外規定原數據X也是正規正交XᵀX = I，接著又推導出轉換矩陣A也是正規正交AᵀA = I。通常重新標記成XXᵀ = I以及WWᵀ = I。</p>
+<p>橫式的壞處是不符合線性變換。矩陣以直條為主，矩陣存放數據是以直條排列。橫式的好處是符合計算機資料結構。陣列以橫條為主，陣列儲存數據是以橫條排列。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Separation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Separation</p>
+<p>「分離」。找到組成數據的關鍵因子。</p>
+<img src="Separation11.html">
+<p>例如麥克風錄到一段演奏，嘗試分離出每種樂器的聲音。</p>
+<img src="Separation12.html">
+<p>例如相機拍到一個場景，嘗試分離出光線的來源與強度。</p>
+<img src="Separation13.html">
+<p class="t">演算法（Independent Component Analysis）</p>
+<p>假定數據是關鍵因子的加權平均值。</p>
+<p class="t">演算法（Wavelet Analysis）</p>
+<p>自訂特殊數據，做為關鍵因子。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Quantization（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Quantization（Vector Quantization）</p>
+<p>「量化」。找到一個函數，讓數據經過函數變換之後，保留數值的重點，刪除數值的細節。</p>
+<img src="Quantization1.html">
+<p>簡易的量化是四捨五入、無條件捨去、無條件進入。進階的量化是區分數量級。經典的量化是<a href="http://www.mobile01.com/topicdetail.php?f=179&amp;t=195623&amp;p=1">以圖表相較並沒有明顯差異</a>。</p>
+<img src="Quantization2.html">
+<p>如果預先知道數據大致分布，還可以自訂量化結果。亦可推廣到高維度。</p>
+<img src="Quantization3.html">
+<p>量化只有一筆關鍵因子，分離則有許多筆關鍵因子。</p>
+<p class="t">演算法（Independent Component Analysis）</p>
+<p>實施ICA分解版本，只做旋轉、略過縮放、略過位移。數據分解成加權平均值的格式，取權重最大者做為量化結果。</p>
+<p>缺點是量化種類無法超過數據維度。</p>
+<textarea>
+void ICA()
+{
+	const int N = 5;
+	MatrixXf Y(3, N);
+	Y << 1, 4, 5, 3, 7,
+		 2, 5, 0, 3, 5,
+		 3, 6, 4, 3, 9;
+
+	// 量化結果是3筆數據
+	MatrixXf C = Y.transpose() * Y;
+	SelfAdjointEigenSolver<MatrixXf> es(C);
+	MatrixXf E = es.eigenvectors().rightCols(3);
+	MatrixXf Q = Y * E;
+
+	// 以權重最大者決定量化結果
+	for (int i=0; i<N; ++i)
+	{
+		int best = 0;
+		float max = 0;
+		for (int j=0; j<3; ++j)
+			if (E(i,j) > max)
+			{
+				max = E(i,j);
+				best = j;
+			}
+		cout << Q.col(best);
+	}
+}
+</textarea>
+<p class="t">演算法（Cluster Analysis）</p>
+<p>實施分群，以群集中心做為量化結果；再實施分類，以分界線決定量化結果。</p>
+<pre>
+https://charlesmartin14.wordpress.com/2012/10/09/spectral-clustering/
+https://en.wikipedia.org/wiki/Spectral_clustering
+</pre>
+<p class="t">演算法（Location-Allocation Analysis）</p>
+<p>分群時，直線距離改成了其他指標。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Principal Component Pursuit（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Principal Component Pursuit</p>
+<p>Y = X + A。已知新數據Y，求數據X、求轉換矩陣A。</p>
+<img src="PrincipalComponentPursuit1.html">
+<p>low-rank X。令原數據X的rank盡量小。min nuclear norm。</p>
+<img src="PrincipalComponentPursuit2.html">
+<p>sparse A。令轉換矩陣A盡量稀疏。min L1 norm。</p>
+<img src="PrincipalComponentPursuit3.html">
+<pre>
+min ‖ X ‖⁎ + α ‖ A ‖₁     (α ≥ 0)
+</pre>
+<pre>
+http://www.math.umn.edu/~lerman/Meetings/CPCP.pdf
+</pre>
+<p class="t">物理意義</p>
+<p>low-rank。常見的、平淡無奇的地方。數據是其他數據的線性組合。又或者數據重新組合，類似基因演算法。數據之間很相像。</p>
+<img src="PrincipalComponentPursuit4.html">
+<p>sparse。罕見的、獨樹一格的地方。</p>
+<img src="PrincipalComponentPursuit5.html">
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Recommendation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Recommendation</p>
+<pre>
+topic model = collaborative filtering
+TF-IDF
+word2vector
+matrix completion
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Sparse Coding（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Sparsity</p>
+<p>L⁰ norm regularization。</p>
+<img src="SparseRepresentation1.html">
+<p>L⁰ norm和L¹ norm效果相同。</p>
+<img src="SparseRepresentation2.html">
+<p>abs、log(cosh(.))。</p>
+<img src="SparseRepresentation3.html">
+<p>L¹ norm與L² norm差異。</p>
+<img src="SparseRepresentation4.html">
+<pre>
+古代人的作法
+假設 x 的出現機率呈 sigmoid function 或者 laplace distribution
+因為獨立  所以所有 x 的出現機率是連乘積
+用 maximum likelihood + gradient descent 來解
+
+現代人的做法
+把 sigmoid 改成 unit step
+機率連乘積  取log變連加  這些過程通通精簡掉  直接變成 1-norm 最佳化
+用 least squares (絕對值誤差改成平方誤差以利微分) + gradient descent 來解
+</pre>
+<pre>
+感覺上
+只要是 sigmoid / tanh
+一定可以變成 unit step 之類的東西
+
+如果我沒猜錯
+1. 機率學所謂的的獨立事件　是稀疏（1-norm 最佳化）退化到零維的結果
+2. 不含機率的稀疏（1-norm最佳化）
+   是引入機率的稀疏 sigmoid/tanh/laplace + maximum likelihood 退化之後的結果
+</pre>
+<pre>
+http://blog.sciencenet.cn/blog-261330-810156.html
+http://www.zhihu.com/question/26602796/answer/33431062
+http://blog.csdn.net/abcjennifer/article/details/7748833
+</pre>
+<p class="t">Sparse Principal Component Analysis</p>
+<p>PCA可以改成最佳化問題：令新舊數據的距離平方總和盡量小，限制是新座標軸必須正規正交。</p>
+<p>採用regularization，藉由調整參數，以控制距離遠近程度、正規正交程度。regularization所求得的新座標軸通常不是正規正交。然而座標軸歪斜一些也無妨，說不定能讓新舊數據距離平方和更小，找到更擬合數據的座標軸。</p>
+<pre>
+             T   2               T
+min ‖ X - B̌ B̌ X ‖    subject to B̌ B̌ = I
+
+             T   2            2
+min ‖ X - B̌ B̌ X ‖  + α ( ‖ B̌ ‖ - I )     (α ≥ 0)
+
+             T   2          2
+min ‖ X - B̌ B̌ X ‖  + α ‖ B̌ ‖             (α ≥ 0)
+</pre>
+<p>乍看很理想，不過事情還沒有結束。先前提到，正確答案的左方乘上正規正交矩陣，仍是正確答案。由於答案眾多，於是再增加稀疏性限制：令新座標軸的L¹ norm總和盡量小。</p>
+<pre>
+             T   2           2
+min ‖ X - B̌ B̌ X ‖₂  + α ‖ B̌ ‖₂  + β ‖ B̌ ‖₁    (α, β ≥ 0)
+</pre>
+<p>新座標軸B̌越靠近標準座標軸I，L¹ norm就越小。而B̌是正規正交矩陣，幾何意義是旋轉暨鏡射。也就是說，這是令旋轉角度盡量小、盡量不旋轉數據。</p>
+<p>原始論文有提供專門的最佳化演算法，請讀者逕行參閱。</p>
+<p>似乎可以視作「點集合函數」最佳化，套用Classification演算法解決問題。</p>
+<p class="t">Reconstruction Independent Component Analysis</p>
+<p>ICA也可以改成最佳化問題，數據轉置一下，仿效PCA。由於答案很多，於是再增加稀疏性限制：令數據投影到座標軸上的L¹ norm總和盡量小。</p>
+<pre>
+       T     T T 2           2         T T
+min ‖ X - B̌ B̌ X ‖₂  + α ‖ B̌ ‖₂  + β ‖ B̌ X ‖₁   (α, β ≥ 0)
+</pre>
+<p>數據越靠近新座標軸B̌，L¹ norm就越小。也就是說，這是令座標軸盡量貼近數據、盡量讓數據外觀像個十字。</p>
+<p class="t">Sparse Coding（Dictionary Learning）</p>
+<p>ICA分解版本，不限制正規正交。</p>
+<p>演算法是K-SVD，請讀者自行查詢。</p>
+<p><a href="http://www.cnblogs.com/salan668/p/3555871.html">http://www.cnblogs.com/salan668/p/3555871.html</a></p>
+<p class="t">Non-negative Matrix Factorization</p>
+<p>進一步限制數據非負數、權重非負數，符合真實世界常見情況。</p>
+<p>例如圖片處理：數據是灰階值，非負數；權重是圖片合成比重，非負數。</p>
+<p>演算法是Projected Gradient Descent，請讀者自行查詢。</p>
+<p><a href="https://zhuanlan.zhihu.com/p/22043930">https://zhuanlan.zhihu.com/p/22043930</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Representation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:15:46 GMT -->
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0046)http://www2.dmhs.kh.edu.tw/homework/q10329.htm -->
+<HTML><HEAD><TITLE></TITLE>
+<META content="text/html; charset=big5" http-equiv=Content-Type>
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1 align=center>Q10150: Doublets</H1>
+<P>所謂一個「Doublet」是指2個單字，而這2個單字只相差一個字母。例如：booster 
+和 rooster，或者 rooster 和 roaster，或者 roaster 和 roasted。</P>
+<P>給你一個字典，裡面最多有 25143 
+個單字（每個單字都是小寫字母組成，長度不會超過16個字元）。然後給你許多對個單字，對每一對單字你必須找出最短的單字序列，使得相鄰的單字都是一個「Doublet」，而這個序列開頭和結束的單字就是給你的那一對單字。例如：假如給你的一對單字是：booster 
+和 roasted，一組可能的解為：booster, rooster, roaster, roasted。這些出現的字都必須在字典中。</P>
+<P align=left style="BACKGROUND-COLOR: #ffff00"><SPAN 
+style="BACKGROUND-COLOR: #ffff00"><B>Input</B></SPAN></P>
+<P>輸入的內容首先為字典，每個單字一列（單字的左、右兩邊一定不會有空白格），並且以一空白列代表字典結束。</P>
+<P>接下來每列有2個單字，代表一組測試資料。請參考Sample Input。</P> 
+<P align=left style="BACKGROUND-COLOR: #ffff00"><SPAN  
+style="BACKGROUND-COLOR: #ffff00"><B>Output</B></SPAN></P> 
+<P>對每組測試資料輸出一最短序列單字，每個單字一列，第一個及最後一個單字必須分別為測試資料的2個單字，且相鄰的單字都是一個「Doublet」。假如有不止這樣一個最短序列存在，輸出任何一個都可以。如果沒有解，則輸出：No 
+solution.</P>
+<P>每組測試資料之間請輸出一空白列，請參考Sample  
+Output。</P> 
+<TABLE border=1 cellPadding=5 width="100%"> 
+  <TBODY> 
+  <TR> 
+    <TD bgColor=#00ff00 width="50%"><B>Sample Input</B></TD>  
+    <TD bgColor=#00ff00 width="50%"><B>Sample Output</B></TD></TR>  
+  <TR>  
+    <TD width="50%">  
+      <pre>booster
+rooster
+roaster
+coasted
+roasted
+coastal
+postal
+
+booster roasted
+coastal postal
+</pre>
+    </TD>  
+    <TD width="50%"> 
+      <pre>booster
+rooster
+roaster
+roasted
+
+No solution.</pre>
+    </TD></TR></TBODY></TABLE></BODY></HTML>  

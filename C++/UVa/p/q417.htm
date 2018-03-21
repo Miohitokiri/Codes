@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q417: Word Index</h1>          
+<p>一般來說在編碼（Encoding）的技術常常用在加密，或是要有較節省的通訊與儲存空間的時候。在此，我們發展了一套簡單的編碼的方法，這方法可以把不大於5個字元（都是小寫字母）的特殊字都指定一個唯一的整數。</p>  
+<p>在這裡所謂的特殊字是指在這個字裡面，下一個字元一定比上一個來的大。例如：k、is、abc、aepx、gwxyz都是合法的。而aab、are、cat則不是。</p>  
+<p>對每一個合法的字我們根據字的長度與字元的順序給他一個整數編號。也就是：</p>  
+<pre>    a -&gt; 1
+    b -&gt; 2
+    .
+    .
+    z -&gt; 26
+    ab -&gt; 27
+    ac -&gt; 28
+    .
+    .
+    az -&gt; 51
+    bc -&gt; 52
+    .
+    .
+    vwxyz -&gt; 83681　</pre>  
+<p>你的任務就是要做這樣的編碼。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每筆測試資料一列。每列有1個字（1到5個小寫字母）。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一測試資料，如果這個字不是合法的，請輸出0。否則請輸出該字的編號。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                        
+Input</b></span></p>                              
+<pre>z
+a
+cat
+vwxyz</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>26
+1
+0
+83681</pre> 
+                            
+</body>                            
+                            
+</html>                            

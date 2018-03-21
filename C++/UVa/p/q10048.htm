@@ -1,0 +1,74 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10048: Audiophobia</h1>             
+<p>想想看你何其幸運，能夠呼吸並且還能快樂的寫程式。但是我們憂慮我們的子孫可能就沒有這麼幸運了。你知道的，地球正面臨許多的污染，環境的或是社會的污染。我們的漠視也加重污染的擴展。</p> 
+<p>現在我們要談的是「噪音」的污染。一般我們以「分貝」當作聲音大小的單位。超過130分貝的噪音會讓人很不舒服，談話的聲音大概是60到65分貝，繁忙吵雜的交通大概是70到80分貝。</p> 
+<p>以下的城市地圖中邊代表街道，點代表十字路口。在邊上的整數代表這條街平均的噪音大小。</p> 
+<p align="center"><img border="0" src="p10048.gif" width="304" height="229"></p> 
+<p>要從A到G，你可以走這樣的路徑：<b>ACFG</b>，而你必須忍受的最大噪音就是140分貝。如果你走的路徑是<b>ABEG</b>，或<b>ABDG</b>，或<b>ACFDG</b>，那你必須忍受的最大噪音分別是 
+90, 120 和 80分貝。當然還有其他路徑，但是明顯的<b>ACFDG</b>是最舒服的路徑了，因為你面臨的噪音最大不會超過80分貝。</p> 
+<p>在這個問題中，給你城市的遞圖，請你找出從某個點到某個點你所必須忍受的最小噪音。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入包含多組測試資料。每組測試資料的第一列含有3個整數 
+C（&lt;= 100）、S（&lt;=1000）和 Q（&lt;= 10000）。C代表點的數目（點的號碼從1到C），S則代表街道的數目，Q代表這組測試資料中有多少個小問題。</p>                    
+<p>接下來的S列，每列有三個整數C<sub>1</sub>,C<sub>2</sub>和 d。C<sub>1</sub>,C<sub>2</sub>代表點的號碼且C<sub>1</sub>不會等於C<sub>2</sub>，d代表這街道平均的噪音。再接下來的Q列每列有2個整數C<sub>1</sub>,C<sub>2</sub>（C<sub>1</sub>不會等於C<sub>2</sub>），就是要請你算出從C<sub>1</sub>到C<sub>2</sub>代你必須忍受的最小噪音是多少。</p>                    
+<p>若 C=0，S=0，Q=0 代表輸入結束。請參考Sample Input。</p>                     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                       
+<p>對每組測試資料先輸出這是第幾組測試資料，然後對每個小問題輸出從C<sub>1</sub>到C<sub>2</sub>代你必須忍受的最小噪音是多少（如果該路徑不存在，請輸出 
+no path）。各組測試資料間請輸出一空白列，輸出格式請參考Sample  
+Output。</p>                    
+<table border="1" width="100%" cellpadding="5">                       
+  <tr>                       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                            
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                           
+  </tr>                                           
+  <tr>                                           
+    <td width="50%">                               
+      <pre>7 9 3
+1 2 50
+1 3 60
+2 4 120
+2 5 90
+3 6 50
+4 6 80
+4 7 70
+5 7 40
+6 7 140
+1 7
+2 6
+6 2
+7 6 3
+1 2 50
+1 3 60
+2 4 120
+3 6 50
+4 6 80
+5 7 40
+7 5
+1 7
+2 4
+0 0 0</pre>
+    </td>                                        
+    <td width="50%">                                  
+      <pre>Case #1
+80
+60
+60
+ 
+Case #2
+40
+no path
+80
+</pre>
+    </td>                                       
+  </tr>                                       
+</table>                                       
+                                                                         
+</body>                                                                         
+                                                                         
+</html>                                                                         

@@ -1,0 +1,76 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q429: Word Transformation</h1>        
+<p align="left">在報章雜誌上常會看到一種字謎叫做字的轉換（Word 
+Transformation）。一開始給你一個字（word），然後每次改變這個字裡面的一個字元，都會使這個字變成另外一個字。依此規則可以得到一連串的字（這一串字的最後一個字就是目標字）。例如：spice這個字可以轉換為stock這個目標字，其轉換的過程為：spice, 
+slice, slick, stick, stock。你會發現後面的字跟前面的字長度都一樣，且只有一個字元不同。</p>
+<p align="left">給你字典中的許多字，並且給你開始的字及目標字，你的任務寫一個程式來找出要從起始字轉換到目標字最少需多少步？</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">輸入的第一列有一個整數代表共有多少組測試資料。接下來空一列。</p>          
+<p align="left">每組測試資料一開始有多列字（最多200個字，每個字的內容均為小寫字母，且長度不會超過10），代表給你的字典中的字，也就是你在轉換的過程中可以用的字。這部分的資料到僅含有一個*的一列結束。接下來的每列有2個字，分別代表起始字和目標字。這2個字都會出現在字典中，並且你可以放心的假設利用字典中的字一定可以成功的轉換。這一部份的資料到遇到一空白列或輸入檔結束為止。</p>          
+<p align="left">測試資料間亦有一空白列，請參考Sample Input。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對輸入每組測試資料*之後的問題，輸出開始的字及目標字，以及從起始字轉換到目標字最少需多少步。</p>
+<p align="left">測試資料間亦輸出一空白列，請參考Sample Output。</p>          
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample          
+input</b></span></p>                    
+<pre>2
+
+dip
+lip
+mad
+map
+maple
+may
+pad
+pip
+pod
+pop
+sap
+sip
+slice
+slick
+spice
+stick
+stock
+*
+spice stock
+may pod
+
+dip
+lip
+mad
+map
+maple
+may
+pad
+pip
+pod
+pop
+sap
+sip
+slice
+slick
+spice
+stick
+stock
+*
+spice slick
+may mad</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Output</b></span></p>                     
+<pre>spice stock 4
+may pod 3
+
+spice slick 2
+may mad 1</pre>
+                   
+</body>                   
+                   
+</html>                   

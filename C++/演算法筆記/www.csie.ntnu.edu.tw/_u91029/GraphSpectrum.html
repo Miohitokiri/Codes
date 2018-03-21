@@ -1,0 +1,194 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/GraphSpectrum.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:00:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Graph Spectrum</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Graph Spectrum（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Graph Spectrum</p>
+<p>http://www.cs.yale.edu/homes/spielman/</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph資料結構（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Incidence Matrix</p>
+<p>先前介紹了三種平易近人的資料結構：edge list、adjacency matrix、adjacency lists。接著再介紹兩個罕見的資料結構，適合已經熟悉圖論、想要深入鑽研的人。</p>
+<img src="GraphDS7.html">
+<p>點有編號，邊有編號。矩陣的第一個維度代表點，第二個維度代表邊，元素(0,1)記錄著第0點與第1邊是否碰觸。</p>
+<p>無向圖當中，點碰觸邊就標上1，否則標上0。有向圖當中，點碰觸出邊就標上+1，點碰觸入邊就標上-1，否則標上0。</p>
+<p>Incidence Matrix的缺點是無法記錄自己連向自己的邊。</p>
+<p>Incidence Matrix可以看成是Bipartite Graph。</p>
+<p class="t">Laplacian Matrix</p>
+<img src="GraphDS8.html">
+<p>L = D - A。L D A分別代表Laplacian Matrix、Degree Matrix、Adjacency Matrix。</p>
+<p>【待補文字】</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Property（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Reachability</p>
+<p>矩陣相乘需時O(N^3)。亦得採用更快的矩陣相乘演算法，例如Strassen's Algorithm。</p>
+<pre>
+http://www.lab2.kuis.kyoto-u.ac.jp/keisan-genkai/reports/2006/nhc/Uri_Zwick.pdf
+</pre>
+<p class="t">範例：Transitive Closure</p>
+<p>請參考「<a href="Transitivity.html">Transitive Closure: Matrix Multiplication</a>」。</p>
+<p>矩陣元素改成Boolean，矩陣加法改成OR運算，矩陣乘法改成AND運算即可！</p>
+<p>Strassen's Algorithm的過程包含了實數減法，在此對應到OR反元素，然而OR並沒有反元素，所以不能直接套用Strassen's Algorithm。</p>
+<p>不過我們還是可以運用矩陣乘法解題。方法很簡單：直接用實數下去算，計算完畢之後，把零當做false，非零的數字當做是true就可以了。</p>
+<p class="t">範例：Shortest Path</p>
+<p>矩陣元素依然是實數，矩陣加法改成最小值運算，矩陣乘法改成加法運算即可！</p>
+<p>不過min運算沒有反元素，所以必須用特殊的方式避開反元素的計算，例如Seidel's Algorithm。</p>
+<pre>
+http://www.mpi-inf.mpg.de/departments/d1/teaching/ss12/AdvancedGraphAlgorithms/Slides14.pdf
+http://theory.stanford.edu/~virgi/cs367/
+</pre>
+<p class="t">範例：Matching</p>
+<p>【待補文字】</p>
+<p class="t">Similarity（Graph Kernel）</p>
+<p>相似程度。兩張圖的距離、差異。</p>
+<pre>
+http://www.raetschlab.org/lectures/amsa/5-borgwardt-graph.pdf
+http://www.stat.purdue.edu/~vishy/talks/Graphs.pdf
+</pre>
+<p class="t">Centrality</p>
+<p>寬闊程度。</p>
+<pre>
+http://en.wikipedia.org/wiki/Centrality
+http://en.wikipedia.org/wiki/Betweenness_centrality
+</pre>
+<p class="t">Connectivity</p>
+<p>連結強度。</p>
+<pre>
+http://en.wikipedia.org/wiki/Algebraic_connectivity
+http://www.lix.polytechnique.fr/~schwander/resources/mig/slides/pati.pdf
+</pre>
+<p class="t">範例：Clique</p>
+<pre>
+http://web.stanford.edu/class/ee378b/lect-7.pdf
+matrix multiplication of adjacency matrix ---> transitive
+當clique足夠大，此時矩陣的無限大次方，很容易在clique裡面跑來跑去
+(degree總和特別多?  不巧遇到degree很多的點怎辦? 像是星星圖那種的)
+找出eigenvalue絕對值最大的那一個eigenvector
+當中絕對值比較大的那幾個元素，差不多是個clique
+</pre>
+<p class="t">Random Walk</p>
+<p class="e">UVa 12695</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Isomorphism（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Graph Isomorphism</p>
+<pre>
+http://en.wikipedia.org/wiki/Graph_canonization
+http://en.wikipedia.org/wiki/Graph_isomorphism
+http://en.wikipedia.org/wiki/Subgraph_isomorphism_problem
+http://en.wikipedia.org/wiki/Maximum_common_subgraph_isomorphism_problem
+http://en.wikipedia.org/wiki/Graph_sandwich_problem
+</pre>
+<p class="t">Graph Enumeration</p>
+<p><a href="http://en.wikipedia.org/wiki/Graph_enumeration">http://en.wikipedia.org/wiki/Graph_enumeration</a></p>
+<p class="t">Tree Isomorphism</p>
+<pre>
+http://en.wikipedia.org/wiki/Graph_isomorphism_problem#Solved_special_cases
+
+subtree isomorphism問題可以用DP+matching來解決
+https://code.google.com/codejam/contest/dashboard?c=32005#s=a&a=3
+http://www.lsi.upc.edu/~valiente/riga-tre.pdf
+</pre>
+<pre>
+為什麼對？
+https://github.com/juanplopes/icpc/blob/master/uva/12489.cpp
+</pre>
+<p class="e">UVa 10729 10904 12489 ICPC 2935</p>
+<p class="t">Tree Enumeration</p>
+<pre>
+http://mathworld.wolfram.com/LabeledTree.html
+http://en.wikipedia.org/wiki/Prüfer_sequence
+http://www.matrix67.com/blog/archives/682
+</pre>
+<p>Prüfer Code：把一棵樹轉換成獨特的編號。</p>
+<p class="e">UVa 10843</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Partitioning（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Graph Partitioning</p>
+<p>https://people.eecs.berkeley.edu/~luca/expanders2016/</p>
+<p class="t">Separator</p>
+<p>規定兩邊的點數呈特定比例，就是NP-complete問題。</p>
+<p>http://www.cs.cmu.edu/~guyb/realworld/slidesF07/separators1.pdf</p>
+<p class="t">Expander</p>
+<pre>
+Definition 3.1
+A graph G = (V,E) is called an (n, d, c)-expander
+if it has n vertices, the maximum degree is d,
+and for all S 屬於 V with |S| <= |V|/2,
+we have |N(S)| >= c|S| and c is called the expansion of G.
+</pre>
+<pre>
+http://en.wikipedia.org/wiki/Expander_graph
+https://en.wikipedia.org/wiki/Zig-zag_product
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Drawing（Under Construction!）</p>
+</div><div class="c">
+<p>http://press.princeton.edu/titles/10314.html</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Sampling（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Graph Sampling</p>
+<p class="t">Graph Sparsification</p>
+<p class="t">Spanner</p>
+<p>http://tmtacm.blogspot.tw/2016/01/2.html</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Stream（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Graph Stream</p>
+<p>《Graph Stream Algorithms: A Survey》</p>
+<p class="t">Graph Sketch</p>
+<p>《Graph Sketches: Sparsification, Spanners, and Subgraphs》</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Theory</p>
+</div><div class="c">
+<p class="t">Graph Theory</p>
+<p>本站僅介紹最基礎的圖論知識。讀者如果覺得不過癮，可以自行研究下述這些進階的圖論領域。</p>
+<p class="t">Graph Theory與Linear Programming</p>
+<p>組合最佳化的經典問題，路樹流割配，通通可以套用線性規劃。針對流割配這類複雜度較高的問題，線性規劃的速度遠比經典演算法還快！針對問題本身的性質，有著各種加速技巧，內容多到可以寫成一本書。有興趣的讀者可以自行查詢資料。</p>
+<pre>
+Minimum Ratio Spanning Tree: Dinkelbach's Algorithm
+</pre>
+<p class="t">Geometric Graph Theory</p>
+<iframe src="http://www.youtube.com/embed/jPHpgbq9uDo"></iframe>
+<p><a href="http://en.wikipedia.org/wiki/Geometric_graph_theory">http://en.wikipedia.org/wiki/Geometric_graph_theory</a></p>
+<p><a href="http://www.math.harvard.edu/~knill/graphgeometry/">http://www.math.harvard.edu/~knill/graphgeometry/</a></p>
+<p>引入距離的概念。</p>
+<p class="t">Topological Graph Theory</p>
+<a href="../../commons.wikimedia.org/wiki/File_Tesseract.html"><img src="../../upload.wikimedia.org/wikipedia/commons/5/55/Tesseract.gif"></a>
+<p><a href="http://en.wikipedia.org/wiki/Topological_graph_theory">http://en.wikipedia.org/wiki/Topological_graph_theory</a></p>
+<p>著重於點與邊。發掘特殊的圖，建立從屬關係。</p>
+<pre>
+minor containment problem 問一張圖是不是有某個minor。至少是NP-complete。
+http://en.wikipedia.org/wiki/Graph_minor
+http://en.wikipedia.org/wiki/Robertson–Seymour_theorem
+http://en.wikipedia.org/wiki/Graph_structure_theorem
+</pre>
+<p class="t">Extremal Graph Theory</p>
+<p><a href="http://en.wikipedia.org/wiki/Extremal_graph_theory">http://en.wikipedia.org/wiki/Extremal_graph_theory</a></p>
+<p>著重屬性計量。</p>
+<p class="t">Structural Graph Theory</p>
+<p>研究圖的各種架構方式、描述方式。</p>
+<p>本站僅提到兩種方式：用點和邊架構出圖、用交集架構出圖。</p>
+<p class="t">Algebraic Graph Theory與Spectral Graph Theory</p>
+<p><a href="http://en.wikipedia.org/wiki/Algebraic_graph_theory">http://en.wikipedia.org/wiki/Algebraic_graph_theory</a></p>
+<p><a href="http://en.wikipedia.org/wiki/Spectral_graph_theory">http://en.wikipedia.org/wiki/Spectral_graph_theory</a></p>
+<p>http://ocw.mit.edu/courses/mathematics/18-409-topics-in-theoretical-computer-science-an-algorithmists-toolkit-fall-2009/lecture-notes/</p>
+<p>以代數描述一張圖、分析一張圖。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/GraphSpectrum.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:00:36 GMT -->
+</html>

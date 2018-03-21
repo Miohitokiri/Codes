@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10037: Bridge</h1>          
+<p>有n個人想要在晚上過橋，橋上每次最多只能容許2個人行走。由於全部只有一支手電筒，所以每次2個人拿著手電筒過橋後，必須有一人再把手電筒拿回來，這樣後面的人才能繼續過橋。          
+<p>每個人走路的速度不同，過橋所需的時間也因此不同。而每次過橋的那2個人，其花費的時間以較慢的那個人計算（走的快的當然要等走的慢的，因為只有一支手電筒）。你的任務是寫一個程式，安排這n個人過橋，並使得總共花費的時間最少。
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+輸入的第一列有一個正整數，代表以下有多少組測試資料。每組測試資料的第一列有1個整數n，代表要過橋的人數（最多不會超過1000人）。接下來的n列，每列有1個整數，代表這n個人過橋所需的時間（秒），這些時間均不會超過100秒。<p>輸入的第一列與第一組測試資料之間，以及各組測試資料之間均有一空白列，請參考Sample Input。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                          
+每組測試資料輸出的第一列為一個整數，代表這n個人過橋所需的最少時間。接下來的列為達到此最少時間的過橋方式。每列有1個或2個整數代表過橋的人（每個人以其過橋所需的時間代表。雖然可能有2人過橋時間相同，但那並不會影響結果）。請注意，過橋的順序是去、回交替的，因為需有一人把手電筒帶回。以第一組Sample 
+Output為例說明：最少需17秒才能讓這4個人過橋。方式為：1秒、2秒的人先過橋，1秒的回來，5秒、10秒的過橋，2秒的回來，最後1秒、2秒的過橋，所以總共的時間為：2+1+10+2+2=17。
+<p>如果有不止一種方式可以達到最少時間，輸出任何一種均可。測試資料間亦請空一列。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                      
+Input</b></span></p>                                             
+<pre>2
+
+4
+1
+2
+5
+10
+
+4
+1
+98
+99
+100</pre>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                               
+Output</b></span></p>                                             
+<pre>17
+1 2
+1
+5 10
+2
+1 2
+
+299
+1 100
+1
+1 99
+1
+1 98
+</pre>  
+                                           
+</body>                                           
+                                           
+</html>                                           

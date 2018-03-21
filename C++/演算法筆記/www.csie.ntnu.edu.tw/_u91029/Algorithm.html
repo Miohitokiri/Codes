@@ -1,0 +1,774 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Algorithm.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:56:46 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Algorithm</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Algorithm</p>
+</div><div class="c">
+<p class="t">演算法是什麼？</p>
+<div class="i"><a href="../../commons.wikimedia.org/wiki/File_Abacus_5.html"><img src="Algorithm1.png"></a><a href="../../commons.wikimedia.org/wiki/File_Dell_Inspiron_One_23_Touch_AIO_Desktop_PC.html"><img src="Algorithm2.png"></a></div>
+<p>演算法是計算機科學非常重要的基礎科目。簡單來說，演算法就是用電腦算數學的學問（古代人用算盤算、現代人用電腦算），可以說是數學科目。</p>
+<p>想要解決現實生活當中的各種問題，電腦科學家就把現實問題對應到數學問題，然後設計公式、把公式寫成程式，讓電腦執行程式計算答案──這些公式就叫做演算法了。</p>
+<p>儘管這裡用了「公式」這個字眼來形容演算法，然而並不是各位印象中的數學公式。由於電腦能夠執行繁複的計算，所以公式可以設計成好幾十行、好幾百行，甚至用到很多數學理論。</p>
+<p>因此呢，就算學習過演算法的人，也不見得懂得設計演算法；因為數學、程式的東西實在太複雜了。想把現實問題對應到數學問題，那就更複雜了。</p>
+<p class="t">電腦只會算數字</p>
+<p>回過頭來，電腦又是什麼？電腦是個很潮的中文翻譯，不過實際上電腦的原意是「計算機」。電腦的英文叫做computer，而計算的英文就叫做compute。</p>
+<p>電腦是一臺計算機，只會計算、判斷、儲存數字。又快又準。</p>
+<p>程式是一連串計算、判斷、儲存數字的步驟。</p>
+<p>電腦只會處理數字（二進位數字）。電腦裡的每一個文字、每一種顏色、每一種聲音，其實都有相對應的數字。</p>
+<p>打個比方，我們規定：用1代表「一」，用2代表「乙」，用3代表「人」，……。一個數字對應一個中文字。電腦裡面的所有中文字，都依循人為規定，變作了數字。</p>
+<p>再打個比方，「人」這個字，呈現電腦螢幕上是個「人」樣。電腦螢幕的畫面，是由許多小光點組成的；電腦螢幕上的「人」也是由許多小光點組成的。我們以「人」的左下角為座標原點，橫向為X軸，直向為Y軸，那麼「人」其實是(0,1)、(1,2)、(2,3)、...這些座標畫上黑點後所形成的。「人」這個字的的形狀，在電腦中變作了一連串的數字。</p>
+<p>同樣的道理，呈現在電腦螢幕畫面上的文字、顏色、圖片、影像、聲音，全部都可以化作數字。一切事物在電腦裡面都是數字。</p>
+<p>電腦並沒有想像中的那麼神奇。不過電腦最厲害的地方並不是電腦本身，而是在於電腦可以接上各式各樣的設備。接上攝影機與螢幕，就可以把色彩變成數字、把數字變成色彩；接上麥克風與耳機，就可以把聲音變成數字、把數字變成聲音。</p>
+<p>電腦一旦接上了設備，就額外有用處。接上話機和基地台，就可以互通有無；接上數位相機和印表機，就可以製造回憶；接上重量儀和篩子，電腦也會揀土豆；接上車廂、接上警示燈、再雜七雜八接上一堆東西，就變成了大眾運輸系統。</p>
+<p>若要用電腦解決現實問題，通常要考慮兩個方面：一、電腦應該接上那些設備？如何用電腦控制這些設備？二、現實問題如何對應到數學問題？如何設計演算法？</p>
+<p class="t">程式用來比對數字、改變數字、儲存數字</p>
+<p>舉個例子，我們希望把螢幕上的「人」變成斜體字。過程大略是這樣──首先呢，把「人」的形狀(0,1)、(1,2)、(2,3)、...這些數字拿出來；然後呢，位置越高的座標，就往右移動多一點，如此一來就成為斜體字了。想讓座標往右移動，就是讓電腦做數字加法計算，然後把相加結果儲存起來。</p>
+<p>再舉個例子，用滑鼠點選一個資料夾，資料夾的顏色會反白。過程大略是這樣──首先呢，電腦偵測到滑鼠點擊的座標之後，把座標轉換成數字；然後呢，再把螢幕畫面的資料拿出來，看看螢幕上每個東西的座標，是哪一個與滑鼠的座標相符合；噢，原來是一個資料夾的圖示，把資料夾的顯示顏色給反白過來。</p>
+<p>再舉個例子，電腦據說會揀選土豆。過程大略是這樣──把每一顆土豆拿出來，利用特殊的儀器，把形狀、重量、色澤、氣味統統轉換成數字，儲存在電腦裡面；然後呢，用電腦比較這些數字，找出優良的土豆，如此一來就有綿綿鬆鬆的土豆了！</p>
+<p>編寫程式，計算數字，這就是程式設計師的工作。</p>
+<p class="t">數學和程式這麼複雜，為什麼要用電腦解決現實問題？</p>
+<p>電腦的計算速度可說是非常的快，一秒鐘可以進行好幾千萬次。就算文字多麼的多，圖片多麼的大，電腦處理起來，也是輕鬆寫意，順暢無比。</p>
+<p>打開電腦裡的任何一份文件，用滑鼠捲動一下文件畫面，眼睛都還沒眨一下，正確畫面馬上就呈現在螢幕上了。事實上在捲動畫面的時候，電腦已經經過幾千萬次的計算，僅使用了極短的時間，就把螢幕上應該呈現的資料全部計算好了。</p>
+<p>人類會想要用電腦解決問題，正是仰賴電腦的計算速度、正確性，以及電腦會自動按照程式計算的特性。程式設計師只要花心思寫出一支好程式，接下來的工作就可以讓電腦代勞了。電腦做的比人類更快更好，電腦做得到人類做不到的事情；儘管數學和程式很複雜，還是有很多人選擇使用電腦解決問題。</p>
+<p class="t">那些現實問題是用演算法解決的？</p>
+<p>現代人的生活已經離不開演算法了。比如說你的手機裡面就有上百個演算法。你可以<a href="https://www.google.com.tw/search?q=algorithm&amp;tbm=nws&amp;tbs=qdr:w">Google</a>一下新聞。下面的表格是隨手整理出來的，可以參考看看。</p>
+<pre style=" -moz-columns: 5; columns: 5; -moz-column-gap: 2em; column-gap: 2em;">
+物理 <a href="https://www.youtube.com/watch?v=JWDocXPy-iQ">⑴</a>
+化學 <a href="http://highscope.ch.ntu.edu.tw/wordpress/?p=45169">⑴</a> <a href="https://pubchem.ncbi.nlm.nih.gov/">⑵</a>
+醫學 <a href="http://web.ncku.edu.tw/files/16-1000-145863.php">⑴</a>
+藥學 <a href="https://www.youtube.com/watch?v=GaBfOJEcDsU">⑴</a>
+生物 <a href="http://ezphysics.nchu.edu.tw/15_course/Bioinformation/RF04.pdf">⑴</a>
+農業 <a href="http://news.ltn.com.tw/news/local/paper/620243">⑴</a> <a href="http://news.sina.com.tw/article/20160425/16955021.html">⑵</a>
+天文
+地理 <a href="http://kmgis.kinmen.gov.tw/kmgis_new/publicweb/index.aspx">⑴</a>
+海洋 
+太空 <a href="http://www.discoverymag.com.tw/index.php/contact/item/786-201504topic">⑴</a> <a href="http://news.sina.com.tw/article/20160509/17117892.html">⑵</a>
+地球 <a href="http://www.cwb.gov.tw/V7/knowledge/overview1.htm">⑴</a>
+環境 <a href="http://www.cyberforest.jp/">⑴</a> <a href="http://e-info.org.tw/node/113836">⑵</a>
+生態 <a href="http://case.ntu.edu.tw/blog/?p=15681">⑴</a>
+社會 <a href="http://rocket.cafe/talks/62739">⑴</a> <a href="https://theinitium.com/article/20160507-opinion-book-bigdata/">⑵</a>
+心理
+居家 <a href="https://www.youtube.com/watch?v=nY5gomOUbcw">⑴</a> <a href="https://www.youtube.com/watch?v=0I6rYiseY0Y">⑵</a>
+生活 <a href="https://www.youtube.com/watch?v=65dEekxE6pc">⑴</a>
+設計 <a href="https://www.google.com.tw/search?q=%e9%9b%bb%e8%85%a6%e8%bc%94%e5%8a%a9%e8%a8%ad%e8%a8%88">⑴</a>
+藝術 <a href="http://mypaper.pchome.com.tw/digirider/post/1366343458">⑴</a>
+美術 <a href="http://www.ithome.com.tw/news/95287">⑴</a>
+音樂 <a href="http://buzzorange.com/techorange/2013/08/15/can-computers-write-music-that-has-a-soul/">⑴</a>
+文學 <a href="http://technews.tw/2016/01/26/the-next-political-speech-you-hear-may-be-written-by-an-ai/">⑴</a>
+歷史 <a href="https://vimeo.com/128373915">⑴</a> <a href="http://inews.ifeng.com/yidian/46134601/news.shtml">⑵</a>
+遊戲 <a href="http://udn.com/news/story/9574/1554233">⑴</a> <a href="https://luckytoilet.wordpress.com/2011/05/27/">⑵</a>
+玩具 <a href="http://en.wikipedia.org/wiki/AIBO">⑴</a>
+演藝 <a href="https://www.youtube.com/watch?v=tTMkTAl1hLo">⑴</a> <a href="https://www.youtube.com/watch?v=VJGVrP7zC_8">⑵</a>
+經濟
+金融 <a href="https://www.youtube.com/watch?v=Fop1cqgBMY8">⑴</a> <a href="http://tradeinfo.sinyi.com.tw/">⑵</a>
+訊息 <a href="http://www.ithome.com.tw/news/86593">⑴</a>
+交通 <a href="http://udn.com/news/story/7240/1433930">⑴</a>
+運輸 <a href="http://www.5284.com.tw/">⑴</a> <a href="http://www.easycard.com.tw/">⑵</a>
+物流 <a href="http://www.ithome.com.tw/people/105845">⑴</a>
+鑑識 <a href="http://tw.nec.com/zh_TW/solutions/security/coresl.html">⑴</a>
+治安 <a href="https://www.youtube.com/watch?v=_QiyFQ05Nh8">⑴</a> <a href="http://www2.fpg.com.tw/html/mgz/Mgz_epaper/143/45-3p94-103.pdf">⑵</a>
+國防 <a href="http://zh.wikipedia.org/wiki/?啗?蝛箔葉撠蝟餌絞">⑴</a>
+政治 <a href="http://g0v.tw/">⑴</a>
+教育 <a href="https://www.moedict.tw/">⑴</a> <a href="http://zh.wikipedia.org/wiki/鈭??餃??賣">⑵</a>
+救護 <a href="http://www.chinatimes.com/newspapers/20160109000428-260102">⑴</a>
+安全 <a href="https://www.youtube.com/watch?v=5n-K7sCCJDE">⑴</a> <a href="http://www.businessweekly.com.tw/KBlogArticle.aspx?ID=15376">⑵</a>
+機械 <a href="http://pansci.asia/archives/76872">⑴</a>
+工廠 <a href="https://www.youtube.com/channel/UCU3037vDY8r0m_rJ_U7lHvQ">⑴</a> <a href="https://www.youtube.com/results?q=%e8%87%aa%e5%8b%95%e5%8c%96%e7%94%9f%e7%94%a2">⑵</a>
+資源 <a href="http://www.openreport.taipei.gov.tw/OpenFront/report/show_file.jsp?sysId=C101AW031&amp;fileNo=1">⑴</a>
+能源
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Algorithm</p>
+</div><div class="c">
+<p class="t">演算法是什麼？</p>
+<p><a href="http://zh.wikipedia.org/wiki/瞍?瘜?">演算法</a>由三個部分組成：輸入、計算步驟、輸出。介紹這件事情的時候，有人連結到<a href="http://zh.wikipedia.org/wiki/?賣">函數</a>的概念，也有人連結到<a href="http://zh.wikipedia.org/wiki/暺拳">黑箱白箱</a>的概念。</p>
+<pre>
+          -----------------
+input --->| computational |
+          | sequence      |---> output
+          -----------------
+</pre>
+<p>輸出、輸入是一堆數字。實務上是將這些數字放在<a href="http://zh.wikipedia.org/wiki/鞈?蝯?">資料結構</a>，例如array、list。輸入來源，通常是硬碟裡面儲存的檔案，或者是藉由硬體裝置擷取到的數字，例如數位相機、麥克風等等。輸出去處，通常是硬碟裡面儲存的檔案，或者是藉由硬體裝置轉換之後以其他型態呈現，例如數位電視、數位音響等等。</p>
+<p>計算步驟是一連串處理數字的指令。指令有兩種類型，一類是運算，例如數學運算加減乘除、邏輯運算且或非、比較運算大於等於小於、位元運算左右反且或異或。另一類是讀寫，例如讀取某處的數字、儲存數字至某處，就跟<a href="http://zh.wikipedia.org/wiki/閮???">計算機</a>的MR、M+按鍵的意義相似。</p>
+<p>古人定義演算法，規定計算步驟的數量是必須是有限步，不是無限步。用程式語言的術語來說就是：演算法不能有無窮迴圈。</p>
+<p>古人當初規定有限步，是為了方便統計總步數。但是實務上，很多電腦程式是開啟之後就保持執行狀態，直到當機、重開機，例如網路傳輸的演算法。因此實務上可以是無限步。</p>
+<p class="t">如何記載一個演算法？</p>
+<p>有人用<a href="http://zh.wikipedia.org/wiki/?蝣?">虛擬碼</a>來記載一個演算法。如要設計<a href="http://zh.wikipedia.org/wiki/?餉蝔?">電腦程式</a>，虛擬碼是比較恰當的。</p>
+<pre>
+GREATEST_COMMON_DIVISOR(a, b)
+1   while a ≠ b do
+2       if a > b then
+3           a ← a - b
+4       else
+5           b ← b - a
+6   return a
+</pre>
+<p>有人用<a href="http://zh.wikipedia.org/wiki/瘚???">流程圖</a>來記載一個演算法。如要設計<a href="http://zh.wikipedia.org/wiki/?餃??餉楝">電子電路</a>，流程圖是比較恰當的。</p>
+<a href="../../commons.wikimedia.org/wiki/File_Euclid_flowchart_1.html"><img src="../../upload.wikimedia.org/wikipedia/commons/d/d3/Euclid_flowchart_1.png" width="165" height="371"></a>
+<p>大多數時候，我們無法光從虛擬碼和流程圖徹底理解演算法，就如同我們無法光從數學公式徹底理解數學概念。想要理解演算法，通常還是得藉由文字、圖片的輔助說明。</p>
+<p class="t">如何實作一個演算法？</p>
+<p>實作的意思是：實際去操作、實際去運行。</p>
+<p>對於資工系學生來說，自然就是把演算法撰寫成<a href="http://zh.wikipedia.org/wiki/?餉蝔?">電腦程式</a>，例如C或者C++程式，然後在<a href="http://zh.wikipedia.org/wiki/?犖?餉">個人電腦</a>上面執行程式。</p>
+<textarea>
+int gcd(int a, int b) {
+	while (a != b)
+		if (a > b)
+			a -= b;
+		else
+			b -= a;
+	return a;
+}
+</textarea>
+<p>對於電機系學生來說，自然就是把演算法設計成<a href="http://zh.wikipedia.org/wiki/?餃??餉楝">電子電路</a>，在<a href="http://zh.wikipedia.org/wiki/暻萄???">麵包板</a>、<a href="http://zh.wikipedia.org/wiki/?啣?餉楝??">印刷電路板</a>、<a href="http://zh.wikipedia.org/wiki/?舐?撘?頛航?蝵?">PLD</a>上面執行。</p>
+<a href="http://web.cecs.pdx.edu/~mperkows/CLASS_VHDL/VHDL/gcd/assignme.htm"><img src="../../web.cecs.pdx.edu/_mperkows/CLASS_VHDL/VHDL/gcd/gcd_schematic.gif" width="413" height="268"></a>
+<p>電子電路也有加法器、減法器、AND邏輯閘、OR邏輯閘等等，所以也可以用電子電路實作演算法。例如電子錶、隨身聽、悠遊卡等等，都是直接將演算法做死在晶片上面。在個人電腦、智慧型手機還沒流行之前，以往都是用電子電路實作演算法。</p>
+<p>電子電路的執行速度是飛快的，電腦程式的執行速度慢了一點。然而，製作電子電路的過程相當麻煩，需要精密的設備、複雜的製程、大量的人力和經費，而且製成之後就無法修改；相對地，寫程式就簡單輕鬆多了，在電腦上面很容易調整程式碼，又可以儲存很多程式碼，最主要的是家家戶戶都有電腦。</p>
+<p class="t">時間複雜度、空間複雜度</p>
+<p>要評斷一個演算法的好壞，最基本的指標是時間和空間。</p>
+<p>最直覺的方式，就是測量程式的執行時間、程式的記憶體使用量。但是由於相同演算法於不同電腦的執行時間會有差異，又由於每個人實作演算法所採用的程式語言、程式設計技巧都不一樣，所以執行時間、記憶體使用量不是一個穩定的評斷標準。</p>
+<p>數學家於是計算步驟數量。</p>
+<pre>
+BUBBLESORT(A)
+1 for i ← 0 to length(A)-1 do
+2     for j ← 0 to length(A)-i-1 do
+3         if A[j] < A[j+1] then
+4             swap A[j] and A[j+1]
+</pre>
+<pre>
+-----------------------------------------------
+| pseudo code                      | step     |
+|---------------------------------------------|
+| BUBBLESORT(A, n)                 |          |
+| 1 for i ← 0 to n-1 do            | n        |
+| 2     for j ← i to n-i-1 do      | n(n-1)/2 |
+| 3         if A[j] < A[j+1] then  | n(n-1)/2 |
+| 4             temp ← A[j]        | n(n-1)/2 |
+| 5             A[j] ← A[j+1]      | n(n-1)/2 |
+| 6             A[j+1] ← temp      | n(n-1)/2 |
+-----------------------------------------------
+total = n + 5n(n-1)/2
+      = n + 2.5n<sup>2</sup> - 2.5n
+      = 2.5n<sup>2</sup> - 1.5n
+      = O(n<sup>2</sup>)
+</pre>
+<p>數學家把步驟數量寫成代數式子。例如當輸入資料有n = 1000個數字，步驟數量一共是2.5×1000<sup>2</sup> - 1.5×1000 = 2498500步。</p>
+<p>有了步驟數量之後，還可以進一步粗估執行時間。假設一個步驟需要10個clock，而電腦中央處理器CPU的時脈是2GHz：每秒鐘執行2000000個clock，那麼程式執行時間大約12.4925秒。</p>
+<p>但是這不是精準的步驟數量。由於實作的關係，係數很容易變動，所以係數的意義不大。因此數學家只取出代數式子的最高次方，並且規定n必須足夠大（類似微積分的趨近無限大）。儘管這是非常不精準的估算方式，不過還是可以對常見的演算法進行簡易分類，粗略地比較快慢。</p>
+<pre>
+               | time*       | space
+---------------+-------------+--------
+bubble sort    | O(n<sup>2</sup>)       | O(n)
+insertion sort | O(n<sup>2</sup>)       | O(n)
+merge sort     | O(n log(n)) | O(n)
+quicksort      | O(n<sup>2</sup>)       | O(n)
+heapsort       | O(n log(n)) | O(n)
+counting sort  | O(n+r)      | O(n+r)
+
+*worst case
+</pre>
+<p>空間的計算方式與時間類似，就不多提了。</p>
+<p class="t">解決問題的成效</p>
+<p>要評斷一個演算法的好壞，除了時間和空間的用量以外，主要還是看演算法解決問題的成效如何。</p>
+<p>數學問題，通常可以明定解答好壞，例如數字越大越好。通常這種情況，有多種演算法可以求得正解，那麼這些演算法的成效是一樣好的。</p>
+<p>真實世界的問題，通常難以界定絕對的好壞優劣，例如美醜、樂音噪音、喜怒哀樂、是非對錯等等，此時演算法的成效，則由人類自行判斷，利用兩兩比較、投票表決等等方式來決定成效。</p>
+<p class="t">數學與計算學</p>
+<p>數學是以基本元件來構築事物、表達概念。而數學家藉由數，嘗試構築每一件事物、表達每一個概念，拼湊出世界的全貌。比如位置、形狀、關係、轉換、遞迴、極限、比較、排列、正反、假設，這些東西都是數。又比如有、無、聚、散、疏、密、盈、虧、彎、直、交、錯、動、靜，這些東西也都是數。與物體的行為有關的數，就是物理；與物質性質變化有關的數，就是化學；與生命運作有關的數，就是生物學。繼續細分下去的話，我們所知的各種東西，其實皆可說是數。</p>
+<p>在數當中，可以用數量來表示的，便可以計量。像是情緒、風格、謀略，難以用數量來表示，也就難以計量，甚至不可計量。像是動作、旋律、次序，可以部分地或完全地用數量表示，便得以計量。計算學是以數量來構築事物、表達概念。而計算學家藉由數量，嘗試量度各種事物、各種概念，掌握其確切的程度與層次。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Algorithm</p>
+</div><div class="c">
+<p class="t">學習程式語言</p>
+<p>學習程式語言，有兩個層次：一、程式語言本身的語法；二、把想法轉換成程式碼。</p>
+<p>第一個層次稱做「程式語言Programming Language」。目標是背熟規格書、靈活運用程式語言。</p>
+<p>第二個層次稱做「程式設計Programming」。目標是設計程式碼解決問題。然而現今世界上還沒有一套固定的流程。</p>
+<p class="t">學習演算法</p>
+<p>學習演算法，有兩個層次：一、演算法本身的運作過程；二、把想法轉換成演算法。</p>
+<p>第一個層次稱做「演算法Algorithm」。目標是理解演算法、靈活運用演算法。讀者可以參考本站首頁的各大欄位，例如圖論、計算幾何、字串學等等。</p>
+<p>第二個層次稱做「演算法設計Algorithm Design」。目標是設計計算步驟解決問題。讀者可以參考本站首頁的Algorithm Design欄位，以及從各種演算法當中汲取經驗、擷取靈感。</p>
+<p class="t">學習函式庫、工具</p>
+<p>很多現實問題及其計算步驟，已經成為標準流程SOP，沒有什麼改動的餘地，成為了演算法。因此科學家就把這些演算法編寫成函式庫（Library），接著把現實生活的常見需求編寫成工具（Toolkit），讓程式設計的過程更加迅速。</p>
+<p>時間就是金錢。現今的軟體產業當中，絕大部分都是直接使用現成的函式庫、工具，只有從事研發才會從無到有設計程式碼、設計演算法。優秀的工程師，總是擅於活用函式庫、工具，快速實現自己想要的功能。網路上已經有許多現成的函式庫和工具，通常也附帶詳細的使用說明書，方便工程師運用。</p>
+<p>由於大家看事情習慣只看表面，因此衍生了一種奇怪的現象：大家把使用工具稱做「使用技術」，大家把背熟使用說明書、依樣畫葫蘆稱做「學習技術」。大家常常自詡擁有許多「技術」，將「技術」奉為圭臬；但是卻很少人懂得背後的程式碼技巧、演算法原理，也很少人有能力研發、創新、解決目前尚未解決的現實問題。這是本末倒置的奇怪現象。</p>
+<p class="t">演算法營隊</p>
+<pre>
+<a href="https://zh-tw.facebook.com/ntucsiesprout/">台大資訊系資訊之芽</a>
+熱心學生自動自發舉辦的高中營隊
+</pre>
+<p class="t">演算法學術會議</p>
+<pre>
+<a href="http://www.siam.org/meetings/da17/">SODA</a>
+<a href="http://ieee-focs.org/">FOCS</a>
+<a href="http://acm-stoc.org/stoc2017/">STOC</a>
+</pre>
+<pre>
+<a href="http://citeseer.ist.psu.edu/">CiteSeer</a>，<a href="http://citeseerx.ist.psu.edu/">CiteSeerX</a>
+資訊學術論文的搜尋引擎，統計論文引用情形。有時可以抓到論文的電子檔。
+
+<a href="http://arxiv.org/">arXiv</a>
+收集物理學、數學、計算機科學、生物學的論文草稿。
+有機會可以找到一些期刊論文的草稿。
+
+<a href="http://terms.naer.edu.tw/">國家教育研究院：雙語詞彙、學術名詞暨辭書資訊網</a>
+提供英文對繁體中文的學術名詞翻譯。
+
+<a href="http://www.termonline.cn/">全国科学技术名词审定委员会：术语知识服务平台</a>
+提供英文對簡體中文的學術名詞翻譯。
+</pre>
+<p class="t">演算法書籍</p>
+<div class="i">
+<a href="http://algs4.cs.princeton.edu/home/"><img src="bookAlgo.jpg"></a>
+<a href="http://mitpress.mit.edu/algorithms/"><img src="bookCLRS.jpg"></a>
+<a href="http://ww3.algorithmdesign.net/"><img src="bookDesign1.jpg"></a>
+<a href="http://www.cs.princeton.edu/~wayne/kleinberg-tardos/"><img src="bookDesign2.jpg"></a>
+<a href="http://www.algorist.com/"><img src="bookManual.jpg"></a>
+<a href="http://www.springer.com/us/book/9781493928637"><img src="bookEncyclopedia.jpg"></a>
+<a href="http://www-cs-faculty.stanford.edu/~knuth/taocp.html"><img src="bookTAOCP.jpg"></a>
+</div>
+<p class="t">演算法網站</p>
+<pre>
+<a href="http://www.cs.uiuc.edu/~jeffe/teaching/index.html">Jeff Erickson</a>
+演算法課程網站，有許多課程講義。
+
+<a href="http://erikdemaine.org/classes/">Erik Demaine</a>
+演算法課程網站，有許多特殊主題。
+
+<a href="http://www.ics.uci.edu/~eppstein/">David Eppstein</a>
+計算幾何和圖論。維基百科有很多內容是他寫的。
+
+<a href="http://www.geeksforgeeks.org/">GeeksforGeeks</a>
+程式語言、數學、演算法益智問題。
+
+<a href="http://algnotes.wordpress.com/">Algorithms Notes</a>
+演算法益智問題。
+
+<a href="http://hsmaterial.moe.edu.tw/">高中職資訊科技融入教學網</a>
+提供很多教學flash。
+</pre>
+<p class="t">數學網站</p>
+<pre>
+<a href="http://www.matrix67.com/blog/">Matrix67</a>
+一位中國學生Matrix67的個人部落格，
+他的專長是文史，然而他閒暇之餘也喜歡研究數理。
+作者經常寫下令人驚艷的數學文章！
+偶爾也會談談有趣的演算法！
+是非常值得常常去逛的網站。
+
+<a href="http://mathworld.wolfram.com/">Wolfram Math World</a>
+這個網站收集了豐富的數學資料，同時也不斷的收集新知放到網站上。
+如果遇到了數學問題，可以到這裡查詢資料。
+這個網站是Wolfram公司製作的一個數學網站。
+該公司在數學領域上有很多研究，開發了有名的mathmatica軟體。
+
+<a href="http://planetmath.org/">planetmath.org</a>
+這個網站的目標是成為數學的百科全書。
+收集了豐富的數學資料，同時也不斷的收集新知放到網站上。
+可以找到很多好讀的數學文章。
+
+<a href="https://www.ams.org/open-math-notes">AMS Open Math Notes</a>
+數學家的教學筆記。
+
+<a href="http://oeis.org/">The On-Line Encyclopedia of Integer Sequences</a>
+這個網站含有各式各樣、包羅萬象的數列資訊。
+你可以參考網站的操作範例，輸入一串數列，就可以找到該數列的詳細資料，
+有名稱、公式、解釋、相關連結。包你看的目不暇給、眼花撩亂。
+若是你遇到了莫名奇妙的數列，可以試著來這裡找找看，鐵定找得到！
+</pre>
+<p class="t">演算法故事書</p>
+<div class="i">
+<a href="http://www.springer.com/computer/book/978-0-387-98269-4"><img src="book15Minds.jpg"></a>
+<a href="http://press.princeton.edu/titles/9528.html"><img src="bookNine.gif" width="150" height="228"></a>
+<a href="http://www.chrissteiner.com/"><img src="bookAutomate.jpg" width="130" height="181"></a>
+</div>
+<pre>
+繁：《勇闖資訊新未來：打造資訊科技的幕後英雄》
+简：《奇思妙想：15位计算机天才及其重大发现》
+
+繁：《改變世界的九大演算法：讓今日電腦無所不能的最強概念》
+简：《改变未来的九大算法》
+
+繁：《演算法統治世界》<a href="http://www.philomedium.com/audio/79369">介紹此書的廣播節目</a>
+简：《算法帝国》
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Competitive Programming</p>
+</div><div class="c">
+<p class="t">Competitive Programming</p>
+<p>「<a href="http://www.acm.org/">Association for Computing Machinery (ACM)</a>」是一個致力於電腦科學教育的協會，出版大量的專業期刊文獻，舉辦重大的計算機科學會議，在資訊界舉足輕重、名聞遐邇。</p>
+<p>ACM每年度都會舉辦一次「<a href="http://icpc.baylor.edu/icpc/">The ACM-ICPC International Collegiate Programming Contest (ACM-ICPC)</a>」，是一個給全世界大專院校學生參加的演算法程式設計比賽，比賽目的在於考驗選手臨場的演算法設計能力、程式編寫能力。ACM首先在世界各地舉辦初賽，再從各個賽區選拔出表現優秀的隊伍，角逐世界總決賽。</p>
+<p>ACM-ICPC帶動了演算法程式設計的風氣。世界上許多大專院校的資訊系所，仿照ACM-ICPC的比賽模式，紛紛自行開發出即時線上比賽系統，能夠自動批改、評分、計時、統計。學生不必齊聚一堂，藉由網際網路，就可以相互切磋程式設計技巧。比賽結束之後，便將比賽題目編列題庫，開放線上批改程式的功能，供學生賽後練習檢討。這套系統大家普遍稱呼為「Online Judge」。</p>
+<p>從事這項活動，不僅可以熟悉程式設計、學習演算法、鍛鍊智力，還可以培養自主學習與獨立解題的能力──此即程式設計師的核心價值。</p>
+<p>這項活動開始獲得大家重視。產業界舉行演算法競賽，發掘優異人才；學術界開設課程，促進演算法的研究發展。由於競賽的緣故，大家將這項活動稱呼為「<a href="http://en.wikipedia.org/wiki/Competitive_programming">Competitive Programming</a>」。</p>
+<p class="t">UVa Online Judge工具網站</p>
+<p>最古老、最有知名度的Online Judge，是由西班牙知名的瓦雅多利大學「<a href="http://www.uva.es/">Universidad de Valladolid (UVa)</a>」開發的「<a href="http://uva.onlinejudge.org/">UVa Online Judge</a>」。資源非常豐富。</p>
+<pre>
+<a href="http://luckycat.kshs.kh.edu.tw/">Lucky貓的ACM園地</a>、<a href="http://rubyacm.blogspot.com/">Ruby兔的ACM園地</a>、<a href="http://unfortunatedog.blogspot.tw/">Unfortunate狗的ACM園地</a>、<a href="http://pcshic.github.io/uniDog/">uniDog的ACM園地</a>
+UVa Online Judge題目中譯！非常偉大的工作，請大家要心懷感激！
+
+<a href="http://uhunt.felix-halim.net/">uHunt</a>
+可以查詢自己在UVa Online Judge的解題進度、簡單題列表、世界排名等等。
+另外也整理了一套題庫，適合初學者循序練習。輸入使用者名稱就會出現。
+是你不得不知道的網站！
+
+<a href="http://www.udebug.com/">uDebug</a>
+提供UVa Online Judge題目解答的執行檔，
+自行輸入資料，可以生成正確輸出，進而測試自己的程式。
+
+<a href="http://www.comp.nus.edu.sg/~stevenha/index.html">World of 7</a>
+uHunt站長的兄弟所製作。
+整理了UVa Online Judge題目的解法提示、演算法動畫。
+
+<a href="http://www.cs.uleth.ca/~cheng/contest/hints.html">Problem Classification on Spanish Archive</a>
+題目分類。
+</pre>
+<p class="t">演算法題庫</p>
+<pre>
+<a href="http://uva.onlinejudge.org/">UVa Online Judge</a>
+西班牙Valladolid大學的Online Judge。
+是最古老也是全世界最知名的Online Judge，題庫目前約有4000+題。
+題目類型非常廣泛。絕大部分的題目難度偏易，適合初學者磨練程式設計功力。
+
+<a href="http://livearchive.onlinejudge.org/">ACM-ICPC Live Archive</a>
+專門收集ACM-ICPC的比賽題目，依照年份與賽區進行編目。
+可惜的是題庫尚未收集完整，尚待大家合力完成。
+
+<a href="http://poj.org/">PKU JudgeOnline</a>
+中國北京大學的Online Judge。中國最大的Online Judge。
+題目類型偏向演算法競賽，可以找到比賽常見題型。
+好處是網路上能輕鬆找到中文的解題報告。
+
+<a href="http://acm.timus.ru/">Timus Online Judge</a>
+俄國Ural大學的Online Judge。俄國最大的Online Judge。
+有比較進階的演算法題目，難度偏高。
+
+<a href="http://www.spoj.pl/">Sphere Online Judge</a>
+波蘭Sphere實驗室建立的Online Judge。波蘭最大的Online Judge。
+會員可自創題目，題目很有特色，但是品質良莠不齊。
+
+<a href="https://www.urionlinejudge.com.br/">URI Online Judge</a>
+巴西最大的Online Judge。
+
+<a href="http://zerojudge.tw/">高中生程式解題系統 ZeroJudge</a>
+台灣高雄師大附中建立的Online Judge。台灣最大的Online Judge。
+</pre>
+<p class="t">演算法例賽</p>
+<pre>
+<a href="http://www.topcoder.com/">TopCoder</a>，<a href="https://docs.google.com/presentation/d/1rK14BWU3uizHwj-AG-RuH4tGV3L7D4mN46eEIkI53os/">簡介</a>
+全世界規模最大的程式競賽網站，其中包含了演算法競賽。
+
+<a href="http://codeforces.com/">Codeforces</a>
+俄國最大的演算法例賽。
+題目較有挑戰性。賽後會提供詳細的題目講評，是個自主學習的好地方！
+
+<a href="https://www.codechef.com/">CodeChef</a>
+印度最大的演算法例賽。
+
+<a href="https://atcoder.jp/">AtCoder</a>
+日本最大的演算法例賽。
+
+<a href="http://bestcoder.hdu.edu.cn/">BestCoder</a>
+中國最大的演算法例賽。由中國杭州电子科技大学維護。
+
+<a href="https://sites.google.com/site/itsancku/">ITSA & PTC 線上程式設計競賽</a>
+台灣最大的演算法例賽。台灣教育部提供的例行賽事。
+</pre>
+<p class="t">演算法面試考題</p>
+<pre>
+<a href="https://leetcode.com/">leetcode</a>
+世界知名的演算法面試考題網站。
+想要省時省力的面試主考官從裡面挑題目，
+於是求職者不得不去練習這些題目。
+然而工作上用不到這些知識，已經發展到了病態的地步。
+
+<a href="https://www.patest.cn/">PAT计算机程序设计能力考试</a>
+中國的證照考試。
+
+<a href="https://cpe.cse.nsysu.edu.tw/">CPE大學程式能力檢定</a>
+台灣某些教授聯手搞出來的證照考試，你懂的。
+</pre>
+<p class="t">演算法競賽</p>
+<style>
+table {border: 0; margin: 0 auto 0 auto; padding: 0; white-space: pre; border-collapse: collapse;}
+td {border: 1px dotted gray; vertical-align: center; padding: 1em;}
+tr td:first-child {text-align: center; width: 200px; padding: 0;}
+</style>
+<table></tr><tr><td>
+<a href="http://icpc.baylor.edu/"><img width="66%" src="../../icpc.baylor.edu/img/welcome/cm2-logo-panel_joel_wo_lang.png"></a>
+<a href="https://icpc2016.cse.yzu.edu.tw/">2016TW</a>、<a href="http://icpc2015.csie.ntnu.edu.tw/">2015TW</a>、<a href="http://icpc2014.pu.edu.tw/">2014TW</a>
+</td><td>
+ACM International Collegiate Programming Contest
+縮寫：ACM-ICPC
+對象：大專院校學生
+　　　（學士班一年級至碩士班一年級）
+時間：台灣站11～12月
+　　　亞洲各站是8～12月
+　　　世界總決賽是隔年5～7月
+主辦：Association for Computing Machinery
+承辦：台灣賽區由台灣大專院校輪流承辦
+
+</td></tr><tr><td>
+<a href="http://sigmod17contest.athenarc.gr/"><img width="150" src="../../sigmod17contest.athenarc.gr/images/sigmod.png"></a>
+</td><td>
+ACM SIGMOD Programming Contest
+對象：大專院校學生
+時期：2～4月
+
+</td></tr><tr><td>
+<a href="http://code.google.com/codejam"><img src="../../code.google.com/codejam/contest/static/logo_image0.gif"></a>
+</td><td>
+Google Code Jam
+對象：社會大眾
+時期：4月～7月
+
+</td></tr><tr><td>
+<a href="https://tco17.topcoder.com/"><img src="https://tco17.topcoder.com/wp-content/uploads/sites/2/2016/09/tco17-web-logo-color.svg"></a>
+</td><td>
+TopCoder Open
+對象：社會大眾
+時期：4月～8月
+
+比賽項目相當多元，其中一個項目是演算法競賽。
+
+</td></tr><tr><td>
+<a href="https://www.facebook.com/hackercup"><img width="50%" src="../../www.firstpost.com/wp-content/uploads/2013/01/FacebookHackerCup.jpg"></a>
+</td><td>
+Facebook Hacker Cup
+對象：社會大眾
+時期：1月～3月
+
+</td></tr><tr><td>
+<a href="http://www.hpcodewars.org/"><img src="../../pbs.twimg.com/profile_images/799341249194885121/IERr9AZS_bigger.jpg"></a><a href="http://www.hpcodewars.com.tw/">Taipei</a>
+</td><td>
+HP CodeWars
+對象：高中學生、大專院校學生，各分公司就地舉辦
+時期：台北4月
+
+</td></tr><tr><td>
+<a href="http://ipsc.ksp.sk/"><img src="../../ipsc.ksp.sk/static/ipsc.gif"></a>
+</td><td>
+Internet Problem Solving Contest
+對象：社會大眾
+時期：5～6月
+
+</td></tr><tr><td>
+NCPC
+<a href="http://ncpc.nsysu.edu.tw/">2016</a>、<a href="http://ncpc.ntnu.edu.tw/">2015</a>、<a href="http://ncpc.ntnu.edu.tw/">2014</a>
+</td><td>
+全國大專電腦軟體設計競賽
+縮寫：NCPC
+對象：台灣大專院校學生
+時間：9～10月
+主辦：教育部
+承辦：由臺灣師範大學與中山大學輪流辦理
+
+</td></tr><tr><td>
+NCPU
+<a href="http://ncpu2016.ttu.edu.tw/">2016</a>、<a href="http://ncpu2015.yzu.edu.tw/">2015</a>、<a href="http://ncpu2014.pu.edu.tw/">2014</a>
+</td><td>
+全國私立大專院校程式競賽
+縮寫：NCPU
+對象：台灣私立大專院校學生
+時間：6月
+主辦：各私立大學輪流辦理
+備註：ICPC台灣站衍生賽事
+
+</td></tr><tr><td>
+NCTU
+<a href="http://nctu2016.nfu.edu.tw/">2016</a>
+</td><td>
+全國科技大專院校程式競賽
+縮寫：NCTU
+對象：台灣科技大專院校學生
+時間：6月
+主辦：各科技大學輪流辦理
+備註：ICPC台灣站衍生賽事
+
+</td></tr><tr><td>
+<a href="http://contest.cc.ntu.edu.tw/">NPSC</a>
+</td><td>
+網際網路程式設計全國大賽
+縮寫：NPSC
+對象：台灣高中學生、國中學生
+時期：11～12月
+主辦：科技部
+承辦：台灣大學
+
+</td></tr></table>
+<p class="t">ACM International Collegiate Programming Contest</p>
+<p>資訊界規模最大、歷史最悠久的競賽，最近幾屆競賽皆有上千所學校、數萬名選手參加。</p>
+<p>ACM-ICPC是一個氣氛相當活潑，非常具有特色的競賽。一場ACM-ICPC的賽事，由許多活動所組成，主軸當然是現場上機競賽，另外還有安排晚餐宴會、娛樂表演、城市遊覽等行程。整個賽程為期兩至三天，過程有吃有玩，遊樂的成分比競賽的成分還多，對於參賽選手來說是相當新鮮的體驗。活動細節請參考歷年的ACM-ICPC區域賽網站。</p>
+<p>ACM-ICPC的競賽方式是三人一隊，並且要有一位同校教授作為領隊教練。教練的主要作用，是負責向大會接洽賽事行程，替選手打點賽事期間的生活細節，讓選手無後顧之憂，得以傾盡全力比賽，教練就如同經紀人的角色。另外，報名時可以額外登記一名後備隊員，發生緊急狀況時得替補上陣。</p>
+<p>現場上機競賽的過程，是所有隊伍聚集於會場，一支隊伍分配一張桌子、三張椅子、一臺電腦、一份英文題本。開賽後所有隊伍同時開始作答，選手必須迅速調校好電腦環境，然後編寫程式解決問題，將程式碼上傳給裁判批改。</p>
+<p>所有作答皆是即時批改，幾分鐘內回覆結果，結果只有對與錯兩大類，答錯還可以再答。成績的計算方式，是以答對題數作為主要的排名依據；但是作答的錯誤次數、上傳答案的時刻，統統列入扣分，最後作為次要的排名依據。因此選手除了要盡力答出問題，也要盡快答出問題，還要盡量避免答錯問題又一錯再錯。實力在伯仲之間的隊伍，勝負的差距往往取決於審題與答題的效率。動作慢人一步，或者大意發生失誤，就很可能名落千丈。</p>
+<p>選手有五小時時間，要解出十道左右的演算法問題，期間可以喝水、外出上廁所、享用大會提供的奢華點心、在題本上塗鴉、把題本拆了摺紙鶴、睡覺、談情說愛、玩電腦遊戲；唯一的限制，就是不得與隊伍之外的人交流。</p>
+<p>比賽規則看似輕佻，但是事實上，五小時時間解十道左右的題目，電腦卻只有一臺，所以比賽過程是非常緊迫的，就算是技藝高超的選手，也幾乎無暇休息，必須分工合作、爭取時間。通常是一人隨時坐在電腦前作答，充分運用電腦，發揮時效；另外兩人則在旁解讀其餘題目，在腦中羅織解法，伺機輪換上陣。五小時的比賽過程，選手克服環境限制、調適心理壓力、發揮大腦潛能，也可以說是一場精神的對抗賽。</p>
+<p>至於教練必須在會場外等待，不得與選手交談。不過教練們可以彼此交流，也可以觀戰和吃點心。現場上機競賽可以說是教練在整個賽程當中最輕鬆的時刻，也是辛苦之後驗收成果的時刻。</p>
+<p>現場上機競賽還有許許多多的有趣的地方，此處只做初步介紹，詳細過程留給各位選手們自行體驗吧！</p>
+<pre>
+歷年比賽題目：<a href="http://livearchive.onlinejudge.org/">ACM-ICPC Live Archive</a>
+ACM-ICPC官方消息：<a href="https://www.facebook.com/ICPCNews">https://www.facebook.com/ICPCNews</a>
+ACM-ICPC亞洲區指導員：<a href="http://blog.sina.com.cn/cjhwang">西杰的博客与阿雄</a>
+台灣ACM-ICPC非官方協會：<a href="http://www.acm-icpc.tw/">ACM-ICPC Contest Council for Taiwan</a>
+中國ACM-ICPC非官方協會：<a href="http://acm-icpc.cn/">ACM-ICPC中国区竞赛指导委员会</a>
+中國非官方消息：<a href="http://acmicpc.info/">ACM/ICPC信息站</a>
+日本非官方消息：<a href="http://acm-icpc.aitea.net/">ACM-ICPC Japanese Alumni Group</a>
+教練感想：<a href="https://paper.dropbox.com/doc/2016-ACM-ICPC-World-Finals-MZs-log-TxDT6w6Vd4AtpXArJYA9P">2016 ACM-ICPC World Finals — MZ’s log</a>
+</pre>
+<p>根據規定，ACM-ICPC區域賽必須要有全國性（或者兩省以上）的預賽。台灣歷年都是以NCPC作為預賽，然而實際上NCPC根本就不是預賽。會有這種現象，主要原因是台灣的參賽隊伍十分稀少，無從篩選隊伍。直至2015年，台灣才開始正式舉辦網路預賽，跟隨亞洲各國的比賽模式，時序如下：</p>
+<p>一、區域預賽（網路賽）：由ACM-ICPC台灣區負責人負責組織比賽，各大專院校教授熱情協助。國內外選手透過網路比賽，最後根據當年承辦人員的戰鬥力，從中選出40至80隊，參加現場賽。由於國外隊伍出國參加現場賽，需要時間打點準備，所以網路賽往往很早舉辦，3至6個月前就會舉辦。</p>
+<p>二、全國賽：與ACM-ICPC無關。台灣教育部舉辦的NCPC，全國學生一較高下。成績優秀的隊伍，教育部全額補助參加ACM-ICPC。</p>
+<p>三、區域正式賽（現場賽）：請參考前面介紹的內容，國內外選手齊聚一堂進行較量。最後依照複雜的公式和規則，評量各個區域的戰鬥力之後，從各賽區選出至少1隊，參加世界總決賽。</p>
+<p>四、世界總決賽：每年都從世界五大洲輪流選擇一間學校，作為主辦學校；從全世界篩選一百多隊參加總決賽。以往台灣大專院校實力較差，總是被國外學校痛宰，鮮少晉級總決賽。直到近年才有改善跡象，與國外學校互有進退（一群無名英雄前仆後繼苦心經營數年的成果）；同時也積極的參與其他國家的區域賽，爭取其他賽區的總決賽門票。目前台灣僅台灣大學、交通大學有能力進入總決賽。</p>
+<p class="t">營隊</p>
+<pre>
+<a href="https://ioicamp.org/">臺灣大學程式解題競賽培訓營</a>
+熱心學生自動自發努力辦理的營隊。
+
+<a href="https://sites.google.com/site/pccanctu/">交大競技程式訓練冬令營、夏令營</a>
+熱心老師和學生自動自發努力辦理的營隊。
+</pre>
+<p class="t">講義</p>
+<pre>
+<a href="https://www.csie.ntu.edu.tw/~sprout/algo2016/">台大資訊系資訊之芽算法班</a>
+熱心學生自動自發舉辦的高中營隊以及教材。
+
+<a href="https://sites.google.com/site/pcshic/">板橋高中資訊社演算法講義</a>
+熱心學生自動自發努力彙整的教材。
+
+<a href="http://pisces.ck.tp.edu.tw/~peng/">建國中學資訊科培訓講義</a>
+熱心學生自動自發努力彙整的教材。
+
+<a href="https://drive.google.com/folderview?id=0BydVf1xpoCSQdzZUWGZzQWtEZnM&amp;usp=sharing&amp;tid=0BydVf1xpoCSQM0lHMWU3cTZJaW8">交通大學PSPT課程講義</a>
+熱心老師自動自發努力彙整的教材。
+
+<a href="https://nckuacm.github.io/">成功大學ACM課程講義</a>
+熱心學生自動自發努力彙整的教材。
+
+<a href="http://web.stanford.edu/class/cs97si/">Stanford CS 97SI: Introduction to Competitive Programming Contests</a>
+Stanford大學開設的課程。
+
+<a href="http://blog.icpc.tw/">競程日誌</a>
+熱心網友的解題心得分享
+
+<a href="http://algorithm.yuanbin.me/">資料結構與演算法/leetcode/lintcode題解</a>
+面試題目教學。
+</pre>
+<p class="t">書籍</p>
+<table><tr><td>
+<a href="http://highered.mcgraw-hill.com/sites/0073383090/information_center_view0/"><img src="bookDiscrete.jpg"></a>
+</td><td>
+Discrete Mathematics and Its Applications
+Kenneth Rosen
+McGraw-Hill
+
+離散數學，資工系用書，演算法的數學知識。
+此書含有許多程式解題的基礎概念。
+細讀此書，對程式解題有一定幫助。
+此書有繁體中文譯本。
+
+</td></tr><tr><td>
+<a href="http://www.chiuchang.com.tw/catalog/detail.php?bid=212"><img src="bookThink.jpg"></a>
+</td><td>
+數學思考
+台北市建國高中第49屆314班合譯
+九章出版社
+
+很有趣的數學書籍，教導如何解決數學問題。
+書中提到的思考方式，其實和程式解題是相通的。
+這本書由《Thinking Mathematically》改著，
+原書作者為John Mason。
+
+</td></tr><tr><td>
+<a href="http://press.princeton.edu/titles/669.html"><img src="bookSolve.gif" width="100" height="151"></a>
+</td><td>
+How to Solve It
+G. Pólya
+Princeton University Press
+
+經典的數學教育著作。
+這本書有繁體中文譯本《怎樣解題》。
+
+</td></tr><tr><td>
+<a href="http://www.scholars.com.tw/book/SIM-847A.htm"><img src="book100.jpg"></a>
+</td><td>
+名題精選百則:技巧篇
+冼鏡光
+儒林出版社
+
+收集程式設計的經典問題，
+而且這些問題不會用到特殊的資料結構與演算法。
+題目大多小巧精緻，非常具有啟發性。
+
+</td></tr><tr><td>
+<a href="http://www.crackingthecodinginterview.com/"><img src="bookInterview.jpg"></a>
+</td><td>
+Cracking the Coding Interview
+Gayle Laakmann McDowell
+CareerCup
+
+收集面試問題，
+其中包含許多演算法益智問題！
+
+這本書有繁體中文譯本
+《來自程式的試鍊：
+專為程式開發人員所寫的技術面試完全攻略》。
+
+</td></tr><tr><td>
+<a href="https://cpbook.net/"><img src="bookCP.png"></a>
+</td><td>
+Competitive Programming
+Steven Halim, Felix Halim
+Lulu
+
+世界上第一本演算法競賽教科書！
+詳細介紹競賽常用演算法，
+精心挑選大量UVa Online Judge練習題，
+配有追蹤解題進度的網站UVa Hunting，
+規劃相當完善的教材。
+
+</td></tr><tr><td>
+<a href="http://book.algospot.com/"><img src="bookPipe.png"></a>
+</td><td>
+프로그래밍 대회에서 배우는 알고리즘 문제 해결 전략
+구종만
+인사이트
+
+將演算法競賽的所有經典主題分門別類，
+依照學習順序編排例題，仔細說明解題思路。
+
+這本書有簡體中文譯本《算法问题实战策略》。
+
+</td></tr><tr><td>
+<a href="http://d.hatena.ne.jp/iwiwi/20120111/1326198766"><img src="bookAnt.jpg"></a>
+</td><td>
+プログラミングコンテストチャレンジブック
+秋葉拓哉、岩田陽一、北川宜稔
+マイナビ
+
+選錄大量題目，以題目為主角，介紹各種演算法。
+
+這本書有繁體中文譯本
+《培養與鍛鍊程式設計的邏輯腦：
+世界級程式設計大賽的知識、心得與解題分享》。
+
+</td></tr><tr><td>
+<a href="http://www.tup.com.cn/booksCenter/book_05568701.html"><img src="bookAOAPC1.jpg"></a>
+<a href="http://www.tup.com.cn/booksCenter/book_04162201.html"><img src="bookAOAPC2.jpg"></a>
+</td><td>
+算法竞赛入门经典
+刘汝佳
+清华大学出版社
+
+算法竞赛入门经典——训练指南
+刘汝佳、陈锋
+清华大学出版社
+
+<a href="http://code.google.com/p/aoapc-book/">http://code.google.com/p/aoapc-book/</a>
+這是一套系列作，目前只出版兩本。
+知識水平是所有書籍之中最高的。
+想要躋身高手行列的人，絕對不要錯過此系列作。
+
+第一本書有繁體中文譯本
+《打下好基礎：程式設計與演算法競賽入門經典》。
+
+第二本書有繁體中文譯本
+《提升程式設計的解題思考力─
+國際演算法程式設計競賽訓練指南》。
+
+</td></tr></table>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Computer Science</p>
+</div><div class="c">
+<p class="t">國內的資訊工程系學些什麼？</p>
+<p>計算機的學問，分成計算機工程（Computer Engineering）與計算機科學（Computer Science）兩大系列。</p>
+<p>計算機工程。製造電腦、操控電腦的學問（台灣把計算機翻譯成電腦）。製造電腦的部分，屬於電機系的專業；操控電腦的部分，屬於資工系的專業。在國外，有些學校乾脆把電機系和資工系合在一起，讓整件事情完美圓滿。下面列出國內資工系應該學得到的計算機工程課程：</p>
+<pre>
+電子學：討論電流與電子元件的行為。
+數位邏輯：操控電流與電子元件的行為，並且賦予意義。
+微處理機：討論中央處理器。等登等登。
+計算機組織與結構：討論電腦如何組成、如何運作，討論電腦的零件。
+組合語言：操控電腦的指令。
+程式設計：程式語言也是操控電腦的指令，設計成稍微貼近人類思惟。通常學C或C++。
+編譯器：如何把程式碼變成操控電腦的指令。
+系統程式：發揮電腦零件功能的程式，讓電腦執行特定作業。
+作業系統：人與電腦的介面，讓使用者便於執行系統程式。
+資料庫：電腦結合儲存設備，用來記錄。
+計算機網路：電腦結合網路設備，用來通訊。
+分散式系統：電腦結合網路設備、儲存設備，用來分工合作。
+嵌入式系統：電腦結合其他機械，有著各種功能。
+程式語言：如何設計程式語言，方便人類撰寫、方便電腦作業。
+軟體工程：程式員很多、程式碼很長的情況，要如何應對。
+人機互動：人類如何操控電腦。
+普適計算：電腦與這個世界如何相互依存。
+</pre>
+<p>計算機科學。運用電腦實施計算、達成任務的學問。電腦是計算機，只會算數學，因此計算機科學皆是數學。計算機科學是資工系學生必備的基礎理論，是計算機的深奧之處。事實上，計算機工程的後半課程，就需要計算機科學的知識作為輔助。下面列出國內資工系應該學得到的計算機科學課程：</p>
+<pre>
+資料結構：電腦實施計算時、儲存資料的方法。
+演算法：電腦計算的方法。
+平行處理：許多台電腦一起計算的方法。
+自動機理論：討論電腦的計算模式，用數學表達。
+計算理論：討論電腦的計算能力，用數學表達。
+字串學：連成一串的文字（數列）的數學知識，著重比對。
+數位訊號處理：連成一串的數列的數學知識，著重轉化。
+密碼學：改變資料外觀的數學知識。
+資訊理論：資料本身的數學知識。entropy！
+編碼理論：壓縮資料的數學知識。用到資訊理論。
+模式識別：比對資料的數學知識。
+機器學習：分析資料的數學知識。用到模式識別。
+人工智慧：搜尋資料的數學知識。用到機器學習。
+</pre>
+<p>緊接著列出計算機科學的實際應用課程。通常會在大四、研究所開課，通常只能學到皮毛；若要有所小成，就必須加入相對應的實驗室，認真做研究：</p>
+<pre>
+資料探勘：用數學解析、轉化數值資料。
+自然語言處理：用數學解析、轉化文字資料。
+語音處理：用數學解析、轉化聲音資料。
+圖像處理：用數學解析、轉化圖片資料。
+影像處理：用數學解析、轉化影片資料。
+計算機圖學：用數學製造圖片、影片。
+計算機視覺：用數學辨識圖片、影片。
+幾何模型：用數學解析、轉化物體資料。
+數值方法：用電腦計算數學方程式。
+計算幾何：用電腦計算數學幾何。
+計算物理：用電腦解決物理問題。
+計算化學：用電腦解決化學問題。
+生物資訊：用電腦解決生物學問題。
+醫學資訊：用電腦解決醫學問題。
+機器人學：上述所有東西加上機械設備，計算機工程與計算機科學集大成。
+</pre>
+<p>另外還有一些數學課程。計算機科學的各個應用領域都會用到數學，因此數學課程通常在大一、大二就會用力教完。雖說是數學，但是資工系與數學系的學習方向有著極大差異──資工系屬於實務導向，所以沒有太多晦澀的內容，也不需要推導定理，只要懂得原理、懂得運用就可以了，內容反而比數學系有趣。下面列出國內資工系的基礎數學課程：</p>
+<pre>
+線性代數、機率論、離散數學。
+</pre>
+<p>另一方面還有理工科系的共同課程：微積分、工程數學。微積分就不討論了，總是有人認為有用、有人認為沒用，各人心裡有底。至於工程數學，計算機科學用不到，計算機工程用得比較多，尤其是在製造電腦、操控機械方面。</p>
+<p>還有一些其他的數學，計算機科學有時候會用到，像是統計學、隨機過程、賽局理論、圖論、組合最佳化、數論等等。有些課程資工系沒有開課，電機系、數學系才有開課。</p>
+<p class="t">國外的計算機科學系學些什麼？</p>
+<p>國外大學的課程更加豐富細膩！請大家看看UIUC和UCSD這兩間大學的課程總表：</p>
+<p><a href="https://cs.illinois.edu/courses/full-curriculum">https://cs.illinois.edu/courses/full-curriculum</a></p>
+<p><a href="http://ucsd.edu/catalog/courses/CSE.html">http://ucsd.edu/catalog/courses/CSE.html</a></p>
+<p>這兩間大學的計算機科學系樂於分享教材，絕大部分課程都公開了課程講義。大家可以透過網路自主學習：將課名代號、課名全名，放到Google搜尋，馬上就能找到課程講義。有時候則是要搜尋開課教授的姓名，從教授的個人網頁找到課程網站連結。</p>
+<p>課程總表實在太籠統。有人依照工作性質，將課程歸類。</p>
+<p><a href="http://www.computerscienceonline.org/courses/">http://www.computerscienceonline.org/courses/</a></p>
+<p>除了學校的正規課程，也有網路的影音課程。諸如Coursera、Udacity、edX，都有計算機科學的課程。課程種類正在持續增加當中，大家可以一睹國外教授的風采。</p>
+<p><a href="https://www.coursera.org/browse/computer-science">https://www.coursera.org/browse/computer-science</a></p>
+<p>如果還不過癮，那麼還可以找QS世界大學排名，找前100大計算機科學系，再用Google搜尋這些學校的課程。</p>
+<p><a href="http://www.topuniversities.com/university-rankings/university-subject-rankings/2016/computer-science-information-systems">http://www.topuniversities.com/university-rankings/university-subject-rankings/2016/computer-science-information-systems</a></p>
+<p>世界上還有許多比台清交更優秀的學校。打開心胸放眼全世界，不要自我設限，相信大家會有更多的收穫。</p>
+<p class="t">資訊工程系</p>
+<p>資訊工程不是主流詞彙。從字面上來看，意思是處理資料的工程──架設一些電腦設備、運用一些計算機科學，來處理資料這樣。</p>
+<p>資訊工程系是非常奇怪的系名。國外大學的計算機科學系所，系名都沒有包含資訊工程的字眼。在台灣，資訊工程系的英文系名是Department of Computer Science and Information Engineering，直接翻譯是「計算機科學與資訊工程系」，故意在計算機科學的後方添上了資訊工程，而且只取資訊工程的部分當成了中文系名。我不清楚這種亂象是如何產生的，或許是當時某些老人家想要譁眾取寵、追逐潮流，因此更改系名，欺騙學生就讀、保全自己地位。各位可以參考台灣交通大學資訊工程系的改名歷程：</p>
+<p><a href="https://www.cs.nctu.edu.tw/cswebsite/intro/history">https://www.cs.nctu.edu.tw/cswebsite/intro/history</a></p>
+<p class="t">國內計算機科學發展</p>
+<p>台灣政府接受美援，引進國外設備，建造電子工廠、電腦工廠。台灣政府指派黨政軍人士前往海外觀摩，回國後設立研究院和大學，擔任校長和教授，督促學生解讀技術原理、創業開工廠。因此台灣並未發展計算機科學。</p>
+<p>以學界而言，許多大學教授的水準，不如自學的中學生。比如<a href="http://www.books.com.tw/products/0010509876">引入計算機科學的先驅，只寫得出虛有其表的爛教材</a>。資工系畢業生，一個班級只有兩三人學會寫程式。</p>
+<p>以業界而言，只要去<a href="http://www.iiiedu.org.tw/taipei/">補習班</a>接受短期訓練，就能寫程式，完全不必經過資工系的專業訓練。程式員如同臨時工，花錢請就有，人力流動相當頻繁。大部份公司都沒有完善的專案管理機制，修改規格、程式出錯、加班工作是家常便飯。</p>
+<p>在台灣，光是學會寫程式，就是個大問題，更遑論計算機科學。如果你對計算機科學有興趣，就必須自立自強，學校教育幫不了你。</p>
+<p class="t">國外計算機科學發展</p>
+<p>請參考<a href="https://en.wikipedia.org/wiki/History_of_computer_science">維基百科</a>以及<a href="https://www.google.com.tw/search?q=computer+science+history">谷歌搜尋結果</a>。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Algorithm.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:57:17 GMT -->
+</html>

@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title>Q446 Kibbles `n' Bits `n' Bits `n' Bits</title>
+</head>
+<body>
+
+<h1 align="center">Q446: Kibbles `n' Bits `n' Bits `n' Bits</h1>          
+<p>一個很疲倦的程式設計師正在設計一支程式可以同時讀入兩個十六進位的數字，將它們相加或相減後以十進位表示法輸出。同時，這兩個十六進位數字的二進位表示法也必須輸出，就像下面sample  
+  output的格式一樣。</p> 
+<p>這位程式設計師很樂意自己完成這個普通的小程式，但是當他試著做基底2的轉換時，他卻突然感染了麻疹。所以如果你願意幫他完成這支小程式，他會非常地感謝你。</p> 
+<p>你可以假設以下條件總是成立：</p><ul> 
+  <li>在讀入的十六進位數字中最大不超過<TT>FFF</TT>。<br> 
+  <li>執行減法運算時第二個數字永遠比第一個數小，也就是說，運算結果不會是負的。<br> 
+  <li>空白字元在整個輸入檔中會以統一格式出現，也就是說每行的開頭不會有空白字元，在個數字及運算元之間會有一空白字元。（請參考sample 
+    input）</ul>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>              
+<P>
+這個題目的輸入來自一個由下列格式組成的檔案：
+<P>
+<P><I>N</I> （代表有N個運算式要計算） 
+<P><I>十六進位</I>1 (+ 或 -) <I>十六進位</I>2 （第一個運算式)） 
+<P>.  
+<P>.  
+<P>.  
+<P><I>十六進位</I>1 (+ 或 -) <I>十六進位</I>2 （第 <i>N</i> 個運算式）
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>             
+<P>輸出檔必須遵守以下格式：
+<P>
+<P><I>二進位</I>1 (+ 或 -) <I>二進位</I>2 = <I>十進位</I> （第一個運算結果）  
+<P>.  
+<P>.  
+<P>.  
+<P><I>二進位</I>1 (+ 或 -) <I>二進位</I>2 = <I>十進位</I> （第 <i>N</i> 
+個運算結果 ） 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                
+Input</b></span></p>                            
+<PRE>2
+A + 3
+AAA + BBB</PRE> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Output</b></span></p>                            
+<PRE>0000000001010 + 0000000000011 = 13
+0101010101010 + 0101110111011 = 5733</PRE> 
+                           
+</body>                           
+                           
+</html>                           

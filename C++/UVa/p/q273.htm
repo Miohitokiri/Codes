@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q273: Jack Straws</h1>          
+<p>在一張桌子上倒一些吸管，給你這些吸管2端點的座標，請你寫一個程式來回答某2根吸管是否有相連。相連是指2根吸管有直接接觸或經由其他吸管可以連接。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個正整數，代表以下有幾組測試資料。第一列與第一組測試資料，以及各組測試資料間均有一空白列。請參考Sample 
+Input。</p>     
+<p>每組測試資料的第一列有1個正整數n（1 &lt; n &lt; 13），代表吸管的數目。接下來的n列依序代表第1根吸管到第n根吸管，每列有4個正整數x<sub>1</sub>, 
+y<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub>，代表這根吸管2端點的座標(x<sub>1</sub>, 
+y<sub>1</sub>),( x<sub>2</sub>, y<sub>2</sub>)。所有的座標值均小於100，且吸管的長度一定大於0。再接下來的數列為此組測試資料的子問題，每列有2個正整數a,b（均介於1到n之間），你必須回答第a根吸管和第b根吸管有無相連。當a=b=0時代表此組測試資料結束。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，回答其各子問題。若相連請輸出CONNECTED，否則請輸出NOT 
+CONNECTED</p>  
+<p>各組測試資料間請輸出一空白列。請參考Sample Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>2
+
+7
+1 6 3 3 
+4 6 4 9 
+4 5 6 7 
+1 4 3 5 
+3 5 5 5 
+5 2 6 3 
+5 4 7 2 
+1 4 
+1 6 
+3 3 
+6 7 
+2 3 
+1 3 
+0 0
+
+2
+1 1 1 3
+1 7 1 5
+1 2
+1 1
+0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>CONNECTED
+NOT CONNECTED
+CONNECTED
+CONNECTED
+NOT CONNECTED
+CONNECTED
+
+NOT CONNECTED
+CONNECTED</pre>
+                            
+</body>                            
+                            
+</html>                            

@@ -1,0 +1,236 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Half-planeIntersection.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:37 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Half-plane Intersection</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Half-plane Intersection</p>
+</div><div class="c">
+<p class="t">Half-plane</p>
+<p>一條直線把二維平面劃分為兩半，其中一半就是「半平面」。半平面可以包含直線，也可以不包含直線。</p>
+<img src="Half-planeIntersection1.png">
+<p>半平面的一些圖示方式：</p>
+<img src="Half-planeIntersection2.png">
+<p>實作時，通常以兩個點來記錄半平面的直線、以兩個點的順序來記錄半平面的方向。</p>
+<img src="Half-planeIntersection3.png">
+<p class="t">Half-plane Intersection</p>
+<p>「半平面交集」就是許多個半平面的交集區域。半平面交集的結果可能是：一個開放區域、一個凸多邊形、一條線、一條線段、一個點、空集合。</p>
+<img src="Half-planeIntersection4.png">
+<img src="Half-planeIntersection5.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Half-plane Intersection: Incremental Method</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<pre>
+一、預先使用四個半平面，設定一個極大的正方形邊界，讓半平面交集擁有邊界。
+二、逐一加入每個半平面，求出當下的半平面交集（凸多邊形）。
+</pre>
+<p>online演算法，隨時維護一個半平面交集。每次更新需時O(N)，總時間複雜度為O(N^2)，N是半平面數目。</p>
+<img src="Half-planeIntersection6.png">
+<textarea>
+typedef complex<double> Point;
+typedef vector<Point> Polygon;
+typedef pair<Point,Point> Line;
+#define x real()
+#define y imag()
+
+// 兩向量叉積
+double cross(Point& a, Point& b)
+{
+	return a.x * b.y - a.y * b.x;
+}
+
+// 向量oa與向量ob進行叉積
+double cross(Point& o, Point& a, Point& b)
+{
+	return (a.x-o.x) * (b.y-o.y) - (a.y-o.y) * (b.x-o.x);
+}
+
+// 多邊形面積
+double area(Polygon& p)
+{
+	double a = 0;
+	int n = p.size();
+	for (int i=0; i<n; ++i)
+		a += cross(p[i], p[(i+1)%n]);
+	return fabs(a) / 2;
+}
+
+// 兩線交點
+Point intersection(Point& a1, Point& a2, Point& b1, Point& b2)
+{
+	Point a = a2 - a1, b = b2 - b1, s = b1 - a1;
+	return a1 + a * cross(b, s) / cross(b, a);
+}
+
+// 一個凸多邊形與一個半平面的交集
+Polygon halfplane_intersection(Polygon& p, Line& line)
+{
+	Polygon q;
+	Point p1 = line.first, p2 = line.second;
+
+	// 依序窮舉凸多邊形所有點，判斷是否在半平面上。
+	// 如果凸多邊形與半平面分界線有相交，就求交點。
+	int n = p.size();
+	for (int i=0; i<n; ++i)
+	{
+		double c = cross(p1, p2, p[i]);
+		double d = cross(p1, p2, p[(i+1)%n]);
+		if (c >= 0) q.push_back(p[i]);
+		if (c * d < 0) q.push_back(intersection(p1, p2, p[i], p[(i+1)%n]));
+	}
+	return q;
+}
+
+Line lines[10];	// 半平面
+
+void demo()
+{
+	// 預先設定一個極大的正方形邊界
+	Polygon p;
+	p.push_back(Point(-1e9,-1e9));
+	p.push_back(Point(-1e9,+1e9));
+	p.push_back(Point(+1e9,-1e9));
+	p.push_back(Point(+1e9,+1e9));
+
+	// 每一個半平面都與目前的半平面交集求交集
+	for (int i=0; i<10; ++i)
+	{
+		p = halfplane_intersection(p, lines[i]);
+		if (area(p) == 0) break;	// 退化或者空集合
+	}
+}
+</textarea>
+<p class="e">UVa 10084 10117 11265</p>
+<p class="t">演算法</p>
+<p>預先排序、預先隨機排列，最差、平均時間複雜度為O(NlogN)。過程如同「<a href="ConvexHull.html">Convex Hull: Incremental Method</a>」，求切點改為求交點。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Half-plane Intersection: Divide and Conquer</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>時間複雜度為O(NlogN)，N是半平面數目。</p>
+<pre>
+Divide：把半平面分成兩堆。
+Conquer：分別遞迴求解。
+Combine：求兩個凸多邊形的交集。O(N)
+</pre>
+<p>兩個凸多邊形的交集，可以用旋轉卡尺求解，也可以用掃描線求解。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Half-plane Intersection: 不知名演算法</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>2006年由競賽選手南京外国语学校朱泽园《<a href="http://wenku.baidu.com/view/18406794dd88d0d233d46aae.html">半平面交的新算法及其实用价值</a>》提出。我不清楚是否已有正式學術論文，也不確定演算法是否正確。</p>
+<p>半平面交集是一個凸多邊形，凸多邊形的邊很有順序的沿著外圍繞行一圈，越來越傾斜。運用Graham's Scan的精神，預先排序所有半平面，依照極座標角度（不是斜率），逐步找出凸多邊形的邊。</p>
+<pre>
+一、所有半平面按照極座標角度排序。O(NlogN)
+　　角度相同的半平面只需留下最內側的一個。
+二、建立一個deque，加入前面兩個半平面。O(1)
+三、從第三個半平面開始，依序將半平面加入deque。O(N)
+　甲、deque右端持續彈出，直到deque右端的兩個半平面的交點，位於此半平面內。
+　乙、deque左端持續彈出，直到deque左端的兩個半平面的交點，位於此半平面內。
+　丙、deque右端加入此半平面。
+四、刪除deque兩端多餘的半平面。O(N)
+　甲、deque右端持續彈出，直到deque右端的兩個半平面的交點，位於deque左端的半平面內。
+</pre>
+<p>時間複雜度為O(NlogN)，主要取決於排序的時間。N是半平面數目。</p>
+<p>有點類似簡單多邊形的凸包演算法Melkman's Algorithm，但是兩者並非點線對偶。</p>
+<textarea>
+typedef complex<double> Point;
+#define x real()
+#define y imag()
+typedef vector<Point> Polygon;
+typedef pair<Point,Point> Line;
+#define p1 first
+#define p2 second
+
+double cross(Point a, Point b)
+{
+	return a.x * b.y - a.y * b.x;
+}
+
+double cross(Point o, Point a, Point b)
+{
+	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+}
+
+double cross(Line l, Point p)
+{
+	return cross(l.p1, l.p2, p);
+}
+
+bool parallel(Line& l1, Line& l2)
+{
+	return cross(l1.p2 - l1.p1, l2.p2 - l2.p1) == 0;
+}
+
+Point intersection(Line& l1, Line& l2)
+{
+	Point& a1 = l1.p1, &a2 = l1.p2;
+	Point& b1 = l2.p1, &b2 = l2.p2;
+	Point a = a2 - a1, b = b2 - b1, s = b1 - a1;
+	return a1 + a * cross(b, s) / cross(b, a);
+}
+
+bool cmp(const Line& l1, const Line& l2)
+{
+	return arg(l1.p2 - l1.p1) < arg(l2.p2 - l2.p1);
+}
+
+Polygon halfplane_intersection(vector<Line>& hp)
+{
+	// 所有半平面按照極座標角度排序
+	sort(hp.begin(), hp.end(), cmp);
+
+	// deque
+	int L = 0, R = 0;
+	vector<Line> l(N);	// 凸多邊形的邊
+	vector<Point> p(N);	// 凸多邊形的頂點
+	l[R] = hp[0];
+
+	for (int i=1; i<hp.size(); i++)
+	{
+		// deque右端持續彈出（若不允許退化，則添上等於）
+		while (L < R && cross(hp[i], p[R-1]) < 0) R--;
+		// deque左端持續彈出（若不允許退化，則添上等於）
+		while (L < R && cross(hp[i], p[L])   < 0) L++;
+
+		// 如果已經大於等於180度，
+		// deque為空，可以提早結束演算法。
+		// 不好實作，故省略。
+
+		// 加入當前半平面
+		l[++R] = hp[i];
+
+		// 兩個平行的半平面，刪除靠外側的半平面。
+		// 預先加入四個半平面做為邊界，
+		// 此處就不會接連出現斜率相等、方向相反的半平面。
+		if (parallel(l[R-1], hp[i]) &&
+			cross(l[--R], hp[i].p1) < 0) l[R] = hp[i];
+
+		// 計算頂點
+		if (L < R) p[R-1] = intersection(l[R], l[R-1]);
+	}
+	// deque右端持續彈出（避免L型絲帶）（若不允許退化，則添上等於）
+	while (L < R && cross(l[L], p[R-1]) < 0) R--;
+	// 空集合
+	if (R-L <= 1) return Polygon();
+	// 計算頂點
+	if (L < R) p[R] = intersection(l[L], l[R]);
+
+	// 重新儲存凸包頂點
+	Polygon ch;
+	for (int i=L; i<=R; i++) ch.push_back(p[i]);
+	// 刪除重複的點。可能有多個半平面，交於同一點。
+	ch.resize(unique(ch.begin(), ch.end()) - ch.begin());
+	// 刪除頭尾重複的點。
+	if (ch.size() > 1 && ch.front() == ch.back())
+		ch.pop_back();
+	return ch;	// 包含退化的情況
+}
+</textarea>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Half-planeIntersection.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:39 GMT -->
+</html>

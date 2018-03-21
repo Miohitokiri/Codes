@@ -1,0 +1,503 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Path3.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:03:42 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Path</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Shortest Walk</p>
+</div><div class="c">
+<p class="t">名詞解釋</p>
+<p>走道（Walk）：一連串的邊。可以重複經過同樣的點和邊，可以來來回回繞圈子。</p>
+<p>跡（Trail）：一條走道，沒有重複經過同樣的邊。</p>
+<p>路徑（Path）：一條走道，沒有重複經過同樣的點（與邊）。</p>
+<img src="ShortestWalk1.png">
+<p>封閉走道（Closed Walk）：頭尾銜接的走道。</p>
+<p>迴路（Circuit）：頭尾銜接的跡。Closed Trail。</p>
+<p>環（Cycle）：頭尾銜接的路徑。Closed Path。</p>
+<p>自環（Loop）：自己連向自己的邊。長度為1的環。</p>
+<img src="ShortestWalk2.png">
+<p class="t">Shortest Walk與Shortest Path</p>
+<p>無向圖。如果有負邊，「最短走道」將來回走負邊，長度成為負無限大。如果沒有負邊，「最短走道」等於「最短路徑」。</p>
+<p>有向圖。如果有負環，「最短走道」將不斷繞負環，長度成為負無限大。如果沒有負環，「最短走道」等於「最短路徑」。</p>
+<p>無向圖沒負邊、有向圖沒負環的情況下，一條走道重複經過同一條邊、同一個點，一定讓走道變長。此時「最短走道」決不會重複經過同樣的點和邊，即是「最短路徑」。</p>
+<img src="ShortestWalk3.png">
+<p class="t">Shortest Walk的演算法</p>
+<p>先前介紹的演算法，其實全部都是「最短走道」的演算法！諸如Dijkstra's Algorithm、Bellman-Ford Algorithm、Floyd-Warshall Algorithm等等都是！而且不需要區分無向圖、有向圖，也不需要預設圖上無負環，都能得到正確答案。</p>
+<pre>
+最短走道
+　　　　無負邊　　　　有負邊、沒負環　有負環（想當然有負邊）
+有向圖　先前的演算法　先前的演算法　　先前的演算法
+　　　　　　　　　　　　　　　　　　　答案是負無限大
+無向圖　先前的演算法　先前的演算法　　先前的演算法
+　　　　　　　　　　　答案是負無限大　答案是負無限大
+</pre>
+<pre>
+最短路徑
+　　　　無負邊　　　　有負邊、沒負環　有負環（想當然有負邊）
+有向圖　先前的演算法　先前的演算法　　沒有好方法，NP-complete
+無向圖　先前的演算法　T-Join　　　　　沒有好方法，NP-complete
+</pre>
+<p>目前世界上的所有教科書，把這些「最短走道」的演算法，硬是拿去計算「最短路徑」。然後「最短走道」人間蒸發。</p>
+<p>這種現象源自歷史因素──古時候大家沒把path和walk分得很清楚，walk常常被叫做path。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">k Shortest Path</p>
+</div><div class="c">
+<p class="t">k Shortest Walk</p>
+<p>給定起點與終點，排名第k短的走道。有可能跟最短走道一樣長。或許可以翻譯為「第k短走道」。</p>
+<p>可以直接套用先前所學的Dijkstra's Algorithm，把DP表格開大一點，每個點都儲存前k短的長度，就能解決問題。時間複雜度為O(K * (E+VlogV))。</p>
+<p class="e">UVa 10740</p>
+<p class="t">k Shortest Path與k Shortest Trail</p>
+<p>「第k短路徑」、「第k短跡」尚無有效率的演算法，大多是使用窮舉法，窮舉所有可能的路徑。時間複雜度本是指數時間，但如果配合了heuristic function，理想狀態之下，時間複雜度得宣稱是多項式時間。</p>
+<p>主要的演算法有Yen's Algorithm與MPS Algorithm兩個。</p>
+<p><a href="http://imlazy.ycool.com/post.1956603.html">http://imlazy.ycool.com/post.1956603.html</a></p>
+<p><a href="http://code.google.com/p/k-shortest-paths/">http://code.google.com/p/k-shortest-paths/</a></p>
+<p><a href="http://www.mat.uc.pt/~eqvm/OPP/KSPP/KSPP.html">http://www.mat.uc.pt/~eqvm/OPP/KSPP/KSPP.html</a>
+<p><a href="http://blog.csdn.net/sharpdew/archive/2005/08/05/446510.aspx">http://blog.csdn.net/sharpdew/archive/2005/08/05/446510.aspx</a></p>
+<p class="e">ICPC 3624</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Next-to-Shortest Path</p>
+</div><div class="c">
+<p class="t">Strictly Second Shortest Walk</p>
+<p>給定起點與終點，「嚴格次短走道」是權重不等於最短走道、權重盡量小的走道。可能有許多條。</p>
+<p>有向圖有負環、無向圖有負邊，答案是負無限大，沒有討論意義。以下討論有向圖無負環、無向圖無負邊，此時最短走道恰是最短路徑。</p>
+<img src="StrictlySecondShortestWalk1.png">
+<img src="StrictlySecondShortestWalk2.png">
+<p>不想走這條路，就必須改走別條路。不想走最短走道（最短路徑），而想走嚴格次短走道，那就先列出所有的最短走道（最短路徑），再尋找別條路。</p>
+<p>一張圖，給定起點與終點，所有的最短路徑形成了「最短路徑圖」。圖上只有正邊時，最短路徑圖是有向無環圖DAG；圖上只有零邊負邊、沒有負環時，最短路徑圖可能會額外出現零環。</p>
+<img src="StrictlySecondShortestWalk3.png">
+<p>有向圖上，嚴格次短走道一定經過「最短路徑圖」以外的邊。</p>
+<p>無向圖上，嚴格次短走道還可以逆行「最短路徑圖」上面的邊。</p>
+<p>無論有向圖還是無向圖，將嚴格次短走道定義成有向邊，比較方便。</p>
+<p>替代路線太長，於是觀察其中一條邊，此處暫稱為替代邊。嚴格次短走道越短越好。當有一條走道經過替代邊xy，要使此走道盡量短，唯一的方法就是：從起點s到x必須是最短路徑，從y到終點t也必須是最短路徑。最後只要使用窮舉法，窮舉所有可能的替代邊，即可找到其中一條嚴格次短走道。</p>
+<img src="StrictlySecondShortestWalk4.png">
+<pre>
+一、預先計算起點s出發的單源最短路徑。
+二、預先計算抵達終點t的單源最短路徑。
+三、窮舉圖上每一條邊xy作為替代邊（無向圖則視作雙向都有邊）：
+　甲、取得最短路徑s⤳x。
+　乙、取得最短路徑y⤳t。
+　丙、串成一條走道s⤳x→y⤳t。
+　　回、若s⤳x→y⤳t是最短路徑，表示邊xy不是替代邊，捨棄之。
+　　　　因為最短路徑有許多條，所以取其長度，再用長度做判斷。
+　　回、若s⤳x→y⤳t不是最短路徑，就有可能是嚴格次短走道，記錄之。
+　　　　當中最短者，便是嚴格次短走道。
+</pre>
+<p>時間複雜度等同於單源最短路徑。</p>
+<p class="e">UVa 10342</p>
+<p class="t">Strictly Second Shortest Path（Next-to-Shortest Path）</p>
+<p>給定起點與終點，「嚴格次短路徑」是權重不等於最短路徑、權重盡量小的路徑。</p>
+<p>當圖上只有正邊，時間複雜度等同於單源最短路徑。仿效前面段落，將嚴格次短路徑分為兩種情況「經過最短路徑圖的邊與以外的邊」與「經過最短路徑圖的邊與反方向邊」。</p>
+<p>s⤳x→y⤳t必須是路徑、而非走道。在最短路徑圖上，尋找從s往x跨y的替代路徑入口x'，尋找從y往t跨x的替代路徑出口y'，同時確保替代路徑不相交，最後改成計算路徑s⤳x'→y'⤳t。我沒能弄懂細節，請讀者自行研究原始論文。</p>
+<p>有向圖的替代路徑，請參考本站文件「<a href="Component.html">Dominator</a>」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Replacement Path</p>
+</div><div class="c">
+<p class="t">Replacement Path</p>
+<p>道路崩塌、道路阻塞，如何找到最短的替代道路呢？</p>
+<p>一張圖，給定起點與終點。切斷圖上一條邊之後，新的最短路徑，稱作此邊的「替代路徑」，可能不存在（長度無限大）、可能有許多條。</p>
+<pre>
+替代路徑
+　　　　無負邊　　　　有負邊、沒負環　有負環（想當然有負邊）
+有向圖　先前的演算法　先前的演算法　　沒有好方法，NP-complete
+無向圖　先前的演算法　沒有人研究？　　沒有好方法，NP-complete
+</pre>
+<p>觀察最短路徑圖。刪除橋，才會改變最短路徑長度。</p>
+<p>當圖上只有正邊零邊，橋的兩側仍是單源最短路徑圖。替代路徑是另一座橫跨兩側的橋。窮舉所有橫跨兩側的橋，就能找到最短的替代路徑。</p>
+<p>當圖上有負邊，終點側不見得是單源最短路徑圖。目前尚未出現特殊演算法，只能刪除橋之後，以新圖找最短路徑。</p>
+<p class="t">Shortest Path的銜接與斷開</p>
+<p>一、a⤳b、b⤳c是最短路徑，那麼a⤳b⤳c是不是最短路徑？</p>
+<p>不一定。此即relaxation的用途。</p>
+<p>二、a⤳b⤳c是最短路徑，那麼a⤳b、b⤳c是不是最短路徑？</p>
+<p>a⤳b一定是，b⤳c不一定：圖上只有正邊零邊則是，有負邊則不一定。例如邊ab或者路徑a⬿b為負值，那麼從b到c的最短路徑可能是b⤳a⤳c，往回走負邊、負路，爭取更短的長度。</p>
+<p class="t">演算法（Malik-Mittal-Gupta Algorithm）</p>
+<p>適用於圖上只有正邊零邊、沒有負邊。用來找到圖上每一條邊的其中一條替代路徑。不過我們通常只關心最短路徑圖上的橋。</p>
+<p>兩棵最短路徑樹，起點側逐步延展、終點側逐步削減。隨時記錄當下所有橋，隨時求得次佳的橋。所有橋放入Priority Queue，加快速度。</p>
+<p>時間複雜度為O(ElogE)。可以改寫成O(ElogV)。</p>
+<textarea>
+struct Edge {int b, c;};
+bool operator<(const Edge& e1, const Edge& e2) {return e1.c > e2.c;}
+
+const int V = 9, E = 9;	// 點數和邊數
+vector<Edge> adj[V];	// adjacency lists
+int ds[V], dt[V]		// distance
+int parent[V];			// shortest path tree
+bool visit[V];
+
+// O(ElogE) single source shortest paths
+void dijkstra(int source, int* dist)
+{
+	for (int i=0; i<V; ++i) dist[i] = 1e9;
+	for (int i=0; i<V; ++i) visit[i] = false;
+	priority_queue<Edge> pq;
+
+	dist[source] = 0;
+	parent[source] = source;
+	pq.push((Edge){source, 0});
+
+	for (int i=0; i<V; ++i)
+	{
+		int a = -1;
+		while (!pq.empty() && visit[a = pq.top().b]) pq.pop();
+		if (a == -1) return 1e9;
+		visit[a] = true;
+
+		for (int j=0; j<adj[a].size(); ++j)
+		{
+			int b = adj[a][j].b;
+			int c = adj[a][j].c;
+			if (!visit[b] && dist[a] + c < dist[b])
+			{
+				dist[b] = dist[a] + c;
+				parent[b] = a;
+				pq.push((Edge){b, dist[b]});
+			}
+		}
+	}
+}
+
+void replacement_path(int source, int target)
+{
+	dijkstra(target, dt);
+	dijkstra(source, ds);	// 得到起點的最短路徑樹！
+
+	// 擷取起點到終點的路徑
+	vector<int> path;
+	for (int a=target; a!=source; a=parent[a])
+		path.push_back(a);
+	path.push_back(source);
+	reverse(path.begin(), path.end());
+
+	// 運用BFS擴展最短路徑樹
+	int q[200000], *qf, *qb;
+	qf = qb = q;
+	for (int i=0; i<V; ++i) visit[i] = false;
+	priority_queue<Edge> pq;
+
+	// 依序刪除st最短路徑的每一條邊，計算替代路徑。
+	for (int i=1; i<path.size(); ++i)
+	{
+		// 最短路徑樹添補一點。補足上次刪除的邊。
+		visit[*qb++ = path[i-1]] = true;
+
+		// 繼續擴展最短路徑樹，避免經過這次被刪除的邊。
+		while (qf < qb)
+		{
+			int a = *qf++;
+			for (int j=0; j<adj[a].size(); ++j)
+			{
+				int b = adj[a][j].b;
+				int c = adj[a][j].c;
+				if (visit[b]) continue;
+
+				// 不使用這次刪除的邊
+				if (a == path[i-1] && b == path[i])
+					continue;
+				// 最短路徑樹上的邊
+				else if (parent[b] == a)
+					visit[*qb++ = b] = true;
+				// 其他邊。也有可能在最短路徑圖上。
+				else
+					pq.push((Edge){b, ds[a] + c + dt[b]});
+			}
+		}
+
+		// 先移除舊橋
+		while (!pq.empty() && visit[pq.top().b]) pq.pop();
+		// 再取得替代道路長度
+		int d2 = pq.empty() ? 1e9 : pq.top().c;
+		cout << "不經過邊" << path[i-1] << path[i];
+		cout << "的替代道路長度是" << d2;
+	}
+}
+</textarea>
+<p class="t">演算法（Nardelli-Proietti-Widmayer Algorithm）</p>
+<p><a href="http://www.ii.uni.wroc.pl/~lorys/IPL/article79-2-3.pdf">http://www.ii.uni.wroc.pl/~lorys/IPL/article79-2-3.pdf</a></p>
+<p>適用於圖上只有正邊零邊、沒有負邊。</p>
+<p>最短路徑樹，視作生成樹，視作Fundamental Cycle Basis，每一條cross edge都是替代路徑（但是要小心cross edge的方向）。</p>
+<p>採用「<a href="Cycle2.html">Transmuter</a>」資料結構，以逆向拓樸順序，求得最短替代路徑。</p>
+<p>時間複雜度為O(E*α(E,V))。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Geodesic</p>
+</div><div class="c">
+<p class="t">Eccentricity</p>
+<pre>
+eccentricity(i) = max d(i, j)
+                  j∊V
+
+d(i, j) 為i點到j點的最短路徑
+</pre>
+<p>在一張無向圖上面，給定圖上一點，以最短路徑長度當作距離，找出離此點最遠的一點，這兩點之間的距離就叫做「偏心距」。</p>
+<p class="t">Diameter / Radius</p>
+<pre>
+diameter(G) = max eccentricity(i) = max d(i, j)
+              i∊V                  i,j∊V
+
+radius(G)   = min eccentricity(i)
+              i∊V
+</pre>
+<p>一張無向圖的「直徑」是圖上所有偏心距當中最大的一個，一張無向圖的「半徑」是圖上所有偏心距當中最小的一個。「直徑」也可以直接想做是，一張圖上長度最長的一條最短路徑之長度。</p>
+<p>【註：有時候為了方便，直徑和半徑會定義成一段路徑，而不是一個數值。】</p>
+<p>一張圖可能會有許多條直徑、許多條半徑。</p>
+<p>直徑和半徑都是最短路徑。根據最短路徑的性質，直徑和半徑中間截一段路徑下來，也都會是最短路徑。</p>
+<p>要計算一張無向圖的直徑與半徑是很簡單的，首先算好所有兩點之間最短路徑，然後按照定義來算就可以了。</p>
+<textarea>
+int d[10][10];	// adjacency matrix
+int ecc[10];	// 各點的偏心距
+
+void diameter_radius()
+{
+	// Floyd-Warshall Algorithm
+	for (int k=0; k<10; ++k)
+		for (int i=0; i<10; ++i)
+			for (int j=0; j<10; ++j)
+				d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+
+	// 計算偏心距
+	memset(ecc, 0x7f, sizeof(ecc));
+	for (int i=0; i<10; ++i)
+		for (int j=0; j<10; ++j)
+			ecc[i] = min(ecc[i], d[i][j]);
+
+	// 計算直徑和半徑
+	int diameter = 0;
+	int radius = 1e9;
+	for (int i=0; i<10; ++i)
+	{
+		diameter = max(diameter, ecc[i]);
+		radius   = min(radius  , ecc[i]);
+	}
+
+/*
+	// 直徑也可以這樣算
+	for (int i=0; i<10; ++i)
+		for (int j=0; j<10; ++j)
+			diameter = max(diameter, d[i][j]);
+*/
+}
+</textarea>
+<p class="e">ICPC 3569</p>
+<p class="t">Peripheral Vertex</p>
+<p><a href="https://en.wikipedia.org/wiki/Distance_(graph_theory)">https://en.wikipedia.org/wiki/Distance_(graph_theory)</a></p>
+<p class="t">Central Vertex（Center）</p>
+<pre>
+center(G) = arg min eccentricity(i)
+             i  i∊V
+
+          = arg min max d(i, j)
+             i  i∊V j∊V
+
+d(i, j) 為i點到j點的最短路徑
+</pre>
+<p>一張無向圖的「中心」是圖上的一個點，離中心最偏遠的點，其距離會最小，也就是說「中心」的偏心距會等於半徑長度。一張無向圖可能會有很多個「中心」。</p>
+<img src="Center1.png">
+<p>中心離圖上所有點越近越好，圖上所有點離中心越近越好。是以最偏遠的點的距離來衡量遠近，而非以各點的距離總和來衡量遠近。</p>
+<p>要找到一張無向圖的中心是很簡單的，首先算好所有兩點之間最短路徑，然後按照定義來找就可以了。</p>
+<p class="t">Absolute Center</p>
+<pre>
+absolute_center(G) = arg min eccentricity(i)
+                      i   i
+
+                   = arg min max d(i, j)
+                      i   i  j∊V
+</pre>
+<p>一張無向圖的「絕對中心」，與中心稍有不同。絕對中心不一定得是原圖上的點，它可以位於某條邊上的某處。一張無向圖可能會有很多個「絕對中心」。</p>
+<img src="Center2.png">
+<p class="t">演算法（Kariv-Hakimi Algorithm）</p>
+<p>此演算法跟一般圖論問題的解題手法完全不同。首先忘掉圖論，讓我們回到高中函數。</p>
+<p>我們先假設絕對中心在邊ij上面。接著畫出一個函數圖形：X軸是絕對中心與i點的距離（想當然X軸範圍只有0到d(i,j)），Y軸是絕對中心與圖上x點的最短距離。先隨便選一個x點。</p>
+<p>根據絕對中心在邊ij上面的各種位置，我們都可以算出絕對中心離x點的最短距離，進而描出一條函數線。這條函數線長得什麼樣子呢？以下分為三種情況討論：</p>
+<p>甲、絕對中心在正權重的邊上游移：</p>
+<p>觀察絕對中心到x點的最短距離變化。絕對中心挪往邊ij的中間，絕對中心到x點的最短距離就會慢慢增加；絕對中心挪往邊ij的兩端，絕對中心到x點的最短距離就會慢慢減少。左右的坡度是相同的，也可能只有左坡或者只有右坡。</p>
+<img src="Kariv-Hakimi1.png">
+<img src="Kariv-Hakimi2.png">
+<p>接著觀察絕對中心到圖上每一點的最短距離變化。我們可以把每一個點的函數線統統描在同一張函數圖形，每條線的坡度都是一樣的。</p>
+<p>根據絕對中心的定義，絕對中心與最遠點的距離越小越好；對照到函數圖形，就是上方邊際線的Y軸座標越低越好。由此可知，上方邊際線的最凹處，就是絕對中心的偏心距大小；最凹處的投影位置，就是絕對中心的最佳位置。窮舉上方邊際線的所有凹處，找出最小的偏心距，就能找到絕對中心。</p>
+<img src="Kariv-Hakimi3.png">
+<p>該如何找到上方邊際線的最凹處呢？這就要一點小技巧了。首先把每一條函數線的左端點按照高低排序，然後由最高的函數線開始，不斷與更低的函數線相交，交點即是上方邊際線的凹處。每次求得交點後，就留下原本較低的函數線，繼續與更低的函數線相交，最後就能得到所有凹處。Y軸座標最低的，就是最凹處了。<p>
+<img src="Kariv-Hakimi4.png">
+<p>計算凹處的Y軸座標很簡單，只需要知道相交的兩條線在X軸的兩端分別有多高，就能推導出來了：</p>
+<pre>
+  eccentricity(c)
+= d(c, i) + d(i, x)
+= d(c, j) + d(j, y)
+= {d(i, j) + d(i, x) + d(j, y)} / 2
+</pre>
+<p>乙、絕對中心在負權重的邊上游移：</p>
+<p>X軸左右兩端最高的函數線的交叉點，就是上方邊際線的最凹處。輕鬆寫意。</p>
+<img src="Kariv-Hakimi5.png">
+<img src="Kariv-Hakimi6.png">
+<p>丙、絕對中心在零權重的邊上游移：</p>
+<p>函數線都是水平線，最高的函數線到處都是最凹處。</p>
+<img src="Kariv-Hakimi7.png">
+<p>最後，要找到一張無向圖的絕對中心，只需窮舉圖上所有邊，看看絕對中心在哪一條邊，再來依照方才的分析過程，取偏心距最小者即可。</p>
+<pre>
+一、計算所有兩點之間最短路徑。
+　 並且記錄起點到圖上各點的最短路徑長度順序。
+二、窮舉圖上所有邊ij，找出絕對中心：
+　甲、正邊：i點、j點、上方邊際線所有凹處。O(V)。
+　乙、負邊：i側最高線與j側最高線的交叉點。O(1)。
+　丙、零邊：最高的水平線。O(1)。
+</pre>
+<p class="t">時間複雜度</p>
+<p>一、計算所有兩點之間最短路徑：有負邊，則以Minimum Weight T-join求解，需時O(V^4)。無負邊，則執行V次Dijkstra's Algorithm，以Fibonacci Heap實作，需時O(V * (E + VlogV))。</p>
+<p>二、尋找絕對中心：圖的資料結構是adjacency lists，需時O(VE)。</p>
+<p>時間複雜度取決於計算最短路徑的時間。</p>
+<p class="t">實作</p>
+<p>下面提供一個簡化過的實作，假設圖上的邊都是正權重。</p>
+<p>這段程式碼沒有特別記錄絕對中心的位置，各位可以試著想一下怎麼記錄。</p>
+<textarea t="找出絕對中心的偏心距（adjacency matrix）">
+const int V = 10;
+int w[V][V];		// adjacency matrix
+
+bool visit[V];		// visit record
+int d[V][V];		// 所有兩點之間最短路徑長度
+int rank[V][V];		// 各起點的最短路徑長度順序
+
+void Dijkstra(int s)
+{
+	int* ds = d[s];	// alias
+	int* rs = rank[s];
+
+	for (int i=0; i<V; ++i) visit[i] = false;
+	for (int i=0; i<V; ++i) ds[i] = 1e9;
+
+	ds[s] = 0;
+
+	for (int k=0; k<V; ++k)
+	{
+		int i = -1, min = 1e9;
+		for (int x=0; x<V; ++x)
+			if (!visit[x] && ds[x] < min)
+				min = ds[i = x];
+
+		if (i == -1) break;
+		visit[i] = true;
+		rs[k] = i;	// 順便記錄各點的最短距離長度順序
+
+		for (int j=0; j<V; ++j)
+			if (!visit[j] && ds[i] + w[i][j] < ds[j])
+				ds[j] = ds[i] + w[i][j];
+	}
+}
+
+void Kariv_Hakimi()
+{
+	for (int i=0; i<N; ++i)
+		Dijkstra(i);
+
+	// 絕對中心的偏心距可能會出現0.5的小數，
+	// 故可直接記錄兩倍的偏心距。
+	int ecc2 = 1e9;
+
+	for (int i=0; i<V; ++i)
+		for (int j=i+1; j<V; ++j)
+		{
+			if (w[i][j] == 1e9) continue;
+
+			// 如果絕對中心在i點
+			ecc2 = min(ecc2, d[i][rank[i][V-1]] * 2);
+			// 如果絕對中心在j點
+			ecc2 = min(ecc2, d[j][rank[j][V-1]] * 2);
+
+			int* r = rank[i];	// alias
+
+			// 靠i側時，令a線是目前最高，令b線比a線低並且越來越低。
+			for (int a=V-1, b=V-2; b>=0; --b)
+				// 靠j側時，b線比a線高，故兩線相交，產生凹處。
+				if (d[j][r[b]] > d[j][r[a]])
+				{
+					ecc2 = min(ecc2,
+							d[i][r[b]] + d[i][j] + d[j][r[a]]);
+					a = b;
+				}
+		}
+
+	cout << "離最遠的點的距離" << double(ecc) / 2.0;
+}
+</textarea>
+<p class="t">延伸閱讀：無權重圖的絕對中心</p>
+<p>簡單來說，就是每一條邊的權重都是一。在這種情況下，要尋找絕對中心的位置就簡單多了，判斷方式會變得簡潔一點。</p>
+<img src="Kariv-Hakimi8.png">
+<pre>
+先判斷左右兩側最高點是否一樣高。
+　甲、如果不一樣高，上方邊際線就出來了，答案也就出來了。O(1)。
+　乙、如果一樣高，則需要判斷上方邊際線的凹凸。
+　　　檢查左右兩側最高點，是不是來自同一點的最短路徑長度，若是則為凸。O(V)。
+</pre>
+<p>計算兩點之間最短路徑，只需V次BFS，需時O(VE)。尋找絕對中心，仍需時O(VE)。整體時間複雜度可降至O(VE)。</p>
+<textarea t="找出絕對中心的偏心距（adjacency matrix）">
+const int V = 10;
+int adj[V][V], size[V];	// adjacency lists
+
+int q[V][V], *qf, *qb;	// 10 BFS queues
+bool visit[V];			// BFS visit record
+int d[V][V];			// 所有兩點之間最短路徑長度
+
+void BFS(int s)
+{
+	memset(visit, false, sizeof(visit));
+	qf = qb = q[s];
+
+	visit[s] = true;
+	*qb++ = s;
+	d[s][s] = 0;
+
+	while (qf < qb)
+	{
+		int i = *qf++;
+		for (int n=0; n<size[i]; ++n)
+		{
+			int j = adj[i][n];
+			if (!visit[j])
+			{
+				visit[j] = true;
+				*qb++ = j;
+				d[s][j] = d[s][i] + 1;
+			}
+		}
+	}
+}
+
+void Kariv_Hakimi()
+{
+	for (int i=0; i<V; ++i)
+		BFS(i);
+
+	int ecc2 = 1e9;
+	for (int i=0; i<V; ++i)
+		for (int n=0; n<size[i]; ++n)
+		{
+			int j = adj[i][n];
+			if (j <= i) continue;
+
+			int ecci = d[i][q[i][V-1]];
+			int eccj = d[j][q[j][V-1]];
+			int diff = 1;
+			if (ecci == eccj)
+				for (int k=0; k<V; ++k)
+					if (d[i][k] == ecci && d[j][k] == ecci)
+					{
+						diff = 0;
+						break;
+					}
+			ecc2 = min(ecc2, ecci + eccj - diff);
+		}
+
+	cout << "離最遠的點的距離" << double(ecc) / 2.0;
+}
+</textarea>
+<p class="e">UVa 10805</p>
+<p class="t">延伸閱讀：點有加權效果的絕對中心</p>
+<pre>
+absolute_center(G) = arg min max {d(i, j) * w(j)}
+                      i   i  j∊V
+</pre>
+<p>令圖上的點與邊都擁有正權重，距離重新定義為最短路徑乘上端點的權重。在此狀況下，尋找絕對中心，變得要排序，需時O(VElogV)。各位可以想一想怎麼做。</p>
+<img src="Kariv-Hakimi9.png">
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Path3.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:04:03 GMT -->
+</html>

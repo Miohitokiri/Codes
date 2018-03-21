@@ -1,0 +1,653 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Text.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:19:56 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Text</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Text</p>
+</div><div class="c">
+<p class="t">Text</p>
+<p>Text是由文字堆砌而成、可以閱讀的東西。</p>
+<img src="Text1.jpg" width="250" height="224">
+<p>我們將Text打散為基本單位，以便理解Text：</p>
+<p>從書寫的觀點：英文的基本單位叫做<a href="http://en.wikipedia.org/wiki/Letter_(alphabet)">letter</a>，即是ABC...這26種英文字母。中文的基本單位叫做<a href="http://zh.wikipedia.org/wiki/瞍Ｗ?">字</a>，即是字典裡面那些字。</p></p>
+<p>從語言的觀點：英文的基本單位叫做<a href="http://en.wikipedia.org/wiki/Word">word</a>，由一個以上的letter組成，例如apple、boy、cat。中文的基本單位叫做<a href="http://zh.wikipedia.org/wiki/閰?">詞</a>，由一個以上的字組成，例如蘋果、男孩、貓。</p>
+<p>從電腦的觀點：基本單位叫做<a href="http://en.wikipedia.org/wiki/Character_(computing)">character</a>，繁中譯作「字元」，簡中譯作「字符」。電腦可以處理的字元，主要是依據<a href="http://zh.wikipedia.org/wiki/ASCII">ASCII</a>與<a href="http://zh.wikipedia.org/wiki/Unicode">Unicode</a>的規定。英文字元有ABCDabcd1234,.!?等。中文字元包括了字典裡面那些字，以及ㄅㄆㄇㄈ。，、：等注音符號與標點符號；絕大部分的中文字都有收錄，只漏了一些冷僻的字。</p>
+<img src="Text2.jpg">
+<p>在電腦螢幕上顯示字元，只要打開<a href="http://zh.wikipedia.org/wiki/??蝺刻摩??">文字編輯器</a>，選擇<a href="http://zh.wikipedia.org/wiki/頛詨瘜?">輸入法</a>，用手指敲敲鍵盤即可。還可以進一步，將電腦螢幕上的字元，儲存到<a href="http://en.wikipedia.org/wiki/Text_file">純文字檔案</a>裡；將<a href="http://en.wikipedia.org/wiki/Text_file">純文字檔案</a>裡的字元，顯示在電腦螢幕上。</p>
+<p>想要寫程式在電腦螢幕上顯示字元，只要運用scanf、printf、cin、cout，就會以<a href="http://en.wikipedia.org/wiki/Command-line_interface">Command-line Interface</a>顯示字元。還可以進一步，寫程式將字元儲存到檔案；寫程式從檔案讀取字元。</p>
+<img src="Text3.png">
+<p>想要處理字元，相關的學問有<a href="http://en.wikipedia.org/wiki/Stringology">字串學</a>與<a href="http://en.wikipedia.org/wiki/Coding_theory">編碼理論</a>。相關的本站文件有<a href="String.html">String</a>與<a href="Code.html">Code</a>。</p>
+<p class="t">Font</p>
+<p>Font就是文字的造型。譯作「字體」或「字型」。</p>
+<img src="Font2.jpg">
+<p>電腦顯示字元，必須透過字型。只要有文字的地方，通常都能更換字型，例如文字編輯器、瀏覽器、作業系統、命令提示字元。可供選擇的字型，主要是看你的電腦安裝了哪些字型。</p>
+<div class="i"><img src="Font3.jpg"> <img src="Font4.jpg"> <img src="Font5.jpg"> <img src="Font6.jpg"></div>
+<p>製作字型屬於<a href="Graphics.html">Graphics</a>的領域，以後再來介紹。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Text Editor（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Text Viewer</p>
+<img src="TextEditor1.html">
+<p>「文字閱讀器」是閱讀純文字檔案的工具，例如Unix系統的<a href="http://en.wikipedia.org/wiki/more_(command)">more</a>與<a href="http://en.wikipedia.org/wiki/less_(Unix)">less</a>指令。</p>
+<p class="t">Text Editor</p>
+<img src="TextEditor2.html">
+<p>「文字編輯器」不僅能閱讀純文字檔案，也能編輯純文字檔案。例如<a href="http://zh.wikipedia.org/wiki/閮???">Notepad</a>就是一個眾所皆知的文字編輯器。資深的電腦玩家應該還聽過<a href="http://zh.wikipedia.org/wiki/Vim">Vim</a>與<a href="http://zh.wikipedia.org/wiki/UltraEdit">UltraEdit</a>這些經典的文字編輯器。台灣人製造的文字編輯器，像是<a href="http://disp.cc/b/18-1yUM">漢書</a>與<a href="http://notepad-plus-plus.org/zh/contributors/author.html">Notepad++</a>，大家應該也有所耳聞。</p>
+<p>程式設計師開發程式碼的工具，例如<a href="http://zh.wikipedia.org/wiki/Microsoft_Visual_Studio">Microsoft Visual Studio</a>、<a href="http://zh.wikipedia.org/wiki/Code::Blocks">Code::Blocks</a>、<a href="http://zh.wikipedia.org/wiki/Eclipse">Eclipse</a>等等的<a href="http://zh.wikipedia.org/wiki/?游???啣?">IDE</a>，其基礎也是文字編輯器！</p>
+<p>很多程式語言已經內建了文字編輯器，例如C#的TextBox、Java的JTextArea，我們可以直接拿來用。不過如果你想要添加特殊的功能、想要開發特殊的文字編輯器，還是必須先親手實作一遍，瞭解原理，才有辦法塗塗改改。另一方面，對於程式設計的初學者來說，親手撰寫文字編輯器也會是一個很好的練習機會。</p>
+<img src="TextEditor3.html">
+<p>本篇文章將引導大家實作一個陽春的文字編輯器。首先實作古早味的<a href="http://en.wikipedia.org/wiki/Text-based_user_interface">Textual User Interface, TUI</a>的文字編輯器，再來實作現代化的<a href="http://en.wikipedia.org/wiki/Graphical_user_interface">Graphical User Interface, GUI</a>的文字編輯器。</p>
+<p class="t">Textual User Interface</p>
+<img src="TextEditor4.html">
+<p>如果你是使用Windows作業系統的<a href="http://en.wikipedia.org/wiki/Command_Prompt">cmd.exe</a>，在<a href="http://msdn.microsoft.com/">MSDN</a>網站上面可以找到詳細的<a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms682073(v=vs.85).aspx">說明文件</a>。</p>
+<textarea t="顯示">
+#include <windows.h>
+HANDLE hin, hout;
+
+void init()
+{
+	hin = GetStdHandle(STD_INPUT_HANDLE);
+	hout = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleMode(hin, ENABLE_INSERT_MODE);
+	FlushConsoleInputBuffer(hin);
+}
+
+void fill_one_character(short x, short y, int length, unsigned char c)
+{
+	DWORD DNULL = 0;
+	COORD cursor = {x, y};
+	FillConsoleOutputCharacter(hout, c, length, cursor, &DNULL);
+	FillConsoleOutputCharacter(hout, ' ', length, cursor, &DNULL);
+
+	// color
+	WORD color = BACKGROUND_RED
+			   | FOREGROUND_BLUE
+			   | FOREGROUND_GREEN
+			   | FOREGROUND_INTENSITY;
+	FillConsoleOutputAttribute(hout, color, length, cursor, &DNULL);
+
+	// cursor
+	COORD cursor = {x, y};
+	SetConsoleCursorPosition(hout, cursor);
+}
+</textarea>
+<textarea t="偵測鍵盤按鍵">
+int read_one_character()
+{
+	DWORD count;
+	INPUT_RECORD ir;
+	ReadConsoleInput(hin, &ir, 1, &count);
+	if (count == 0) return 0;
+	if (!(ir.EventType == KEY_EVENT &&
+		ir.Event.KeyEvent.bKeyDown)) return 0;
+
+	// try record this things
+//	int key       = ir.Event.KeyEvent.uChar.AsciiChar;
+//	WORD vkey     = ir.Event.KeyEvent.wVirtualKeyCode;
+//	DWORD control = ir.Event.KeyEvent.dwControlKeyState;
+	return 1;
+}
+
+int ctrl(INPUT_RECORD& ir)
+{
+	return ir.Event.KeyEvent.dwControlKeyState &
+		   (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED);
+}
+
+int alt(INPUT_RECORD& ir)
+{
+	return ir.Event.KeyEvent.dwControlKeyState &
+		   (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED);
+}
+
+int text(INPUT_RECORD& ir)
+{
+	return !ctrl(k) && !alt(k) &&
+		   isprint(ir.Event.KeyEvent.uChar.AsciiChar);
+}
+</textarea>
+<img src="TextEditor5.html">
+<p>如果你是使用Mac OS作業系統的<a href="http://en.wikipedia.org/wiki/Terminal_(OS_X)">Terminal.app</a>，或者是使用Linux作業系統的<a href="http://en.wikipedia.org/wiki/Linux_console">console</a>，那麼就要用<a href="http://ascii-table.com/ansi-escape-sequences.php">ANSI escape code</a>這套公定標準來控制色彩和游標──這跟BBS所用的是一樣的。（也就是說，Windows完全沒有依循公定標準。）</p>
+<textarea>
+#include <cstdio>
+
+void demo()
+{
+//	const char esc = 0x1B;
+	const char esc = 27;
+
+	// color
+	printf("%c[%dmHELLO WORLD!\n", esc, 31);
+
+	// cursor
+	int row = 5, col = 10;
+	printf("%c[%d;%dH", esc, row, col);
+}
+</textarea>
+<p>你也可以使用現成工具：<a href="http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/">ncurses</a>。</p>
+<p class="t">File I/O</p>
+<p>「讀取硬碟」比「讀取記憶體」花費更多時間。一般的做法是，預先將檔案從硬碟複製到記憶體，每當捲動文字編輯器的畫面，就直接讀取記憶體，而不必讀取硬碟。</p>
+<p>文字檔案不大時，可以一口氣<a href="http://insanecoding.blogspot.tw/2011/11/how-to-read-in-file-in-c.html">把整個檔案填入記憶體</a>。</p>
+<p>文字檔案很大時，可以動態載入資料：隨著畫面捲動，才把對應的檔案填入記憶體。</p>
+<p>純文字檔案頂多幾MB，而家用電腦的記憶體都是數GB、行動電話的記憶體也有1GB，記憶體十分充足，所以大可不必動態載入資料、搞的自己要死不活。</p>
+<p class="t">Data Structure</p>
+<img src="TextEditor6.html">
+<p>文字通常以「行」為單位呈現，遭遇斷行字元，隨即換行顯示。文字切成一行一行分開儲存，是個不錯的策略。</p>
+<p>注意到Windows、Mac OS、Linux的斷行字元都不一樣，必須<a href="http://stackoverflow.com/questions/6089231/">小心處理</a>、<a href="http://stackoverflow.com/questions/2225600/">小心處理</a>。</p>
+<img src="TextEditor7.html">
+<p>一行文字使用一個array（插入與刪除很慢）或者一個list（就定位很慢）是最簡單的方式。由於一行頂多幾百個字元，再加上現在電腦性能相當優越，所以這種方式其實簡潔明快。</p>
+<p>更高級的方式是使用<a href="Data.html">unrolled linked list</a>，它是用list串起一堆array；或者使用<a href="String.html">rope</a>，它是一棵二元樹。當一行有成千上萬個字元，這種方式的優勢就會顯露出來，打字不會卡卡的。</p>
+<img src="TextEditor8.html">
+<p>一行文字的資料結構已經解決了，接著要串連每一行。同樣地，上述四種資料結構都可以拿來用。</p>
+<textarea>
+// C++的string就是rope，可以直接拿來用。
+// 一行一個rope，串連所有行是用array。
+vector<string> line;
+
+void load_file()
+{
+	ifstream fin("text.txt");
+	int n = 0;
+	while (getline(fin, line[n])) n++;
+	fin.close();
+}
+
+void save_file()
+{
+	ofstream fout("text.txt");
+	for (int n=0; n<line.size(); ++n)
+		fout << line[n] << endl;
+	fout.close();
+}
+
+void display_text()
+{
+	for (int i=0; i<line.size(); ++i)
+		for (int j=0; j<line[i].size(); ++j)
+		{
+			DWORD DNULL = 0;
+			COORD cursor = {j, i};
+			FillConsoleOutputCharacter(hout, line[i][j], 1, cursor, &DNULL);
+		}
+}
+
+int main()
+{
+	load_file();
+	while (read_one_character())
+	{
+		// 按下ESC，程式立即結束。
+		if (vkey == VK_ESCAPE) break;
+		display_text();
+	}
+	return 0;
+}
+</textarea>
+<p class="t">Caret</p>
+<img src="TextEditor9.html">
+<p>文字編輯器都有一個閃爍的游標，告訴使用者現在編輯到哪裡了。用兩個變數分別記錄第幾行、第幾字元（的左邊）即可。以數學的觀點來看，游標的位置是二維座標。</p>
+<textarea>
+int caret_row = 0, caret_col = 0;	// 字元從零開始編號
+</textarea>
+<p>使用者敲打上下左右鍵，移動游標。當然啦，游標不能移動到沒有字的地方。</p>
+<textarea>
+void move_cursor(DWORD vkey)
+{
+	if      (vkey == VK_UP)    caret_row--;
+	else if (vkey == VK_DOWN)  caret_row++;
+	else if (vkey == VK_LEFT)  caret_col--;
+	else if (vkey == VK_RIGHT) caret_col++;
+	else if (vkey == VK_PRIOR) caret_row -= 20;
+	else if (vkey == VK_NEXT)  caret_row += 20;
+	else if (vkey == VK_HOME)  caret_col = 0;
+	else if (vkey == VK_END)   caret_col = line[caret_row].size();
+
+	// UP & LEFT & PAGE UP
+	// 不採用巢狀if，而是採用逐步篩選的概念。
+	if (caret_col < 0)
+		caret_row--;
+	if (caret_row < 0)
+		caret_col = caret_row = 0;
+	if (caret_col < 0)
+		caret_col = line[caret_row].size();
+
+	// DOWN & RIGHT & PAGE DOWN
+	if (caret_col > line[caret_row].size())
+		caret_row++;
+	if (caret_row > line.size() - 1)
+	{
+		caret_row = line.size() - 1;
+		caret_col = line[caret_row].size();
+	}
+	if (caret_col > line[caret_row].size())
+		caret_col = 0;
+}
+
+void display_cursor()
+{
+	int row = caret_row;
+	int col = max(caret_col, line[caret_row].size());
+	COORD cursor = {col, row};
+	SetConsoleCursorPosition(hout, cursor);
+}
+</textarea>
+<p class="t">Scroll</p>
+<img src="TextEditor10.html">
+<p>當游標超出畫面範圍，畫面必須配合捲動。同樣地，用兩個變數分別記錄螢幕的左上角是第幾行、第幾字元即可。</p>
+<textarea>
+int screen_row = 0, screen_col = 0;
+
+// 假設文字編輯器的顯示範圍是20行、80字元
+void display_text()
+{
+	for (int i=screen_row; i<screen_row+20; ++i)
+		for (int j=screen_col; j<screen_col+80; ++j)
+		{
+			// 超過行尾
+			if (j >= line[i].size()) break;
+
+			DWORD DNULL = 0;
+			COORD cursor = {j, i};
+			FillConsoleOutputCharacter(hout, line[i][j], 1, cursor, &DNULL);
+		}
+}
+
+// 根據游標位置，調整捲動位置。
+void move_screen(int caret_row, int caret_col)
+{
+	// 分別是下鍵、上鍵、左鍵、右鍵
+	// 不採用巢狀if，而是採用逐步篩選的概念。
+	screen_row = max(screen_row, caret_row - 20);
+	screen_row = min(screen_row, caret_row);
+	screen_col = max(screen_col, caret_col - 80);
+	screen_col = min(screen_col, caret_col);
+}
+
+void display_cursor()
+{
+	int row = caret_row;
+	int col = max(caret_col, line[caret_row].size());
+	COORD cursor = {col-screen_col, row-screen_row};
+	SetConsoleCursorPosition(hout, cursor);
+}
+
+int main()
+{
+	load_file();
+	while (read_one_character())
+	{
+		// 按下ESC，程式立即結束。
+		if (vkey == VK_ESCAPE) break;
+		move_cursor();
+		move_screen();
+		display_text();
+		display_cursor();
+	}
+	return 0;
+}
+</textarea>
+<p>按下ctrl，並且按方向鍵，只改變捲動位置，而不改變游標位置。</p>
+<p class="t">Select</p>
+<img src="TextEditor11.html">
+<p>按下shift，並且按方向鍵，可以選取文字。</p>
+<p>按下shift與alt，並且按方向鍵，可以選取矩形區域。</p>
+<p class="t">Edit</p>
+<img src="TextEditor12.html">
+<p>編輯有兩種模式：插入、取代（直接覆蓋）。全世界的文字編輯器，都是按下insert鍵切換模式。</p>
+<p>「編輯」可以拆解成這些基本動作：一、刪除選取文字。二、取消選取。三、根據游標位置，修改記憶體裡面的文字。四、移動游標。</p>
+<p class="t">Cut / Copy / Paste </p>
+<img src="TextEditor13.html">
+<p>「剪下、複製、貼上」可以拆解成這些基本動作：將標示的文字複製一份到暫存區、刪除標示的文字、在游標之處插入暫存區裡的文字。就這麼簡單。</p>
+<p>方才提的是在同一個軟體之內複製貼上。如果要在不同軟體之間複製貼上，就必須提升層級，使用作業系統所管轄的暫存區，例如Windows作業系統的<a href="http://zh.wikipedia.org/wiki/?芾票蝪?">剪貼簿</a>。</p>
+<p class="t">Find / Replace</p>
+<img src="TextEditor14.html">
+<p>「尋找」可以拆解成這些基本動作：一、從記憶體找到字串。二、移動畫面至適當位置。三、標記字串。四、字串顏色反白。</p>
+<p>「取代」是在「尋找」之後，再額外進行這些基本動作：一、刪除標記字串。二、插入取代字串。</p>
+<p>從記憶體找到字串，可以使用<a href="StringMatching.html">string matching</a>演算法、使用<a href="Language.html">regular expression</a>等等。</p>
+<p class="t">Autocomplete / Autocorrect</p>
+<img src="TextEditor15.html">
+<p><a href="http://en.wikipedia.org/wiki/Autocomplete">自動完成</a>是自動選字填詞的功能，<a href="http://en.wikipedia.org/wiki/Autocorrection">自動校正</a>是自動修正錯別字的功能，搜尋引擎、IDE、網頁表單都有這些功能。</p>
+<p>自動校正與自動完成的時機，都是在編輯剛結束的時候。預先建立一個單字表格，資料結構採用array、trie、hashing table都行。</p>
+<p>自動完成：使用者進行編輯，輸入英文字、中文字、數字，記憶體的文字更新完畢之後，立即從游標處往前抓取字元，直到遇到空白鍵，形成一段短字串。然後從單字表格之中搜尋這段短字串，看看哪些單字的開頭等於這段短字串。最後在畫面上列出這些單字，供使用者選擇。</p>
+<p>自動校正：使用者進行編輯，輸入空白鍵、標點符號，記憶體的文字更新完畢之後，立即從游標處往前抓取字元，直到遇到空白鍵，形成一段短字串。然後從單字表格之中搜尋這段短字串，看看哪些單字最接近這段短字串。最後刪除原字串、插入新字串。</p>
+<p>字串相似度，可以使用hamming distance、k-mismatch string matching、k-difference string matching、<a href="SequenceAlignment.html">edit distance</a>。各個演算法的速度和準度都不一樣，讀者可以自行取捨。</p>
+<p class="e">UVa 1462</p>
+<p class="t">Autoformat</p>
+<img src="TextEditor16.html">
+<p>自動排版，讓文字好讀。又可以細分成很多排版功能。</p>
+<p><a href="http://zh.wikipedia.org/wiki/?芸???">自動換行</a>：顯示文字時，隨時數字元，到達畫面邊界就換行顯示，但是不改變記憶體裡的文字。比較麻煩的是，移動游標的程式碼，必須額外再寫一套。</p>
+<p><a href="http://en.wikipedia.org/wiki/Indent_style">自動縮排</a>：自動添減空白鍵、tab鍵、enter鍵。如果是程式碼，通常會直接改變記憶體裡的文字。</p>
+<p><a href="http://zh.wikipedia.org/wiki/隤?蝒＊">語法高亮</a>：根據語法結構，自動替文字上色。必須維護一棵<a href="http://en.wikipedia.org/wiki/Abstract_syntax_tree">語法樹</a>，是一件大工程，讀者若有興趣可以挑戰看看。</p>
+<p class="t">Undo / Redo</p>
+<p>復原、取消復原，建立一個stack記錄所有動作，就這樣。</p>
+<p>Undo / Redo非常耗費記憶體，尤其是常常更動大量文字的時候，例如剪下與貼上。為了防止記憶體用罄，一種解決方式是，只儲存最近的幾步；另一種解決方式是，把stack寫入硬碟、存成檔案。使用Windows Office編輯檔案，會出現檔案開頭是波浪符號的暫存檔案，那就是把stack寫入硬碟。</p>
+<p class="t">Graphical User Interface</a>
+<p>接下來要將文字編輯器升級至圖形介面了！</p>
+<p>C與C++沒有繪製圖形介面的函式庫，所以必須採用更高階的語言，例如Qt、C#、Java等等。讀者必須預先學習Qt Widgets、C# Windows Form、Java Swing其中之一，充分掌握「建立視窗」、「視窗重繪」、「建立捲軸」、「繪製文字」、「監聽滑鼠事件」、「監聽鍵盤事件」等等基本功能，才有辦法繼續下去。</p>
+<p>另一種選擇是採用HTML與JavaScript。讀者必須充分掌握HTML DOM與JavaScript Event的概念，還要懂一點CSS。接著只要建立&lt;textarea&gt;把字串填進去，就能繼續下去了。</p>
+<p class="t">Scroll</p>
+<p>當文字內容超過畫面高度或者畫面寬度，就會出現垂直捲軸或者水平捲軸。</p>
+<p>拖曳捲軸，只改變捲動位置，而不改變游標位置。</p>
+<p class="t">Caret</p>
+<p>點擊滑鼠，可以改變游標位置。</p>
+<p>如果是等寬字體：擷取滑鼠座標，除以行高、字寬，四捨五入，加上當前捲動位置，即得到游標位置。</p>
+<p>如果不是等寬字體：事情相當複雜，必須從一行的開頭，由左到右逐個字元累加寬度。</p>
+<p class="t">Select</p>
+<p>按下滑鼠並且拖曳，可以選取文字。</p>
+<p class="t">Drag</p>
+<p>拖曳被選取的文字，可以剪下與貼上。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Rich Text Editor（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Rich Text與Markup Language</p>
+<p>Rich Text是指附加了字型、大小、顏色、位置、圖片、超連結等等資訊的Text。實務上的做法是：定義特殊的格式，以便附加資訊。著名的Rich Text格式像是<a href="http://zh.wikipedia.org/wiki/HTML">HTML</a>、<a href="http://zh.wikipedia.org/wiki/TeX" style="text-decoration:none;"><span style="letter-spacing:-2px">T<span style="vertical-align:-15%">E</span></span>X</a>、<a href="http://zh.wikipedia.org/wiki/RTF">RTF</a>。</p>
+<p>以HTML為例，它藉由「標籤」來附加資訊。首先使用純文字編輯器讀取.html檔案，編輯Rich Text，然後使用瀏覽器讀取.html檔案，就變成美美的網頁了。</p>
+<img src="RichText1.html">
+<p>為了附加資訊，於是發明了<a href="http://zh.wikipedia.org/wiki/靽?摮?">保留字</a>的概念：某些文字必須當作「此為附加資訊」的提示，不能當作純文字。</p>
+<p>為了讓保留字也可以成為純文字，於是又發明了<a href="http://zh.wikipedia.org/wiki/頝唾摮?">跳脫字元</a>的概念：以罕見的文字組合，代替保留字。</p>
+<p>以HTML為例，標籤不能當作純文字，例如&lt;p&gt;。如果想要顯示跟標籤一模一樣的純文字，就必須利用<a href="http://www.w3schools.com/html/html_entities.asp">跳脫字元&</a>：寫下&amp;lt;就變成<，寫下&amp;gt;就變成>，寫下&amp;lt;p&amp;gt;就變成&lt;p&gt;了。</p>
+<p>聰明的讀者肯定馬上又想到：如果想要顯示&amp;lt;的純文字呢？答案是跳脫字元本身也要設計跳脫字元：寫下&amp;amp;就變成&，寫下&amp;amp;lt;就變成&amp;lt;。下圖是本段落的HTML原始碼：</p>
+<img src="RichText2.html">
+<p class="t">Rich Text Editor</p>
+<p>可以實際動手操作的範例：<a href="http://ckeditor.com/demo">http://ckeditor.com/demo</a>。</p>
+<p>用純文字編輯器來設計Rich Text，眼睛看著純文字、腦袋想著真實畫面，非常迂迴不直覺，是<a href="http://kuoe0.logdown.com/pages/about-me">真正的男子漢才會做的事情</a>。於是有人提倡<a href="http://zh.wikipedia.org/wiki/?閬?敺?">WYSIWYG（所見即所得）</a>的概念：編輯器直接顯示真實畫面，使用者直接編輯真實畫面；編輯器根據使用者的操作過程，暗地裡生成Rich Text。</p>
+<img src="RichTextEditor1.html">
+<p>知名的富文字編輯器軟體，例如編輯RTF的<a href="http://zh.wikipedia.org/wiki/Microsoft_Word">Microsoft Word</a>、編輯HTML的<a href="http://zh.wikipedia.org/wiki/Adobe_Dreamweaver">Adobe DreamWeaver</a>。現在網路發達，也有很多人開發<a href="http://en.wikipedia.org/wiki/Online_rich-text_editor">網頁版的富文字編輯器</a>，例如<a href="http://zh.wikipedia.org/wiki/CKEditor">CKEditor</a>、<a href="http://zh.wikipedia.org/wiki/TinyMCE">TinyMCE</a>。</p>
+<p>很多<a href="http://zh.wikipedia.org/wiki/?游???啣?">IDE</a>也有富文字編輯器，以便直覺地設計<a href="http://zh.wikipedia.org/wiki/?耦雿輻????">GUI</a>程式，就是俗稱的「拉介面」。例如<a href="http://zh.wikipedia.org/wiki/C++Builder">C++Builder</a>、<a href="http://zh.wikipedia.org/wiki/Qt_Creator">Qt Creator</a>、<a href="http://zh.wikipedia.org/wiki/Microsoft_Visual_Studio">Microsoft Visual Studio</a>。</p>
+<p>很多程式語言已經內建了富文字編輯器，例如Qt的QTextEdit、C#的RichTextBox，我們可以直接拿來用。</p>
+<p>文字是人類最擅長的媒體，所以富文字編輯器舉目皆是。即時通訊軟體<a href="http://zh.wikipedia.org/wiki/Skype">Skype</a>、<a href="http://zh.wikipedia.org/wiki/Line">LINE</a>，社群網站<a href="http://zh.wikipedia.org/wiki/Facebook">Facebook</a>，部落格網站<a href="http://zh.wikipedia.org/wiki/Blogger">Blogger</a>，微博網站<a href="http://zh.wikipedia.org/wiki/Twitter">Twitter</a>、<a href="http://zh.wikipedia.org/wiki/?唳答敺桀?">新浪微博</a>，都可以見到富文字編輯器的身影。</p>
+<p class="t">如何製作Rich Text Editor？</p>
+<p>我從未設計過富文字編輯器，所以無法介紹。各位可以<a href="https://github.com/tinymce">參與開源專案</a>、從做中學；或者也可以<a href="http://moztw.org/twoffice/">進入相關行業</a>、入門學藝。</p>
+<p>想要發明Rich Text的格式，請參考各種<a href="http://zh.wikipedia.org/wiki/璅?撘?閮">markup language</a>，從既有的格式汲取經驗。</p>
+<p>想要解析Rich Text，請參考<a href="http://en.wikipedia.org/wiki/Parsing">parsing</a>。相關的學校課程是<a href="http://zh.wikipedia.org/wiki/蝺刻陌??">編譯器</a>。相關的本站文章是<a href="Language.html">Formal Language</a>。</p>
+<p>想要繪製真實畫面，請參考各種<a href="http://zh.wikipedia.org/wiki/??撘?">排版引擎</a>。</p>
+<p>當然啦，對於凡事講求速成的人來說，直接用現成的富文字編輯器就好了，大可不必學習這麼多東西。</p>
+<p class="e">UVa 12417</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Text Parser（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Text Parser</p>
+<p>「文字剖析器」。讀取文字，根據格式，建立階層架構。</p>
+<p>相關理論是<a href="Language.html">制式語言</a>。</p>
+<p>亦得更進一步，轉換架構，建立新文字。</p>
+<p>經典應用如<a href="http://zh.wikipedia.org/wiki/Doxygen">documentation generator</a>：把程式碼視為純文字檔案。設計一個剖析器，從程式碼當中抽取註解內容、函數名稱，然後再設計一個剖析器，自動生成網頁說明文件。</p>
+<p>經典應用如<a href="http://www.creativebloq.com/web-design/templating-engines-9134396">template engine</a>：根據使用者輸入的片段文字，生成程式碼。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Programming Language（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Opcode</p>
+<p>運算碼、機器碼。參照CPU的規格書、讓CPU執行特定工作的<a href="Code.html">二元碼</a>。</p>
+<img src="ProgrammingLanguage1.html">
+<p>從CPU底部的針腳們輸入指令，讓CPU執行特定工作，大致的過程是：一、查詢CPU規格書，查詢特定指令，查詢該指令所用的針腳是哪些，以及其電壓高低。二、根據規格書，調整CPU每根針腳的電壓高低。三、找到啟動指令的針腳，調高電壓（有如按下啟動開關、按下執行按鈕）。電流一齊流動，CPU執行工作。</p>
+<p>數學上，我們可以將針腳們的電壓，想成是0和1組成的字串，也就是二元碼。針腳依序編號，電壓高代表1，電壓低代表0。</p>
+<p>順帶一提，啟動開關就是clock。持續地執行各種指令、規律地按下啟動開關，就像時鐘秒針一樣滴答滴答，所以取名為clock。CPU的工作速度，可以從clock的速度看出來。</p>
+<p>讀者可以修習電子學、數位邏輯、計算機組織與結構等課程，瞭解CPU的細節。這裡就不多提了。</p>
+<p class="t">Assembly Language</p>
+<p>組合語言。讓CPU工作的文字指令。</p>
+<img src="ProgrammingLanguage2.html">
+<p>因為機器碼難讀難懂，所以人類發明了組合語言──使用有意義的文字來描述工作指令。之後再特地打造parser，稱作組譯器，將組合語言變成機器碼。</p>
+<p>儘管組合語言依然難讀難懂，但是總比機器碼好多了。</p>
+<p>CPU廠商，除了提供CPU的規格書，還會提供一套組合語言暨組譯器，方便工程師編寫程式。除此之外，為了避免讓工程師每換一顆新CPU、就跟著換一套組合語言，CPU廠商們也一起約定了組合語言的大致格式，主要有兩套，請參考<a href="https://zh.wikipedia.org/wiki/蝎曄陛?誘??">RISC</a>和<a href="https://zh.wikipedia.org/wiki/銴??誘??">CISC</a>。</p>
+<p>讀者可以修習組合語言、微處理器、嵌入式系統等課程，瞭解組合語言的細節。這裡就不多提了。</p>
+<p class="t">Programming Language</p>
+<p>程式語言。讓CPU工作的文字指令，文字擁有特殊結構。</p>
+<img src="ProgrammingLanguage3.html">
+<p>一般說到指令，很容易聯想到「立正、敬禮、稍息」。電腦世界裡面，讓CPU做事情的指令，差不多就是這麼單純。</p>
+<p>不過這樣的指令實在太簡單，只能做簡單的工作。遇到複雜的工作，就必須堆疊大量指令，讓事情變得複雜、難以理解。經典範例是流亡台灣的匪軍刺槍術：「氣刀體一致。防右刺！刺！刺！防左刺！刺！刺！防下刺！刺！刺！上擊！衝擊！衝擊！砍劈！橫擊！衝擊！衝擊！砍劈！迴旋！迴旋！」</p>
+<p>因為組合語言難讀難懂，所以人類又發明了程式語言──建立了段落、層級、單元等等概念，讓人類不必浪費力氣鑽細節，讓人類能宏觀大局。之後再特地打造parser，稱做編譯器，將程式語言變成組合語言、再變成機器碼。</p>
+<p>儘管程式語言依然難讀難懂，但是總比組合語言好多了。</p>
+<p>程式語言的理論仍在發展當中。本人學識粗淺，無法介紹。請讀者自行上網搜尋<a href="https://www.coursera.org/course/proglang">課程</a>、<a href="https://www.cs.cmu.edu/~rwh/plbook/2nded.pdf">書籍</a>。</p>
+<p class="t">Assembler</p>
+<p>組譯器。組合語言變成機器碼。</p>
+<p class="t">Compiler</p>
+<p>編譯器。程式語言先變成組合語言，再變成機器碼。</p>
+<p>深奧幽玄。如果你確信被什麼東西附身，那麼再來深入研究吧。</p>
+<pre>
+https://mitpress.mit.edu/sicp/
+http://www.cppgm.org/
+http://www.yinwang.org/blog-cn/2013/03/28/chez-scheme
+</pre>
+<p>另外必須提一下LLVM，這是最近幾年的新觀念，大家都在跟進。編譯器的流程中間多了一層：程式語言先變成LLVM，再變成組合語言，再變成機器碼。</p>
+<p>LLVM降低了事情的複雜度，讓大家可以分開處理程式語言的特殊細節、基礎結構。程式語言變成LLVM時，解決掉各種不同程式語言的特殊細節。LLVM變成組合語言時，大家就可以直接根據語言結構，實施最佳化。</p>
+<p class="e">ICPC 2727</p>
+<p class="t">Interpreter</p>
+<p>解譯器、直譯器。可以想成是online版本的編譯器，一邊讀取指令，一邊執行指令。</p>
+<p>必須建立多餘的組合語言，以處理正在計算的變數。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Input Method（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Input Method</p>
+<img src="InputMethod1.png">
+<p><a href="http://zh.wikipedia.org/wiki/頛詨瘜?">輸入法</a>。用來輸入文字的軟體。</p>
+<p>鍵盤最初是美國人發明的，上面只有印製英文字母，也只能輸入英文字母。其他國家為了輸入自己的語言文字，只好在鍵盤上面<a href="http://en.wikipedia.org/wiki/Keyboard_layout">額外印製符號</a>，然後自己設計輸入法。臺灣的鍵盤額外印上注音符號，配合<a href="http://zh.wikipedia.org/wiki/銝剜?頛詨瘜?">注音輸入法</a>，就能輸入中文字了。除了作業系統內建的輸入法以外，著名的繁體中文輸入法還有<a href="http://www.iq-t.com/">自然輸入法</a>和<a href="http://chewing.im/">酷音輸入法</a>。</p>
+<p>現在科技發達，輸入文字不見得要透過鍵盤，而是透過觸控螢幕、麥克風，所以輸入法的發展重點也隨著改變。早期的輸入法，著重拆字組字；近代的輸入法，著重選字填詞。事過境遷、滄海桑田，過去那些拆字組字的輸入法，例如<a href="http://zh.wikipedia.org/wiki/?頛詨瘜?">倉頡輸入法</a>和<a href="http://zh.wikipedia.org/wiki/?貉蝐唾撓?交?">嘸蝦米輸入法</a>，現在看來彷彿是消耗民眾精力的玩具。</p>
+<p>輸入法除了輸入文字以外，還有另一個重要用途是輸入特殊符號。自從<a href="http://zh.wikipedia.org/wiki/Unicode">Unicode</a>興起之後，亟需發展一個能夠輸入各種特殊符號的輸入法。</p>
+<p class="t">如何製作Input Method？</p>
+<p>製作輸入法，有個極大的難題：必須瞭解作業系統。當代的輸入法，由作業系統直接管轄。想要繪製選字視窗、想要將選好的文字傳送到目前開啟的軟體，都要依賴作業系統提供的<a href="http://zh.wikipedia.org/wiki/?蝔?隞">API</a>。</p>
+<p>我是個外行人，沒辦法介紹什麼。大家可以請教這些專家：針對Windows作業系統，可以請教<a href="http://pcmanx.blogspot.tw/2013/09/windows.html">PCMan</a>；針對Linux作業系統，可以請教<a href="http://chewing.im/about.html">酷音輸入法的貢獻者</a>；針對瀏覽器，可以參考目前W3C正在制定當中的<a href="http://www.w3.org/TR/ime-api/">Input Method Editor API</a>。</p>
+<p>如果只是想練習、不想搞那麼複雜，其實也可以略過作業系統API，只是打出來的文字只能出現在自己的程式視窗裡面罷了。</p>
+<p class="t">鍵盤按鍵與注音符號的對應表</p>
+<pre>
+1 -> ㄅ
+q -> ㄆ
+a -> ㄇ
+z -> ㄈ
+...
+</pre>
+<p>起先有很多種<a href="http://zh.wikipedia.org/wiki/瘜券頛詨瘜?">鍵盤按鍵與注音符號的對應方式</a>，不過現在只剩下一種了，就是鍵盤上看到那一種。</p>
+<p>程式語言處理的其實是數字，我們建立的其實是「ASCII編號」與「注音符號編號」的對應表。</p>
+<p>使用者敲打鍵盤、輸入ASCII編號，就換成注音符號編號。</p>
+<img src="InputMethod2.png">
+<p>亦得製作<a href="http://zh.wikipedia.org/wiki/??萇">虛擬鍵盤</a>，讓使用者點選滑鼠、輸入ASCII編號。Windows作業系統開啟注音輸入法，按下ctrl alt ,出現「螢幕小鍵盤」，那就是虛擬鍵盤。Android作業系統開啟任何輸入法，都會出現虛擬鍵盤。</p>
+<img src="InputMethod3.png">
+<div class="i"><img src="InputMethod4.png"> <img src="InputMethod5.png"></div>
+<p class="t">注音符號與中文字的對應表</p>
+<pre>
+ㄅㄚ  -> 八巴吧...
+ㄅㄚˊ -> 拔鈸跋...
+ㄅㄚˇ -> 把靶鈀...
+ㄅㄚˋ -> 爸霸壩...
+ㄅㄚ˙ -> 吧爸巴...
+ㄅㄛ  -> 波撥剝...
+ㄅㄛˊ -> 伯柏泊...
+...
+</pre>
+<p><a href="http://zh.wikipedia.org/wiki/瘜券蝚西?">注音符號</a>的聲母21個、介母3個、韻母13個、聲調5種，拼音方式低於22*4*14*5 = 1540 < 2^11種。簡單的編碼方式是聲母5bit、介母2bit、韻母4bit、聲調3bit，拼成13bit，用2 byte的short變數記錄。</p>
+<p>程式語言處理的其實是數字，我們建立的其實是「拼音編碼」與「Unicode編號」的對應表。</p>
+<p>實務上如何得到這個表，我尚未調查清楚，麻煩讀者提供線索！我不清楚政府單位是否有公定公布這個表，我推測也許只能從開源專案獲得這個表，例如酷音輸入法。</p>
+<p class="t">注音符號與常用詞語的對應表</p>
+<pre>
+ㄅㄚ          -> 八(199次) 吧(12次)
+ㄅㄚˋ ㄅㄚ˙   -> 爸爸(32次)
+ㄔㄤˊ ㄐㄧㄢˋ -> 常見(120次)　長劍(57次)
+...
+</pre>
+<p>電腦自動選字、讀者手動選字，就查表，列出最常用的<a href="http://zh.wikipedia.org/wiki/閰?">詞語</a>。表格的資料結構採用<a href="String.html">trie</a>而不用array，可減少查表時間。</p>
+<p>實務上如何得到這個表，我尚未調查清楚，麻煩讀者提供線索！有一種得到這個表的方式，是利用Natural Language領域的Text Segmentation，從網路上收集大量文章，以演算法自動斷詞，統計詞語出現次數。</p>
+<p class="t">詞語組合（斷詞與選詞）</p>
+<p>一句話通常很長很長，不只一個詞語。電腦必須自動選擇正確的詞語組合。</p>
+<pre>
+ㄅㄚˋ ㄅㄚ˙ ㄇㄢˇ ㄔㄤˊ ㄐㄧㄢˋ 爸爸滿常見(O) 爸爸滿長劍(X)
+ㄅㄚˋ ㄅㄚ˙ ㄇㄞˇ ㄔㄤˊ ㄐㄧㄢˋ 爸爸買常見(X) 爸爸買長劍(O)
+ㄋㄧˇ ㄏㄨㄟˋ ㄧㄤˇ ㄕˋ ㄇㄚ˙   你會癢是嗎(O) 你會仰式嗎(O)
+</pre>
+<p>複雜的方法是<a href="http://parser.iis.sinica.edu.tw/">建立剖析樹</a>，<a href="http://iasl.iis.sinica.edu.tw/products/going99/chap-ab.html">分析語法語意</a>。</p>
+<img src="InputMethod6.html">
+<p>簡單的方法是窮舉所有的詞語組合方式，找到最好的詞語組合：採用<a href="AlgorithmDesign.html">greedy method</a>令長詞優先配對；或者以<a href="AlgorithmDesign.html">dynamic programming</a>計算出現次數總和（或機率）最大的詞語組合。接下來使用者可以不斷選字填字，每次都重新計算最佳的詞語組合。</p>
+<img src="InputMethod7.html">
+<p>進階的方法是<a href="http://en.wikipedia.org/wiki/N-gram">n-gram</a>，建立詞語銜接詞語的對應表，同時記錄使用次數（或機率）。中文詞語林林總總，這個表非常大，需要超大型資料庫。</p>
+<pre>
+2-gram   【併入圖片】
+爸爸 + 滿 -> 23次
+爸爸 + 買 -> 30次
+買 + 常見 -> 47次
+買 + 長劍 -> 3次
+滿 + 常見 -> 60次
+滿 + 長劍 -> 2次
+滿 + 長   -> 51次
+...
+</pre>
+<img src="InputMethod8.html">
+<p>製作完成之後，可用<a href="http://zh.wikipedia.org/wiki/?賜?">白痴造句</a>、<a href="http://zh.wikipedia.org/wiki/???">同音文章</a>、《一首因愛睏在輸入時按錯鍵的情詩》進行測試。</p>
+<a href="http://www.ettoday.net/news/20111206/11026.htm"><img src="../../static.ettoday.net/images/16/d16450.jpg"></a>
+<p class="t">結語</p>
+<p>全世界只有台灣在用注音符號，其他國家則用英文拼音。全世界只有台灣在用KK音標，其他國家則用IPA。想要深入鑽研輸入法的讀者，最好也研究一下其他國家的輸入法，以免故步自封。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Natural Language（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Natural Language</p>
+<div class="z"><!--<iframe src="http://embed.ted.com/talks/lang/zh-tw/lies_damned_lies_and_statistics_about_tedtalks.html"></iframe>--></div>
+<p>自然語言是人類所說的語言，與<a href="Language.html">制式語言</a>相對應。</p>
+<p>人類語言龐大複雜、人類文法缺乏規律。工程師放棄教條式的文法，改為觀察詞彙與詞彙之間的關聯，判斷最佳詞彙組合。這群人只碰計算機科學、不碰語言學，於是創造了新稱呼「自然語言處理」。</p>
+<p><a href="https://en.wikipedia.org/wiki/Linguistics">語言學</a>旨在研究人類的文字文法、發音韻律、說話溝通、寫作翻譯等等，都屬於語言學的範疇。</p>
+<p>與自然語言有關的是語意學、語用學。</p>
+<p>知名的工具為<a href="http://nltk.org/book/">NLTK</a>。<a href="http://www.aclclp.org.tw/corp_c.php">繁體中文的語料庫</a>。</p>
+<pre>
+http://courses.washington.edu/ling472/
+http://icwww.epfl.ch/~chappeli/tidt/
+http://www.utcompling.com/courses
+</pre>
+<p>資料結構，索引表。統計詞彙出現次數。</p>
+<p class="t">Text Tokenization</p>
+<p>分詞。英文單字，將變化型改回原型。</p>
+<pre>
+tokenization  英文句子去除標點符號，打散成單字
+lemmatisation 英文單字的變化型，變成原型
+stemming      英文單字的變化型，去除字尾
+http://tartarus.org/martin/PorterStemmer/
+</pre>
+<p class="t">Text Tokenization</p>
+<p>分詞。中文句子，斷開成許多詞彙。</p>
+<pre>
+將一句話斷開成許多詞彙 ---> 將 一句 話 斷開 成 許多 詞彙
+</pre>
+<p>讀者可以先玩玩看<a href="http://ckipsvr.iis.sinica.edu.tw/">中研院的斷詞系統</a>、<a href="https://books.google.com/ngrams">谷歌書籍詞彙統計</a>。</p>
+<p>人類在對談時，大腦一瞬間綜合了聲調、文法、情境、表情與肢體動作、認知、知識，藉此正確地分詞。每個人出生的前十年，大腦不斷地發展這個能力，但是我們至今仍然不知道這個能力的詳細內容。目前計算機科學家所能掌握的，僅僅是文法而已。</p>
+<p>先前於輸入法的章節，已經介紹過分詞演算法。</p>
+<pre>
+一、建立「常見詞彙大全」。
+　　窮舉所有的詞語組合方式，找到最好的詞語組合。
+　甲、<a href="AlgorithmDesign.html">greedy method</a>，令長詞優先配對。
+　乙、<a href="AlgorithmDesign.html">dynamic programming</a>，計算出現次數總和（或機率乘積）最大的詞語組合。
+
+　　優點：計算速度飛快而且精準。
+　　缺點：無法處理未知詞彙。
+
+二、<a href="http://en.wikipedia.org/wiki/n-gram">n-gram</a>，n是一個變數。此處以2-gram為例：
+
+　　　　　　　　　　　 2-gram
+　　　　常見詞彙何其多 ------> 常見、見詞、詞彙、彙何、何其、其多
+
+　　蒐集大量文章，統計所有2-gram的出現次數即可。就這麼簡單。
+　　教科書習慣表示成機率：出現次數再除以總次數。
+　　缺點：完全沒有參考中文文法，經常得到莫名其妙的詞彙。
+　　優點：採用機率模型，可以容忍人類亂無章法的句法！
+
+三、剖析樹。
+　　依照文法，分解句子變成樹狀圖，並且<a href="https://en.wikipedia.org/wiki/Part-of-speech_tagging">判斷詞性</a>。
+　　然而人類講話亂無章法，窮舉各種狀況的時間複雜度極高。
+
+四、<a href="http://byvoid.github.io/slides/slmpime/index.html">有向無環圖DAG</a>。
+　　比樹狀圖還有彈性。
+</pre>
+<div class="z"><!--<iframe src="http://embed.ted.com/talks/lang/zh-tw/what_we_learned_from_5_million_books.html"></iframe>--></div>
+<p class="t">Text Segmentation</p>
+<p>分段。一篇文章，自動切割出適當段落。</p>
+<pre>
+TextTiling algorithm
+</pre>
+<p class="t">Text Prediction</p>
+<p>預測。知道接下來要說什麼。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Wo7UySAt4KY"></iframe>--></div>
+<p class="t">Natural Language Generation</p>
+<p><a href="http://en.wikipedia.org/wiki/Natural_language_generation">生成</a>。自動寫作，生成文章。</p>
+<pre>
+http://en.wikipedia.org/wiki/SCIgen
+http://en.wikipedia.org/wiki/Article_spinning
+http://images3.wikia.nocookie.net/__cb20120321065110/hunterx/images/9/92/Neon%27s_Lovely_Ghostwriter.jpg
+</pre>
+<pre>
+Automated Content Authorship
+http://wordai.com/
+http://mag.udn.com/mag/digital/storypage.jsp?f_ART_ID=131873
+http://www.insead.edu/facultyresearch/faculty/profiles/pparker/
+http://www.insead.edu/facultyresearch/faculty/personal/pparker/
+</pre>
+<pre>
+Report Generator
+http://narrativescience.com/
+http://mag.udn.com/mag/digital/printpage.jsp?f_ART_ID=389334
+</pre>
+<pre>
+lyrics generator
+http://arxiv.org/abs/1505.04771   DopeLearning
+Automatic Rhyme Detection
+http://mining4meaning.com/2015/02/13/raplyzer/
+</pre>
+<pre>
+Neural Storyteller
+http://www.cs.toronto.edu/~mbweb/
+</pre>
+<pre>
+Political Speech Generation
+http://arxiv.org/abs/1601.03313
+</pre>
+<p class="t">Natural Language Understanding</p>
+<p><a href="http://en.wikipedia.org/wiki/Natural_language_understanding">理解</a>。將文章涵義以數值形式記錄下來。</p>
+<p>前陣子流行的手法是<a href="http://www.52nlp.cn/category/topic-model">主題模型</a>：觀察每份文章的詞彙，根據詞彙們的出現次數、比重，判斷文章類型。</p>
+<pre>
+Latent Semantic Analysis, LDS
+vector space model + SVD
+(跟eigenxxxxx不太一樣，沒有先求兩兩共變異數)
+
+Probabilistic Latent Semantic Analysis, PLDS
+document->topic->word
+http://blog.csdn.net/yangliuy/article/details/8330640
+
+LDA, Latent Dirichlet Allocation
+http://cos.name/2013/01/lda-math-gamma-function/
+http://cos.name/2013/01/lda-math-beta-dirichlet/
+</pre>
+<p class="t">Natural Language Summarization</p>
+<p><a href="https://en.wikipedia.org/wiki/Automatic_summarization">摘要</a>。歸納文章重點。理解、生成。</p>
+<p>http://xenia.media.mit.edu/~mueller/storyund/storyres.html</p>
+<p class="t">Natural Language Correction</p>
+<p>校正。給定一句話，進行修正。</p>
+<p class="t">Natural Language Communication（Question Answering）</p>
+<p>問答。給定一句話，產生適當的回話。</p>
+<p>例如<a href="http://www.ithome.com.tw/node/66703">掰噗</a>、<a href="http://cn.akinator.com/">Akinator</a>、Eugene Goostman。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/DywO4zksfXw"></iframe>--></div>
+<p class="t">Natural Language Translation（Machine Translation）</p>
+<p><a href="https://en.wikipedia.org/wiki/Machine_translation">翻譯</a>。一份文章，翻譯成另外一種語言。</p>
+<p>目前功能很陽春，科學家正在努力克服。知名軟體如<a href="https://translate.google.com.tw/">Google Translate</a>、<a href="http://www.dreye.com/">Dr.eye</a>。</p>
+<pre>
+http://www.statmt.org/book/
+http://mt-class.org/
+http://104.131.78.120/
+</pre>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/_GdSC1Z1Kzs"></iframe>--></div>
+<p class="t">Natural Language Identification</p>
+<p><a href="https://en.wikipedia.org/wiki/Native-language_identification">鑑定</a>。一份文章，判斷所屬語言。</p>
+<p class="t">Natural Language Compression</p>
+<p>壓縮。減少文字數量，保留原本意義。</p>
+<pre>
+ACB Compression（Associative Coder of Buyanovsky）
+http://www.stringology.org/DataCompression/acb/index_en.html
+http://www.cs.brandeis.edu/~fabricio/files/cosci170.htm
+</pre>
+<pre>
+PPM Compression（Prediction by Partial Matching）
+http://www.stringology.org/DataCompression/ppmc/index_en.html
+http://en.wikipedia.org/wiki/Prediction_by_Partial_Matching
+</pre>
+<p class="t">Natural Language Programming</p>
+<p><a href="https://en.wikipedia.org/wiki/Natural_language_programming">編程</a>。靠一張嘴寫程式。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Text.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:20:30 GMT -->
+</html>

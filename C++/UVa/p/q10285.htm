@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10285: Longest Run on a Snowboard</h1>          
+<p>Michael很喜歡滑雪。滑雪很好玩，但是有一點比較麻煩。就是為了要獲得速度，滑雪一定要由高處往低處滑。等你到了山腳時就得走路上山或等待滑雪登山纜車了。</p>  
+<p>Michael想要知道在某一個滑雪場最長的滑雪路徑有多長。滑雪場區域是以數字形成的方塊來表示。數字的大小代表各個點的高度。看以下的例子：</p>  
+<pre style="MARGIN-LEFT: 135pt"><span style="mso-spacerun: yes">&nbsp;</span><b style="mso-bidi-font-weight: normal"><span style="FONT-SIZE: 11pt">1<span style="mso-spacerun: yes">&nbsp; </span>2<span style="mso-spacerun: yes">&nbsp; </span>3<span style="mso-spacerun: yes">&nbsp; </span>4 5
+16 17 18 19 6
+15 24 25 20 7
+14 23 22 21 8
+13 12 11 10 9<o:p></o:p></span></b></pre>
+<p>我們可以從一點滑到相連的另一點，只要高度是由高到低。在這裡我們說某一點與另一點相連指的是他們互為上、下、左、右四個方向相鄰。在上面的地圖中我們可以滑    
+<b>24-17-16-1</b>（從24開始，1結束）。當然，假如你想要滑 <b>25-24-23-22-....-3-2-1</b><b>    
+</b>也可以，這比上一條路徑長多了。事實上，這也是最長的路徑了。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個整數N，代表有多少組測試資料。每組測試資料的第一列包含有S、R、C。S代表這個滑雪場的名稱（一個英文單字），R代表列數，C代表行數。接下來的R列每列有C個整數。此數字方塊即代表此滑雪場的地圖。R跟C都不會比100大，N不會比15大，並且所有的高度都介於0到100之間。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，請輸出滑雪場的名稱，以及在這個滑雪場你可以滑的最長路徑的長度。請參考Sample    
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                         
+Input</b></span></p>                              
+<pre>
+2
+Feldberg 10 5
+56 14 51 58 88
+26 94 24 39 41
+24 16 8 51 51
+76 72 77 43 10
+38 50 59 84 81
+5 23 37 71 77
+96 10 93 53 82
+94 15 96 69 9
+74 0 62 38 96
+37 54 55 82 38
+Spiral 5 5
+1 2 3 4 5
+16 17 18 19 6
+15 24 25 20 7
+14 23 22 21 8
+13 12 11 10 9
+</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>Feldberg: 7
+Spiral: 25</pre> 
+                            
+</body>                            
+                            
+</html>                            

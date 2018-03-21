@@ -1,0 +1,50 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10004: Bicoloring</h1>       
+<p>1976年，在電腦協助之下證明了4色地圖理論（Four Color Map 
+Theorem）。就是僅以4種顏色在地圖上不同的區域塗色，使得相鄰的區域顏色均不相同。</p>
+<p>現在，你要解決一個類似，但比較簡單的問題。給你一個相連的圖，請你在節點上塗色（只有2種不同的顏色），並且回答是否可以使得相鄰的節點顏色均不相同。為了使問題簡單一些，你可以假設：</p>
+<ul>
+  <li>沒有節點會有連向自己的邊。</li>
+  <li>邊是沒有方向性的，也就是說如果節點A可以連到節點B，那麼代表節點B也可以連到節點A。</li>
+  <li>圖形是強連通的，也就是說任2節點之間皆有路徑相連。</li>
+</ul>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">輸入含有多組測試資料。每組測試資料的第一列有一個正整數 
+n（1 &lt; n &lt; 200）代表節點的數目。第二列有一個正整數m，代表邊的數目。接下來的m列每列有2個整數代表邊所連接的2個節點的代號。這n個節點的代號分別為0到n-1。</p>            
+<p align="left">n=0代表輸入結束。</p>            
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對每一組測試資料輸出是否可以用2種顏色塗節點使得相鄰的節點顏色均不相同。若可以請輸出：BICOLORABLE.，否則輸出：NOT 
+BICOLORABLE.</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample         
+input</b></span></p>                 
+<pre>3
+3
+0 1
+1 2
+2 0
+9
+8
+0 1
+0 2
+0 3
+0 4
+0 5
+0 6
+0 7
+0 8
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                   
+Output</b></span></p>                  
+<pre>NOT BICOLORABLE.
+BICOLORABLE.</pre>
+                  
+</body>                  
+                  
+</html>                  

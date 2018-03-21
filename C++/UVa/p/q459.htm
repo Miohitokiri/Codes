@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q459: Graph Connectivity</h1>          
+<p>一個圖形G是由許多節點及相連的邊所組成。如果在G中的每個節點都可以藉相連的邊，走0步或多步而到達，我們就說G是一個相連（connected）的圖形。例如以下的圖不是相連，因為在A和C之間沒有路徑。</p>  
+<p align="center"><img border="0" src="p459.gif" width="128" height="224"></p>  
+<p>然而，我們可以看出上圖中有2個相連的子圖，且節點的個數是最大的：{A,B,D}以及{C,E}。給你一個圖形，你的任務就是要寫一個程式來找出在圖形中有多少個子圖是相連且節點的個數是最大的。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>有多組測試資料，測試資料間以1空白列分隔。</p>  
+<p>每組測試資料的第1列，有一個大寫的英文字母，代表這個圖形中最大的節點名稱。舉例說明：如果這個字母是E，代表這個圖形中可以出現的節點最多5個，分別是A、B、C、D和E。接下來有0到多列，每列有2個大寫英文字母，描述圖形中的邊。例如：AB及代表節點A和節點B之間有一邊相連。（在這裡的圖是無向圖，也就是說邊沒有方向性，例如：AB和BA其實是同一個邊）</p>  
+<p>特別注意：最後一組測試資料後面<b><font color="#FF0000">沒有</font></b>一列空白列。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料請輸出有多少個子圖是相連且節點的個數是最大的。</p>  
+<p>測試資料間亦請空一列。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Input</b></span></p>                              
+<pre>E
+AB
+CE
+DB
+EC
+
+E
+AB</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>2
+
+4</pre> 
+                            
+</body>                            
+                            
+</html>                            

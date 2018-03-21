@@ -1,0 +1,55 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10000: Longest Paths</h1>          
+<p>有些人對於距離及時間的概念顯然不太清楚，所以當他們從一個地方到另一個地方去的時候，總是選擇最長的路徑。遲到也使他們錯過了一些重要的約會，例如：婚禮或是程式設計比賽。這對他們的朋友來說實在是很困擾。</p>  
+<p>Cesar就有這種問題。當他從一個地方要到另一個地方時，他瞭解到他必須拜訪許多朋友，所以他總是選擇最長的路徑。你的任務就是要找出從Cesar的家（出發點）到其他的地方的最長路徑是多少。你可以假設從他家到任何地方都至少存在一條路徑。並且，在圖形中也不會有迴圈（cycle），也就是說任何點都不會有路徑指向自己。當然，也沒有點會有路徑直接指向自己。所以，Cesar一定可以在有限的時間內到達目的地。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料的第一列有一個正整數n（1 
+&lt; n &lt;=100），代表Cesar可以去拜訪的地方（也就是圖形中點的數目）。第二列有一個整數s（1 
+&lt;= s &lt;= n），代表Cesar出發的點。接下來的每列有2個整數p,q，代表Cesar可以從p走到q。p=0,q=0代表此組測試資料結束。</p>    
+<p>最後一組測試資料n=0，代表整個輸入結束（此組不需輸出）。請參考Sample  
+Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料輸出這是第幾組測試資料以及此最長路徑的起點，長度，終點。若有好幾條路徑有最長的長度，輸出最小編號的終點。</p> 
+<p>每組測試資料後請空一列。請參考Sample  
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                               
+Input</b></span></p>                              
+<pre>2
+1
+1 2
+0 0
+5
+3
+1 2
+3 5
+3 1
+2 4
+4 5
+0 0
+5
+5
+5 1
+5 2
+5 3
+5 4
+4 1
+4 2
+0 0
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Case 1: The longest path from 1 has length 1, finishing at 2.
+
+Case 2: The longest path from 3 has length 4, finishing at 5.
+
+Case 3: The longest path from 5 has length 2, finishing at 1.</pre>
+                            
+</body>                            
+                            
+</html>                            

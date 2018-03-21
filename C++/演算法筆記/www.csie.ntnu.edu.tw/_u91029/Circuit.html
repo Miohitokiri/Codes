@@ -1,0 +1,345 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Circuit.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:07:38 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Circuit</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Hamilton Circuit</p>
+</div><div class="c">
+<p class="t">Hamilton Circuit（Hamilton Cycle）</p>
+<img src="HamiltonCircuit1.png">
+<p>每一點剛好經過一次的路線，起點和終點相同。可能有許多種，也可能不存在。</p>
+<p class="t">Hamilton Path</p>
+<img src="HamiltonCircuit2.png">
+<p>每一點剛好經過一次的路線，起點和終點不相同。可能有許多種，也可能不存在。</p>
+<p class="t">Travelling Salesman Problem</p>
+<img src="HamiltonCircuit3.png">
+<p>一個周遊各國的商人，他想去所有不同的城市買賣東西。商人打算從其中一個城市出發，各個地方剛好經過一次、只能經過一次，回到原城市。請規劃出距離最短的路線，以及算出距離。</p>
+<p>有時候走回頭路會比較快，然而商人就是不想這麼做。</p>
+<p>這個問題其實就是找到權重最小的Hamilton Circuit。</p>
+<p class="t">找到一個Hamilton Circuit</p>
+<p>判斷是否存在Hamilton Circuit、找到一個Hamilton Circuit是NP-complete問題，找到一個權重最小的Hamilton Circuit是NP-hard問題，目前尚未出現有效率的演算法。</p>
+<p>以Backtracking窮舉所有地點排列方式，一一判斷是否可行，時間複雜度為O(V!)。運用「<a href="DynamicProgramming.html">Dynamic Programming</a>」可降低為O(2^V * V^2)。</p>
+<textarea>
+const int V = 10;	// 點數
+bool adj[V][V];		// adjacency matrix，有向圖和無向圖皆可
+bool visit[V];		// 目前已經經過的點
+int solution[V];	// Hamilton circuit
+
+void backtrack(int n)
+{
+	if (n == V)
+	{
+		// 判斷最後一點到第一點是否頭尾銜接
+		int a = solution[V-1];
+		int b = solution[0];
+		if (adj[a][b])
+		{
+			// 找到一組解
+			for (int i=0; i<V; ++i)
+				cout << solution[i];
+			cout << '\n';
+		}
+		return;
+	}
+
+	int a = solution[n-1];
+	for (int b=0; b<V; ++b)
+		if (adj[a][b] && !visit[b])
+		{
+			visit[b] = true;
+			solution[n] = b;
+			backtrack(n+1);
+			visit[b] = false;
+		}
+}
+
+void HamiltonCircuit()
+{
+	visit[0] = true;    // Hamilton Circuit從哪一點開始都行，
+	solution[0] = 0;    // 直接將第一個點設定為第0點，
+	backtrack(1);       // 然後從下一個點開始backtrack。
+}
+</textarea>
+<p>並不是所有的圖都難以找到Hamilton Circuit。連結性質比較強的圖，就容易找到Hamilton Circuit，例如Ore's Theorem與Knight's Tour。</p>
+<p class="t">Ore's Theorem</p>
+<p><a href="http://www.math.fau.edu/locke/Dirac.htm">http://www.math.fau.edu/locke/Dirac.htm</a></p>
+<p>一張無向圖上所有不相鄰的兩點，滿足degree相加大於等於V，就一定存在Hamilton Circuit，而且有O(V^2)的演算法可以找到一個Hamilton Circuit。</p>
+<img src="HamiltonCircuit4.png">
+<pre>
+一、隨機走出一條路徑，盡量長：
+　　如果是路徑，則從步驟二開始；如果恰好形成環，則從步驟三開始。
+　　輪流進行步驟二與步驟三，直到形成Hamilton Circuit為止。
+　　如果無法操作表示此無向圖無Hamilton Circuit。
+
+二、路徑變環（總共增加一條邊）：
+　　路徑(p1, p2, ..., pk)。
+　　路徑上找到一條邊(pi, pi+1)，同時原圖又有邊(pi, pk)與邊(pi+1, p1)，
+　　去掉邊(pi, pi+1)、接上邊(pi, pk)與邊(pi+1, p1)，
+　　形成環(p1, p2, ..., pi, pk, pk-1, ..., pi+1, p1)。
+
+三、環變路徑（總共增加一個點）：
+　　環(p1, p2, ..., pk, p1)。
+　　環上找到一點pi，同時原圖又有邊(pi, q)連到環外一點q，
+　　就去掉邊(pi, pi+1)、接上邊(pi, q)，
+　　形成路徑(q, pi, pi-1, ..., p2, p1, pk, pk-1, ..., pi+1)。
+　　或者去掉邊(pi, pi-1)、接上邊(pi, q)，
+　　形成路徑(q, pi, pi+1, ..., pk-1, pk, p1, p2, ..., pi-1)。
+</pre>
+<p class="e">UVa 775</p>
+<p class="t">Knight's Tour</p>
+<p>一隻騎士放在西洋棋盤上。讓騎士一筆劃走過棋盤上六十四個方格、回到原點。</p>
+<img src="Greedy3.gif" width="204" height="204">
+<p>此問題是Hamilton Circuit的特例。給定N x M的棋盤，有O(NM)的演算法可以找到一個Knight's Tour。</p>
+<p>懶惰的方式是Warnsdorff's Rule：每一步都走向後續路線最少的格子；如果同時有很多格子，就走向最左邊、最下邊的格子。這個方法有時會出錯。</p>
+<img src="Greedy4.png">
+<p class="e">UVa 10255</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Vehicle Routing Problem</p>
+</div><div class="c">
+<p class="t">車輛路徑問題</p>
+<p>給定起點，除了起點以外，每一點剛好經過一次的路線。</p>
+<iframe src="http://www.youtube.com/embed/oW8h8UuXg2Y"></iframe>
+<p>一個倉庫（物流中心）、數台貨車（有承載限制）。另外有幾位客戶，分散各處，各自需要某些商品，該如何規劃配送路線、配送車次，使得油耗最少？</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Euler Circuit</p>
+</div><div class="c">
+<p class="t">Seven Bridges of Königsberg</p>
+<div class="i"><img src="EulerCircuit1.png"><img src="EulerCircuit2.png"></div>
+<p>「七橋問題」。有一說是當地居民的休閒活動就是遊覽那七座橋，大家都在嘗試找一條可以經過七座橋各一次，然後回到原處的路線。這活動蔚為風潮，許多數學家聽到這個消息後，也致力於解決這個問題，卻都無疾而終。這個問題也傳到了數學家Euler的耳中，最後他想出了一個漂亮的證法。</p>
+<p>另外還有一個童話版本：有天國王想召王宮貴族一起出去散散心，遊覽他的庭園。國王他打算從他的城堡出發，看一看他的庭園花草，以及在他庭園裡的七座橋上散散步。然後回到城堡裡去。由於天氣一定很好、陽光一定很強，屆時出發後絕不要在同一座橋上反反覆覆的走來走去，一直曬太陽，看同樣的風景，那多煩悶。</p>
+<p>國王於是下令叫他的臣子們好好的規劃一下出遊路線，每一座橋都要參觀到，而且絕不能讓大家走同樣的橋兩次。臣子們想了很久，卻連一條路線都規劃不出來，國王只好召來聰明的數學大臣Euler來解決這個問題。Euler奉旨後，自行在家沒日沒夜的閉關了三天，終於解決了這個問題：他證明出路線不存在！</p>
+<img src="EulerCircuit3.png">
+<p>Euler當然要能向國王解釋路線為何不存在，要不然國王肯定氣得叫人把他吊起來。Euler想到，無論陸地和橋的形狀、距離、位置是如何，要找出合適的遊覽路徑，只跟橋與陸地如何連接有關係。Euler首先把庭園的地圖，簡化成我們在圖論中所看到的「圖」，圓形（點）就是陸地，線（邊）就是橋。Euler發明的這張「圖」包含了充分的連接資訊，他也是第一個使用「圖」來解決問題的數學家。</p>
+<img src="EulerCircuit4.png">
+<p>接著Euler想到，如果每一座橋只能穿過一次，那麼一座橋就成了去而不回的單行道。然後，對圖上的某一個點來看，一旦從某座橋進入了一次，就要從另一座橋走出去一次，而不會一直停留在某個點上——這跟從哪裡走來、怎麼走來、哪裡出去、怎麼出去無關。所以，只要看到有個點有奇數個邊，也就是有塊陸地有奇數座橋，就表示有這塊陸地有一條橋會讓國王走得過去、卻走不出來，此時就得重複走一座橋、或不走這座橋——這就代表著國王的遊歷路線不存在。</p>
+<p>不知道國王後來還有沒有出遊？不過Euler的這個證明過程倒是出名了。數學家們為了紀念Euler的這項貢獻，把一筆劃走完所有邊一次後恰好回到起點的路線，稱作Euler Tour，Tour即是遊覽的意思；至於Euler Circuit則是另一個比較精準的用詞。</p>
+<p class="t">一筆劃問題</p>
+<iframe src="http://www.youtube.com/embed/AVpLM-O5k6o"></iframe>
+<p>給定一個圖案，要如何一筆劃完成？留給讀者解決！</p>
+<p class="t">Euler Circuit</p>
+<p>每條邊剛好經過一次的路線，起點和終點相同。可能有許多種，也可能不存在。</p>
+<img src="EulerCircuit5.png">
+<p>一張圖存在Euler Circuit的條件是：</p>
+<pre>
+無向圖：每個點都是偶數條邊。相互連通。
+有向圖：每個點的出邊與入邊一樣多。相互連通。
+</pre>
+<p class="t">Euler Trail</p>
+<p>每條邊剛好經過一次的路線。可能有許多種，也可能不存在。Euler Circuit也算是Euler Trail。</p>
+<p>Euler Circuit隨意刪除一條邊，形成Euler Trail。Euler Trail的起點與終點補上一條邊，形成Euler Circuit。</p>
+<img src="EulerCircuit6.png">
+<p>一張圖存在Euler Trail的條件是：</p>
+<pre>
+無向圖：恰有零個點或兩個點是奇數條邊。相互連通。
+有向圖：恰有一點出邊比入邊多一條（作為起點），
+　　　　恰有一點入邊比出邊多一條（作為終點），
+　　　　其他的點出邊與入邊一樣多。相互連通。
+　或者，每個點的出邊與入邊一樣多（任選兩點作為起點與終點）。相互連通。
+</pre>
+<p class="t">無向圖找出一個Euler Circuit（Hierholzer's Algorithm）</p>
+<p>一個Euler Circuit，在某點相交，可拆成兩個Euler Circuit。</p>
+<img src="EulerCircuit7.png">
+<p>兩個Euler Circuit，可在某點相接，合成一個Euler Circuit。</p>
+<img src="EulerCircuit8.png">
+<p>大的Euler Circuit可拆成小的，小的可接成大的——自然想到Divide and Conquer。</p>
+<img src="EulerCircuit9.png">
+<p>在圖上隨意走一圈。未及之處，一定是一個（或數個）Euler Circuit。</p>
+<pre>
+Divide ：在圖上隨意走一圈。
+Conquer：其餘部份遞迴下去。
+Combine：其餘部分的Euler Circuit們，銜接到隨意走的那一圈。
+</pre>
+<p>圖的資料結構為adjacency matrix，時間複雜度是O(V^2 + E)。圖的資料結構為adjacency list，時間複雜度是O(V+E)。</p>
+<textarea>
+int adj[10][10];	// adjacency matrix，記錄邊數。
+int degree[10];		// 記錄每個點的邊數
+deque< pair<int,int> > edges;	// Euler Circuit 經過的邊
+// deque<int> vertices;			// Euler Circuit 經過的點
+
+bool EulerCircuit()
+{
+	memset(degree, 0, sizeof(degree));
+
+	int E = 0;	// 總邊數
+	for (int x=0; x<10; ++x)
+		for (int y=x; y<10; ++y)
+		{
+			// 累計連到 x 點的邊數
+			degree[x] += adj[x][y];
+			// 累計連到 y 點的邊數
+			degree[y] += adj[x][y];
+			// 累計邊數
+			E += adj[x][y];
+		}
+
+	for (int i=0; i<10; ++i)	// 檢查每個點
+		if (degree[i] % 2 == 1)	// 如果某個點擁有奇數條邊
+			return false;
+
+	int s = -1;					// 設定起點
+	for (int i=0; i<10; ++i)
+		if (degree[i] > 0)		// 有邊的點當作起點
+		{
+			s = i;
+			break;
+		}
+	if (s == -1) return false;	// 此圖無點
+
+	edges.clear();
+//	vertices.clear();
+	FindEulerCircuit(s);		// 遞迴亂繞圈圈
+
+	// 圖可能不連通，檢查是否走完所有邊。
+	if (edges.size() != E) return false;
+//	if (vertices.size() != E+1) return false;
+	return true;
+}
+</textarea>
+<textarea t="亂繞一圈，迴圈版">
+deque< pair<int,int> > edges;	// 記錄Euler Circuit經過的邊
+// deque<int> vertices;			// 記錄Euler Circuit經過的點
+
+int NextNode(int x)
+{
+	for (y=0; y<10; ++y)
+		if (adj[x][y] > 0)
+			return y;
+	return -1;
+}
+
+void FindOneCircuit(int s)
+{
+//	vertices.push_back(s);
+
+	for (int x = s, y; (y = NextNode(x)) != -1; x = y)
+	{
+		adj[x][y]--;
+		if (x != y) adj[y][x]--;
+		edges.push_back( make_pair(x,y) );
+//		vertices.push_back(y);
+	}
+}
+</textarea>
+<textarea t="亂繞一圈，遞迴版">
+void FindOneCircuit(int x)
+{
+//	vertices.push_back(x);
+
+	for (int y=0; y<10; ++y)	// 找一條可以走的邊
+		if (adj[x][y] > 0)
+		{
+			adj[x][y]--; 
+			if (x != y) adj[y][x]--;
+			edges.push_back( make_pair(x,y) );
+
+			FindOneCircuit(y);
+			break;
+		}
+}
+</textarea>
+<textarea t="亂繞圈圈，遞迴版，O(VE)（adjacency matrix）">
+void FindEulerCircuit(int x)
+{
+	for (int y=0; y<10; ++y)	// 不斷找可以走的邊
+		if (adj[x][y] > 0)
+		{
+			adj[x][y]--;
+			if (x != y) adj[y][x]--;
+
+			FindEulerCircuit(y);
+			edges.push_front( make_pair(x,y) );	// Combine階段才做
+			// break消失不見
+		}
+//	vertices.push_front(x);	// Combine階段才做
+}
+</textarea>
+<textarea t="亂繞圈圈，遞迴版，O(V^2 + E)">
+int current_y[10] = {0};	// 加速至O(V^2)的手段。
+
+void FindEulerCircuit(int x)
+{
+	for (int y = current_y[x]; y < 10; ++y)
+		if (adj[x][y] > 0)
+		{
+			adj[x][y]--;
+			if (x != y) adj[y][x]--;
+
+			FindEulerCircuit(y);
+			edges.push_front( make_pair(x,y) );
+		}
+//	vertices.push_front(x);
+}
+</textarea>
+<p class="t">有向圖找出一個Euler Circuit</p>
+<p>有向圖的情況下，就將每個點的入邊與出邊分開來看，如果入邊與出邊的數量相等，表示有路可走。</p>
+<p>除此之外，都與無向圖相同。</p>
+<p class="t">找出所有Euler Circuit</p>
+<p>可以採用backtracking。無法在多項式時間內完成。</p>
+<textarea>
+int adj[10][10];	// adjacency matrix，兩點間可能不只一邊。
+pair<int,int> edges[10000];	// solution vector
+
+void backtrack(int x, int n)
+{
+	if (n == E)	// E 是這張圖上全部的邊的總數
+	{
+		// generate a solution
+		return;
+	}
+
+	for (int y=0; y<10; ++y)
+		if (adj[x][y] > 0)
+		{
+			adj[x][y]--;
+			edges[n] = make_pair(x, y);
+			backtrack(y, n+1);
+			adj[x][y]++;
+		}
+}
+</textarea>
+<p class="e">UVa 117 291 302 10054 10129 10441 10506 10596 10735</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Chinese Postman Problem</p>
+</div><div class="c">
+<p class="t">中國郵差問題</p>
+<p>郵差叔叔走訪每條大街小巷，讓家家戶戶都收到信。</p>
+<p>給定一張圖，找出一條環狀路線，圖上每條邊至少經過一次，並且距離最短。</p>
+<p class="t">無向圖演算法</p>
+<p><a href="http://web.mit.edu/urban_or_book/www/book/chapter6/6.4.4.html" class="l">http://web.mit.edu/urban_or_book/www/book/chapter6/6.4.4.html</a></p>
+<pre>
+1. 先判斷整張圖是否為一個強連通分量，否則無解。
+2. 找出圖上所有奇點，一定是偶數個。
+3. 找出所有奇點點對之間的最短路徑長度。
+4. 把這些奇點做最小權匹配，權重採用剛才算的最短路徑長度。
+5. 把匹配邊加在原圖上，再找歐拉環，即得中國郵差路徑之權重。
+6. 將匹配邊改成其代表的最短路徑，即得中國郵差路徑。
+</pre>
+<p>時間複雜度為六項步驟總和。各條匹配邊所代表的最短路徑，絕對不會重疊。</p>
+<p class="e">ICPC 4039</p>
+<p class="t">有向圖演算法</p>
+<pre>
+1. 先判斷整張圖是否為一個強連通分量，否則無解。
+2. 找出圖上所有出邊數不等於入邊數的點。
+3. 於上述找到的點，找出所有點對之間的最短路徑長度。
+4. 令d(x)為x點出邊與入邊的數量差。
+   出邊多於入邊的點x，建立d(x)份，放在X側。
+   出邊少於入邊的點y，建立d(y)份，放在Y側。
+   最後建立X側到Y側的邊，權重採用剛才算的最短路徑長度。
+   算最小權二分匹配。
+4. 合理的做法是建立最小權最大流模型：
+   把出邊多於入邊的點x，放在X側。拉一條源點到x點的邊，權重為零，容量為d(x)。
+   把出邊少於入邊的點y，放在Y側。拉一條y點到匯點的邊，權重為零，容量為d(y)。
+   最後建立X側到Y側的邊，權重採用剛才算的最短路徑長度，容量為無限大。
+   算最小權最大流。
+5. 把匹配邊加在原圖上，再找歐拉環，即得中國郵差路徑之權重。
+6. 將匹配邊改成其代表的最短路徑，即得中國郵差路徑。
+</pre>
+<p>時間複雜度為六項步驟總和。</p>
+<p>簡單來說：Minimum Cost Flow，每條邊容量下限皆為一。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Circuit.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:07:59 GMT -->
+</html>

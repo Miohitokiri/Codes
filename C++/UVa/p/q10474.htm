@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10474: Where is the Marble?</h1>            
+<p>Raju和Meena喜歡玩彈珠，他們有許多上面有號碼的彈珠。一開始時，Raju按照彈珠上面的號碼由小到大排成一列，然後Meena會要求Raju找出某個號碼的第一顆彈珠所在的位置。她會算1...2...3...，如果Raju答對了，他就得1分，否則Meena得1分。玩了多次之後誰的得分多誰就贏了。今天你有機會扮演Raju的角色。由於你們都是很聰明的小孩，你會用電腦來計算，而Meena則寫了一個程式來檢查你花多少時間來回答所有的問題。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料，每組測試資料的第一列有2個正整數N、Q，N代表彈珠的數目，Q代表對於此組測試資料Meena問的問題的數目。接下來的N列每列有一個整數，代表這N個彈珠上的號碼（未經排序）。在接下來的Q列每列有一個整數代表Meena所問的問題（球的號碼）。所有輸入的數字都不會大於10000，且沒有負的。</p>        
+<p>當N=0, Q=0時代表輸入結束。請參考Sample Input。</p>        
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                    
+<p>對每組測試資料請先輸出一列，這是第幾組測試資料。對每組測試資料Meena所問的每個問題輸出一列，輸出格式如下其中之一：</p>     
+<ul>
+  <li>x found at y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果第一個號碼為x的彈珠在位置y被發現（位置從1開始算）</li>
+  <li>x not found&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果找不到號碼為x的彈珠</li>
+</ul>
+<p>輸出格式請參考Sample  
+Output。</p>      
+<table border="1" width="100%" cellpadding="5">     
+  <tr>     
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>      
+  </tr>      
+  <tr>      
+    <td width="50%"><pre>4 1
+2
+3
+5
+1
+5
+5 2
+1
+3
+3
+3
+1
+2
+3
+0 0</pre></td>      
+    <td width="50%"><pre>CASE# 1:
+5 found at 4
+CASE# 2:
+2 not found
+3 found at 3
+</pre></td>      
+  </tr>      
+</table>      
+                                        
+</body>                                        
+                                        
+</html>                                        

@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q514: Rails</h1>          
+<p>在一個叫「堆疊市」的城市中有一個有名的火車站。由於地形限制以及經費的關係，火車站及唯一的鐵路的樣子如下圖：</p>  
+<p align="center"><img border="0" src="p514.gif" width="418" height="216"></p>  
+<p>現在火車從A方向來，預定從B方向離開。火車共有N節車廂（N 
+&lt;=1000），並且各車廂依次以1到N來編號。你可以假設各車廂在進站之前可以單獨與其他車廂分離，也可以單獨離開車站到往B方向的鐵軌上。你也可以假設在任何時間火車站都可以容納所有的車廂。但是一旦一節車廂進站後，就不能再回到A方向的鐵軌上了，並且一旦離開車站往B方向後，也不能再回到車站。</p>  
+<p>現在你的任務是寫一個程式，判斷火車能否以一特定的排列方式在B方向的鐵軌上。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料的第一列，有1個整數N，其意義如上所述。對於此組測試資料接下來有0到多個不等的測試，每個測試一列，每列有N個整數，內容為1,2,......,N的任意排列。當遇到僅含有一個0的一列，代表該組測試資料結束。</p>    
+<p>N=0代表輸入結束，請參考Sample Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料的每個測試，輸出該1,2,......,N的任意排列是否可能。如果可能，請輸出yes，若不可能則輸出No。</p> 
+<p>每組測試資料後亦請空一列。請參考Sample Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>5
+1 2 3 4 5
+5 4 3 2 1
+5 4 1 2 3
+0
+7
+4 5 3 7 6 2 1
+0
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Yes
+Yes
+No
+
+Yes
+
+</pre>
+                            
+</body>                            
+                            
+</html>                            

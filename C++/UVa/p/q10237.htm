@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10237: Bishops</h1>             
+<p>有玩過西洋棋吧！其中主教（bishop）是以對角線來移動，並且如果2個主教位於對方的移動路徑上則他們可以互相攻擊。以下圖為例說明：黑色格子為主教<b>B<sub>1</sub></b>可以移動的路徑。從這個圖也可以看出<b>B<sub>1</sub></b>和<b>B<sub>2</sub></b>正處於可以互相攻擊的位置，但是<b>B<sub>1</sub></b>和<b>B<sub>3</sub></b>則否。同樣的，<b>B<sub>2</sub></b>和<b>B<sub>3</sub></b>也處於不可互相攻擊的位置。</p> 
+<p align="center"><img border="0" src="p861.jpg" width="224" height="223"></p> 
+<p>現在給你2個整數 <b>n</b> 和 <b>k</b> 
+，你的任務是算出有多少種方式你可以放 <b>k</b> 
+個主教在一個<b> n*n</b> 
+的棋盤中，使得沒有任何2個主教處於可以互相攻擊的位置。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入包含多組測試資料。每組測試資料一列含有2個整數 <b>n</b>（<b>1 
+&lt;= n &lt;= <font color="#FF0000">30</font></b>）、<b>k</b>（<b>0 &lt;= k 
+&lt;= n<sup>2</sup></b>）</p>                    
+<p>若 n=0，k=0 代表輸入結束。請參考Sample Input。</p>                      
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                        
+<p>對每組測試資料輸出一列，有多少種方式你可以放 <b>k</b> 
+個主教在一個<b> n*n</b> 
+的棋盤中，使得沒有任何2個主教處於可以互相攻擊的位置。你可以放心的假設答案一定小於<b>10<sup>15</sup></b>。</p>                    
+<table border="1" width="100%" cellpadding="5">                       
+  <tr>                       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                             
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                            
+  </tr>                                            
+  <tr>                                            
+    <td width="50%">                                
+      <font face="Courier,Times New Roman,Arial Helvetica" size="3">8 6<br>
+      4 4<br>
+      20 40<br>
+      30 5<br>
+      0 0</font>
+    </td>                                        
+    <td width="50%">                                  
+      <pre><font face="Courier,Times New Roman,Arial Helvetica" size="3">5599888
+260
+0
+3127859642656
+</font></pre>
+    </td>                                       
+  </tr>                                       
+</table>                                       
+                                                                         
+</body>                                                                         
+                                                                         
+</html>                                                                         

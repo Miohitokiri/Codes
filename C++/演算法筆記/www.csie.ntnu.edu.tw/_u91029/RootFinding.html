@@ -1,0 +1,314 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/RootFinding.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:58 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Root Finding</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Root Finding</p>
+</div><div class="c">
+<p class="t">Root</p>
+<p>找到確切的輸入數值，讓輸出數值是零，稱作「求根」。這樣的輸入，稱作「根」，可能有許多個、也可能不存在。</p>
+<img src="RootFinding1.png">
+<p>以函數圖形表達函數的根：當輸入變數只有一個，是函數曲線與X軸的相交之處。當輸入變數只有兩個，是函數曲面與XY平面的相交之處。當輸入變數有許多個，請讀者自行推廣。</p>
+<img src="RootFinding2.png">
+<p>中學數學談過多項式函數的求根，相信大家印象深刻。比如一元二次多項式函數的求根（解一元二次多項式方程式），有個號稱數學界最難背的公式：二a分之負b正負根號b平方減四ac。</p>
+<pre>
+          _________
+    -b ± V b<sup>2</sup> - 4ac
+x = ---------------
+          2a
+</pre>
+<p>以下則是談一般的函數的求根。多項式函數，性質優美，擁有特定公式；一般的函數，雜亂無章，沒有固定公式，只好利用電腦了。最簡單的求根演算法，就是窮舉法：窮舉各種輸入，看看輸出是不是零。</p>
+<textarea>
+// 使用了function pointer的語法。
+// 把f(x)當作參數，比較有個函式的模樣了！
+void roots(float (*f)(float))
+{
+	// 假設根可能在-100000到+100000之間
+	for (float x = -1e5; x <= +1e5; x += 0.001)
+//		if (f(x) == 0)
+		if (fabs(f(x)) < 0.001)	// 避免誤差
+			cout << x << "是根";
+}
+</textarea>
+<p>窮舉法非常慢。接下來介紹更快的方法。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Root Finding: Bisection Method</p>
+</div><div class="c">
+<p class="t">用途</p>
+<p>用來找到連續函數的根。bi-這個字首是「雙」的意思，而section是「分段」的意思。中文譯作「二分法」。</p>
+<p class="t">勘根定理</p>
+<p>解釋演算法之前，得先複習一下高中數學的「勘根定理」。</p>
+<p>連續函數的圖形當中，當起點與終點分別在X軸的兩側，那麼一定在某處穿過X軸。換句話說，在某處有根。換句話說，至少有一個根。</p>
+<img src="BisectionMethod1.png">
+<p class="t">以數學符號說明勘根定理</p>
+<p>連續函數f(x)，任意區間[a,b]。a和b分別代入f(x)，得到f(a)和f(b)。</p>
+<p>如果f(a)和f(b)是一正一負、是異號，即f(a) f(b) < 0，就表示座標(a, f(a))和座標(b, f(b))這兩點位於X軸的兩側。因為f是連續函數，所以座標(a, f(a))到座標(b, f(b))的路線，一定碰到X軸至少一次──區間[a,b]裡面至少有一個根。</p>
+<img src="BisectionMethod1.png">
+<p>如果f(a)和f(b)是同號，即f(a) f(b) > 0，就表示座標(a, f(a))和座標(b, f(b))這兩點位於X軸的同側──區間[a,b]裡面可能有根，也可能無根。</p>
+<img src="BisectionMethod2.png">
+<p>如果f(a)和f(b)有零，即f(a) f(b) = 0，此時a和b就是根──區間[a,b]裡面可能還有其他根，也可能無根。</p>
+<img src="BisectionMethod3.png">
+<p>另外，當[a,b]的端點恰好沒有定義在f(x)當中，則無法計算出f(a)和f(b)的值。要解決這個問題，可以將區間略微縮小一些，像是[a + 0.001, b - 0.001]，即可避免端點沒有定義的情況。</p>
+<p class="t">比較差的演算法</p>
+<p>將區間切兩半，遞迴縮小區間，夾擠、逼近根。</p>
+<img src="BisectionMethod4.png">
+<p>這種方式有個很大的問題：如果左右兩個區間都做檢查，結果就跟窮舉法沒兩樣。</p>
+<p class="t">二分法</p>
+<p>不如只檢查其中一個區間吧！</p>
+<p>只檢查確定有根的區間，即f(a)和f(b)異號的區間。如果左右兩個區間都確定有根，那麼就只檢查左邊區間。一旦找到根，就馬上結束遞迴。</p>
+<img src="BisectionMethod5.png">
+<textarea>
+float bisection(float a, float b, float (*f)(float))
+{
+	float fa = f(a), fb = f(b), c = a, fc;
+	while (b - a > 1e-3)
+	{
+		c = (a + b) / 2;
+		fc = f(c);
+		if (fc == 0) break;
+		else if (fa * fc < 0) {b = c; fb = fc;}
+		else {a = c; fa = fc;}
+	}
+	return c;
+}
+</textarea>
+<p>至於f(a)和f(b)同號的區間、f(a)和f(b)為零的區間，就無法處理了。</p>
+<p>這就是二分法。二分法其實也正是Binary Search。</p>
+<p class="t">找到所有根</p>
+<p>整條數線細分成許多微小區間。f(a)和f(b)同號的區間，視作沒有根；f(a)和f(b)為零的區間，視作只有端點有根；f(a)和f(b)異號的區間，視作剛好有一個根，實施二分法找到根。</p>
+<p>只要細分的足夠細膩，理論上可以找到所有根，除了一種例外：根恰好是區域極值。此時必須配合其他的求根方法，才能處理這個例外。</p>
+<img src="BisectionMethod6.png">
+<textarea>
+void roots(float (*f)(float))
+{
+	float width = 100;	// 微小區間的寬度
+
+	// 假設所有根都在-100000到+100000之間
+	for (float x = -1e5; x < +1e5; x += width)
+	{
+		if (f(x) == 0) cout << x;	// x是根
+
+		if (f(x) * f(x + width) < 0)
+			cout << bisection(x, x + width, f);
+	}
+}
+</textarea>
+<p class="t">精確度</p>
+<p>分割區間越多次，答案就越精確。</p>
+<p>float、double變數，能夠儲存的位數有限，不可能精確，有著一個極限。不斷分割區間，就能到達極限。一個float變數的範圍約為10^38到10^-38，分割區間log₂(10^76) ≒ 252次，定能得到float變數所能儲存的最精確的數值。</p>
+<textarea>
+float bisection(float a, float b, float (*f)(float))
+{
+	float fa = f(a), fb = f(b), c;
+	while (true)	// 到達精確的極限
+	{
+		c = (a + b) / 2;
+		if (a == c || b == c) break;
+		float fc = f(c);
+		if (fa * fc < 0) {b = c; fb = fc;}
+		else {a = c; fa = fc;}
+	}
+	return c;
+}
+</textarea>
+<p>根據個人測試，不管迴圈計算多少遍，a b的大小關係永遠不變，而c永遠會在[a,b]當中，不會超出範圍。</p>
+<p>迴圈不斷計算之後，有些函數造成a b最終相等，也有些函數造成a b永遠不相等，永遠相差一個最小精確度的值。要解決不相等的問題，只需判斷c是a或是b即可。</p>
+<p class="t">範例：求平方根</p>
+<textarea>
+int sqrt(int x)
+{
+	int a = 1, b = x;
+	while (a <= b)
+	{
+//		int c = (a + b) / 2;
+		int c = a + (b - a) / 2;	// 防止溢位
+		if (c * c == x) return c;
+		else if (c * c > x) b = c - 1;
+		else a = c + 1;
+	}
+	return b;
+}
+</textarea>
+<p class="t">嚴格遞增函數</p>
+<p>連續函數，嚴格遞增（減）；若有根，保證只有一個根。</p>
+<img src="BisectionMethod7.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Root Finding: Secant Method</p>
+</div><div class="c">
+<p class="t">割線法</p>
+<p>一張圖勝過千言萬語。</p>
+<img src="SecantMethod1.png">
+<p>一開始選定的兩點，如果不夠靠近根，割線可能會亂跑。</p>
+<img src="SecantMethod2.png">
+<p>運氣不好時，割線呈水平線，割線法會故障；割線趨近水平線，下一點會溢位。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Root Finding: Newton's Method</p>
+</div><div class="c">
+<p class="t">牛頓法</p>
+<p>割線法採用割線，牛頓法採用切線。牛頓法的收斂速度比較快，但是計算時間比較多。</p>
+<img src="Newton%27sMethod1.png">
+<p>如果給定的函數，其導數不需要dx，例如多項式函數，那麼我們可以預先用紙筆推導導數式子，讓計算結果更精準。</p>
+<p class="t">凸函數</p>
+<p>連續函數，斜率嚴格遞增（減）；若有根，牛頓法能找到根。</p>
+<p>以斜率的觀點來看牛頓法，牛頓法不斷地縮小斜率範圍。</p>
+<img src="Newton%27sMethod2.png">
+<p>連續函數，斜率嚴格遞增（減），正是凸（凹）函數：函數圖形上面任意劃一道割線，總是凸出來的函數。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Fixed Point Finding</p>
+</div><div class="c">
+<p class="t">Fixed Point</p>
+<p>找到特定的輸入數值，讓輸出和輸入完全一樣。這樣的輸入稱作「不動點」。可能有許多個，也可能不存在。</p>
+<img src="FixedPointFinding1.png">
+<p>以函數圖形表達函數的不動點：當輸入變數只有一個，是函數曲線與直線y = x的相交之處。當輸入變數超過一個，此處不討論。</p>
+<img src="FixedPointFinding2.png">
+<p>求根、求不動點，本質上是同一件事情。求根變成求不動點：等號兩邊同時加上x。求不動點變成求根：等號兩邊同時減去x。</p>
+<pre>
+  f(x) = 0   <--->   f(x) + x = x   <--->   g(x) = x
+</pre>
+<p>數學系課程才會介紹不動點，相信大家完全沒印象。然而在計算學當中，不動點擁有超高效率演算法，是一大利器。</p>
+<p class="t">Eigenpoint【尚無專有名詞】</p>
+<p>找到特定的輸入數值，讓輸出是輸入的倍數，倍數是某個定值。這樣的輸入稱作「特徵點」。可能有許多個，也可能不存在。</p>
+<img src="FixedPointFinding3.png">
+<p>以函數圖形表達函數的特徵點：當輸入變數只有一個，是函數曲線與直線y = λx的相交之處。當輸入變數超過一個，此處不討論。</p>
+<img src="FixedPointFinding4.png">
+<p>求根、求特徵點，本質上是同一件事情。求根時，將函數乘上任意倍率，根依然相同──如此就變成了求特徵點。</p>
+<pre>
+  f(x) = 0   <--->   f(x) + x = x
+λ f(x) = 0   <--->   λ (f(x) + x) = λx   <--->   g(x) = λx
+</pre>
+
+
+</div></div><div class="a"><div class="h">
+<p class="b">Fixed Point Finding: Fixed Point Iteration</p>
+</div><div class="c">
+<p class="t">不動點遞推法</p>
+<p>不斷代入上次求得的數值。就這麼簡單。</p>
+<img src="FixedPointIteration1.png">
+<p>即是在函數圖形與45°斜線之間往返。越走越小圈、越走越近。</p>
+<img src="FixedPointIteration2.png">
+<p>運氣不好時，無法得到不動點。</p>
+<img src="FixedPointIteration3.png">
+<p>越走越大圈、越走越遠。</p>
+<img src="FixedPointIteration4.png">
+<p>程式碼很短，只有一個迴圈。</p>
+<textarea>
+float fixedpoint(float (*f)(float))
+{
+	float x = random();	// 隨便設定一個起點
+	float y = f(x);
+	int c = 0;
+
+	while (x != y)		// 直到遇到不動點
+	{
+		x = y;			// 上次求出來的值，反覆代入
+		y = f(x);
+
+		// 運氣不好時，無法得到不動點
+		if (++c > 1000) return 1e9;
+	} 
+	return x;
+}
+</textarea>
+<p class="t">斜率絕對值小於1的連續函數</p>
+<p>遭遇不動點，其中一種情況，就是步伐越來越短。測量X軸方向的步伐大小，即是x₀ x₁ x₂……之間的間距。當間距越來越小，最後xₙ = xₙ₊₁ = f(xₙ)就會趨近相等、就會收斂，保證遭遇不動點xₙ。</p>
+<p>此處只討論這種抓抓腦袋就能想到的特例。</p>
+<img src="FixedPointIteration5.png">
+<pre>
+|x₁ - x₀| > |x₂ - x₁| > |x₃ - x₂| > ......
+
+|x₁ - x₀| > |x₂ - x₁|   此處以開頭兩項為例。事實上任意相鄰兩項都成立。
+
+|x₁ - x₀| > |f(x₁) - f(x₀)|
+
+    |f(x₁) - f(x₀)|   
+1 > ——————————————— = |slope|
+       |x₁ - x₀|      
+
+|slope| < 1
+
+-1 < slope < 1
+</pre>
+<p>先後間距變小，移項之後，割線的斜率的絕對值小於1。</p>
+<img src="FixedPointIteration6.png">
+<p>也就是說，如果有一種連續函數，任取兩點的割線的斜率的絕對值都小於1，那麼這樣的連續函數，保證有不動點。而且無論從哪裡當起點，都能找到不動點。</p>
+<p>觀察割線們當中的切線們，那麼這樣的連續函數，也就是每一點的切線的斜率的絕對值都小於1，不太斜的連續函數。</p>
+<img src="FixedPointIteration7.png">
+<p class="t">特徵點遞推法</p>
+<p>在函數圖形與斜率λ的直線之間往返。上次求得的數值，除以λ之後才代入。</p>
+<img src="FixedPointIteration8.png">
+<p class="t">斜率絕對值小於|λ|的連續函數</p>
+<p>遭遇特徵點，其中一種情況，就是步伐越來越短。中略。也就是每一點的切線的斜率的絕對值都小於|λ|的函數。</p>
+<pre>
+|x₁ - x₀| > |x₂ - x₁| > |x₃ - x₂| > ......
+
+|x₁ - x₀| > |x₂ - x₁|   此處以開頭兩項為例。事實上任意相鄰兩項都成立。
+
+|x₁ - x₀| > |f(x₁/λ) - f(x₀/λ)|   上次求得的數值，除以λ之後才代入。
+
+|λχ₁ - λχ₀| > |f(χ₁) - f(χ₀)|     變數替換
+
+|λ| |χ₁ - χ₀| > |f(χ₁) - f(χ₀)|
+
+      |f(χ₁) - f(χ₀)|   
+|λ| > ——————————————— = |slope|
+         |χ₁ - χ₀|      
+
+|slope| < |λ|
+
+-|λ| < slope < |λ|               夾在±λ之間
+</pre>
+<p class="t">Lipschitz Function</p>
+<p>方才的函數條件，再添上等號，稱作Lipschitz Function。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Equation Solving</p>
+</div><div class="c">
+<p class="t">Equation</p>
+<p>由未知數（變數）、已知數（常數）的各種運算來構成式子。兩個相等的式子，就叫作「方程式」。</p>
+<pre>
+2x + 1 = (4x² + 3) / (x - 1)
+</pre>
+<p>方程二字借自中國古代數學書籍，意義相去甚遠，是個不精準的翻譯。按照英文字面意義來翻譯，應該稱作「等式」才對。</p>
+<p>中學數學教了很多方程式的計算，例如解一元二次方程式、解聯立方程式，並且搭配幾何學一起講解。大學指考前，算了千百次，應當難不倒各位。</p>
+<p>方程式有什麼用途呢？其實就是設x、解x。這兩件事情很難用中文講個明白，不過只要經歷許多數學題目之後，自然而然就能體會到設x、解x的精神所在。</p>
+<a href="https://www.google.com.tw/search?q=findx&amp;tbm=isch"><img src="EquationSolving1.png"></a>
+<p>方程式重新整理成函數的模樣，就能求解。</p>
+<pre>
+2x + 1 = (4x² + 3) / (x - 1)
+
+等量減法公理，兩邊同減一樣多的東西。（移項）
+2x + 1 - (4x² + 3) / (x - 1) = 0
+
+整理成函數的模樣，然後求根即可！
+f(x) = 2x + 1 - (4x² + 3) / (x - 1)
+</pre>
+<p>求根、求不動點、求特徵點、求解，本質上是同一件事情。</p>
+<pre>
+f(x) = 0                                  root finding
+f(x) + x = x          --->  g(x) = x      fixed point finding
+λf(x) + λx = λx       --->  h(x) = λx     eigenpoint finding
+λf(x) + λq(x) = q(x)  --->  p(x) = q(x)   equation solving
+</pre>
+<p class="e">UVa 358 10341 10428 10566 10668 11277</p>
+<p class="t">容易求根、求不動點、求特徵點、求解的函數類型</p>
+<img src="EquationSolving2.png">
+<p>Increasing Function：遞增函數。輸入變大，輸出也跟著變大的函數。適合Bisection Method。</p>
+<p>Convex Function：凸函數。隨便劃一道割線，函數曲線總是凹下去的函數。凸函數的斜率是遞增函數。適合Newton Method。</p>
+<p>Lipschitz Function：平緩函數。隨便劃一道割線，斜率的絕對值小於等於一個定值，不太斜的函數。適合Fixed Point Iteration。</p>
+<p>Polynomial Function：多項式函數。可以手工推導公式解，也可以使用上述演算法求解。</p>
+<p class="t">System of Equations（Simultaneous Equations）</p>
+<p>許多道方程式同時成立，整體稱作「方程組」或者「聯立方程式」。</p>
+<pre>
+{ 1 x + 2 y - 4 sin(z) = 1
+{ 2 x - 4 y + 2 cos(z) = 2
+{ 3 x + 1 y + 1 exp(z) = 3
+</pre>
+<p>我沒有研究。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/RootFinding.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:14 GMT -->
+</html>

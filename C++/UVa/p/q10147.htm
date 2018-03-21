@@ -1,0 +1,57 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10147: Highways</h1>          
+<p>有一個叫做Flatopia的島國。這個島的土地非常非常的平坦，但是他們的高速公路系統卻非常的爛。政府已經在一些重要的城鎮之間建立一些高速公路，然而仍然存在著一些城鎮是高速公路無法到達的。所以現在他們政府想要新建一些高速公路連接各城鎮，使得任2個城鎮之間的來往都可以透過高速公路系統。</p>   
+<p>城鎮按照1到N來編號，並且給你每個城鎮的座標。每條高速公路僅連接2個城鎮。所有的高速公路（包含已存在及將新建的）都是雙向且是直線的，其長度為2城鎮座標的距離。高速公路可以自由的穿越其他城鎮，但是駕駛人僅能在這條高速公路的端點城鎮才能轉到另一條高速公路。</p>   
+<p>Flatopia政府想要以最低的花費來新建高速公路，使得任2個城鎮的交通往來都可以透過高速公路系統。由於土地非常非常的平坦，花費的金錢與新建高速公路的長度成正比。你的任務就是幫助他們找出該在哪些城鎮之間新建高速公路，並且使得花費最低。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個正整數代表以下有幾組測試資料。</p>     
+<p>每組測試資料的第一列有一個正整數 N（1 &lt;= N &lt;= 750），代表城鎮的數目。接下來有N列，按照城鎮的編號每列有2個整數代表各城鎮的座標（其絕對值都不大於10000）。然後有一列含有一個正整數 
+M（0 &lt;= M &lt;= 1000），代表已經存在的高速公路的數目數。再接下來有M列，每列有2個整數，代表此條已存在的高速公路是連接哪2個城鎮。任2個城鎮間最多只有1條高速公路連接。</p>     
+<p>第一列與第一組測試資料間有一空白列，測試資料間亦有一空白列。請參考Sample 
+Input。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，請輸出所要新建的高速公路，使得任2個城鎮的交通往來都可以透過高速公路系統，並且花費最低。輸出時每條高路公路一列，以高速公路的2端點城鎮編號代表。如果不需新建高速公路，也就是說所有的城鎮都已經相連了，請輸出：No 
+new highways need</p>  
+<p>測試資料間請空一列。請參考Sample Output。另外，本問題答案不一定是唯一的，judge有特殊程式來判斷，所以你不需要擔心這些。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                              
+Input</b></span></p>                              
+<pre>2
+
+9
+1 5
+0 0 
+3 2
+4 5
+5 1
+0 4
+5 2
+1 2
+5 3
+3
+1 3
+9 7
+1 2
+
+2
+1 1
+99 99
+1
+1 2</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>6 1
+7 3
+5 7
+8 3
+4 9
+
+No new highways need</pre>
+                            
+</body>                            
+                            
+</html>                            

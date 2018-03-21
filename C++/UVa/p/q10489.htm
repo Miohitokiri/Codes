@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10489: Boxes of Chocolates</h1>            
+<p>小皮皮在她6歲的生日收到許多巧克力。她是一個非常好又有魅力的女孩，並且她總是把她的東西與朋友分享。現在她想要把她所有的巧克力分給朋友們。她試著公平的分，讓每個朋友拿到的巧克力的數目一樣多。不過有時候分完之後還有剩（不夠每個朋友一顆了），所以她就把這些給她的狗Kittu吃。            
+<p>小皮皮收到的巧克力都是放在用漂亮的紙包裝起來的盒子。有時候盒子內沒有直接放巧克力，而是放有一個較小的盒子。而這個較小的盒子有時也是沒有直接放巧克力，而是放一個更小的盒子。只有最小（最內層）的盒子中才真正放有巧克力。
+
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p>輸入的第一列有一個整數T, 代表以下有幾組測試資料。</p>                
+<p>每組測試資料的第一列，含有2個整數N、B，N代表小皮皮朋友的數目，B代表她收到的巧克力有多少盒。接下來的B列每列代表一個巧克力盒，每列的開始有一個正整數K，然後接著有K個整數a<sub>1</sub>,  
+a<sub>2</sub>, a<sub>3</sub>,......, a<sub>k</sub>。其中a<sub>i</sub>代表第i層盒子中含有較小的盒子數目（0  
+&lt; i &lt; K）。而a<sub>k</sub>則代表最內層盒子中含有的巧克力的個數。</p>                
+<p>以第一組測試資料為例說明：小皮皮要分巧克力給5個朋友，她共收到2盒巧克力。第一盒巧克力內有2盒，這2盒內又各有3盒，而最小的盒子內每盒有4個巧克力。第二盒巧克力內有5盒，這5盒內又各有2盒，這2盒內又各有3盒，而最小的盒子內每盒有1個巧克力。所以皮皮總共有2*3*4+5*2*3*1=54顆巧克力。</p>                
+<p>請參考Sample   
+Inout。</p>                 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                  
+<p>對每組測試資料輸出一列，在小皮皮平分巧克力給朋友後，剩下多少顆可以給  
+Kittu。</p>              
+<table border="1" width="100%" cellpadding="5">                 
+  <tr>                 
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                              
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                             
+  </tr>                             
+  <tr>                             
+    <td width="50%">                 
+      <pre>2
+5 2
+3 2 3 4
+4 5 2 3 1
+6 1
+4 5 6 7 8</pre> 
+    </td>                           
+    <td width="50%">                     
+      <pre>4
+0</pre> 
+    </td>                         
+  </tr>                         
+</table>                         
+                                                           
+</body>                                                           
+                                                           
+</html>                                                           

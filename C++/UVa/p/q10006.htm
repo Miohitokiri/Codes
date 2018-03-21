@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10006: Carmichael Numbers</h1>          
+<p>密碼學（cryptography）是電腦科學中一個重要的領域。密碼學的演算法常會用到大的質數。然而，要檢查一個大數是否是質數並不是那麼容易。一個窮舉的方法就是檢查所有小於等於其根號的數是否可以被整除。但是這方法所花費的時間及空間還是相當多。然而有一些機率的測試可以低花費得到高可信度。費馬測試（Fermat 
+test）就是其中之一。</p>  
+<p>令 a 是一個介於 2 到 n-1 的數（在這裡 n 
+是我們要檢查是否為質數的數），那麼n可能是一個質數，如果以下的式子成立的話：</p>  
+<p align="center"><b>a<sup>n</sup> mod n = a</b></p>  
+<p>如果一個數通過費馬測試許多次，那麼他是質數的機率就很高。不幸的是，有些數不是質數但仍然能通過所有的費馬測試。我們稱這些數為Carmichael 
+numbers。</p>  
+<p>你的任務就是寫一個程式來檢驗一個數是否是Carmichael number。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，含有一個整數 n（2 &lt; n &lt; 65000）。n=0代表輸入結束。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出其是否為Carmichael number。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                           
+Input</b></span></p>                              
+<pre>1729
+17
+561
+1109
+431
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>The number 1729 is a Carmichael number.
+17 is normal.
+The number 561 is a Carmichael number.
+1109 is normal.
+431 is normal.</pre>
+                            
+</body>                            
+                            
+</html>                            

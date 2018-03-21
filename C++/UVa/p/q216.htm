@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q216: Getting in Line</h1>           
+<p>電腦網路是把電腦用網路線連接起來。在這個問題中，我們考慮的是一種線性（liner）的網路架構。在此架構中，電腦被連成一串。也就是除了兩端的電腦各只連接一部電腦之外，其餘的電腦都正好連接2部電腦，請看以下的圖。在這裡，黑點代表電腦，且他們的位置以平面座標來表示。2部電腦間的距離以呎為單位。</p>   
+<p align="center"><img border="0" src="p216-1.gif" width="284" height="132"><br>
+<p>
+現在我們需要使連接的網路線最短，這也就是你的任務。在架設網路線時，網路線在地板下，所以相連的2部電腦所需的網路線的長度為這2部電腦的距離再加上額外的16呎（用來從地板下拉到電腦以及多留一些長度讓安裝方便）。以下的圖顯示了上圖電腦最佳的佈線方式。其總長度為：(4+16)+ (5+16) + (5.83+16) + (11.18+16) = 90.01呎。</p>    
+<p align="center"><img border="0" src="p216-2.gif" width="427" height="141"></p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                
+<p>輸入含有多組測試資料。每組測試資料的第一列有一個正整數n（2  
+&lt;= n &lt;= 8），代表網路中電腦的數目。接下來的n列每列有2個介於0~150之間的整數，代表一部電腦的平面座標。沒有2部電腦會在同一位置。</p>   
+<p>若n=0代表輸入結束，請參考Sample Input。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                 
+<p>每組測試資料以輸出一列*開始，然後列出布置網路線的長度，從一端到另一端（從哪一端開始都可以）。最後再列出所需的總長度。各距離均輸出到小數點後2位。請參考Sample  
+Output的輸出格式。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                        
+Input</b></span></p>                                 
+<pre>6
+5 19
+55 28
+38 101
+28 62
+111 84
+43 116
+5
+11 27
+84 99
+142 81
+88 30
+95 38
+3
+132 73
+49 86
+72 111
+0</pre> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                   
+Output</b></span></p>                                 
+<pre>**********************************************************
+Network #1
+Cable requirement to connect (5,19) to (55,28) is 66.80 feet.
+Cable requirement to connect (55,28) to (28,62) is 59.42 feet.
+Cable requirement to connect (28,62) to (38,101) is 56.26 feet.
+Cable requirement to connect (38,101) to (43,116) is 31.81 feet.
+Cable requirement to connect (43,116) to (111,84) is 91.15 feet.
+Number of feet of cable required is 305.45.
+**********************************************************
+Network #2
+Cable requirement to connect (11,27) to (88,30) is 93.06 feet.
+Cable requirement to connect (88,30) to (95,38) is 26.63 feet.
+Cable requirement to connect (95,38) to (84,99) is 77.98 feet.
+Cable requirement to connect (84,99) to (142,81) is 76.73 feet.
+Number of feet of cable required is 274.40.
+**********************************************************
+Network #3
+Cable requirement to connect (132,73) to (72,111) is 87.02 feet.
+Cable requirement to connect (72,111) to (49,86) is 49.97 feet.
+Number of feet of cable required is 136.99.</pre> 
+                               
+</body>                               
+                               
+</html>                               

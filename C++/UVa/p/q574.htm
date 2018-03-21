@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q574: Sum It Up</h1>          
+<p>給你一個總數 t ，和 n 個正整數的集合。請你找出用這 n 
+個數相加可以得到 t 的所有方式。例如：t=4，n=6，且這集合的內容為[4,3,2,2,1,1]，那麼你將有4種不同的相加方式可以得到 
+t ：4, 3+1, 2+2, 2+1+1 
+。（在一個加法中一個數字可以被使用的次數不可超過該數字出現在集合中的次數）</p>
+<p>你的任務就是要解決這個問題。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每筆測試資料一列。每列包含了 t , n 及 x<sub>1</sub>,x<sub>2</sub>,......x<sub>n</sub>。分別代表總數，集合中有多少個元素，及集合中的各數。其中 
+0 &lt; t &lt; 1000，1 &lt;= n &lt;= 12，0 &lt; x<sub>1</sub>,x<sub>2</sub>,......x<sub>n</sub> 
+&lt; 1000</p>   
+<p>集合中的元素已由大到小排列。若n=0代表輸入結束。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每組測試資料，請先輸出一列&quot;Sum of t :&quot;，接下來每種排列方式一列。數字需由大到小排列。不同的相加方式亦由大到小排列，即先比第1個數，若相同再比第2個數，依此類推。若找不到任何一種相加方式，請輸出&quot;NONE&quot;。</p> 
+<p>請參考Sample Output</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Input</b></span></p>                              
+<pre>4 6 4 3 2 2 1 1
+5 3 2 1 1
+400 12 50 50 50 50 50 50 25 25 25 25 25 25
+0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>Sums of 4:
+4
+3+1
+2+2
+2+1+1
+Sums of 5:
+NONE
+Sums of 400:
+50+50+50+50+50+50+25+25+25+25
+50+50+50+50+50+25+25+25+25+25+25</pre>
+                            
+</body>                            
+                            
+</html>                            

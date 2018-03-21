@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10800: Not That Kind of Graph</h1>              
+<p>你的任務是畫出股票的走勢圖。在某個時間點股價可能是上揚（<b>R</b>ise），下跌（<b>F</b>all），或持平（<b>C</b>onstant）。我們會給你一個僅包含R，F，C的字串，代表一連串時間點的股價（R代表上揚，F代表下跌，C代表持平）。請你用字元'/'（斜線，slash），'\'（反斜線，backslash），'_'（底線，underscore）畫出股價走勢圖。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p><span lang="zh-tw">輸入的第一列有一個整數N代表以下有多少組測試資料。</span></p>            
+<p><span lang="zh-tw">每組測試資料一列，包含一個僅含有 R，F，C 
+字元的字串，長度最少 1，最大 50。</span>請參考Sample Input。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                            
+<p>對每組測試資料首先輸出這是第幾組測試資料。然後輸出股價走勢圖。如同你在Sample 
+Output中所見，包含了 x 軸及 y 軸。x 
+軸的長度應該比走勢圖多一個字元，並且在 y 
+軸和走勢圖一開始之間應該有一格的空白。每一列的最後都不應該有空白字元的出現，也不要輸出不必要的列。x 
+軸一定是出現在圖形的最下方一列。</p>          
+<p>每組測試資料後亦輸出一列空白列。請參考Sample Output。</p>           
+<table border="1" width="100%" cellpadding="5">            
+  <tr>            
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                  
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                 
+  </tr>                 
+  <tr>                 
+    <td width="50%">  
+      <pre>3
+RCRFCRFFCCRRC
+CFF
+FFFCCRRCCCRR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre> 
+    </td>                 
+    <td width="50%">           
+      <pre>Case #1:
+|             _
+|  _/\_/\    /
+| /      \__/
++---------------
+
+Case #2:
+| _
+|  \
+|   \
++-----
+
+Case #3:
+|            /
+| \      ___/
+|  \    /
+|   \__/
++--------------
+</pre> 
+    </td>                
+  </tr>                
+</table>                
+                                                  
+</body>                                                  
+                                                  
+</html>

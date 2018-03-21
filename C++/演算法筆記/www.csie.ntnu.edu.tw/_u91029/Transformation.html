@@ -1,0 +1,345 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Transformation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:13:22 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Transformation</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Transformation</p>
+</div><div class="c">
+<p class="t">楔子</p>
+<p>計算機當中，凡事皆須化作數值，因此資料又稱數據。</p>
+<img src="Transformation1.png">
+<p>文字、聲音、圖片、模型，皆透過特定規則化作數值。</p>
+<img src="Transformation2.png">
+<p>設計函數，數值代入函數。獲得新的文字、聲音、圖片、模型。</p>
+<img src="Transformation3.png">
+<p class="t">Transformation</p>
+<p>「變換」。數據套用函數。數據轉換姿態、產生變化。</p>
+<img src="Transformation4.png">
+<p>一維數據，套用函數。二維以上數據，套用函數組（或者解讀成多變量函數）。每筆數據皆套用同一個函數。</p>
+<pre>
+1D → 1D       2D → 2D            1D → 3D         3D → 1D
+x' = 2x + 1   { x' = x + y       { x' = 2x + 1   x' = x + yz
+              { y' = x² + y²     { y' = 3x + 2
+                                 { z' = 5x + 3
+</pre>
+<pre>
+1D → 1D       2D → 2D            1D → 3D         3D → 1D
+y = 2x + 1    { y₁ = x₁ + x₂     { y₁ = 2x + 1   y = x₁ + x₂x₃
+              { y₂ = x₁² + x₂²   { y₂ = 3x + 2
+                                 { y₃ = 5x + 3
+</pre>
+<p>至於每筆數據套用不同函數，目前無人討論。這類變換，可以想成是擁有if判斷式的函數，每筆數據根據判斷結果實施不一樣的行為。可是數學家不討論這種函數，只討論連續、可微。</p>
+<p>至於增生數據、消滅數據，目前亦無人討論。</p>
+<p class="t">Inverse Transformation</p>
+<p>「反向變換」。數據再套用反函數。數據打回原形。</p>
+<img src="Transformation5.png">
+<p>原函數存在反函數，才能反向變換。</p>
+<p>然而目前沒有演算法可以判斷反函數、求得反函數！除了少數特例：一元一次多項式函數，以移項求得反函數；線性變換，以高斯喬登消去法求得反函數；數學家發明的特殊函數，以推理方式求得反函數，例如傅立葉轉換。</p>
+<p class="t">Dual Transformation</p>
+<p>「對偶變換」。原函數、反函數，兩者恰好相同。數據套用函數，亦等同套用反函數。變換兩次等同變換零次。</p>
+<p>例如f(x) = -x與f⁻¹(x) = -x。又例如f(x) = 1/x與f⁻¹(x) = 1/x。</p>
+<img src="Transformation6.png">
+<p class="t">對應運算【尚無正式名稱】</p>
+<p>針對一個變換，輸入和輸出有時候擁有某些對應運算。</p>
+<p>例如f(x) = 2ˣ。輸入相加等同輸出相乘。我們可以先相加、再變換，也可以先變換、再相乘，效果相同。</p>
+<img src="Transformation7.png">
+<p>存在反向變換時，運算可以繞路。</p>
+<p>例如f(x) = log₂x與f⁻¹(x) = 2ˣ。輸入相乘等同輸出相加。我們可以直接相乘，也可以正向變換、相加、反向變換。</p>
+<img src="Transformation8.png">
+<p>存在對偶變換時，對應運算必定互相對稱，稱做「對偶運算」。</p>
+<p>例如補集函數f(A) = Aᶜ與f⁻¹(A) = Aᶜ。輸入交集等同輸出聯集，輸入聯集也等同輸出交集。對偶運算是交集對聯集。</p>
+<img src="Transformation9.png">
+<p>原函數、反函數，兩者幾乎相同，有時候也會產生對偶運算。</p>
+<p>例如正向傅立葉轉換、逆向傅立葉轉換，差異在於除與乘。對偶運算是乘法對摺積。</p>
+<p class="t">備註</p>
+<p>函數是「對應」與「變換」兩種概念的結合。</p>
+<img src="Function1.png">
+<p>先前介紹的主題皆是「對應」，著重於函數本身的姿態。包括了微積分、場、求根、求解、最佳化、內插、迴歸、聚類、分類。</p>
+<p>此處介紹的主題皆是「變換」，著重於輸入輸出的姿態。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Transformation</p>
+</div><div class="c">
+<p class="t">Linear Transformation / Affine Transformation</p>
+<p>「線性變換」。變換時，採用線性函數。</p>
+<p>「仿射變換」。變換時，採用仿射函數。</p>
+<p>線性函數是加性函數暨倍性函數。加性函數：輸入相加等同輸出相加。倍性函數：輸入倍率等同輸出倍率。</p>
+<p>仿射函數是線性函數納入常數加法。</p>
+<pre>
+linear function f:          affine function g:
+1. f(x+y) = f(x) + f(y)     1. f(x+y) = f(x) + f(y)
+2. f(kx) = k f(x)           2. f(kx) = k f(x)
+                            3. g(x) = f(x) + c
+</pre>
+<p class="t">線性函數特例、仿射函數特例</p>
+<p>線性函數與仿射函數五花八門。大家習慣採用其中一種特例。</p>
+<p>線性函數特例：變數加變數、變數乘常數，只含這兩種運算的函數。</p>
+</p>
+<p>仿射函數特例：變數加變數、變數乘常數、變數加常數，只含這三種運算的函數。</p>
+<p>仿射函數特例可以輕易簡化成線性函數特例：新添一個變數，乘在常數項，只能代入1。</p>
+<pre>
+linear function     affine function         non-affine function
+{ x' = x + 2y       { x' = x + 2y + 1       { x' = xy
+{ y' = 2(x + y)     { y' = 2(x + y + 5)     { y' = sin(x) + cos(y)
+</pre>
+<p>大家經常使用線性變換。優點是只有加法與倍率，相當單純，擁有漂亮數學性質，擁有高速演算法。缺點是單純導致功效不彰。</p>
+<p>期待大家發明更特別的變換！目前的研究熱點有兩大方向：一、線性變換的多重複合：類神經網路；二、複變函數與場：波函數。</p>
+<p class="t">經典的線性變換、仿射變換</p>
+<p>考慮單一數據的變換：平移translate、縮放scale、旋轉rotate、投影project、鏡射reflect。</p>
+<p>請參考本站文件「<a href="Matrix.html">Matrix</a>」。</p>
+<p>考慮全體數據的變換：主成分分析PCA、獨立成分分析ICA、主成分追蹤PCS。</p>
+<p>請參考本站文件「<a href="Representation.html">Representation</a>」。</p>
+<p>考慮局部數據的變換：均值mean filter、差分difference filter、加權平均weighted average filter。</p>
+<p>請參考本站文件「<a href="Filter.html">Filter</a>」。</p>
+<p class="e">UVa 12303</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">X-Preserving Transformation</p>
+</div><div class="c">
+<p class="t">Representation</p>
+<p>「重新表示」。換個角度看世界。數據變換之後，內涵保持相同，資訊沒有佚失。</p>
+<p>任何一個變換，只要擁有反向變換，皆可充作重新表示。不過大家習慣把這個詞彙用於意想不到、大開眼界的變換，例如直角座標系變極座標系，例如時域變頻域（傅立葉轉換）。</p>
+<p class="t">X-Preserving Transformation【尚無正式名稱】</p>
+<p>「保Ｘ變換」。數據變換之後，特性Ｘ保持相同。</p>
+<p>所謂的特性，就是替數據設立一些指數、指標，例如長度、距離、角度、中位數、平均數、變異數。</p>
+<p>排列組合關鍵字，得到一些經典問題：</p>
+<pre>
+一、給定數據與指標。存在哪些變換，使得指標保持相同？
+二、給定數據與變換。數據變換之後，哪些指標保持相同？
+三、如何發掘好用的新指標？
+</pre>
+<p>目前大家沒有特別好的點子。以下只介紹一些陽春的點子。</p>
+<p class="t">長度（Length）</p>
+<p>現實世界，考慮一個東西有多少份量；化為數學，就是考慮一個東西的長度是多少。</p>
+<p>此處的長度，是數學術語，不是物理學術語。此處的長度，是指份量多寡，不是指公分公尺。</p>
+<img src="Metric1.png">
+<p class="t">長度函數（Norm）</p>
+<p>長度在數學中擁有嚴謹定義：</p>
+<pre>
+一、有些東西長度為零，p(A) = 0。
+二、一個東西均勻放大縮小，其長度也隨著放大縮小，p(k⋅A) = |k|⋅p(A)。
+三、兩個東西拼裝起來，其長度只會短少或保持一樣，p(A + B) ≤ p(A) + p(B)。
+</pre>
+<p>常見的長度函數：</p>
+<pre>
+L₀-Norm：非零的數量。
+L₁-Norm：先相加、再轉正數。
+L₂-Norm：先平方和、再平方根。
+L∞-Norm：最大值。
+</pre>
+<img src="Metric2.png">
+<p>常見的元件：</p>
+<pre>
+一個數值的長度：用絕對值計算長度。
+一個向量的長度：有多種公式，請參考「<a href="http://mathworld.wolfram.com/VectorNorm.html">Vector Norm</a>」。
+　　　　　　　　最經典的是平方長度：先平方和、再平方根。
+一個矩陣的長度：有多種公式，請參考「<a href="https://en.wikipedia.org/wiki/Matrix_norm">Matrix Norm</a>」。
+</pre>
+<p class="t">距離（Distance）</p>
+<p>現實世界，考慮兩個東西有多相似；化為數學，就是考慮兩個東西的距離有多接近。</p>
+<p>此處的距離，是數學術語，不是物理學術語。此處的距離，是指差異份量，不是指公分公尺。</p>
+<img src="Metric3.png">
+<p class="t">距離函數（Metric）</p>
+<p>距離在數學中擁有嚴謹定義：</p>
+<pre>
+一、兩個一樣的東西，距離等於零，d(A,A) = 0。
+二、A到B的距離等於B到A的距離，d(A,B) = d(B,A)。
+三、三角不等式，ABC三個東西，兩邊和大於等於第三邊，
+　　d(A,B) + d(B,C) ≥ d(A,C)。
+　　或者想成兩個距離融合起來，只會短少或保持一樣，
+</pre>
+<p>常見的距離函數：</p>
+<pre>
+Euclidean Distance（L₂）：直線距離。
+Taxicab Distance（L₁）：垂直、水平移動的距離。
+Hamming Distance（L₀）：相對應維度，數值相異的維度個數。
+</pre>
+<img src="Metric4.png">
+<p>常見的元件：</p>
+<pre>
+兩個數值的距離：用減法與絕對值計算距離。
+兩個向量的距離：以「<a href="https://en.wikipedia.org/wiki/Minkowski_distance">Minkowski Distance</a>」計算距離。
+兩串字串的距離：以「<a href="https://en.wikipedia.org/wiki/Edit_distance">Edit Distance</a>」或者「<a href="https://en.wikipedia.org/wiki/K-mer">K-mer Distance</a>」計算距離。
+兩串數列的距離：數列類似字串，同上。
+兩串訊號的距離：以「<a href="Signal.html">Linear Predictive Coding</a>」或者「<a href="Wave.html">Fourier Transform</a>」
+　　　　　　　　重新表示訊號，再用數學公式計算距離。 
+兩條曲線的距離：以「<a href="https://en.wikipedia.org/wiki/Fr矇chet_distance">Fréchet Distance</a>」計算距離。
+兩群點的距離：以「<a href="https://en.wikipedia.org/wiki/Hausdorff_distance">Hausdorff Distance</a>」或者「<a href="https://en.wikipedia.org/wiki/Matching_distance">Matching Distance</a>」計算距離。
+兩個集合的距離：以「<a href="https://en.wikipedia.org/wiki/Jaccard_index">Jaccard Index</a>」或者「<a href="https://en.wikipedia.org/wiki/S繪rensen?ice_coefficient">Sørensen–Dice Index</a>」計算距離。
+兩棵樹的距離：以「<a href="https://www.google.com.tw/search?q=tree+edit+distance">Tree Edit Distance</a>」計算距離。
+兩張圖的距離：以「<a href="GraphSpectrum.html">Graph Kernel</a>」計算距離。
+</pre>
+<p class="e">UVa 10508 11085 ICPC 5132</p>
+<p class="t">保長（Length Preserving）</p>
+<p>變換的形容詞。任一點，變換前後，長度保持不變。</p>
+<p>旋轉、鏡射是保長變換；平移、縮放、投影不是保長變換。</p>
+<img src="Metric5.png">
+<p class="t">保距（Isometry）（Distance Preserving）</p>
+<p>變換的形容詞。任兩點，變換前後，距離保持不變。</p>
+<p>平移、旋轉、鏡射是保距變換；縮放、投影不是保距變換。</p>
+<img src="Metric6.png">
+<p class="t">保角（Conformal）（Angle Preserving）</p>
+<p>變換的形容詞。任相鄰三點，變換前後，夾角保持不變。</p>
+<p>平移、旋轉、鏡射、整體縮放是保角變換。投影不是保角變換。</p>
+<img src="Metric7.png">
+<p>除了實數函數，大家也討論複數函數。舉例來說，四則運算、倒數、平方、平方根是保角變換。有時格線呈現曲線。</p>
+<img src="Metric8.png">
+<p>保長則保距，保距則保角。</p>
+<p class="t">延伸閱讀：核函數（Kernel）</p>
+<p>數據變換之後的距離函數。機器學習領域胡亂造詞。</p>
+<p>優點：數據不需先變換、再求距離。數據直接代入核函數即可，一次搞定。缺點：想知道變換函數，必須將核函數重新整理成點積運算的格式（假定是L₂-Norm）。</p>
+<p>經典的核函數是radial basis function kernel。</p>
+<p>註：kernel到處撞名──方程組的根、函數版本的基底、數據變換之後的距離函數。它們之間毫無關聯。數學家、物理學家、統計學家活在平行時空所導致的。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Coordinate</p>
+</div><div class="c">
+<p class="t">集合（Set）、元組（Tuple）</p>
+<p>多物視作一物。差別在於：</p>
+<p>集合的元素不分先後，無視重複元素。採用大括號。</p>
+<p>元組的元素區分先後，允許重複元素。採用小括號。</p>
+<pre>
+set       tuple
+{4,5,7}   (5,4,7)
+{1,2,3}   (1,1,2,2,3,3)
+{●,▲,■}   (●,■,▲,◆,▲)
+{}        ()
+</pre>
+<p class="t">空間（Space）</p>
+<p>空間即是集合，並且裝備特殊技能。</p>
+<p>此處的空間，是數學術語，不是物理學術語。此處的空間，是指一堆東西，不是指立體容積。</p>
+<p>常見的空間元件：幾何的「點」、代數的「向量」。</p>
+<pre>
+   topological space　拓樸空間　一堆點，裝備鄰居　　　　　　　　彈性形狀
+        metric space　距離空間　一堆點，裝備距離　　　　　　　　相似程度
+     Euclidean space　歐氏空間　一堆點，裝備長、角、平移、旋轉　幾何圖形
+        vector space　向量空間　一堆向量，裝備加法、倍率　　　　加權平均
+ inner product space　內積空間　一堆向量，裝備加法、倍率、內積　相對方位
+</pre>
+<img src="Coordinate1.png">
+<p class="t">座標（Coordinate）</p>
+<p>空間裡每個元素，分別設定獨一無二的tuple，tuple裡面是數字。一種設定方式稱作一種「座標系coordinate system」。tuple的一個欄位稱做一種「座標coordinate」。</p>
+<p>大家習慣令不同元素擁有不同座標、相鄰元素擁有相鄰座標、座標欄位數量符合維度大小。</p>
+<img src="Coordinate2.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Euclidean Space Coordinate</p>
+</div><div class="c">
+<p class="t">歐氏空間的直角座標系（Cartesian Coordinate System）</p>
+<p>大家熟知的一維數線、二維平面、三維空間，都是歐氏空間。</p>
+<p>大家熟知的直角座標系，其實是歐氏空間的其中一種座標系。</p>
+<p>歐氏空間的點，無限多、無限小、無限綿密，不易製圖。製圖時，不會畫點，而是意思意思畫座標軸。</p>
+<img src="Coordinate3.png">
+<p class="t">歐氏空間的其他經典的座標系</p>
+<p>tuple的每個欄位，設定成長度、角度。</p>
+<pre>
+  Cartesian coordinate system　直角座標系　長度、……　　　　　任意維
+      polar coordinate system　極座標系　　長度、角度　　　　二維
+  spherical coordinate system　球座標系　　長度、角度、角度　三維
+cylindrical coordinate system　圓柱座標系　長度、長度、角度　三維
+</pre>
+<img src="Coordinate4.png">
+<p>製圖時，畫格線，容易辨認座標系。</p>
+<p class="e">UVa 12323</p>
+<p class="t">座標系寫成函數組</p>
+<p>以直角座標系當作預設座標系，各種座標系得以寫成函數組。一個函數求得一個維度的座標。</p>
+<p>函數組是一對一函數：不同地點擁有不同座標。函數組是連續函數：相鄰地點擁有相鄰座標。函數組的輸入變數與輸出變數一樣多：座標欄位數量符合維度大小。</p>
+<img src="Coordinate5.png">
+<p class="t">更換座標系（Coordinate System Transformation）</p>
+<p>拆成兩步驟：先套用舊座標系的反函數組、再套用新座標系的函數組。</p>
+<p>數學當中，更換座標系是重新貼標籤，不會改變點。計算學當中，更換座標系是變換，用來改變數據。</p>
+<img src="Coordinate6.png">
+<p class="t">實數數線（Real Line）、複數平面（Complex Plane）</p>
+<p>方才談了幾何變數字，這邊補充一下數字變幾何。</p>
+<p>數字變幾何之後，數字獲得長度、角度，可用於解決新問題。</p>
+<p>實數變點：彷彿直角座標系。</p>
+<img src="Coordinate7.png">
+<pre>
+實數　　　⇨　點
+實數長度　⇨　點到原點的距離
+實數加法　⇨　點的直角座標相加（平移）
+實數乘法　⇨　點的長度相乘（縮放）、點的方位負負得正（鏡射）
+</pre>
+<p>複數變點：彷彿直角座標系、極座標系兩者合體。</p>
+<img src="Coordinate8.png">
+<pre>
+複數　　　⇨　點
+複數長度　⇨　從原點出發的直線距離
+複數角度　⇨　從實軸出發的逆時針夾角
+複數加法　⇨　點的直角座標相加（平移）
+複數乘法　⇨　點的長度相乘（縮放）、點的角度相加（旋轉）
+</pre>
+<p>複數乘法變點的長度相乘、角度相加，使之循環繞圈，這是古人一致推薦的方式。由於很好用，從此沒有採用其他方式。</p>
+<p class="e">UVa 10378</p>
+<p class="t">延伸閱讀：利用加權平均值創造座標系</p>
+<p>請見本站文件「<a href="Interpolation.html">Weighted Average Coordinates</a>」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Hilbert Space Coordinate</p>
+</div><div class="c">
+<p class="t">內積空間的線性組合座標系</p>
+<img src="Coordinate9.png">
+<p>內積空間的任意向量，皆能充作座標軸的標準單位，稱作基底。</p>
+<p>發動特殊技能加法與倍率，分解向量，成為基底的線性組合。外觀彷彿加權平均值。權重大小，就是座標。</p>
+<p>基底必須線性獨立，才能順利分解各種向量。</p>
+<p class="t">內積空間的投影座標系</p>
+<img src="Coordinate10.png">
+<p>內積空間的任意向量，皆能充作座標軸的標準單位，目前沒有正式名稱，也許可以稱作基底。</p>
+<p>發動特殊技能內積，投影向量至基底。投影量大小，就是座標。</p>
+<p>基底必須線性獨立，才能順利分解各種向量。</p>
+<p class="t">備註</p>
+<img src="Coordinate11.png">
+<p>線性組合座標系：平行於座標軸投影。投影座標系：垂直投影。</p>
+<p>矩陣轉置視作對偶變換，那麼對偶運算是加權平均對大量內積。</p>
+<p class="t">內積空間的元件是數列</p>
+<p>向量空間的元件、內積空間的元件，叫做向量。詳情請參考本站文件「<a href="Matrix.html">Linear Algebra</a>」。</p>
+<p>此處的向量，是數學術語，不是物理學術語。此處的向量，是指擁有加法運算與倍率運算的元件，不是指合力分力。</p>
+<p>內積空間的元件，通常設定成有限長度數列。書寫方式是將數字縱向排列，採用中括號。大家應該都知道，就不多提了。</p>
+<p class="t">內積空間的元件是函數</p>
+<img src="Coordinate12.png">
+<p>投影座標系當中，座標軸的標準單位又稱作「核kernel」，求得座標又稱做「積分轉換Integral Transform」。</p>
+<p>例如傅立葉轉換就是積分轉換，以各種頻率的複數波當作核。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Radial Function</p>
+</div><div class="c">
+<p class="t">X and F(X) ⇨ Angle and Radius【查無專有名詞】</p>
+<p>繪製函數圖形，除了水平延展，還可以迴轉周旋。</p>
+<img src="RadialFunction1.png">
+<p>函數輸入視作從X軸出發的角度，函數輸出視作從原點出發的長度。</p>
+<img src="RadialFunction2.png">
+<p>利用三角函數sin和cos找到繪製地點。</p>
+<img src="RadialFunction3.png">
+<p>當函數輸出是負值，則無法畫出函數圖形。三種解法：一、乾脆不畫。二、負值變正值、換顏色。三、穿越原點，跑到對面，角度相差180度。</p>
+<img src="RadialFunction4.png">
+<p>角度可以改成x的倍率，修改轉速。</p>
+<img src="RadialFunction5.png">
+<p>運用周旋，得以製作許多特殊圖形。</p>
+<img src="RadialFunction6.png">
+<p class="t">Periodicity ⇨ Closed</p>
+<p>有個值得一提的案例是週期函數：固定間距、不斷重複的函數。</p>
+<p>角度改成x的適當倍率，使得一個間距（或者其倍數）剛好轉一圈，函數圖形頭尾銜接，得到封閉曲線。</p>
+<img src="RadialFunction7.png">
+<p class="t">Angle and Radius ⇨ X and F(X)【查無專有名詞】</p>
+<p>任意的封閉曲線，想要從周旋變成延展，就必須滿足函數的規定：找到內部一點作為原點，任意放射線與曲線的交點只有一點。之後即可視作一般函數進行處理。</p>
+<img src="RadialFunction8.png">
+<p>不是函數的封閉曲線，想要滿足函數的規定，我只知道一種解法是平滑化：每一個點，取其鄰點，求平均值。實施足夠次數，似乎就會變成函數。實施無限次，最後就會變成圓形，其概念類似於流形與圓的映射。我不清楚這部分是否有人研究。</p>
+<p>不是函數的一般曲線，我不清楚怎麼轉換。</p>
+<p class="t">函數輸入是兩個變數</p>
+<p>函數輸入是兩個變數（或者一個複數），視作旋轉角度和俯仰角度，得到三維空間的表面。</p>
+<img src="RadialFunction9.png">
+<blockquote>
+f[u_,v_] := Sin[u]Sin[v]+2; ParametricPlot3D[{f[u,v]Cos[v/5]Cos[u/5], f[u,v]Cos[v/5]Sin[u/5], f[u,v]Sin[v/5]}, {u, 0, 40}, {v, 0, 40}, Boxed -> False, Axes -> False, Mesh -> None, PlotPoints -> 70, ColorFunction -> (ColorData["CherryTones"][Rescale[#3, {-2, 2}]] &) ]
+</blockquote>
+<p>進階主題是「<a href="https://en.wikipedia.org/wiki/Spherical_harmonics">球諧函數</a>」。傅立葉轉換的基底（各種頻率的複數波），進行轉換，得到球諧函數。</p>
+<p class="t">函數輸出是兩個變數</p>
+<p>函數輸出是兩個變數（或者一個複數），視作水平距離和垂直距離，得到三維空間的線。</p>
+<img src="RadialFunction10.png">
+<blockquote>
+ParametricPlot3D[{Sin[x] Cos[x*10], Sin[x] Sin[x*10], x}, {x, 0, 9}, Boxed -> False, Axes -> False, PlotStyle -> {RGBColor[192,0,0], Thick}]
+</blockquote>
+<p>進階主題是「<a href="https://en.wikipedia.org/wiki/Cylindrical_harmonics">柱諧函數</a>」。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Transformation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:14:13 GMT -->
+</html>

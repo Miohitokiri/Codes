@@ -1,0 +1,354 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Camera.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:31:54 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Camera</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Camera（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Camera</p>
+<p>將3D物體轉換成2D圖片的機制。</p>
+<p class="t">課程</p>
+<pre>
+http://stanford.edu/class/ee367/
+http://cs.brown.edu/courses/csci1290/
+http://franchomelendez.com/index.php/computational-photography/
+http://www.computationalimaging.org/research-overview/
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera拍攝原理（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Camera相機</p>
+<p>把底片直接放在景物前面，相片最後就是一片亮。古人為了解決這個問題，做了個黑箱、挖了個針孔，嚴格限制光線從景物到底片的行進路線。</p>
+<img src="CameraStructure1.html">
+<p>針孔導致光線不足，相片最後就是一片陰暗。古人為了解決這個問題，弄了個凸透鏡，讓光線折個彎，聚集光線。</p>
+<img src="CameraStructure2.html">
+<p>每種顏色的折射率都有些微差異，光線經過透鏡就會<a href="http://zh.wikipedia.org/wiki/?脫">色散</a>，相片最後就有<a href="http://zh.wikipedia.org/wiki/?脣榆">色差</a>。古人為了解決這個問題，<a href="http://zh.wikipedia.org/wiki/瘨撌桅">補了個凹透鏡</a>，讓光線再折個彎，收束光線。</p>
+<img src="CameraStructure3.html">
+<p>凡事有好就有壞。透鏡可以聚光，卻有<a href="http://en.wikipedia.org/wiki/Optical_aberration">像差</a>：相片景物位移扭曲；卻有<a href="http://zh.wikipedia.org/wiki/?蔣">暈影</a>：相片中心亮、外圍暗。</p>
+<img src="CameraStructure4.html">
+<p>缺點也可以是優點。例如<a href="http://zh.wikipedia.org/wiki/擳?⊿">魚眼鏡頭</a>、LOMO效果。透鏡的缺陷反倒成了藝術，讓許多人心嚮往之。</p>
+<img src="CameraStructure5.html">
+<p class="t">Depth of Field景深</p>
+<p>複習一下高中物理的<a href="http://zh.wikipedia.org/wiki/?賊">凸透鏡成像</a>。不在焦距上的景物，光線到達底片就會散開，相片上的景物就會糊掉。</p>
+<img src="CameraStructure6.html">
+<p>位於焦距上的景物是最清晰的。景物越偏離焦距，相片就越模糊。人類認為還算清晰的區間範圍，稱做<a href="http://zh.wikipedia.org/wiki/?舀楛">景深</a>。</p>
+<img src="CameraStructure7.html">
+<p>調整像深，使之位於景深之內、盡量接近焦距，讓相片清晰，叫做「對焦」。古人為了方便調整像深，搞了個透鏡組。</p>
+<img src="CameraStructure8.html">
+<p class="t">Aperture光圈、Exposure Time曝光時間</p>
+<a href="http://blog.hamburger-fotospots.de/genialer-spickzettel-fuer-fotografen-als-kostenloser-download/"><img src="Camera1.jpg"></a>
+<p>光圈是控制進光量的裝置，大致是圓的。升一檔就是光圈面積變兩倍（光圈直徑變sqrt(2)倍），降一檔就是光圈面積變一半（光圈直徑變1/sqrt(2)倍）。</p>
+<img src="CameraStructure10.html">
+<p>曝光時間是打開光圈的時間。曝光時間也可以控制進光量。升一檔就是曝光時間變兩倍，降一檔就是曝光時間變一半。</p>
+<img src="CameraStructure11.html">
+<p>進光量=光圈面積×曝光時間。升檔相片就亮、降檔相片就暗。光圈和曝光時間的檔數相加一樣多，那麼相片差不多一樣亮。</p>
+<img src="CameraStructure12.html">
+<p>光圈大小，影響靜態景物清晰度。光圈越小，靜態景物越清晰，尤其是不在景深內的景物，令人感覺景深變廣。</p>
+<img src="CameraStructure13.html">
+<p>曝光時間大小，影響動態景物清晰度。曝光時間越小，動態景物越清晰。</p>
+<img src="CameraStructure14.html">
+<p>調配光圈和曝光時間，得到不同的視覺感受。<a href="http://zh.wikipedia.org/wiki/??">散景</a>：光圈超大，故意讓靜態景物不清晰，以凸顯景深範圍內的景物。<a href="http://zh.wikipedia.org/wiki/?瑟?????敶?">長曝</a>：曝光時間超大，故意讓動態景物不清晰，產生<a href="http://en.wikipedia.org/wiki/Motion_blur">動態模糊</a>的效果。</p>
+<img src="CameraStructure15.html">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera圖片處理（Under Construction!）</p>
+</div><div class="c">
+<p class="t">White Balancing</p>
+<p><a href="http://www.fotobeginner.com/44/">白平衡</a>。調整相片顏色，去除環境燈光影響，成為真實顏色。</p>
+<p class="t">High Dynamic Range Imaging（HDR Imaging）</p>
+<p><a href="https://en.wikipedia.org/wiki/High-dynamic-range_imaging">高動態範圍成像</a>。以各種曝光時間，拍攝多張相片，生成一張符合真實世界亮度的相片。相片的檔案格式從RGB換為<a href="http://en.wikipedia.org/wiki/RGBE_image_format">RGBE</a>，額外以浮點數儲存亮度。</p>
+<img src="CameraHDR1.html">
+<p>一個場景當中，光線亮度經常相差好幾個數量級。一張相片當中，像素數值頂多只有0到255。相機拍攝的過程當中，喪失了許多亮度資訊（失真壓縮），現在要盡量還原亮度資訊。</p>
+<img src="CameraHDR2.html">
+<p>相機拍攝時，光線亮度到像素數值的轉換過程，可以看作是一個函數。幸運的是，一台相機的函數是固定的──商家為了讓拍攝結果穩定一致。不幸的是，每一家相機的函數都不一樣，而且沒有公佈函數──這是商業秘密。</p>
+<p>我們的目標是找到反函數！不是一對一函數，沒有反函數，確切的說法是反映射。</p>
+<img src="CameraHDR3.html">
+<p>經典的演算法是選定相機、固定光圈、調整曝光時間，令讓進光量屢次翻倍，各拍攝一張相片。觀察各張相片的同一個像素，得知光線亮度與像素數值的對應關係。</p>
+<pre>
+取n個像素，光通量是 E₁ E₂ ... Eₙ
+曝光時間一倍 1E₁ ... 1Eₙ
+曝光時間兩倍 2E₁ ... 2Eₙ
+曝光時間四倍 4E₁ ... 4Eₙ
+
+水平線段區間 [L₀, R₀) [L₁, R₁) ... [L₂₅₅, R₂₅₅)
+其中 0 = L₀ < R₀ = L₁ < ... < R₂₅₄ = L₂₅₅ < R₂₅₅ = 10⁶
+光通量落在 [L₀, R₀) ，則像素亮度為 0 ，以此類推。
+
+每一張相片可以列出 2n 個不等式。
+比如說第一張相片，E₁的像素亮度是20，E₂的像素亮度是24
+
+L₂₀ <= E₁ < R₂₀  ====>  L₂₀ - E₁ <= 0 , E₁ - L₂₁ < 0
+L₂₄ <= E₂ < R₂₄  ====>  L₂₄ - E₂ <= 0 , E₂ - L₂₅ < 0
+
+有p種曝光時間、p張相片，得以列出 2np 個不等式
+再加上區間 L₀ < L₁ < ... < L₂₅₅ < R₂₅₅ ，一共 255 個不等式
+實施線性規劃演算法，求可行解！
+另外還可以設定區間長度最少是d，
+例如 L₀ + d < L₁ 這樣，以增加可行解的魯棒程度。
+
+求出所有未知數，得到 [L₀, R₀) ... [L₂₅₅, R₂₅₅) 對 E₁...Eₙ 的函數。
+最後套用單調三次內插，變成一對一函數，以求出反函數，
+就可以替圖片上每個像素找到E了。
+</pre>
+<p>多取幾個像素，就可以解方程式，得到一個大概的對應表。拍越多照、取越多像素，對應表就越準確。但是也得考量執行時間，畢竟民眾希望馬上拍照馬上得到相片。n=14點像素是不錯的數字。</p>
+<img src="CameraHDR4.html">
+<p>想要量測確實的彩度與亮度，可以使用<a href="https://www.youtube.com/watch?v=2RtVTmbAO5A">亮度儀</a>。只不過這裡的主角是數位相機。</p>
+<p class="t">Tone Mapping</p>
+<p><a href="http://en.wikipedia.org/wiki/Tone_mapping">色調映射</a>。調整相片亮度，盡量接近人眼感受，讓亮處細節、暗處細節同時都能看清楚。此技術可以用在相片、液晶顯示器。</p>
+<img src="CameraToneMapping1.html">
+<p>人類視覺，感知的亮度範圍是10<sup>-6</sup> ~ 10<sup>6</sup> cd/m<sup>2</sup>，橫跨12個數量級。人眼與人腦可以迅速調節亮度，同時看清楚亮處與暗處。甚至套用<a href="http://en.wikipedia.org/wiki/Mach_bands">特殊視覺效果</a>。</p>
+<p>一張相片，像素數值只有0到255，共256種離散數值。相片往往是亮的地方一片亮、暗的地方一片暗。</p>
+<p>目標是讓數位相機與人眼一樣。</p>
+<img src="CameraToneMapping2.html">
+<p>演算法<a href="http://www.csie.ntu.edu.tw/~cyy/courses/vfx/14spring/lectures/handouts/lec04_tonemapping.pdf">非常多</a>。例如先做HDR Imaging，再做<a href="http://en.wikipedia.org/wiki/Bilateral_filter">biliteral filter</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/R7C8Clk331I"></iframe>--></div>
+<p class="t">High Dynamic Range Printing（HDR Printing）</p>
+<p><a href="http://pellacini.di.uniroma1.it/publications/hdrprint12/hdrprint12.html">高動態範圍列印</a>。概念類似於色調映射。物理限制從256種像素值，變成了顏料的混色、顏料的反光率。</p>
+<p class="t">Autofocus</p>
+<p><a href="http://en.wikipedia.org/wiki/Autofocus">自動對焦</a>。目前多以物理方式處置。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HWSmFBor3-A"></iframe>--></div>
+<p class="t">Deblurring（Image Stabilization）</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_stabilization">防手震模糊</a>。目前多以<a href="http://www.fotobeginner.com/138/">物理方式</a>處置。</p>
+<p class="t">Focus Stacking</p>
+<p>焦點合成。以各種焦距，拍攝多張相片，堆疊成一張清晰相片。</p>
+<p>也可以固定焦距，以各種距離，拍攝多張相片，堆疊成一張清晰相片。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/D2cIjCI5DtM"></iframe>--></div>
+<p class="t">Exposure Blending</p>
+<p>曝光合成。以各種閃光燈方位，拍攝多張相片，堆疊成一張清晰相片。</p>
+<p>效果比Image Sharpening演算法還好。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/zHtbkIKmzgQ"></iframe>--></div>
+<p class="t">Focus Sweep（Coded Aaperture）</p>
+<p><a href="http://web.media.mit.edu/~bandy/sweep/">焦點掃描</a>。以特殊的光圈結構，拍攝一張照片，之後可以漂亮地達成deblurring，得到一張清晰相片。</p>
+<p>事先量測各種光圈大小、各種景物深度、各種景物偏角，在底片上面的模糊情況（point-spread function），以便設計光圈結構。</p>
+<pre>
+http://franchomelendez.com/Uwr/teaching/COMPHO/_LECTURES/L7/coded_photography.html
+</pre>
+<p class="t">Flutter Shutter（Coded Exposure）</p>
+<p><a href="http://web.media.mit.edu/~raskar/deblur/">顫振快門</a>。以特殊的曝光節奏，拍攝一張相片。之後可以漂亮地達成motion deblurring，得到一張清晰相片。</p>
+<pre>
+http://stanford.edu/class/ee367/class10.pdf
+http://cs.brown.edu/courses/csci1290/lectures/29.pdf
+</pre>
+<p class="t">相機的數學知識：Fourier Optics</p>
+<pre>
+http://web.stanford.edu/class/ee368/Handouts/Lectures/2015_Autumn/8-LinearProcessingFiltering_16x9.pdf
+page 67-71
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera光場處理（Under Construction）</p>
+</div><div class="c">
+<p class="t">Light-Field</p>
+<p><a href="https://en.wikipedia.org/wiki/Light_field">光場</a>。三維空間的每個地點、每種方向，各有一個光線顏色值。空氣所在之處通常是透明、不存在數值。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/xUKWXINBcyk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/118630233"></iframe>--></div>
+<p class="t">Light-Field Camera</p>
+<p><a href="https://en.wikipedia.org/wiki/Light-field_camera">光場相機</a>。有如方格馬賽克的玻璃窗，每一格都可以看到全景，但是視角略有不同。</p>
+<p>設置大量底片，底片位置略有差異。同時拍攝大量相片，之後可以重新對焦，得到各種焦距的相片。</p>
+<pre>
+http://stanford.edu/class/ee367/class9.pdf
+</pre>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/9H7yx31yslM"></iframe>--></div>
+<p class="t">Light-Field Transport</p>
+<pre>
+http://www.cs.columbia.edu/CAVE/projects/lightfield_transfer/
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera模型處理（Under Construction!）</p>
+</div><div class="c">
+<p class="t">概論</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/xIzYtKFwNnw"></iframe>--></div>
+<p><a href="http://vision.princeton.edu/courses/SFMedu/">講義</a>、<a href="http://vision.middlebury.edu/">資料集</a>，知名函式庫如<a href="https://inspirit.github.io/jsfeat/">jsfeat</a>。</p>
+<pre>
+物體分解成點的觀點之下
+
+   camera calibration
+1. 一臺相機不動，給定很多的物體的表面座標，拍一張相片，算相機的位置、焦距、方向。
+
+   ( 上古時代 )
+
+   cemera calibration
+2. 一臺相機不動，給定平坦物體的表面座標，物體移動，各拍一張相片，算上述東東。
+
+   ( http://research.microsoft.com/en-us/um/people/zhang/Calib/  十幾年前)
+
+   camera tracking
+3. 一臺相機一直動，想做是多臺相機，各拍一張相片，算每個相機的位置、焦距、方向。
+
+   ( voodoo / 新版的 blender 有這功能 )
+   ( http://www.csie.ntu.edu.tw/~cyy/courses/vfx/14spring/assignments/proj3/MatchMove_2014.pdf )
+
+   structure from motion
+4. 承上，找到所有物體的3d座標
+
+   point cloud to mesh
+5. 承上，物體3d座標重新拼成MESH。
+
+   match move
+6. 一臺相機一直動，把東西塞進去場景裡面。
+
+   augmented reality
+7. 承上，塞進去的東西可以跟場景互動，例如碰撞偵測之類的。
+</pre>
+<p class="t">相機的數學知識：Projective Geometry</p>
+<p>一臺相機。</p>
+<p>請讀者非常熟悉<a href="Point.html">計算幾何觀點</a>與<a href="Matrix.html">線性代數觀點</a>的二維幾何變換。</p>
+<p>點是過原點直線，點的座標是過原點直線的方向向量。直線是過原點平面，直線的座標是過原點平面的法向量。兩點外積得連線，是兩條過原點直線的方向向量的外積，得兩線形成之平面的法向量。兩線外積得交點，是兩個過原點平面的法向量的外積，得平面相交之直線的方向向量。</p>
+<pre>
+線ax+by+c=0 ---> (a,b,c)      三個座標值一齊乘上任意倍率，仍等價
+點(x,y)     ---> (x,y,1)      三個座標值一齊乘上任意倍率，仍等價
+點p在線l上  ---> p dot l = 0
+線l穿過點p  ---> l dot p = 0
+兩線交點    ---> l1 cross l2
+兩點連線    ---> p1 cross p2
+兩線平行    ---> l1 cross l2 = (a,b,0)
+</pre>
+<p class="t">相機的數學知識：Epipolar Geometry</p>
+<p>兩臺相機。<a href="http://danielwedge.com/fmatrix/">主題曲</a>。</p>
+<p>拍攝多張相片，源自各種方位。找到各圖片的對應線、對應座標。</p>
+<p>使用<a href="Image.html">Image Feature Matching</a>，擷取圖片特徵。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/DgGV3l82NTk"></iframe>--></div>
+<p class="t">相機的數學知識：Trifocal Tensor</p>
+<p>三臺相機。三點定位。楊戩。</p>
+<p class="t">相機的數學知識：Homogeneous Transformation</p>
+<p class="t">Camera Calibration（Camera Resection）</p>
+<p><a href="http://en.wikipedia.org/wiki/Camera_resectioning">校準</a>。拍攝多張相片，源自各種方位。求出相機參數，例如焦距、曲率。另外求出相機相對於物體的位置，例如平移、旋轉。</p>
+<p class="t">Image Registration</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_registration">配準</a>。拍攝多張相片，源自各種方位。找到每張相片的對應特徵，將特徵座標整合到世界座標系，得到點雲。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/3BNOsxMZD14"></iframe>--></div>
+<p class="t">Image Alignment</p>
+<p><a href="http://research.microsoft.com/pubs/70092/tr-2004-92.pdf">對齊</a>。拍攝多張相片，源自各種方位。相片實施三維幾何變換，整合到世界座標系。可以進一步製造<a href="http://en.wikipedia.org/wiki/Image_rectification">矯正</a>、<a href="http://homes.cs.washington.edu/~seitz/papers/sigg96.pdf">變形</a>的效果。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Rz6z--rpXOk"></iframe>--></div>
+<p class="t">Image Stitching（Image Mosaicing）（Panorama）</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_stitching">縫合</a>。拍攝多張相片，源自各種方位。銜接成一張寬廣相片，稱作<a href="http://en.wikipedia.org/wiki/Panorama">環景照</a>。經典範例是<a href="http://maps.google.com.tw/maps/about/behind-the-scenes/streetview/">谷歌街景</a>。<a href="http://comdan66.github.io/ThetaS/">這裡有作品</a>。</p>
+<p>一、座標系轉換。例如球面、圓柱等。</p>
+<p>二、每張相片因光線角度導致的色彩差異。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/SHu8x2YaQJc"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/lC4H5W1hdPA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/i-0LP-A61kA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/c8xjXqC9m2A"></iframe>--></div>
+<p class="t">Panorama Warping</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/dOMm4pNUBm0"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/6DtzCZVorSw"></iframe>--></div>
+<pre>
+http://kaiminghe.com/sig13/index.html
+
+deformation error
+http://ralph.cs.cf.ac.uk/papers/Geometry/Resizing.pdf
+
+line segment detection
+http://www.ipol.im/pub/art/2012/gjmr-lsd/
+
+1. 四邊形網格，每一格deformation的誤差
+   （位移旋轉縮放 ---> 四個對應點的距離相加）
+2. 邊緣角度的誤差，每一格分開算，
+   變換後的網格做雙線性內插以得到變換後的線段
+3. regularization
+4. 模仿 EM algorithm 做最佳化（因為1.2.都是二次函數，都是凸的）
+5. seam carving
+</pre>
+<p class="t">Camera Tracking</p>
+<p><a href="http://en.wikipedia.org/wiki/Camera_resectioning">追蹤</a>。拍攝多張相片，源自各種方位。求出每張相片的相機方位，將相機方位整合到世界座標系。可以進一步製造<a href="http://graphics.cs.cmu.edu/projects/im2gps/">圖片GPS</a>的效果。</p>
+<p class="t">Scene Reconstruction（Structure From Motion）</p>
+<p>重建。拍攝大量相片（甚至影片），源自各種方位。建立模型。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/i7ierVkXYa8"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UwBd1RbKljk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/IgBQCoEfiMs"></iframe>--></div>
+<p class="t">Scene Compositing（Match Move）</p>
+<p>合成。拍攝大量相片（甚至影片），源自各種方位。將多餘物品塞入場景，配合相機方位。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/QUVVMeKrhdo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/igXf5WK49Yw"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera繪圖處理（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Intrinsic Image</p>
+<p>真相。去除光線影響，還原物體的真實顏色。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/NnePYprvFvA"></iframe>--></div>
+<p class="t">Image-based Modeling</p>
+<p>拍攝相片，建立模型。可以想成是3D Graphics的反運算。</p>
+<p>平面變立體、2D變3D。根據像素顏色，推論模型形狀。像素值，是素材與光線的綜合結果。去除素材影響，則得光線。再從光線強度，推估光線入射角，得到表面法向量。</p>
+<p>這件事聽起來很蠢。想要建立模型，直接使用偵測模型的器材即可，何必使用相機？原因是幾乎人人隨身攜帶智慧型手機，那上面裝著計算機和相機；但是不是人人都有深度感測儀。</p>
+<pre>
+Shape From Shading：拍攝一張相片。
+Photometric Stereo：拍攝多張相片，相機固定方位，光源源自各種方位。
+View Synthesis：拍攝多張相片，相機源自各種方位。
+</pre>
+<p>http://www.cs.berkeley.edu/~barron/BarronMalikCVPR2012.pdf</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/wTrqG7iOrKI"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Vf12mepOqNY"></iframe>--></div>
+<p class="t">Image-based Lighting</p>
+<p>打光。拍攝多張相片，源自各種方位。偵測光源與光強，然後重新打光。</p>
+<p><a href="http://www.pauldebevec.com/IBL2003/">拍攝金屬球</a>：相機對準金屬球中心，拍攝金屬球的半面。根據相片的金屬球的半面的表面亮度，運用光線入射角等於折射角的原理，推測半個環境的光源與光強。調整相機方位（例如水平周轉一圈），以各種方位拍攝，得到整個環境的光源與光強。</p>
+<p><a href="http://research.microsoft.com/en-us/um/redmond/groups/ivm/ReflectionsIBR/">拍攝平面鏡</a>：相機拍攝平坦的反光物體，以各種方位拍攝（例如直線平移），推測光源與光強。</p>
+<p>拍攝場景：建立模型，運用Graphics領域的光線追蹤演算法，推測光源與光強。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/mkzLLz1tXds"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/VcAn-tMAUy8"></iframe>--></div>
+<p class="t">Image-based Rendering</p>
+<p><a href="http://www.johanneskopf.de/publications/gdibr/">渲染</a>。拍攝多張相片，源自各種方位。繪製模型。</p>
+<div class="z"><!--<iframe src="http://embed.ted.com/talks/lang/zh-tw/paul_debevec_animates_a_photo_real_digital_face.html"></iframe>--></div>
+<p class="t">Image-based Texturing</p>
+<p><a href="http://www.johanneskopf.de/publications/gdibr/">貼材質</a>。在模型上貼材質。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Ie-qLJdmlLI"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera拍攝處理（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Demosaicing‎</p>
+<p><a href="http://www.cambridgeincolour.com/tutorials/RAW-file-format.htm">http://www.cambridgeincolour.com/tutorials/RAW-file-format.htm</a></p>
+<p>數位相機的感光元件，有RGB三種，分別偵測紅光、綠光、藍光的強度，得到0到255的整數。</p>
+<p>感光元件宛如方格棋盤，緊密地排列在平面上，不能互相重疊。最常見的排法叫做Bayer arrangement：</p>
+<img src="ImageDemosaicing24b4.html??.png">
+<p>將三種感光元件分開來看，有很多漏洞。demosaicing‎就是指填補這些漏洞的數值。演算法非常多，例如線性內插、中位數。</p>
+<img src="ImageDemosaicing24b4.html??.png">
+<p>最後將三個方格棋盤疊起來，每個方格都有RGB值，一個方格對應一個像素，形成彩色相片。</p>
+<img src="ImageDemosaicing24b4.html??.png">
+<p>目前正在研發新型態的感光元件，可以同時偵測RGB。不久之後的將來應該就不需要demosaicing‎了。</p>
+<p class="t">Noise Reduction（Denoising）</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_noise">去除雜訊</a>。像素的數值不由自主改變了，變得跟真正的數值不一樣，就是誤差。</p>
+<p>誤差源自攝影器材先天限制、周遭環境不夠理想，原因很多。例如燈光昏暗時，相片上面多出許多莫名其妙的顏色。</p>
+<p>不同的誤差有不同的解決方式，見招拆招。例如salt-and-pepper noise，可以取鄰近像素的中位數；例如quantization noise，可以使用線性內插。更複雜的演算法例如<a href="http://en.wikipedia.org/wiki/Bilateral_filter">biliteral filter</a>和<a href="http://en.wikipedia.org/wiki/Non-local_means">non-local means</a>。</p>
+<img src="ImageDenoising1.html">
+<p class="t">Distortion Reduction（Aberration Reduction）</p>
+<p><a href="https://docs.gimp.org/en/plug-in-lens-distortion.html">去除失真</a>。失真是指圖片改變了，不符真實情況。</p>
+<p>失真的原因非常多，例如方才提到的雜訊：像素數值改變了。此處討論像差：像素位置改變了。</p>
+<p>當透鏡表面不完美、光線介質不均勻，影像將扭曲。</p>
+<pre>
+http://www.cs.cmu.edu/~ILIM/projects/IM/globalopt/research_globalopt.html
+http://www.cs.cmu.edu/~ILIM/projects/IM/water/research_water.html
+http://www.cs.cmu.edu/~ILIM/projects/IM/document_rectification/document_rectification.html
+</pre>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/capV7lUzbOw"></iframe>--></div>
+<p class="t">Image Fusion</p>
+<p><a href="https://en.wikipedia.org/wiki/Image_fusion">融合</a>。拍攝多張相片，融合成一張清晰相片。</p>
+<p class="t">Image Reconstruction</p>
+<p><a href="http://ultrasound.ee.ntu.edu.tw/classnotes/bme2/2007/4_02_07.pdf">重建</a>。擷取的資料需後製。例如核磁共振掃描，一條射線得到一群像素的加權平均值。須從一條條射線的投影數值，還原成一個個像素數值。Radon transform。</p>
+<p><a href="http://en.wikipedia.org/wiki/Iterative_reconstruction">iterative method</a>：其實就是<a href="Optimization.html">optimization</a>。窮舉物體的模樣，模擬投影結果，令誤差最小。缺點是速度慢。</a>
+<p>back projection：針對一個像素，窮舉穿過它的所有射線，計算平均值。缺點是模糊化。</p>
+<p><a href="http://en.wikipedia.org/wiki/Projection-slice_theorem">Fourier slicing</a>：二維平面，時域當中一群平行射線得到的一維數據，對應頻域當中穿過原點的一條直線。窮舉各種射線角度，盡量填滿頻域，最後再逆向傅立葉轉換。缺點是中心密外圍疏，而且必需克服格點問題。</p>
+<p class="t">Photon Camera</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Y_9vd4HWlVA"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Camera運鏡技巧（Under Construction!）</p>
+</div><div class="c">
+<p class="t">視覺錯覺</p>
+<p>http://en.wikipedia.org/wiki/Anamorphosis</p>
+<p>http://www.kongregate.com/games/tobeglad/evo-explores</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UelJZG_bF98"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/QWMFpxkGO_s"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/neysahv4el0?start=1617&end=1735"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/EM2B45m3_ns"></iframe>--></div>
+<pre>
+廠下廣卞廿士十一卉半與本二上旦上二本與半卉一十士廿卞廣下廠下廣卞廿士十一卉半
+與本二上旦上二本與半卉一十士廿卞廣下廠下廣卞廿士十一卉半與本二上旦上二本與半
+卉一十士廿卞廣下廠下廣卞廿士十一卉半與本二上旦上二本與半卉一十士廿卞廣下廠下
+</pre>
+<p class="t">Camera Control</p>
+<p>http://www.amazon.com/dp/0123116341</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Camera.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:32:01 GMT -->
+</html>

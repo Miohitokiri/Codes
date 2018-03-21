@@ -1,0 +1,48 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10326: The Polynomial Equation</h1>        
+<p align="left">一個n次多項式最多有n個根。例如：x<sup>2</sup> - 
+5x + 6 = 0有二個根2和3。在這個問題中，給你一些根的值，請你產生這樣的多項式。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">每筆測試資料2列。第一列有1個正整數N（1 &lt;= N 
+&lt;= 50），代表此多項式根的數目。下一列有N個整數，代表各個根的值。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">請使用x當作此多項式的變數。如果有某一項x<sup>i</sup>（i&gt;0）的係數為0，則該項不輸出。如果有某一項x<sup>i</sup>（i&gt;0）的係數為1，則該項不輸出係數。如果常數項為0,請一律輸出+ 
+0。請參考Sample   
+Output。</p>
+<p align="left">在輸出中以x^i代表x<sup>i</sup>，另外你可以安心的假設沒有係數會超過10<sup>15</sup>。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample          
+input</b></span></p>                    
+<pre>1
+0
+1
+999
+9
+1 1 1 1 1 1 1 1 1
+5
+0 0 0 0 0
+2
+3 -2
+2
+2 3
+3
+0 1 -1</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Output</b></span></p>                     
+<pre>x + 0 = 0
+x - 999 = 0
+x^9 - 9x^8 + 36x^7 - 84x^6 + 126x^5 - 126x^4 + 84x^3 - 36x^2 + 9x - 1 = 0
+x^5 + 0 = 0
+x^2 - x - 6 = 0
+x^2 - 5x + 6 = 0
+x^3 - x + 0 = 0</pre>
+                   
+</body>                   
+                   
+</html>                   

@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10496: Collecting Beepers</h1>            
+<p>Karel是一個機器人，他住在一個矩形的平面座標系統中。在那裡每個地方都以一組整數座標(x,y)來表示。在Karel的世界中放有一些呼叫器，你的任務是設計一個程式來幫助Karel撿起所有的呼叫器。你必須指導Karel從開始的位置到每個呼叫器那裡去，最後又回到原來的位置。你必須算出這過程最短路徑的長度。</p>
+<p>Karel只能沿著x,y軸的方向移動（不可走對角），也就是從(i,j)可以走到(i,j+1), 
+(i,j-1), (i-1,j), (i+1,j)等位置，且長度為1。</p>
+<p>你可以假設Karel所處的世界絕不會超過20*20的格子，並且要撿的呼叫器數目不會超過10個。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個整數代表以下有多少組測試資料。</p>        
+<p>每組測試資料的第一列有2個整數M、N，代表Karel所處的世界的大小為M*N，其中左上角座標為(1,1)，右下角座標為(M,N)。接下來的一列有2個整數，代表一開始時Karel所處的座標。在下一列有一個整數k，代表呼叫器的數目。再接下來的k列每列有2個整數，代表這些呼叫器的座標。</p>        
+<p>請參考Sample Input。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                      
+<p>對每組測試資料請輸出一列Karel從開始的位置到每個呼叫器那裡去，最後又回到原來的位置，這過程最短路徑的長度。</p>      
+<p>輸出格式請參考Sample    
+Output。</p>        
+<table border="1" width="100%" cellpadding="5">       
+  <tr>       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>         
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>        
+  </tr>        
+  <tr>        
+    <td width="50%"><pre>1
+10 10
+1 1
+4
+2 3
+5 5
+9 4
+6 5</pre></td>        
+    <td width="50%">  
+      <pre>The shortest path has length 24</pre> 
+    </td>       
+  </tr>       
+</table>       
+                                         
+</body>                                         
+                                         
+</html>                                         

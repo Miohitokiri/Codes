@@ -1,0 +1,323 @@
+﻿html {
+font-size: 1.2em;
+font-family: "Palatino Linotype", "Palatino", "Times New Roman",
+             "Microsoft JhengHei", "Microsoft YaHei Light", "Apple LiSung Light",
+             sans-serif;
+color: black;
+background-color: #EFEFEF;
+text-align: left;
+margin: 0 auto 0 auto;
+padding: 0;
+}
+
+/* link */
+a {
+color: darkred;
+text-decoration: underline;
+}
+a:hover {color: brown;}
+
+/* small link */
+.l {
+letter-spacing: -2px;
+}
+
+/* article */
+.a {
+display: block;
+overflow: visible;
+line-height: 1.5em;
+color: black;
+width: auto;
+min-width: -moz-min-content;
+min-width: -webkit-min-content;
+height: auto;
+margin: 0;
+margin-left: 15rem;
+padding: 0 0 2rem 0;
+}
+
+/* header */
+.h {
+display: block;
+overflow: hidden;
+font-weight: bold;
+color: lightgray;
+background-color: black;
+background-image: linear-gradient(45deg, rgb(64,64,64), rgb(96,96,96));
+border-radius: 4px;
+width: 33rem;
+min-width: 33rem;
+max-width: 33rem;
+margin: 0 auto 0 auto;
+padding: 1rem .5rem 1rem .5rem;
+letter-spacing: 1px;
+}
+
+/* banner */
+.b {
+display: block;
+vertical-align: middle;
+letter-spacing: 1.5px;
+text-indent: 0;
+text-align: center;
+width: auto;
+margin: 0;
+padding: 0;
+font-size: 1.5rem;
+line-height: 1.2em;
+}
+
+/* poem */
+.w {
+display: block;
+font-size: .8rem;
+line-height: .8em;
+vertical-align: middle;
+text-align: center;
+text-indent: 0;
+color: gray;
+width: auto;
+margin: .5rem 0 0 0;
+padding: 0;
+}
+
+/* content */
+.c {
+display: block;
+overflow: hidden;
+text-align: left;
+line-height: 1.5em;
+color: black;
+width: 34rem;
+min-width: 34rem;
+max-width: 34rem;
+height: auto;
+margin: 0 auto 0 auto;
+padding: 0;
+}
+
+/* title */
+.t {
+text-indent: 0;
+text-align: left; 
+color: #EFEFEF;
+background-color: black;
+background-image: linear-gradient(45deg, rgb(64,64,64), rgb(96,96,96));
+border-bottom: solid 1px black;
+border-radius: 4px;
+margin-top: 2rem;
+letter-spacing: 1px;
+}
+.t:first-child {
+margin-top: 1rem;
+}
+
+/* paragraph */
+p {
+text-indent: 2rem;
+text-align: left;
+width: 30rem;
+padding: 0 2rem 0 2rem;
+}
+
+/* math */
+u {text-decoration: overline;}
+q {border: 1px solid #000; border-radius: 2px;}
+q:before, q:after {content: "";} 
+p>sub, p>sup {font-size: 70%; margin-left: -.2rem;}
+pre sub {margin-right: 2px;}
+
+/* block */
+pre, .pre {
+font-family: "Consolas",
+             "Microsoft JhengHei", "Microsoft YaHei Light", "Apple LiSung Light",
+             monospace;
+font-size: .8rem;
+font-weight: normal;
+line-height: 1.2em;
+text-indent: 0;
+tab-size: 2;
+color: black;
+border-top: 2px solid gray;
+border-bottom: 2px solid gray;
+border-radius: 128px / 8px;
+width: auto;
+padding: .5rem .5rem .5rem .5rem;
+margin-left: 2rem;
+margin-right: 2rem;
+word-wrap: break-word;
+}
+.pre {
+font-size: .9rem;
+display: block;
+margin-top: -1.5rem;
+border: none;
+white-space: pre;
+}
+
+/* exercise */
+.e {
+font-size: .8rem;
+text-indent: 0;
+text-align: left;
+line-height: 1.5em;
+word-spacing: .5rem;
+letter-spacing: 2px;
+color: black;
+background-color: rgb(233,200,233);
+border: 1px solid #889A8A;
+border-radius: .5rem;
+width: auto;
+margin: .5rem 2rem .5rem 2rem;
+word-wrap: break-word;
+}
+
+/* GWT dremo */
+.d {
+text-indent: 0;
+margin-left: 0;
+margin-right: auto;
+}
+
+/* canvas */
+canvas {
+display: block;
+margin: 0 auto 0 auto;
+}
+
+/* movie */
+.z, iframe {
+display: block;
+margin: 0 auto .5rem auto;
+width: 560;
+height: 315;
+border: none;
+overflow: hidden;
+}
+
+img, object, embed, audio, video, svg {
+display: block;
+margin: 0 auto 0 auto;
+}
+
+/* mathematica */
+blockquote {
+display: none;
+}
+
+/* consecutive image */
+.i {
+display: block;
+text-align: center;
+}
+.i img, .i canvas, .i video, .i audio, .i svg {
+vertical-align: middle;
+display: inline;
+margin: 0;
+}
+
+/* sidebar */
+.m {
+display: block;
+line-height: 1em;
+text-align: center;
+text-indent: 0;
+color: #EFEFEF;
+background-image: linear-gradient(0deg, rgba(52,52,52,1.0), rgba(0,0,0,0.5));
+border-right: 1px solid black;
+width: 15rem;
+min-width: 15rem;
+max-width: 15rem;
+height: auto;
+min-height: 100%;
+overflow: hidden;
+vertical-align: top;
+position: fixed;
+left: 0;
+top: 0;
+z-index: 1;
+}
+.m a {text-decoration: none; color: inherit;}
+.m a:hover {color: orange;}
+
+.m .li {
+display: block;
+text-align: left;
+line-height: 1.2em;
+border-bottom: 1px dotted lightgray;
+height: auto;
+margin: 0;
+padding: .3rem .6rem .3rem .6rem;
+}
+
+.m .li:first-child {
+font-size: 1.2rem;
+line-height: 1.5em;
+font-weight: bold;
+color: #EFEFEF;
+background-image: linear-gradient(0deg, rgba(52,52,52,1.0), rgba(0,0,0,0.5));
+text-indent: -.5rem;
+}
+
+/* code */
+.sh {
+display: block;
+overflow: visible;
+font-family: "Lucida Console", "Courier New",
+             "Microsoft JhengHei", "Microsoft YaHei Light", "Apple LiSung Light",
+             monospace;
+font-size: .8rem;
+line-height: 1.5em;
+color: lightblack;
+width: auto;
+margin: 0.25rem 2rem 0.25rem 2rem;
+word-wrap: break-word;
+word-break: break-all;
+}
+
+/* code title */
+.sh .bar {
+color: black;
+background-color: darkgray;
+border: 1px solid #889A8A;
+border-bottom: 0;
+border-top-right-radius: 8px;
+border-top-left-radius: 8px;
+padding-left: 1rem;
+}
+
+/* line number + content */
+.sh ol {
+list-style: decimal outside;
+margin: 0;
+padding-left: 3em; /* line number */
+border: 1px solid #889A8A;
+border-bottom-left-radius: 8px;
+border-bottom-right-radius: 8px;
+}
+/* line number color */
+.sh ol {list-style-color: lightgray;}
+.sh ol li::before {color: lightgray;}
+.sh ol li::marker {color: lightgray;}
+/* content */
+.sh ol li {border-top: 1px dotted lightgray;}
+.sh ol li:first-child {border: 0;}
+
+.sh .comment, .sh .comments {color: #008200;}
+.sh .string, .sh .char {color: #069;}
+.sh .macro {color: purple;}
+.sh .type {color: #069;}
+.sh .keyword {color: blue;}
+.sh .word {}
+.sh .value, .sh .hex {color: brown;}
+
+/* mobile */
+@media only screen and (max-device-width: 600px) {
+.m {display: none;}
+.a {margin: 0;}
+.h {width: 95%; min-width: 95%; max-width: 99%;}
+.c {width: 99%; min-width: 99%; max-width: 99%;}
+p {width: 95%; min-width: 95%; max-width: 95%;}
+a {word-wrap: break-word;}
+}

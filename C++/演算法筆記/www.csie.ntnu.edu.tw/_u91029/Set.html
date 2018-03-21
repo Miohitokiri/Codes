@@ -1,0 +1,646 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Set.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:59:11 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Set</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Set</p>
+</div><div class="c">
+<p class="t">Set</p>
+<img src="Set1.png">
+<p>set是指數學名詞「集合」。在這裡我們只考慮元素為整數的集合。集合有幾點特性：</p>
+<p>一、空集合。</p>
+<p>二、集合中的元素不會重複。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Set資料結構: 循序儲存</p>
+</div><div class="c">
+<p class="t">Array</p>
+<img src="Set2.png">
+<p>要表達一個集合，可以直觀的用一條一維的int陣列：將集合裡的所有元素，依序放進陣列中。再用一個變數，記錄元素總數。</p>
+<textarea>
+struct Set
+{
+	int array[1000];	// 可存入1000個元素
+	int num;			// 記錄集合中有多少元素
+};
+
+Set set1, set2;			// 建立兩個集合
+</textarea>
+<p>如果你對C++ STL很熟，用vector就更方便了！</p>
+<textarea>
+vector<int> set1(1000);
+vector<int> set2(1000);
+</textarea>
+<p>然而，以這種資料結構，做聯集、交集、差集之類的運算，則會相當麻煩，也會比較慢。各位可以自己試試看！</p>
+<p>可以直接使用STL的set_union()、set_intersection()。</p>
+<p class="e">UVa 496 12069</p>
+<p class="t">List</p>
+<img src="Set3.png">
+<p>原理就和Array完全一樣。Array是一個一個數字連著放，List則是一個一個數字連成串。</p>
+<p class="t">Binary Search Tree</p>
+<img src="Set4.png">
+<p>只要是可以儲存大量數字的資料結構，都可以用來儲存一個集合。因此二元搜尋樹當然也能勝任這項任務！</p>
+<p>可以直接使用STL的set，不過它沒有聯集、交集、差集等功能，必須自己另外設計程式碼。也許你內心有點芥蒂；沒錯，STL的set，的確是名不符實的set。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Set資料結構: 索引儲存</p>
+</div><div class="c">
+<p class="t">Array</p>
+<img src="Set5.png">
+<p>另外一種表達集合的方法，是用一條一維的bool陣列：集合裡若有x這個元素，就讓array[x]這個位置為true，否則為false。</p>
+<p>它的壞處就是數值有界限、受陣列大小影響。但是，以這種資料結構，做聯集、交集、差集之類的運算，則會比較快，時間複雜度為O(陣列大小)。</p>
+<textarea>
+bool set[1000];	// 一個集合，元素的數值範圍為0到999
+
+// 加入元素
+void add_element(bool a[1000], int element)
+{
+	a[element] = true;
+}
+
+// 除去元素
+void delete_element(bool a[1000], int element)
+{
+	a[element] = false;
+}
+
+// 聯集
+void union(bool a[1000], bool b[1000], bool c[1000])
+{
+	for (int i=0;i<1000;i++) c[i] = a[i] || b[i];
+}
+
+// 交集
+void intersection(bool a[1000], bool b[1000], bool c[1000])
+{
+	for (int i=0;i<1000;i++) c[i] = a[i] && b[i];
+}
+
+// 差集
+void difference(bool a[1000], bool b[1000], bool c[1000])
+{
+	for (int i=0;i<1000;i++) c[i] = a[i] && !b[i];
+}
+
+// 補集
+void complement(bool a[1000], bool b[1000])
+{
+	for (int i=0;i<1000;i++) b[i] = !a[i];
+}
+
+// 判斷是否為空集合
+bool empty(bool a[1000])
+{
+	for (int i=0;i<1000;i++)
+		if (a[i])
+			return false;
+	return true;
+}
+
+// 判斷是否沒有交集
+bool disjoint(bool a[1000], bool b[1000])
+{
+	for (int i=0;i<1000;i++)
+		if (a[i] && b[i])
+			return false;
+	return true;
+}
+
+// 判斷a有沒有包含b
+bool contain(bool a[1000], bool b[1000])
+{
+	for (int i=0;i<1000;i++)
+		if (!a[i] && b[i])
+			return false;
+	return true;
+}
+</textarea>
+<p class="e">UVa 608 665 10227 12650</p>
+<p class="t">Bit Array（Bit Vector）（Bitset）</p>
+<img src="Set6.png">
+<p>還有一種方法，是用bit來代替bool變數。在電腦當中，一個bit只有0和1兩種值，類似於bool變數，兩者都可以用來表示一個集合元素存不存在。利用bit們來表達集合，可以節省儲存空間，也可以節省運算時間。</p>
+<p>一個int變數所使用的記憶體大小為32bit，可以當作是32個數字的集合。需要更多bit的話，就建立一條陣列吧！</p>
+<textarea>
+typedef int Bitset[100];	// 一個集合，元素的數值範圍為 0 到 3199
+
+// 求出element所在的陣列格子，即是element除以32的商數
+int get_pos(int element)
+{
+	return element >> 5;
+}
+
+// 求出element在陣列格子當中是第幾個bit，即是element除以32的餘數
+// 然後讓一個bit位移至適當位置，以利計算
+int get_bit(int element)
+{
+	return 1 << (element & 31);
+}
+
+// 加入元素
+void add_element(Bitset a, int element)
+{
+	a[get_pos(element)] |= get_bit(element);
+}
+
+// 除去元素
+void delete_element(Bitset a, int element)
+{
+	a[get_pos(element)] &= ~get_bit(element);
+}
+
+// 聯集
+void union(Bitset a, Bitset b, Bitset c)
+{
+	for (int i=0; i<100; i++)
+		c[i] = a[i] | b[i];
+}
+
+// 交集
+void intersection(Bitset a, Bitset b, Bitset c)
+{
+	for (int i=0; i<100; i++)
+		c[i] = a[i] & b[i];
+}
+
+// 差集
+void difference(Bitset a, Bitset b, Bitset c)
+{
+	for (int i=0; i<100; i++)
+		c[i] = a[i] & ~b[i];
+}
+
+// 補集
+void complement(Bitset a, Bitset b)
+{
+	for (int i=0; i<100; i++)
+		b[i] = !a[i];
+}
+
+// 判斷是否為空集合
+bool empty(Bitset a)
+{
+	for (int i=0;i<100;i++)
+		if (a[i])
+			return false;
+	return true;
+}
+
+// 判斷是否沒有交集
+bool disjoint(Bitset a, Bitset b)
+{
+	for (int i=0;i<100;i++)
+		if (a[i] & b[i])
+			return false;
+	return true;
+}
+
+// 判斷a有沒有包含b
+bool contain(Bitset a, Bitset b)
+{
+	for (int i=0;i<100;i++)
+		if (~a[i] & b[i])
+			return false;
+	return true;
+}
+</textarea>
+<p>可以直接使用STL的bitset。</p>
+<p class="e">UVa 11218</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Set資料結構: Hash Table</p>
+</div><div class="c">
+<p class="t">Hash Function【這不是資料結構】</p>
+<p>int hash(一筆資料) {return 一個數值;}</p>
+<p>一筆資料重新表示成一個數值。該數值稱作雜湊值。</p>
+<img src="HashTable1.png">
+<p>資料庫的觀點：資料進行索引，以利管理。密碼學的觀點：資料進行編碼，以求隱蔽。</p>
+<p>理想情況是相同資料有著相同雜湊值、相異資料有著相異雜湊值，如此就能直接使用雜湊值來分辨資料。</p>
+<p>可以直接使用STL的hash。</p>
+<p class="t">Hashing【這不是資料結構】</p>
+<p>array[ hash(一筆資料) ] = 一筆資料;</p>
+<p>繁中「雜湊」，簡中「散列」。一筆資料套用hash function得到雜湊值，作為陣列索引值，用陣列儲存資料。設計hash function時，必須確保雜湊值不會超出陣列邊界。</p>
+<img src="HashTable2.png">
+<p>無論是相同資料、相異資料，只要有著相同雜湊值，就會儲存到陣列的同一個格子。此時有三種應對方案：</p>
+<p>一、每個陣列元素皆改為List，串接資料。</p>
+<p>二、放到下一格；如果下一格已經使用，就再往下一格。</p>
+<p>三、新資料直接覆蓋舊資料。</p>
+<p>此處以一為主。插入的時間複雜度是O(1)。刪除、搜尋的最佳時間複雜度是O(1)，相異資料有著相異雜湊值；最差時間複雜度是O(N)，相異資料有著相同雜湊值。</p>
+<p class="t">Hash Table</p>
+<img src="HashTable3.png">
+<p>當元素的數值範圍很大，甚至元素不是整數，此時可以利用hash function得到一個索引值，而不會超出陣列邊界。</p>
+<p>數值範圍小，索引儲存是首選，省時間費空間；數值範圍大，循序儲存是首選，省空間費時間。hash table兩者兼具，介於中間。</p>
+<p>可以直接使用STL的unordered_set、unordered_multiset。</p>
+<p class="t">Cuckoo Filter</p>
+<img src="HashTable4.png">
+<p>建立多個hash function。當陣列格子已有資料，就換hash function、換雜湊值。</p>
+<p>有興趣的讀者，可以自行上網搜尋資料。</p>
+<p class="t">Bloom Filter</p>
+<img src="HashTable5.png">
+<p>套用多個hash function，同時儲存於多個欄位，分散風險。只要發現對應欄位幾乎都是1，就推定元素存在於集合當中。缺點是可能製造原本不存在的元素。</p>
+<p>如果懶得設計hash function，可以用兩個湊出多個：hashi(n) = hash1(n) + i * hash2(n)。關鍵字Kirsch-Mitzenmacher。</p>
+<p>有興趣的讀者，可以自行上網搜尋資料。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Disjoint Sets</p>
+</div><div class="c">
+<p class="t">Disjoint Sets</p>
+<p>「互斥集」的意思是一堆集合們，大家擁有的元素都不相同，也就是說這些集合們之間都沒有交集。</p>
+<pre>
+A = {1, 3, 7, 8}
+B = {4, 5}
+C = {2}
+A、B、C構成Disjoint sets。
+
+D = {1, 2, 3}
+A、B、C、D不是Disjoint sets。
+</pre>
+<p>舉例來說，有十個學生，要製作分組報告，分成四組，這四組就是Disjoint sets。</p>
+<pre>
+甲君、乙君、丙君、丁君、戊君、己君、庚君、辛君、壬君、癸君
+共十人，分成了四組：
+
+第一組：甲君、丙君、辛君、壬君
+第二組：乙君
+第三組：丁君、戊君、己君
+第四組：庚君、癸君
+
+這四組構成Disjoint sets。
+</pre>
+<p class="t">union、find、split</p>
+<p>由於集合們都沒有交集，因此諸如交集運算、差集運算等等結果很明顯的運算，就不必特別說明。這裡只談union、find、split這三個運算：union就是將兩個集合做聯集，合併成一個集合。find就是找找看一個元素是在哪個集合裡面。split就是把一個集合拆成兩個集合。</p>
+<p>以下只談union、find，暫不介紹split。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Disjoint Sets資料結構: List</p>
+</div><div class="c">
+<p class="t">Disjoint-sets List</p>
+<p>其原理正是先前介紹的「循序儲存」。</p>
+<img src="DisjointSets1.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Disjoint Sets資料結構: Array</p>
+</div><div class="c">
+<p class="t">Disjoint-sets Array</p>
+<p>其原理正是先前介紹的「索引儲存」。</p>
+<img src="DisjointSets2.png">
+<p>讓一條int陣列的第x格代表第x人，格子裡填上這個人所屬的團體編號。若兩個人在同一團體，他們的格子裡就會有相同的團體編號。這是很直觀的方式。</p>
+<textarea>
+int g[10];	// 每個人所屬的團體編號
+g[0] = 0;	// 第0人在第0團
+g[1] = 0;	// 第1人在第0團
+g[2] = 2;	// 第2人在第2團
+…                        
+g[9] = 2;	// 第9人在第2團
+</textarea>
+<p class="t">初始化</p>
+<img src="DisjointSets3.png">
+<p>一開始大家還沒開始分團的時候，其實可以想做是：每個人都不同團，每個人都是自己一人一團。有個方便的初始值設定方法，就是將第x格的值設成x，這樣每個人就都是不同團體的了。</p>
+<textarea>
+void initialize()
+{
+	for (int x=0; x<10; x++)
+		g[x] = x;
+}
+</textarea>
+<p class="t">Find: 找出一個人在哪一團？</p>
+<img src="DisjointSets4.png">
+<p>直接看團體編號。</p>
+<textarea>
+int find(int x)
+{
+	return g[x];
+}
+</textarea>
+<p class="t">Equivalent Relation: 兩個人是否同團？</p>
+<p>直接看團體編號。</p>
+<textarea>
+bool equivlence(int x, int y)
+{
+	return g[x] == g[y];
+}
+</textarea>
+<p class="t">Union: 兩個人想合併自己所屬團體</p>
+<img src="DisjointSets5.png">
+<p>現在有兩團想要合併成一團，交涉的人分別是x和y。x y想要合併成一團，只要把所有與x y同團的人，都填上同一個團體編號就行了。取x 和y其中一團的團體編號，當作新的團體編號，如此一來就不需要額外的編號了。（這裡我們不考慮有人不服氣的問題。）</p>
+<textarea>
+void union(int x, int y)
+{
+	// 要是x y不同團，才設成同團，以節省時間。
+	if (g[x] != g[y])
+	{
+		int gmin = min(g[x], g[y]);	// 團體編號較小者
+		int gmax = max(g[x], g[y]);	// 團體編號較大者
+
+		// 把所有與x y同團的人，都填上同一個團體編號。
+		// 設定為團體編號較小者，
+		// 讓所有團體編號維持是從零0開始的連續數字。
+		for (int i=0; i<10; i++)
+			if (g[i] == gmax)
+				g[i] = gmin;
+	}
+}
+</textarea>
+<textarea>
+void union(int x, int y)
+{
+	// 精簡程式碼結構
+	if (g[x] == g[y]) return;
+
+	// 為了精簡程式碼，不管團體編號大小了。
+	int gx = g[x], gy = g[y];
+	for (int i=0; i<10; i++)
+		if (g[i] == gx)
+			g[i] = gy;
+}
+</textarea>
+<p class="t">Number of Sets: 全部總共幾個團體？</p>
+<p>兩團合併成一團後，團體數就會減少一團。只需修改一下union的程式碼。</p>
+<textarea>
+int groups = 10;	// 團體數
+
+void union(int x, int y)
+{
+	if (g[x] == g[y]) return;
+	groups--;	// 兩團合併成一團後，團體數就會減少一團。
+	int gx = g[x], gy = g[y];
+	for (int i=0; i<10; i++)
+		if (g[i] == gx)
+			g[i] = y;
+}
+</textarea>
+<p class="t">Cardinality of a Set: 一個團體總共幾個人？</p>
+<p>一個一個數是差勁的方法：</p>
+<textarea>
+// 計算出x所屬的團體的人數
+int cardinality(int x)
+{
+	int gn = g[x];	// 先找到團體編號
+	int people = 0;	// 計算出團體編號為gn的人數
+	for (int i=0; i<10; i++)
+		if (g[i] == gn)
+			people++;
+	return people;
+}
+</textarea>
+<p>比較好的方法是：另外建立一條陣列去記錄每個團體的人數吧！陣列第x格填入團體編號為x的人數。要找出一個團體的人數，就直接從陣列裡面找。</p>
+<p>以團體的角度來看：兩團合併成一團後，團體人數就會改變。以人的角度來看：當一個人所屬的團體被改變時，就調整人數。所以只要修改一下union的程式碼就可以了。</p>
+<textarea>
+int size[10];	// 每個團體的人數
+
+void initialize()
+{
+	for (int i=0; i<10; i++)
+	{
+		g[i] = i;
+		size[i] = 1;	// 團體編號從0到9，每團都是一個人。
+	}
+}
+
+void union(int x, int y)
+{
+	if (g[x] == g[y]) return;
+	groups--;
+	int gx = g[x], gy = g[y];
+	for (int i=0; i<10; i++)
+		if (g[i] == gx)
+		{
+			g[i] = gy;
+			size[gx]--;	// 團體編號為gx的人數減少一人
+			size[gy]++;	// 團體編號為gy的人數增加一人
+		}
+}
+
+int cardinality(int x)
+{
+	return size[g[x]];
+}
+</textarea>
+<p class="t">根據團體的人數多寡來做union</p>
+<p>合併團體時，將小的團體併入大的團體，可以節省一點點設定團體和增減人數所需的時間。</p>
+<textarea>
+void union(int x, int y)
+{
+	if (g[x] == g[y]) return;
+	groups--;
+	int glarge = g[x], gsmall = g[y];
+	if (size[x] < size[y]) swap(glarge, gsmall);
+	for (int i=0; i<10; i++)
+		if (g[i] == gsmall)
+		{
+			g[i] = glarge;
+			size[gsmall]--;
+			size[glarge]++;
+		}
+}
+</textarea>
+<p class="t">Singleton Set: 團體是否合併過？</p>
+<p>自己一個人一組，沒有union過。</p>
+<textarea>
+bool singleton(int x)
+{
+	return size[g[x]] == 1;
+}
+</textarea>
+<p class="t">時間複雜度</p>
+<p>union為O(N)，find、equivalence、cardinality、singleton為O(1)。</p>
+<p>如果有N個人，全部的人都union過一遍，每次union要花O(N)時間，總共花O(N^2)時間。</p>
+<p class="t">空間複雜度</p>
+<p>如果有N個人，需要一條N格的陣列，O(N)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Disjoint Sets資料結構: Forest</p>
+</div><div class="c">
+<p class="t">Disjoint-sets Forest</p>
+<p>其原理正是圖論的「有向森林」。</p>
+<img src="DisjointSets6.png">
+<p>讓一條int陣列的第x格代表第x人──不過，格子裡改成填上x的老大是誰：</p>
+<textarea>
+int p[10];	// 記錄每個人的老大
+p[0] = 1;	// 第0人的老大是第1人
+p[1] = 1;	// 第1人的老大是第1人
+p[2] = 8;	// 第2人在老大是第8人
+…                              
+p[9] = 2;	// 第9人在老大是第2人
+</textarea>
+<p>彷彿是老鼠會，以萬流歸宗的方式，來代表這個人是團體的大頭目。團體的所有成員，他們往上追溯之後，都是同一個頭目。一個團體中，只會有一個頭目，由他來支配團體、作為團體的代表。</p>
+<p>各位可能會有一個疑問：一個團體之中，每個人都有一個頭目，那麼頭目的老大是誰呢？可以姑且設定成自己。</p>
+<p>一個團體就像是一棵分支很複雜的有根樹。這些團體構成了一叢森林，故名Disjoint-sets Forest。</p>
+<p class="t">初始化</p>
+<img src="DisjointSets7.png">
+<p>一開始大家還沒開始分團的時候，可以想成是：每個人都不同團，每個人都是自己一人一團，自己當頭目。將第x格的值設成x，這樣每個人都是不同團體的頭目了。</p>
+<textarea>
+int p[10];
+
+void initialize()
+{
+	for (int x=0; x<10; x++)
+		p[x] = x;
+}
+</textarea>
+<p class="t">Find: 找出一個人在哪一團？</p>
+<img src="DisjointSets8.png">
+<p>接下來談談頭目吧。頭目在一個團體之中扮演舉足輕重的角色，一個團體只會有一個頭目，所以可以用頭目作為一個團體的代表。</p>
+<textarea>
+int find(int x)
+{
+	// 當 x 不是頭目，就繼續追本溯源，直到找到頭目。
+	while (x != p[x])
+		x = p[x];
+	return x;
+}
+</textarea>
+<textarea>
+int find(int x)
+{
+	return x == p[x] ? x : find(p[x]);
+}
+</textarea>
+<p>find的時候，可以把途中遇到的所有人，將其老大重設為頭目。如此一來下次find的時候就會變快了。</p>
+<textarea>
+int find(int x)
+{
+	return x == p[x] ? x : (p[x] = find(p[x]));
+}
+</textarea>
+<p class="t">Equivalent Relation: 兩個人是否同團？</p>
+<p>同一個團體中的成員，他們的頭目都是同一個人。要看兩個人是不是同一團，看看他們的頭目是不是同一人就行了。</p>
+<textarea>
+bool equivalence(int x, int y)
+{
+	return find(x) == find(y);
+}
+</textarea>
+<p class="t">Union: 兩個人想合併自己所屬團體</p>
+<img src="DisjointSets9.png">
+<p>合併x y兩個團體，重新選出一個頭目。最簡單的方式是：讓x的頭目帶著他旗下所有小弟，投靠y團體的隨便一個人，如此一來兩個團體就擁有共同的頭目了，也依然保持著老鼠會的架構。</p>
+<textarea>
+void union(int x, int y)
+{
+	x = find(x);	// 先找出x的頭目
+	p[x] = y;		// x的頭目帶領旗下小弟投靠y
+}
+</textarea>
+<p>union的時候，直接投靠對方的頭目，可以讓樹的深度增加最少。如此一來下次find的時候就會變快了。</p>
+<textarea>
+void union(int x, int y)
+{
+	x = find(x); y = find(y);	// 先找出頭目
+	p[x] = y;					// x的頭目帶領旗下小弟投靠y的頭目
+}
+</textarea>
+<textarea>
+void union(int x, int y)
+{
+	p[find(x)] = find(y);
+}
+</textarea>
+<p>實作小叮嚀：union要確保投靠的人是頭目，投靠後頭目只有一個。另外也要避免同團體的人互相設定彼此是頭目，否則find會無限循環。另外union在C/C++當中是關鍵字，必須換個字眼。</p>
+<p class="t">Number of Sets: 全部總共幾個團體？</p>
+<p>兩團合併成一團後，團體數就會減少一團。只需修改一下union的程式碼。</p>
+<textarea>
+int groups = 10;	// 團體數
+
+void union(int x, int y)
+{
+	x = find(x); y = find(y);
+	if (x == y) return;
+	groups--;	// 兩團合併成一團後，團體數就會減少一團。
+	p[x] = y;
+}
+</textarea>
+<p class="t">Cardinality of a Set: 一個團體總共幾個人？</p>
+<p>先前提到頭目可以支配、代表一個團體，所以把焦點放在頭目上吧。另外建立一個陣列去記錄每個頭目帶領的人數，size[頭目] = 頭目帶領的人數。</p>
+<p>兩團合併成一團後，團體人數就會改變。新頭目吸收人數；舊頭目則不再是頭目，毋須理會他帶領的人數。只需修改一下union的程式碼。</p>
+<textarea>
+int size[10];	// 每個頭目帶領的人數
+
+void initialize()
+{
+	for (int i=0; i<10; i++)
+	{
+		p[i] = i;		// 每團只有一個人，頭目是自己
+		size[i] = 1;	// 每個頭目都只帶領一個人，那個人是自己。
+	}
+}
+
+void union(int x, int y)
+{
+	x = find(x); y = find(y);
+	if (x == y) return;
+	groups--;
+	size[y] += size[x];	// 新頭目吸收人數
+//	size[x] = 0;		// 舊頭目不再帶領人
+	p[x] = y;
+}
+
+int cardinality(int x)
+{
+	return size[find(x)];
+}
+</textarea>
+<p class="t">根據團體的人數多寡來做union</p>
+<p>union的時候，讓小的團體併入大的團體，可以讓樹的深度增加最少。如此一來下次find的時候就會變快了。</p>
+<textarea>
+void union(int x, int y)
+{
+	x = find(x); y = find(y);
+	if (x == y) return;
+	groups--;
+	if (size[x] < size[y])	// x團體﻿人單勢孤，y團體人多勢眾。
+	{
+		p[x] = y;			// x的頭目帶領旗下小弟投靠y的頭目
+		size[y] += size[x];	// y的頭目增加人數
+	}
+	else					// 形勢顛倒
+	{
+		p[y] = x;
+		size[x] += size[y];
+	}
+}
+</textarea>
+<p class="t">Singleton Set: 團體是否合併過？</p>
+<p>自己一個人一組，沒有union過。</p>
+<textarea>
+bool singleton(int x)
+{
+	return size[find(x)] == 1;
+}
+</textarea>
+<p class="t">Empty Set: 空集合</p>
+<p>之前我們都未處理空集合。現在我們要改良資料結構，讓它可以處理空集合，而效率仍然保持一樣。</p>
+<p>將陣列的第0格當作是一個空集合，不代表任何人。總人數如果有100人，那麼就要建立101格的陣列。第0格是空集合，第1格到第100格，分別代表著100個人。</p>
+<p>現在既然有了空集合，便可將頭目的老大設定為空集合，更具義理。也就是說，初始化時要將陣列的初始值都改成0。</p>
+<textarea>
+int p[10+1];
+
+void initialize()
+{
+	for (int x=0; x<10+1; x++)
+		p[x] = 0;
+}
+</textarea>
+<textarea>
+bool empty(int x)
+{
+	return x == 0;
+}
+</textarea>
+<p>多了空集合，就要另外考慮空集合做聯集時的影響。不管什麼集合，只要和空集合作聯集，集合都不會改變。凡是遇到空集合，就不必做聯集了。</p>
+<textarea>
+void union(int x, int y)
+{
+	x = find(x); y = find(y);
+	if (x == y || x == 0 || y == 0) return;
+	p[x] = y;
+}
+</textarea>
+<p>其他部分大致不變，不再贅述。</p>
+<p class="t">時間複雜度</p>
+<p>union、find、equivalence、cardinality、singleton皆為O(logN)。值得一提的是，均攤時間皆是O(α(N))，其中α(N)是Ackermann function f(N,N)的反函數。</p>
+<p class="t">空間複雜度</p>
+<p>如果有N個人，就需要一條N格的陣列，為O(N)。</p>
+<p class="e">UVa 793 879 10158 10505 10583 10608 10685 11987 ICPC 4359</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Set.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:59:15 GMT -->
+</html>

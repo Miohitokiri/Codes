@@ -1,0 +1,458 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Signal.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:15:53 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Signal</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Signal</p>
+</div><div class="c">
+<p class="t">Signal</p>
+<p>訊號是一連串的數字。分為兩種，離散和連續。</p>
+<img src="Signal1.png">
+<p>對於數學家來說，就是一維數列（離散）、一維函數（連續）。對於訊號學家來說，就是數位訊號（離散）、類比訊號（連續）。「訊號」只不過是一個比較親民的詞彙而已。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Signal Reconstruction</p>
+</div><div class="c">
+<p class="t">Signal Reconstruction</p>
+<img src="Signal2.png">
+<p>訊號重建。找到原本波形。其實就是找到內插函數。</p>
+<p>數列通常很長。如果採用多項式內插，那麼內插函數必須是非常高次的多項式。然而，非常高次的多項式，有劇烈震盪的現象，無法平順的符合資料，稱做「<a href="http://en.wikipedia.org/wiki/Runge's_phenomenon">Runge's Phenomenon</a>」。</p>
+<p>數列通常取自真實世界、源自物理現象。例如聲音訊號，是由不同頻率的波，疊加而成的。詳見「<a href="Wave.html">傅立葉轉換</a>」。</p>
+<p>由於上述兩點，因而衍生了其他內插演算法。</p>
+<p class="t">Signal Resampling</p>
+<img src="Signal5.png">
+<p>訊號重新取樣。改變疏密程度，重新求得數值。變密稱做upsampling、變疏稱做downsampling。也有人把變密稱做interpolation、變疏稱做decimation。</p>
+<p>首先重建訊號，找到內插函數。代入新位置，求得新訊號。</p>
+<p class="t">演算法（Triangle Interpolation）（Linear Interpolation）</p>
+<img src="Signal3.png">
+<p>三角波，等價於線性內插。不切實際，但是算得快。</p>
+<p class="t">演算法（Sinc Interpolation）</p>
+<img src="Signal4.png">
+<p>方波函數，實施逆向傅立葉轉換，頻域轉時域（反過來也行），就是sinc函數。如果頻域只有特定幾個頻率有方波（理想中是無限薄的脈衝，但是實際上是有點厚的方波），那麼時域採用sinc函數，最理想不過了。算得極慢。</p>
+<p class="t">演算法（Lanczos Interpolation）</p>
+<p><a href="http://en.wikipedia.org/wiki/Lanczos_resampling">http://en.wikipedia.org/wiki/Lanczos_resampling</a></p>
+<p>加強版。自由調整胖瘦。砍掉綿延的小波，只留主要的部分。</p>
+<p class="t">演算法（Mitchell-Netravali Filter）</p>
+<p><a href="http://de.wikipedia.org/wiki/Mitchell-Netravali-Filter">http://de.wikipedia.org/wiki/Mitchell-Netravali-Filter</a>
+<p>加強版。改用三次多項式函數模擬之。算得快。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Signal Estimation</p>
+</div><div class="c">
+<p class="t">Signal Estimation</p>
+<img src="Signal6.png">
+<p>訊號估計。找到訊號的規律。其實就是找到迴歸函數。迴歸函數是遞迴函數、週期函數等等具有規律的函數。</p>
+<p>誤差設定成「<a href="http://en.wikipedia.org/wiki/Mean_squared_error">均方誤差Mean Squared Error</a>」：平方誤差，再除以數列長度；即是平方誤差的平均值。如此一來，長度不同的數列，得以互相比較誤差大小。</p>
+<p class="t">Signal Prediction</p>
+<img src="Signal7.png">
+<p>訊號預測。訊號有某種規律，請預測接下來的訊號。</p>
+<p>首先估計訊號，找到迴歸函數。代入新位置，求得新訊號。</p>
+<p class="t">演算法（Linear Prediction）（Linear Predictive Coding）</p>
+<img src="Signal8.png">
+<p>Linear Regression是用線性函數符合資料，Linear Prediction是用線性遞迴函數符合資料。演算法請參考往後的Filter章節。時間複雜度O(N^2)，在頻域計算可加速為O(NlogN)。</p>
+<p>求得線性遞迴函數之後，欲預測下一個新訊號，直接代入最後K個舊訊號即可。時間複雜度O(K)，K是線性遞迴函數的項數。</p>
+<p>求得線性遞迴函數之後，欲預測第M個新訊號，共有四種演算法，請參考「<a href="Matrix.html">Linear Recurrence</a>」。時間複雜度O(K^2 * logM)，在頻域計算可加速為O(KlogK * logM)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Signal Separation</p>
+</div><div class="c">
+<p class="t">Signal Separation</p>
+<img src="Signal9.png">
+<p>訊號分離。許多道訊號疊合在一起，請分離出原始訊號。</p>
+<p class="t">演算法（Independent Component Analysis）</p>
+<p>請參考「<a href="Representation.html">Independent Component Analysis</a>」。</p>
+<p class="t">演算法（Discrete Fourier Transform）</p>
+<p>請參考「<a href="Wave.html">Fourier Transform</a>」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Signal Representation</p>
+</div><div class="c">
+<p class="t">Karhunen-Loève Transform（Hotelling Transform）</p>
+<p>Principal Compoment Analysis，數據是一道訊號。就這樣。</p>
+<p>請參考「<a href="Representation.html">Principal Component Analysis</a>」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Floating Signal</p>
+</div><div class="c">
+<p class="t">Floating Signal</p>
+<img src="Noise1.png">
+<p>先前曾經介紹浮動數字。數學家命名為「隨機變數random variable」，然而一點也不隨機。</p>
+<p>經典的隨機變數：</p>
+<pre>
+uniform random variable
+binomial random variable
+Gaussian random variable
+Poisson random variable
+</pre>
+<img src="Noise2.png">
+<p>此處介紹一連串的浮動數字，也就是浮動數列。分為兩種，離散和連續。數學家命名為「隨機數列random sequence」和「隨機過程random process」，然而一點也不隨機。</p>
+<p>經典的隨機數列和隨機過程：</p>
+<pre>
+Gaussian process：每個隨機變數都是高斯分布，每個隨機變數組合都是多維高斯分布。
+Wiener process：高斯過程的積分。就是「布朗運動」。
+Markov process：以先前幾個隨機變數的數值，決定下一個隨機變數。
+</pre>
+<textarea>
+void random_process()
+{
+	default_random_engine g;
+	normal_distribution<float> d(0.0, 1.0);
+
+	// gaussian process realization
+	for (int i=0; i<100; ++i)
+		cout << d(g);
+
+	// wiener process realization
+	float value = 0;
+	for (int i=0; i<100; ++i)
+	{
+		value += d(g);
+		cout << value;
+	}
+}
+</textarea>
+<p>隨機數列和隨機過程，兩大主要應用：</p>
+<p>一、讓數列和函數具有浮動範圍、彈性範圍、緩衝範圍。例如「<a href="Regression.html">Gaussian Process Regression</a>」、「<a href="HiddenMarkovModel.html">Hidden Markov Model</a>」。</p>
+<p>二、亂跳的數列和函數。例如「<a href="http://en.wikipedia.org/wiki/Cox?ngersoll?oss_model">CIR Model</a>」。</p>
+<p class="t">Floating Signal的頻譜</p>
+<p>題外話。訊號學家曾經嘗試運用「<a href="Wave.html">傅立葉轉換</a>」，將隨機數列，從時域變頻域，看看是否有特性。</p>
+<p>普通的隨機數列，頻譜混亂，無解析解。</p>
+<p>滿足wide-sense stationary條件的隨機數列，則有解析解──兩兩的共相關數，可求得頻譜。而且具備常見的數學特性，諸如線性、摺積乘法對偶性、能量守恆（Parseval's theorem）。</p>
+<p>然而，滿足wss條件的浮動數列，就是每個數字幾乎一樣的數列。缺乏討論意義，也無法用以解決問題。</p>
+<p>數學家目前僅發現wss條件，尚未發現更具討論意義的條件。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Random Signal</p>
+</div><div class="c">
+<p class="t">Random Signal（Noise）</p>
+<p>隨機訊號，通常稱作「雜訊」或「噪訊」，沒人稱作「亂訊」。</p>
+<p>古代數學家沒有仔細區分「亂：無規矩」和「浮動：有規矩」的差別，把兩者都命名為隨機，混淆視聽。大家搞不清楚狀況的情況下，大家一直沒有深入研究雜訊的演算法。</p>
+<p>將就的方式是1D Random Number。然而數字一輪一輪循環，很蠢。</p>
+<p>將就的方式是將2D Random Number投影到一維。然而沒有任何理論根據，純粹憑感覺。</p>
+<p>個人認為應該考慮三個面向：無法預測（齊亂）、均勻分布（聚散）、相近數字不接連出現（地序）。</p>
+<p>由於沒人研究雜訊，大家只好援引浮動數列，以描述雜訊。</p>
+<p>例如「<a href="https://en.wikipedia.org/wiki/Additive_white_Gaussian_noise">White Gaussian Noise</a>」：高斯隨機數列，每個隨機變數的平均數（浮動中心）和變異數（浮動範圍）均相同。因為剛好是白雜訊，所以名稱裡面有白。</p>
+<p class="t">Random Signal的頻譜</p>
+<p><a href="http://en.wikipedia.org/wiki/Colors_of_noise">http://en.wikipedia.org/wiki/Colors_of_noise</a></p>
+<p>數學家仿照光譜由紅到紫的特性，嘗試分類雜訊。</p>
+<pre>
+ white: 強度為常數
+  grey: 強度符合人類聽覺曲線。（不那麼白）
+   red: 強度正比於頻率倒數平方。　　以頻率對數為座標軸，漸減6dB。
+  pink: 強度正比於頻率倒數。　　　　以頻率對數為座標軸，漸減3dB。（不那麼紅）
+violet: 強度負正比於頻率倒數平方。　以頻率對數為座標軸，漸增6dB。
+  blue: 強度負正比於頻率倒數。　　　以頻率對數為座標軸，漸增3dB。（不那麼紫）
+</pre>
+<textarea>
+http://vellocet.com/dsp/noise/VRand.html
+</textarea>
+<p class="t">Smooth Random Signal（Smooth Noise）</p>
+<p><a href="http://lodev.org/cgtutor/randomnoise.html">http://lodev.org/cgtutor/randomnoise.html</a></p>
+<p><a href="http://www.iquilezles.org/www/articles/warp/warp.htm">http://www.iquilezles.org/www/articles/warp/warp.htm</a></p>
+<p>計算學家運用「<a href="Interpolation.html">內插</a>」，製造柔順的雜訊。網路上已有詳細教學文章，請讀者自行參考。</p>
+<p>「<a href="http://freespace.virgin.net/hugo.elias/models/m_perlin.htm">value noise</a>」：等距設置隨機數值，內插得到其餘數值。內插是為了製造綿延感。</p>
+<p>「<a href="http://flafla2.github.io/2014/08/09/perlinnoise.html">perlin noise</a>」：柔順綿延，有點規律又不失隨機。演算法的每個步驟，好像有道理、又好像在鬼扯，非常奇葩。</p>
+<textarea>
+http://mrl.nyu.edu/~perlin/noise/
+</textarea>
+<p>「<a href="http://flafla2.github.io/2014/08/09/perlinnoise.html">fBm noise</a>」：疊加各種解析度（頻率）的雜訊，更細膩、更自然。解析度是2的各種次方。雜訊可以是上述任意一種。隱含混沌與碎形的概念。</p>
+<p>「<a href="http://graphics.pixar.com/library/WaveletNoise/paper.pdf">wavelet noise</a>」：疊加各種頻率暨振幅的波。類似fBm noise。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Filter</p>
+</div><div class="c">
+<p class="t">Filter</p>
+<img src="Filter1.png">
+<p>輸入是一串數列，輸出是一串數列，數列到數列的函數，稱做「濾波器」。</p>
+<img src="Filter2.png">
+<p>每個輸出變數分開來看，濾波器其實是由許多函數組成。</p>
+<img src="Filter3.png">
+<p>簡單的例子是每項加1的濾波器、每項延遲1時刻的濾波器。</p>
+<img src="Filter4.png">
+<p>當全部函數都相同，僅僅索引值不同，可以簡化成一個函數。</p>
+<p class="t">Linear Time-Invariant Filter（LTI Filter）</p>
+<img src="Filter5.png">
+<p>濾波器由全部相同的線性函數構成。</p>
+<p>LTI Filter等價於多項式乘法、摺積，容易計算。</p>
+<p class="t">LTI Fliter通常寫成線性組合形式</p>
+<pre>
+數列x，經過LTI濾波器h，得到數列y：
+y(n) = h(0)x(n) + h(1)x(n-1) + h(2)x(n-2) + ... + h(p)x(n-p)
+</pre>
+<p class="t">Linear Filter可以寫成矩陣形式</p>
+<pre>
+[ h(0) 0    0    0 ... ]
+[ h(1) h(0) 0    0 ... ]
+[ h(2) h(1) h(0) 0 ... ]
+[        :             ] [ x(0) ]   [ y(0) ]
+[ h(p-1)~h(0) 0 0  ... ] [ x(1) ]   [ y(1) ]
+[ h(p)~h(0) 0 0 0  ... ] [ x(2) ] = [ y(2) ]
+[ 0 h(p)~h(0) 0 0  ... ] [   :  ]   [   :  ]
+[ 0 0 h(p)~h(0) 0  ... ] [ x(n) ]   [ y(n) ]
+[         :            ]
+[ ...  0 h(p)~h(0) 0 0 ]
+[ ...  0 0 h(p)~h(0) 0 ]
+[ ...  0 0 0 h(p)~h(0) ]
+           A                 x          y
+</pre>
+<p>數列看做向量，就可以寫成矩陣形式。好處如下：</p>
+<p>一、套用矩陣運算的技巧。例如一連串的LTI Filter，得以複合成單一一個LTI Filter！</p>
+<p>二、援引線性代數進行分析。例如計算eigenvector，以找出不受LTI Filter影響的數列！</p>
+<p class="t">LTI Fliter可以寫成摺積形式</p>
+<pre>
+{ x(0) x(1) x(2) ... x(n) } dot { h(0) 0    0    ... } = y(0)
+{ x(0) x(1) x(2) ... x(n) } dot { h(1) h(0) 0    ... } = y(1)
+{ x(0) x(1) x(2) ... x(n) } dot { h(2) h(1) h(0) ... } = y(2)
+            :                              :               :
+{ x(0) x(1) x(2) ... x(n) } dot { ... h(2) h(1) h(0) } = y(n)
+-----------------------------------------------------------------
+{ x(0) x(1) x(2) ... x(n) } dot { ... h(3) h(2) h(1) } = y(n+1)
+{ x(0) x(1) x(2) ... x(n) } dot { ... h(4) h(3) h(2) } = y(n+2)
+            :                              :               :
+{ x(0) x(1) x(2) ... x(n) } dot { ...  0 h(p-1) h(p) } = y(n+p-1)
+{ x(0) x(1) x(2) ... x(n) } dot { ...  0 0      h(p) } = y(n+p)
+
+            x           convolution       h            =   y
+</pre>
+<p>數列末端，增加多餘項次，就可以寫成摺積形式。好處如下：</p>
+<p>一、援引多項式進行分析。例如當LTI Filter的多項式函數圖形，沒有無限大、無限小的尖峰，那麼此LTI Filter一定是moving average model。</p>
+<p>二、援引傅立葉轉換進行分析，時域循環摺積等於頻域乘法。</p>
+<p class="t">LTI Fliter的三個基本問題</p>
+<pre>
+x pass h = ☐
+x pass ☐ = y
+<u>h</u>
+</pre>
+<p>三個問題都有時域和頻域兩種解法。儘管頻域解法的時間複雜度較低，但是沒人使用頻域解法！一來濾波器長度通常很短，實施傅立葉轉換反而浪費很多時間；二來濾波器無法完美轉換到頻域。</p>
+<p class="t">x pass h = ☐</p>
+<p>時域。滑動視窗的加權平均值，非常簡單。時間複雜度O(XH)，或者簡單寫成O(N^2)。</p>
+<textarea>
+vector<float> x, h, y;
+
+void filter()
+{
+	for (int i=0; i<x.size(); ++i)
+	{
+		float sum = 0;
+		for (int j=0; j<h.size(); ++j)
+			if (i-j+1 >= 0)
+				sum += x[i-j+1] * h[j];
+		y[i] = sum;
+	}
+}
+</textarea>
+<p>頻域。數列補零，摺積改作循環摺積，時域循環摺積就是頻域乘法。運用快速傅立葉轉換或快速數論轉換，時間複雜度O(XlogX + HlogH)，或者簡單寫成O(NlogN)。</p>
+<textarea>
+vector<float> x, h, y;		// time domain
+vector<float> xz, hz, yz;	// frequency domain
+
+void filter()
+{
+	// x(z) * h(z) = y(z)
+	x = padding0(x);
+	h = padding0(h);
+	xz = fft(x, 1024);
+	hz = fft(h, 1024);
+	for (int i=0; i<1024; ++i)
+		yz[i] = xz[i] * hz[i];
+	y = ifft(yz, 1024);
+	y = trimming0(y, x, h);	// 根據x和h的長度
+}
+</textarea>
+<p class="t">x pass ☐ = y</p>
+<p>通常無解。只好折衷，令x pass ☐盡量等於y，令誤差最小。大家習慣讓對應項的差平方的總和最小。</p>
+<p>時域。寫成矩陣形式，套用最小平方誤差公式「<a href="LinearEquation.html">Normal Equation</a>」，立即得到公式解。時間複雜度簡單寫成O(N^3)。</p>
+<pre>
+x pass ☐ = y 的矩陣形式
+[ x(0)   0      ... 0    0    ] [ h(0)   ]   [ y(0)   ]
+[ x(1)   x(0)   ... 0    0    ] [ h(1)   ]   [ y(1)   ]
+[ :      :          :    :    ] [   :    ] = [   :    ]
+[ x(p-2) x(p-3) ... x(0) 0    ] [ h(p-2) ]   [ y(p-2) ]
+[ x(p-1) x(p-2) ... x(1) x(0) ] [ h(p-1) ]   [ y(p-1) ]
+              X                     h            y
+
+對應項平方誤差最小，即是滿足 Xᵀ X h = Xᵀ y。
+</pre>
+<p class="t">x pass ☐ = y旁門左道解法</p>
+<p>有個改良方式，是在數列x和y末端補零。缺點是補零根本不合邏輯；優點是公式解變得美觀，稱做「Wiener-Hopf Equation」。</p>
+<pre>
+x pass ☐ = y 的矩陣形式，在數列x和y末段補零，讓矩陣Xᵀ X更整齊。
+[ x(0)   0      ... 0      0      ] [ h(0)   ]   [ y(0)   ]
+[ x(1)   x(0)   ... 0      0      ] [ h(1)   ]   [ y(1)   ]
+[ :      :          :      :      ] [   :    ] = [   :    ]
+[ x(p-2) x(p-3) ... x(0)   0      ] [ h(p-2) ]   [ y(p-2) ]
+[ x(p-1) x(p-2) ... x(1)   x(0)   ] [ h(p-1) ]   [ y(p-1) ]
+[ 0      x(p-1) ... x(2)   x(1)   ]              [ 0      ]
+[ 0      0      ... x(3)   x(2)   ]              [ 0      ]
+[ :      :          :      :      ]              [ :      ]
+[ 0      0      ... x(p-1) x(p-2) ]              [ 0      ]
+[ 0      0      ... 0      x(p-1) ]              [ 0      ]
+                 X                      h            y
+
+對應項平方誤差最小，即是滿足 Xᵀ X h = Xᵀ y。
+將 Xᵀ X 和 Xᵀ y 乘起來，得到Wiener-Hopf Equation：
+
+[ xx(0)   xx(1)   ... xx(p-1) ] [ h(0)   ]   [ xy(0)   ]
+[ xx(1)   xx(0)   ... xx(p-2) ] [ h(1)   ]   [ xy(1)   ]
+[    :       :           :    ] [   :    ] = [    :    ]
+[ xx(p-2) xx(p-1) ... xx(1)   ] [ h(p-2) ]   [ xy(p-2) ]
+[ xx(p-1) xx(p-2) ... xx(0)   ] [ h(p-1) ]   [ xy(p-1) ]
+              Xᵀ X                  h            Xᵀ y
+
+xx(t) = ∑ x(i)⋅x(i+t)   sum of correlation of x(i) and x(i+t).
+xy(t) = ∑ x(i)⋅y(i+t)   sum of correlation of x(i) and y(i+t).
+</pre>
+<textarea>
+// O(N^2)。運用傅立葉轉換、數論轉換，得加速至O(NlogN)。
+float correlation_sum(vector<float> x, vector<float> y)
+{
+	vector<float> z;
+	for (int i=0; i<x.size(); ++i)	// gap
+	{
+		float sum = 0;
+		for (int j=0; i+j<y.size(); ++j)
+			sum += x[j] * y[i+j];	// correlation即是兩數相乘
+		z[i] = sum;
+	}
+	return z;
+}
+</textarea>
+<p>題外話，Wiener-Hopf Equation的循環矩陣，視作循環摺積，轉換到頻域，得到簡潔的公式解，稱做「<a href="https://en.wikipedia.org/wiki/Wiener_filter">Wiener Filter</a>」。</p>
+<p>訊號學家認為是重要成果，計算學家認為是旁門左道。</p>
+<pre>
+Cxx(t) ∗ h(t) = Cyx(t)
+Sxx(z) ⍟ h(z) = Syx(z)
+h(z) = Syx(z) / Sxx(z)
+</pre>
+<p>時域。建構等式需時O(N^2)，不斷位移的點積；解出等式需時O(N^2)，矩陣視作Toeplitz Matrix，求反矩陣。</p>
+<p>頻域。建構等式需時O(NlogN)，快速摺積；解出等式需時O(NlogN)，矩陣是Circulant Matrix，快速循環摺積求反矩陣。</p>
+<p class="t">x pass ☐ = x >> 1</p>
+<p>方才的問題有一個重要的延伸應用：x pass ☐ = x >> 1。迴歸，迴歸函數是線性遞迴函數，稱做Linear Prediction。</p>
+<p>一串數列，推定每一個數值，皆是用前面緊鄰的N個數值計算而得──因此就用遞迴函數符合此串數列。使用線性的遞迴函數時，此函數稱作「線性預測函數」，此行為稱作「線性預測」。</p>
+<p>訊號學領域則稱作Linear Predictive Coding。把一串長長的數列，壓縮成一個線性遞迴函數，只需儲存N個係數。只要反覆套用函數、代入訊號最後N個數值，就能預測下一個即將出現的數值。</p>
+<pre>
+x(n) = h(1)x(n-1) + h(2)x(n-2) + ... + h(p)x(n-p)
+
+x(i)：數列，已知。
+f(i)：線性預測函數。
+h(1)...h(p)：線性預測係數，未知。
+</pre>
+<p>想讓平方誤差總和最小，旁門左道的解法，等價於解Yule-Walker Equations。</p>
+<pre>
+[ cs(0)   cs(1)   ... cs(p-1) ] [ h(1)   ]   [ cs(1)   ]
+[ cs(1)   cs(0)   ... cs(p-2) ] [ h(2)   ]   [ cs(2)   ]
+[    :       :           :    ] [   :    ] = [    :    ]
+[ cs(p-2) cs(p-1) ... cs(1)   ] [ h(p-1) ]   [ cs(p-1) ]
+[ cs(p-1) cs(p-2) ... cs(0)   ] [ h(p)   ]   [ cs(p)   ]
+
+cs(i)：原本數列，索引值差i的相關數（correlation）的總和。
+       原本訊號、原本訊號挪動i項，兩者的點積。
+       簡單來說，就是各種位移量的點積。
+</pre>
+<p>由於O(NlogN)的演算法相當麻煩，大家習慣使用O(N^2)的演算法，把Circulant Matrix看成Toeplitz Matrix。</p>
+<textarea>
+float a[100];		// 一串數列
+
+const int N = 10;	// 線性預測函數的次方數
+float lpc[N];		// 線性預測係數
+float cs[N + 1];	// 間距為i的相關數的總和
+
+void correlation_sum()
+{
+	for (int i=0; i<=N; i++)
+	{
+		cs[i] = 0;
+		for (int j=0; j+i<100; j++)
+			cs[i] += a[j] * a[j + i];
+	}
+}
+
+float linear_predictive_coding()
+{
+	// 預先計算自相關函數
+	correlation_sum();
+
+	float error = cs[0];
+	for (int i=0; i<N; i++)
+	{
+		// 計算倍率（reflection coefficient）
+		float scale = cs[i + 1];
+		for (int j=0; j<i; j++)
+			scale -= lpc[j] * cs[i - j];
+		scale /= error;
+
+		// 計算這個階段的lpc。
+		lpc[i] = scale;
+		for (int j=0; j<i/2; j++)
+		{
+			float d1 = lpc[j] - scale * lpc[i-1 - j];
+			float d2 = lpc[i-1 - j] - scale * lpc[j];
+			lpc[j] = d1;
+			lpc[i-1 - j] = d2;
+		}
+		if (i % 2) lpc[i / 2] -= scale * lpc[i / 2];
+
+		error *= (1.0 - scale * scale);
+	}
+	return error;
+}
+</textarea>
+<p class="t"><u>h</u></p>
+<p>x pass h = y。y pass <u>h</u> = x。計算反濾波器 <u>h</u>。</p>
+<p>時域。我尚未找到資料，胡亂推測可能類似這樣：</p>
+<pre>
+Y <u>h</u> = x          y pass <u>h</u> = x 的矩陣形式
+Yᵀ Y <u>h</u> = Yᵀ x    Normal Equation
+
+然後把 Y 代替成 X hᵀ 之類的東西，最後得到
+<u>h</u>ᵀ = (h S hᵀ)⁻¹ h S  令S = X Xᵀ
+或者是
+<u>h</u> = S hᵀ (h S hᵀ)⁻¹
+</pre>
+<p>頻域。請參考「<a href="http://en.wikipedia.org/wiki/Wiener_deconvolution">Wiener Deconvolution</a>」。時間複雜度O(NlogN)。</p>
+<p>也有人把問題改成添加雜訊：(y + n) pass <u>h</u> = x。</p>
+<p>這個問題有一個重要的延伸應用：(x + n) pass <u>h</u> = x。去噪，已知x+n，不知x和n，推定h，找到一個反濾波器<u>h</u>，去除雜訊n。</p>
+<p class="t">延伸閱讀：浮動數字（隨機變數）</p>
+<p>上述內容通通可以推廣成浮動的複數數列，請參考：</p>
+<p><a href="http://ee.lamar.edu/gleb/adsp/Lecture 06 - Oprimum filters.pdf">http://ee.lamar.edu/gleb/adsp/Lecture 06 - Oprimum filters.pdf</a></p>
+<p>注意到：浮動數列轉換到頻域，沒有解析解。滿足wide-sense stationary條件的浮動數列，才有解析解；但是每個數字幾乎一樣，缺乏討論意義。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Circuit（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Resistor-Capacitor Circuit（RC Circuit）</p>
+<p>low-pass filter</p>
+<p>high-pass filter</p>
+<p class="t">Resistor-Inductor-Capacitor Circuit（RLC Circuit）</p>
+<p>sine wave</p>
+<p class="t">Controller</p>
+<p>PD controller</p>
+<pre>
+τ = kp (θd - θc) + kv (θd' - θc')
+τ is the generated joint torque.
+θd and θc the desired and current joint angles.
+θd' and θc' the desired and current joint angular velocity.
+kp and kv are the controller gain.
+</pre>
+<p>PID controller</p>
+<p>SMC controller</p>
+<p class="t">Transfer Function</p>
+<p class="t">Modulation</p>
+<pre>
+A2A: AM FM
+D2A: ASK FSK PSK
+A2D: PAM PWM PPM PCM
+D2D: coding theory
+http://www.hightech.tw/index.php/2012-06-06-14-12-38/25-comm-network
+http://www.hightech.tw/index.php/2012-06-06-14-12-38/27-wireless-communication
+</pre>
+<p class="t">Multiplexing</p>
+<p class="t">Fuzzy Logic</p>
+<p>把布林數的AND和OR運算，變成函數的min和max運算。</p>
+<pre>
+Karnik-Mendel algorithm
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Signal.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:16:02 GMT -->
+</html>

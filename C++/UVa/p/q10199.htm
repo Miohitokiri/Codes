@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10199: Tourist Guide</h1>              
+<p>Rio de Janeiro（里約熱內盧，巴西故都）是一個非常美麗的城市。但是因為有太多地方值得一遊所以有時候你會覺得有點失落。不用擔心，因為你的朋友Bruno答應你要作你的嚮導。問題是他不是一個很好的司機，因為他的眼睛無法看得非常清楚。</p> 
+<p>由於他眼睛的問題，Bruno有一堆罰單等他去付。即使他已經答應作你的嚮導，他也不想要再接到更多的罰單了。但是你知道的，有些地點有照相機幫助警察罰到那些不守規則的駕駛人。那些照相機被有策略的裝置在那些駕駛人一定要經過的地方，如果駕駛人想要從城市的一個地方到另一個地方的話。換言之，如果有2個地點A和B，並且要從一地到另一地（A到B或B到A）駕駛人一定要經過地點C，那麼地點C就會有一部照相機。</p> 
+<p>例如：假設我們有6個地點（A、B、C、D、E、F）並且有7條路（都是雙向的）B-C, 
+A-B, C-A, D-C, D-E, E-F, 和 F-C，那麼就會有一部照相機在C，因為要從A到E的話，你一定得經過C。在這個例子中，也僅僅有一部照相機（在C）。</p> 
+<p>你的任務是幫助Bruno（他想要成為音樂家並且他不想太接近電腦）。給你這城市的地圖，你要寫一個程式來告訴他所有照相機的位置。所以他可以當你的嚮導而不會再收到罰單。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入包含多組測試資料。每組測試資料的第一列含有1個整數  
+N（2 &lt; N &lt;= 100），代表地點的數目。接下來的N列，每列有一個地點的名稱（都是小寫字母，長度最多不會超過30個字元）。再接下來有一個整數R，代表路的數目。再接下來的R列每列有2個地點的名稱，這些地點一定是正確的而且不會有路是從自己到自己的。</p>                    
+<p>若 N=0 代表輸入結束。請參考Sample Input。</p>                     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                       
+<p>對每組測試資料輸出一列</p>                   
+<pre>City map #d: c camera(s) found</pre>
+<p>d代表這是第幾組測試資料，c代表照相機的數目。接下來的 
+c 
+列每列有一個有照相機地點的名稱（按字典順序輸出）。每組測試資料之間請輸出一空白列，輸出格式請參考Sample  
+Output。</p>                    
+<table border="1" width="100%" cellpadding="5">                       
+  <tr>                       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                            
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                           
+  </tr>                                           
+  <tr>                                           
+    <td width="50%">                               
+      <pre>6
+sugarloaf
+maracana
+copacabana
+ipanema
+corcovado
+lapa
+7
+ipanema copacabana
+copacabana sugarloaf
+ipanema sugarloaf
+maracana lapa
+sugarloaf maracana
+corcovado sugarloaf
+lapa corcovado
+5
+guanabarabay
+downtown
+botanicgarden
+colombo
+sambodromo
+4
+guanabarabay sambodromo
+downtown sambodromo
+sambodromo botanicgarden
+colombo sambodromo
+0</pre>  
+    </td>                                        
+    <td width="50%">                                  
+      <pre>City map #1: 1 camera(s) found
+sugarloaf
+
+City map #2: 1 camera(s) found
+sambodromo
+</pre>
+    </td>                                       
+  </tr>                                       
+</table>                                       
+                                                                         
+</body>                                                                         
+                                                                         
+</html>                                                                         

@@ -1,0 +1,433 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Divisor.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:25 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Divisor</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Divisor</p>
+</div><div class="c">
+<p class="t">使用乘法，湊得給定數字</p>
+<p>給你一個數，例如12好了，要拿哪些數字相乘，才會得到12呢？例如1×12=12、2×6=12、3×4=12等等。</p>
+<p class="t">Divisor（Factor）</p>
+<p>一個數字的「因數」，是可以用來湊得此數字的所有數字。</p>
+<p>湊合與分解，一體兩面。一個數字的「因數」，就是此數字進行分解，可能出現的所有數字。</p>
+<pre>
+0: 0       5: 1 5       10: 1 2 5 10
+1: 1       6: 1 2 3 6   11: 1 11
+2: 1 2     7: 1 7       12: 1 2 3 4 6 12
+3: 1 3     8: 1 2 4 8   13: 1 13
+4: 1 2 4   9: 1 3 9     14: 1 2 7 14
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Enumerate Divisors</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>試誤法。由1開始嘗試每種數字作為因數。</p>
+<textarea>
+void divisor(int n)
+{
+	if (n < 0) return;
+	if (n == 0) {cout << "0是因數"; return;}
+
+	for (int i=1; i<=n; ++i)
+		if (n % i == 0)
+			cout << i << "是因數";
+}
+</textarea>
+<p>因數擁有對稱性。窮舉至一半就夠了。所謂的一半，是指乘法分解的一半：開根號。</p>
+<textarea>
+void divisor(int n)
+{
+	if (n < 0) return;
+	if (n == 0) {cout << "0是因數"; return;}
+
+	for (int i=1; i*i<=n; ++i)
+		if (n % i == 0)
+		{
+			cout << i << "是因數";
+			cout << n / i << "是因數";
+		}
+}
+</textarea>
+<p>時間複雜度是O(sqrt(n))。然而前提是：不管n多大，每次除法都是O(1)。</p>
+<p class="t">演算法</p>
+<p>遞歸法。質因數分解，然後嘗試所有可能的次方組合。</p>
+<p>用紙筆計算十分簡單，寫程式計算十分困難。</p>
+<textarea>
+略
+</textarea>
+<p>時間複雜度是O(A+B)，A是因數數量、B是小於等於sqrt(n)的最大因數。最差仍是O(sqrt(n))。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Greatest Common Divisor</p>
+</div><div class="c">
+<p class="t">Greatest Common Divisor</p>
+<p>多個數字，大家都有的因數們，當中最大的一個，叫做「最大公因數」。</p>
+<pre>
+0: 0 1 2 ...   5: 1 5       10: 1 2 5 10
+1: 1           6: 1 2 3 6   11: 1 11
+2: 1 2         7: 1 7       12: 1 2 3 4 6 12
+3: 1 3         8: 1 2 4 8   13: 1 13
+4: 1 2 4       9: 1 3 9     14: 1 2 7 14
+
+gcd(8, 8, 8, 8, 8) = 8
+gcd(6, 9, 12) = 3
+gcd(2, 3, 5, 7, 11) = 1
+gcd(1, 8) = 1
+gcd(0, 8) = 8
+</pre>
+<p>試誤法。由大到小窮舉每個數字作為最大公因數。</p>
+<textarea>
+int gcd(int a, int b)
+{
+	int d = a;
+	if (d == 0) d = b;
+	while (!(a%d==0 && b%d==0)) d--;
+	return d;
+}
+
+int gcd(int a, int b, int c)
+{
+	int d = a;
+	if (d == 0) d = b;
+	if (d == 0) d = c;
+	while (!(a%d==0 && b%d==0 && c%d==0) d--;
+	return d;
+}
+</textarea>
+<p>多個數字的最大公因數可以使用遞歸法計算：任取幾個數字，換成它們的最大公因數。</p>
+<p>把最大公因數想成是萬丈高樓平地起的磚塊們就簡單多了。</p>
+<img src="GreatestCommonDivisor1.png">
+<textarea>
+int gcd(int a, int b, int c)
+{
+	return gcd(gcd(a, b), c);
+}
+</textarea>
+<textarea>
+template<typename... Args>
+int gcd(int a, int b, Args... args)
+{
+	return gcd(a, gcd(b, args...));
+}
+</textarea>
+<p>可以直接使用GNU Extension的__gcd()。</p>
+<p class="t">Least Common Multiple</p>
+<p>多個數字，大家都有的倍數們，當中最小的一個，叫做「最小公倍數」。</p>
+<p>公式：gcd(a,b) * lcm(a,b) = a * b。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Greatest Common Divisor: Euclidean Algorithm</p>
+</div><div class="c">
+<p class="t">Euclidean Algorithm（Euclid's Algorithm）</p>
+<p>幾何學之父歐幾里德所發明的「輾轉相除法」，用來求兩個數的最大公因數。幾何學之父原來跟數論也扯得上關係。</p>
+<p>由於兩個數必定是由最大公因數的整數倍所組合而成，故其差值也必定由最大公因數的整數倍所組合而成，不管兩數如何輾轉相減、輾轉求餘數，其得到的值都會是最大公因數的倍數。把最大公因數想成是萬丈高樓平地起的磚塊們就簡單多了。</p>
+<img src="GreatestCommonDivisor2.png">
+<p>求出了差值後，原問題便縮小成了跟原問題類似的問題。也就是說，輾轉相除法採取了Divide and Conquer的策略。</p>
+<p class="t">時間複雜度</p>
+<p>時間複雜度是O(logB)，其中B是兩數中較小的那個數。時間複雜度可用Fibonacci Sequence算得，詳情可參考離散數學的書籍。</p>
+<p class="t">程式碼</p>
+<p>迴圈版本。</p>
+<textarea>
+// 令 a 比 b 大，比較容易思考
+int gcd(int a, int b)
+{
+	if (a < b)	// 如果大小不對，便交換位置
+		return gcd(b, a);
+
+	while (b != 0)
+	{
+		int t = a % b;
+		a = b; b = t;
+	}
+
+	return a;	// 如果比較小的數字為零，表示比較大的數字為最大公因數
+}
+</textarea>
+<textarea>
+// 其實不必偵測 a b 大小，自己便會交換
+int gcd(int a, int b)
+{
+	while (b != 0)
+	{
+		int t = a % b;
+		a = b; b = t;
+	}
+	return a;
+}
+</textarea>
+<p>另一種奇怪的迴圈版本。僅供參考。</p>
+<textarea>
+// b不能為零
+int gcd(int a, int b)
+{
+	while ((a %= b) && (b %= a))
+		/* empty */;
+	return a + b;
+}
+</textarea>
+<p>遞迴版本。</p>
+<textarea>
+// 令 a 比 b 大，比較容易思考
+int gcd(int a, int b)
+{
+	if (a < b)	// 如果大小不對，便交換位置
+		return gcd(b, a);
+
+	if (b == 0)	// 如果比較小的數字為零，表示比較大的數字為最大公因數
+		return a;
+	else
+		return gcd(b, a%b);	// 輾轉相除
+}
+</textarea>
+<textarea>
+int gcd(int a, int b)
+{
+	if (a < b) return gcd(b, a);
+	return b==0 ? a : gcd(b, a%b);	// 連成一氣
+}
+</textarea>
+<textarea>
+// 其實不必偵測 a b 大小，自己便會交換
+int gcd(int a, int b)
+{
+	return b==0 ? a : gcd(b, a%b);
+}
+</textarea>
+<textarea>
+int gcd(int a, int b)
+{
+	return b ? gcd(b, a%b) : a;
+}
+</textarea>
+<p>寫的很簡略。自己實作時，敬請注意參數的數值範圍。</p>
+<p class="e">UVa 10193 10407</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Greatest Common Divisor: Extended Euclidean Algorithm</p>
+</div><div class="c">
+<p class="t">Extended Euclidean Algorithm</p>
+<p>輾轉相除法的擴充版本。除了可以找出兩數的最大公因數，還可以順便找出此兩數各乘上多少整數倍率後相加可得到最大公因數（倍率可以是負數或零），並且讓兩個整數倍率的絕對值都最小。</p>
+<p>以數學符號來表示，這個演算法可以找出a b兩數的最大公因數d，還可以順便找出滿足a×i + b×j = d的兩個整數倍率i j，並且讓|i|與|j|最小。</p>
+<p>採用遞推法。首先分別複製a b到c d上面，以c d兩數來輾轉相除。然後設計另外兩個整數倍率i' j'，令每次輾轉相除時都保持a×i' + b×j' = c且a×i + b×j = d。根據輾轉相除的式子r = c - q×d，推得r = c - q×d = (a×i' + b×j') - q × (a×i + b×j) = a × (i'-q×i) + b × (j'-q×j)。如此一來，在輾轉相除時，就知道i j兩數如何隨著r變動了。</p>
+<p><a href="http://math.stackexchange.com/questions/670405/">http://math.stackexchange.com/questions/670405/</a></p>
+<textarea>
+void gcd(int a, int b, int& i, int& j, int& d)
+{
+	int i_ = 1, j_ = 0;
+	int c = a;
+
+	i = 0, j = 1;
+	d = b;
+
+	while (true)
+	{
+		int q = c / d, r = c % d, t;
+		if (r == 0) break;
+		c = d; d = r;
+		t = i_; i_ = i; i = t - q * i;
+		t = j_; j_ = j; j = t - q * j;
+	}
+}
+</textarea>
+<textarea>
+void gcd(int a, int b, int& i, int& j, int& d)
+{
+	i = 0, j = 1;
+	int i_ = 1, j_ = 0;
+
+	while (true)
+	{
+		int q = a / b, r = a % b, t;
+		if (r == 0) break;
+		a = b; b = r;
+		t = i_; i_ = i; i = t - q * i;
+		t = j_; j_ = j; j = t - q * j;
+	}
+	d = b;
+}
+</textarea>
+<p>採用遞歸法。以Divide and Conquer的Combine階段來計算i j。當問題分割至最小，此時可以明確的、輕鬆的算出i j的值。每次合併問題，就重新調整i j，保持|i|與|j|最小。</p>
+<textarea>
+// 令 a 比 b 大
+void gcd(int a, int b, int& i, int& j, int& d)
+{
+	// 問題已分割至最小，i j 很好算。
+	if (b == 0)
+	{
+		d = a;			// 最大公因數為 a
+		i = 1; j = 0;	// 此時的 i j
+		return;
+	}
+
+	// Divide + Conquer：輾轉相除。
+	gcd(b, a % b);
+
+	// Combine：利用小問題的結果，計算出現在這個問題的 i j。
+	int t = i;
+	i = j;
+	j = t - (a / b) * j;
+}
+</textarea>
+<textarea>
+void gcd(int a, int b, int &i, int &j, int &d)
+{
+	if (b == 0)
+	{
+		d = a; i = 1; j = 0;
+	}
+	else
+	{
+		gcd(b, a % b, j, i, d);
+		j -= (a / b) * i;
+	}
+}
+</textarea>
+<p class="e">UVa 10104</p>
+<p class="t">延伸閱讀：Linear Diophantine Equation</p>
+<p>已知a b c，求出x y，使得a×x + b×y = c。</p>
+<pre>
+一、輾轉相除法：
+　　求得 a×i + b×j = d，其中 d = gcd(a, b)。
+二、得到其中一組解：
+　甲、檢查d的倍數是不是c。
+　　回、如果是：
+　　　　整個式子乘上c÷d，讓d變成c，
+　　　　式子變成 a×i×c÷d + b×j×c÷d = c -①
+　　　　顯然 (x,y) = (i×c÷d, j×c÷d) 就是其中一組解！
+　　回、如果不是：
+　　　　無解！
+三、得到所有解：
+　甲、首先製造一個式子 a×(?) + b×(?) = 0 目的是要等於零。
+　　　直覺就能想到 a×b + b×(-a) = 0
+　　　更進一步想到 a×b÷d + b×(-a)÷d = 0 -②
+　乙、式子①加上式子②的各種倍率，也就是①+②×k：
+　　　a×(i×c÷d + k×b÷d) + b×(j×c÷d - k×a÷d) = 0，其中k是整數。
+　　　顯然 (x,y) = (i×c÷d + k×b÷d, j×c÷d - k×a÷d) 就是所有解！
+四、得到所有非負整數解（假設a b為正數）：
+　甲、也就是說，(i×c÷d + k×b÷d)與(j×c÷d - k×a÷d)必須是非負整數。
+　　　(i×c÷d + k×b÷d) ≥ 0  ⇒  k ≥ -i×c÷b
+　　　(j×c÷d - k×a÷d) ≥ 0  ⇒  k ≤ +j×c÷a
+　　　 -i×c÷b  ≤ k ≤  +j×c÷a
+　　　⌈-i×c÷b⌉ ≤ k ≤ ⌊+j×c÷a⌋
+　　　因為k是整數，所以取天花板和地板。進而得到所有非負整數解。
+</pre>
+<p class="e">UVa 10090 10548 10413 11312</p>
+<p class="t">延伸閱讀：Pell Equation</p>
+<p><a href="http://mathworld.wolfram.com/PellEquation.html">http://mathworld.wolfram.com/PellEquation.html</a></p>
+<p>金斌《欧几里得算法的应用》。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Greatest Common Divisor: Binary GCD Algorithm</p>
+</div><div class="c">
+<p class="t">Binary GCD Algorithm</p>
+<p>在九章數學裡稱作「更相減損術」，二進位數字的最大公因數計算方法。</p>
+<pre>
+如果 a b 有一個是零     -> gcd(a, b) = a 和 b 當中不是零的那ㄧ個數
+如果 a b 都是偶數       -> gcd(a, b) = gcd(a/2, b/2) × 2;
+如果 a 是偶數  b 是奇數 -> gcd(a, b) = gcd(a/2, b)
+如果 a 是奇數  b 是偶數 -> gcd(a, b) = gcd(a, b/2)
+如果 a b 都是奇數       -> gcd(a, b) = gcd(a 和 b 比較小那個, a 和 b 的差);
+</pre>
+<p>電腦裡的數字都是用二進位儲存的──要乘以二，就把數字的每個bit都左移一個bit；要除以二，就把數字的每個bit都右移一個bit（別忘記補零）。位移運算比除法運算、模數運算還要快，於是便開發了以提取因數二來計算最大公因數的方法。</p>
+<p>歸納要點：甲、不斷提取共同的因數，都只提取二；乙、二與奇數互質，不會影響最大公因數，故可除去二；丙、若無因數二則相減，相減後仍是最大公因數的倍數。</p>
+<p>時間複雜度是O((logAB)^2)，AB為a b兩數的乘積。【待補證明】【待補速度討論】</p>
+<p class="t">程式碼</p>
+<p>這裡提供幾支程式碼供大家參考。</p>
+<textarea t="迴圈版本">
+int gcd(int a, int b)
+{
+	int c = 0;		// 記錄 gcd 乘二乘了幾次
+	while (a && b)	// 如果 a b 都是正數
+		// 如果 a b 都是偶數：a /= 2, b /= 2, gcd 乘二
+		if (!(a & 1) && !(b & 1))
+			a >>= 1, b >>= 1, c++;
+		// 如果 a 是偶數、b 是奇數：a /= 2
+		else if (!(a & 1))	a >>= 1;
+		// 如果 a 是奇數、b 是偶數：b /= 2
+		else if (!(b & 1))	b >>= 1;
+		// 如果 a b 都是奇數：判斷 a b 大小，求出餘數。
+		else if (a > b)		a -= b;
+		else				b -= a;
+
+	// 不為零的數，乘上 c 個 2，就是 gcd。
+	return max(a, b) << c;
+}
+</textarea>
+<textarea t="遞迴版本">
+int gcd(int a, int b)
+{
+	if (a == 0) return b;
+	if (b == 0) return a;
+
+	if ((a & 1) == 0 && (b & 1) == 0)
+		return gcd(a >> 1, b >> 1) << 1;
+	else if ((a & 1) == 0)
+		return gcd(a >> 1, b);
+	else if ((b & 1) == 0)
+		return gcd(a, b >> 1);
+	else
+		return gcd(min(a, b), abs(a - b));
+}
+</textarea>
+<textarea>
+int gcd(int a, int b)
+{
+	int c = 0;
+
+	while (!(a & 1) && !(b & 1))
+		a >>= 1, b >>= 1, c++;
+
+	while (a)
+		if		(!(a & 1)) a >>= 1;
+		else if (!(b & 1)) b >>= 1;
+		else
+		{
+			int t = abs(a-b) >> 1;
+			if (a < b) b = t; else a = t;
+		}
+
+	return b << c;
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Divisibility</p>
+</div><div class="c">
+<p class="t">整除性</p>
+<p>判斷是否能整除一個數字。</p>
+<p>換句話說。判斷一個數字是否是因數，是否可以用於分解。</p>
+<pre>
+2: 末位數整除2（個位數是偶數）
+3: 所有位數加起來，不斷遞迴
+4: 末兩位數整除4
+5: 末位數整除5
+6: 用2和3來判定
+</pre>
+<p>原理是Scaling Method，數字拆開成各種數量級，分別試除、取餘數、相加。</p>
+<p class="e">UVa 10212 10929 11879 10211 10127 10275 ICPC 4119</p>
+<p class="t">位數判斷</p>
+<p><a href="http://www.stat.ualberta.ca/people/schmu/preprints/factorial.pdf">http://www.stat.ualberta.ca/people/schmu/preprints/factorial.pdf</a></p>
+<p class="e">UVa 1185 10061 701 10212 12689</p>
+<p class="t">位數循環</p>
+<p class="e">UVa 10162</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Partition（Under Construction!）</p>
+</div><div class="c">
+<p class="t">使用加法，湊得給定數字</p>
+<p>大家都是從數數開始學數學的，1+1=2，想必大家都會。</p>
+<p>問題來了！給你一個數，例如5好了，要拿哪些數字相加，才會得到5呢？例如2+3=5、1+1+1+1+1=5等等。</p>
+<p>最簡單的方式就是慢慢地列出來，可以發現有許多種相加方式，一時列舉不完。如果你對演算法相當熟悉，你一定馬上聯想到Backtracking、Dynamic Programming等等方法，以及Integer Partition、Knapsack Problem等等問題。</p>
+<p class="t">Partition（Composition）</p>
+<p>一個數字的「分割」，是可以用來湊得此數字的所有數字。</p>
+<p>湊合與分解，一體兩面。一個數字的「分割」，就是此數字進行分解，可能出現的所有數字。</p>
+<p class="t">Young Tableau / Ferrers Diagram</p>
+<p class="t">不重覆組合、生成函數</p>
+<p class="t">Polygonal Number</p>
+<p>http://en.wikipedia.org/wiki/Fermat_polygonal_number_theorem</p>
+<p>https://en.wikipedia.org/wiki/Domino_tiling</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Divisor.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:27 GMT -->
+</html>

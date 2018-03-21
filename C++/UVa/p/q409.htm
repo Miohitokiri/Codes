@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title>Q409 Excuses, Excuses!</title>
+</head>
+<body>
+
+<h1 align="center">Q409: Excuses, Excuses!</h1>          
+<p>有一個法官被一個問題困擾著，就是那些被陪審團傳喚的人常常用很多沒說服力的藉口來逃避回答陪審團的問題。為了節省時間不要聽那些蠢理由，他請你為他寫一支程式在一堆藉口中搜尋清單中的關鍵字以找出那些沒說服力的藉口。你必須找出藉口中的關鍵字無論大寫小是否相符。
+</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>              
+<P> 輸入包含許多組資料。
+<ul>
+  <li>每組資料的第一列包含兩個整數。第一個數字（１&lt;=Ｋ&lt;=２０）定義在這次搜尋中會被用到的關鍵字有幾個。第二個數字代表（１&lt;=Ｅ&lt;=２０）在這組資料中有幾個藉口要被搜尋。</li>
+  <li>從第二行到第Ｋ＋１行每行包含一個關鍵字。</li>
+  <li>從第Ｋ＋２行到第Ｋ＋１＋Ｅ行每行包含一個藉口。
+  </li>
+  <li>在關鍵字清單中的每一個關鍵字只會包含連續長Ｌ（１&lt;=Ｌ&lt;=２０）的小寫字母。</li>
+  <li>每一個藉口會包含任何大小寫字母，空白字元，或任何標點符號（例如：&quot;.,!?&amp;），長度不會超過70個字元。</li>
+  <li>每個藉口至少包含一個非空白字元。 </li>
+</ul>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>             
+<P>對每組輸入的資料你必須輸出清單中最爛的那個藉口。
+<ul>
+  <li>最爛的藉口的定義就是關鍵字出現最多次的那個藉口。</li>
+  <li>如果一個關鍵字在同一個藉口中出現很多次，每一次都視為一個獨立事件。</li>
+  <li>所謂關鍵字``出現&quot;在藉口中，是指關鍵字與藉口中的某個單字一樣。在藉口中每個單字可能以行的開始或結尾或任何不是英文字母的字元（包括空白字元）分隔。</li>
+</ul>
+<P>對每組輸入的資料，你必須先輸出字串``<TT>Excuse Set #</TT>"代表這是第幾組待測資料（參見sample output）。接下來的數列輸出最爛的那些藉口，以讀入的格式輸出，如果有超過一個最爛的藉口你可以用任何順序一列一列輸出。
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                
+Input</b></span></p>                            
+<PRE>5 3
+dog
+ate
+homework
+canary
+died
+My dog ate my homework.
+Can you believe my dog died after eating my canary... AND MY HOMEWORK?
+This excuse is so good that it contain 0 keywords.
+6 5
+superhighway
+crazy
+thermonuclear
+bedroom
+war
+building
+I am having a superhighway built in my bedroom.
+I am actually crazy.
+1234567890.....,,,,,0987654321?????!!!!!!
+There was a thermonuclear war!
+I ate my dog, my canary, and my homework ... note outdated keywords?</PRE> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Output</b></span></p>                            
+<PRE>Excuse Set #1
+Can you believe my dog died after eating my canary... AND MY HOMEWORK?
+
+Excuse Set #2
+I am having a superhighway built in my bedroom.
+There was a thermonuclear war!</PRE> 
+                           
+</body>                           
+                           
+</html>                           

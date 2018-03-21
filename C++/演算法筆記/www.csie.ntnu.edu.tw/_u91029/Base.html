@@ -1,0 +1,198 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Base.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:21 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Base</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Base</p>
+</div><div class="c">
+<p class="t">記載數量</p>
+<p>想要記載一個數量，最直觀的方式是：一個符號、重複數次。</p>
+<pre>
+♥
+♦♦
+☁☁☁
+★★★★★★★★★★★★★★★★★★
+</pre>
+<p class="t">第一種技術：分堆</p>
+<p>一個個數，太花時間。為了節省時間，可以嘗試分堆。最常見的分堆方式，是十個一堆。如果有很多堆，那麼十堆再合成一大堆；如果有很多大堆，那麼十大堆再合成一大大堆；以此類推。</p>
+<pre>
+hard way:
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+easy way:
+★★★★★★★★★★　　★★★★★★★★★★　　★　★
+★★★★★★★★★★
+★★★★★★★★★★　　★★★★★★★★★★
+★★★★★★★★★★
+★★★★★★★★★★　　★★★★★★★★★★
+★★★★★★★★★★
+★★★★★★★★★★
+★★★★★★★★★★
+★★★★★★★★★★
+★★★★★★★★★★
+</pre>
+<p>以此類推的過程，我們習慣採用固定數量，這個數量稱做「底數Base」。例如上例的底數就是十。</p>
+<p>然而也有例外。例如時間：六十秒一分、六十分一時、二十四時一日，底數不是固定數量。</p>
+<p class="t">第二個技術：命名</p>
+<p>一個個數，太花時間。為了節省時間，可以替每種數量取不一樣的名字；換句話說，用不一樣的符號代替每種數量。</p>
+<img src="Base1.png">
+<p>長長一串數量，變成短短一個符號，人生充滿歡樂！</p>
+<p class="t">第三個技術：位數</p>
+<p>然而，越多符號，越難背誦。你能想像背誦一百種符號代替一百種數量嗎？符號還是少點好。</p>
+<p>解法是同時使用第一個技術和第二個技術，令符號數量等於底數。例如底數是十，可以使用0123456789等十個符號。當數量大於等於十，十個形成一堆，記載在左邊一點的位置，變成10。當數量累積十堆，十堆形成一大堆，記載在更左邊一點的位置，變成100。這是地球上最流行的記載方式。</p>
+<img src="Base2.png">
+<p>除了替每一種數量取名字，有些語言還會替每一種數量級取名字，讓數字之間穿插數量級符號。這是題外話。</p>
+<pre>
+132
+英文：one hundred thirty-two      （hundred是數量級的符號）
+中文：一百三十二                  （百、十是數量級的符號）
+</pre>
+<img src="Base3.png">
+<p class="t">選擇底數</p>
+<p>我們可以選擇自己喜歡的底數。底數不能是零、不能是一。底數是二，稱做「二進位」，使用01兩個符號。底數是三，稱作「三進位」，使用012三個符號。底數是十六，稱做「十六進位」，使用0123456789ABCDEF十六個符號。底數超過三十六，那麼必須額外引入一些符號，才夠用。</p>
+<p>底數寫於數字的右下角，用括號包住。</p>
+<pre>
+101₍₂₎   二進位，數字是101
+73F₍₁₆₎  十六進位，數字是73F
+</pre>
+<p>同樣的數量，使用不同的底數，往往得到不同的數字。</p>
+<pre>
+★★★★★★★★★★★★★★★★★★  10010₍₂₎
+★★★★★★★★★★★★★★★★★★  18₍₁₀₎
+★★★★★★★★★★★★★★★★★★  12₍₁₆₎
+</pre>
+<p>同樣的數字，使用不同的底數，往往得到不同的數量。</p>
+<pre>
+11₍₂₎   ★★★
+11₍₁₀₎  ★★★★★★★★★★★
+11₍₁₆₎  ★★★★★★★★★★★★★★★★★
+</pre>
+<p>選定底數，把數量變成數字。</p>
+<textarea>
+void value_to_number(int value, int base)
+{
+	// 便宜行事，不處理負數
+	if (value < 0) return;
+	// 零
+	if (value == 0) {cout << '0'; return;}
+
+	// 填入數字
+	char number[10];
+	int n = 0;	// 位數
+
+	// 從最低位數處理到最高位數
+	while (value > 0)
+	{
+		number[i] = value % base;
+		value /= base;
+		n++;
+	}
+
+	// 印出數字
+	for (int i=n-1; i>=0; --i)
+		cout << number[i];
+}
+</textarea>
+<p>選定底數，把數字變成數量。</p>
+<textarea>
+void number_to_value(char number[], int n, int base)
+{
+	int value = 0;
+
+	// 從最高位數處理到最低位數
+	for (int i=0; i<n; ++i)
+	{
+		int digit = -1;
+		if (number[i] >= 'A' && number[i] <= 'Z')
+			digit = number[i] - 'A';
+		else if (number[i] >= '0' && number[i] <= '9')
+			digit = number[i] - '0';
+
+		// 出現異常符號
+		if (digit == -1 || digit >= base) return;
+
+		value = value * base + digit;
+	}
+
+	// 印出數量
+	cout << value;
+}
+</textarea>
+<p>C語言當中的atoi()字串轉整數函式，其實就是「選定底數10，把數字變成數量」。</p>
+<p class="t">改變底數（進制轉換）</p>
+<pre>
+10010₍₂₎ = ?₍₁₆₎
+</pre>
+<p>令數量維持相等，給定原數字、原底數、新底數，求新數字。</p>
+<p>演算法和程式碼交給讀者思考！</p>
+<p class="e">UVa 343 344 355 377 389 446 448 575 594 619 636 10019 10469 10473 11005 11121</p>
+<p class="t">延伸閱讀：以多項式作為模型</p>
+<p>一個數字可以改寫成一個多項式。</p>
+<pre>
+10010₍₂₎ ---> 1x⁴ + 0x³ + 0x² + 1x¹ + 0x⁰  (let x = 2)
+18₍₁₀₎   ---> 1x¹ + 8x⁰  (let x = 10)
+73F₍₁₆₎　---> 7x² + 3x¹ + 15x⁰  (let x = 16)
+</pre>
+<p>以多項式當作模型之後，「選定底數，把數字變成數量」就變成了「x代入底數」，其演算法正是「<a href="AlgorithmDesign.html">Horner's Rule</a>」。</p>
+<p>數字與底數，在數學家眼中，可以藉由多項式一以貫之。多項式的用途實在很廣。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Fibonacci Base</p>
+</div><div class="c">
+<p class="t">Fibonacci Sequence / Fibonacci Number</p>
+<p>1 1 2 3 5 8 13 ...，大家應該都懂，所以就不介紹了。</p>
+<p><a href="http://www.geeksforgeeks.org/check-number-fibonacci-number/">http://www.geeksforgeeks.org/check-number-fibonacci-number/</a></p>
+<p class="e">UVa 495 11582</p>
+<p class="t">Fibonacci Base（Zeckendorf's Theorem）</p>
+<p>大家做做題目、找找資料應該就懂了，所以就不介紹了。</p>
+<p class="e">UVa 763 948</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Roman Numerals</p>
+</div><div class="c">
+<p><a href="http://en.wikipedia.org/wiki/Roman_numerals">http://en.wikipedia.org/wiki/Roman_numerals</a></p>
+<p>網路已有詳細資料，此處不再贅述，僅提供練習題。</p>
+<p class="e">UVa 759 11616 12397 11787</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Calendar</p>
+<p class="w">春雨驚春清穀天，夏滿芒夏暑相連，　　　　　　　　</p>
+<p class="w">秋處露秋寒霜降，冬雪雪冬小大寒。《二十四節氣歌》</p>
+</div><div class="c">
+<p class="t">曆法</p>
+<img src="Calendar1.png">
+<p><a href="http://en.wikipedia.org/wiki/Calendar">http://en.wikipedia.org/wiki/Calendar</a></p>
+<p>網路已有詳細資料，此處不再贅述，僅提供練習題。</p>
+<p>1752年9月曾經調整過日曆。</p>
+<textarea t="當天是星期幾">
+const char* name[] =
+{
+	"Monday", "Tuesday", "Wednesday", "Thursday",
+	"Friday", "Saturday", "Sunday"
+};
+
+void weekday(int y, int m, int d)
+{
+	// 1月2月看作是前一年的13月14月，方便統計。
+	if (m == 1 || m == 2) { m += 12; y--; }
+
+	// 在1752/9/3之前，閏年機制不同。
+	int w = 0;
+	if ((y < 1752) ||
+		(y == 1752 && m < 9) ||
+		(y == 1752 && m == 9 && d < 3))
+		w = (d + 2*m + 3*(m+1)/5 + y + y/4 + 5) % 7;
+	else
+		w = (d + 2*m + 3*(m+1)/5 +
+				y + y/4 - y/100 + y/400) % 7;
+
+	cout << y << "年" << m << "月" << d << "日" << name[w];
+}
+</textarea>
+<p class="e">UVa 300 602 10070 11356</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Base.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:25 GMT -->
+</html>

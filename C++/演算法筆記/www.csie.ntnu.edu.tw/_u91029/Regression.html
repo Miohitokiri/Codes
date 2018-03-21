@@ -1,0 +1,227 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Regression.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:50 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Regression</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Regression</p>
+</div><div class="c">
+<p class="t">Regression</p>
+<p>「迴歸」就是找一個函數，盡量符合手邊的一堆數據。此函數稱作「迴歸函數」。</p>
+<img src="Regression1.png">
+<p>這裡談的是用函數符合數據們，主角是函數，所以會把數據對應到函數的格式。</p>
+<img src="Regression2.png">
+<p>也許讀者很好奇，為什麼主角是函數呢？私以為函數有著優美的性質，函數也是眾人從小到大接觸、非常熟悉的數學元件，因此大家第一個直覺就是使用函數。另一方面，使用函數，就能多少發現一些輸入、輸出之間的關係，例如成正比、成反比等等。</p>
+<p>也許讀者很好奇，能不能用隨意曲線、隨意幾何圖形符合數據們呢？也許是可以的。我想這是個新學問，該由讀者們來開創。在圖形辨識領域，已經存在一些方法，有志者不妨先從這裡下手。</p>
+<img src="Regression3.png">
+<p class="t">Error</p>
+<p>強硬地用函數符合數據們，就會有「誤差」。</p>
+<p>單一數據的誤差，有許多種衡量方式，一般是用數據與函數值的差的平方（平方誤差），其他還有數據與函數值的差的絕對值（絕對值誤差）、數據與函數曲線的最短距離等等。</p>
+<img src="Regression4.png">
+<p class="t">Optimization</p>
+<p>人腦考慮的「最符合」，放到了電腦就被設定成「所有數據的誤差總和最小」。把所有數據的誤差總和寫成一個函數，迴歸問題就變成了最佳化問題！</p>
+<pre>
+例如用函數 f(x) = ax² + bx + c
+
+符合數據 (2,3) ... (7,8)
+用代數符號標記成 (x₁,y₁) ... (x<sub>N</sub>,y<sub>N</sub>)
+
+每個數據的平方誤差分別是
+[f(2) - 3]² ... [f(7) - 8]²
+[(a⋅2² + b⋅2 + c) - 3]² ... [(a⋅7² + b⋅7 + c) - 8]²
+用代數符號標記成
+[f(x₁) - y₁]² ... [f(x<sub>N</sub>) - y<sub>N</sub>]²
+[(ax₁² + bx₁ + c) - y₁]² ... [(ax<sub>N</sub>² + bx<sub>N</sub> + c) - y<sub>N</sub>]²
+
+所有數據的誤差總和是
+[f(2) - 3]² + ... + [f(7) - 8]²
+[(a⋅2² + b⋅2 + c) - 3]² + ... + [(a⋅7² + b⋅7 + c) - 8]²
+用代數符號標記成 
+e(a,b,c) = [(ax₁² + bx₁ + c) - y₁]² + ... + [(ax<sub>N</sub>² + bx<sub>N</sub> + c) - y<sub>N</sub>]²
+           N
+         = ∑ [(axᵢ² + bxᵢ + c) - yᵢ]²
+          i=1
+         = ∑ (f(xᵢ) - yᵢ)²
+         = ∑ (ŷᵢ - yᵢ)²
+         = ∑ ‖ŷᵢ - yᵢ‖
+
+目標是令e(a,b,c)越小越好。
+選定一個最佳化演算法，求出e(a,b,c)的最小值，求出此時abc的數值，
+就得到迴歸函數f(x)。
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Regression</p>
+</div><div class="c">
+<p class="t">Linear Regression</p>
+<p>「線性迴歸」。迴歸函數採用線性函數。誤差採用平方誤差。</p>
+<p>二維數據，迴歸函數是直線。三維數據，迴歸函數是平面。推廣到多維數據，迴歸函數是數據維度減少一維（hyperplane）。</p>
+<img src="LinearRegression1.png">
+<p>線性迴歸性質特殊，不需要最佳化演算法。寫成線性方程組，套用「<a href="LinearEquation.html">Normal Equation</a>」。</p>
+<pre>
+直線函數 f(x) = ax + b
+符合二維數據 (2,3) (5,6) (7,8)
+[ 2  1 ] [ a ]   [ 3 ]
+[ 5  1 ] [ b ] = [ 6 ]
+[ 7  1 ]         [ 8 ]
+
+平面函數 f(x,y) = ax + by + c  
+符合三維數據 (2,3,4) (5,6,7) (7,8,9) (3,3,3) (4,4,4)
+[ 2  3  1 ]         [ 4 ]
+[ 5  6  1 ] [ a ]   [ 7 ]
+[ 7  8  1 ] [ b ] = [ 9 ]
+[ 3  3  1 ] [ c ]   [ 3 ]
+[ 4  4  1 ]         [ 4 ]
+</pre>
+<p>另外提供二維數據的公式解。</p>
+<p><a href="http://mathworld.wolfram.com/LeastSquaresFitting.html">http://mathworld.wolfram.com/LeastSquaresFitting.html</a></p>
+<p class="t">Inlier / Outlier</p>
+<p>真實世界的數據並非完美，常有例外。</p>
+<p>無彈性的定義：全部數據分為inlier和outlier；inlier是位在迴歸函數上面的數據，outlier是不在迴歸函數上面的數據。</p>
+<p>有彈性的定義：全部數據分為inlier和outlier；inlier是距離迴歸函數夠近的數據，outlier是距離迴歸函數太遠的數據。</p>
+<img src="LinearRegression2.png">
+<p>outlier導致迴歸函數易位。感覺類似：有人成績特別低，大幅拉低平均，無法正確反映大家的成績。</p>
+<img src="LinearRegression3.png">
+<p>我們必須預先剔除outlier，再進行迴歸。</p>
+<p class="t">演算法（RANSAC）（Random Sample Consensus）</p>
+<p>區分inlier和outlier的演算法非常簡單。</p>
+<pre>
+一、設定彈性寬度D。
+二、隨機挑出K筆數據，只用這K筆數據迴歸，得到迴歸函數。
+　　K可以自由設定，不必很大。
+　　如果迴歸函數是直線，1筆不夠形成直線，可以設定成2筆。
+　　如果迴歸函數是複雜曲線，就多幾筆。
+三、根據此迴歸函數，計算共有多少個inlier和outlier。
+四、重複上述步驟T次。
+　　從中找到inlier最多、outlier最少的情況，推定為正解。
+　　T可以自由設定。
+</pre>
+<img src="LinearRegression4.png">
+<p>inlier通常較多、outlier通常較少。隨機挑出數據，容易挑到inlier，容易形成符合inlier的迴歸函數──此即RANSAC的精髓。</p>
+<p>RANSAC儘管缺乏理論根據，儘管名字怪異，卻非常實用。</p>
+<p>RANSAC只可用於區分inlier和outlier，不可用於求得迴歸函數（除非彈性寬度是零）。RANSAC只挑出少數數據，誤差總和不對，迴歸函數不對。正確的流程是：實施RANSAC，刪除outlier，保留inlier，重新實施迴歸，更加符合數據！</p>
+<p class="t">演算法（Theil-Sen Estimator）</p>
+<p>《Optimal slope selection via expanders》</p>
+<p>找到所有兩點連線的斜率的中位數。點線對偶，所有直線的所有交點的X座標中位數。時間複雜度O(NlogN)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Line Fitting</p>
+</div><div class="c">
+<p class="t">Line Fitting / Plane Fitting</p>
+<p>「直線擬合」與「平面擬合」。迴歸標的採用直線、平面。誤差採用最短距離（垂直距離）的平方和。</p>
+<img src="LinearRegression5.png">
+<p>每筆數據，套用「點與直線距離公式」求得最短距離，累計最短距離的平方和。不失一般性，令分母等於1。首先解出常數項，其餘變數改寫成線性方程組，套用「<a href="LinearEquation.html">Homogeneous Linear Equations</a>」，計算維度的共變異矩陣，答案是最小的特徵值的特徵向量。</p>
+<pre>
+直線 ax + by + c = 0
+符合二維數據 (2,3) (5,6) (7,8)
+
+計算每筆數據與直線的最短距離，統計平方和，越小越好。
+不失一般性，令 a² + b² = 1。
+
+           (axᵢ + byᵢ + c)²
+minimize ∑ ――――――――――――――――
+               a² + b²    
+
+minimize ∑ (axᵢ + byᵢ + c)² subject to a² + b² = 1
+   ______________________________________________________
+  | 錯誤的分岐路線：
+  | 改寫成線性方程組 min ‖Xₕᵀwₕ‖²，但是解不了
+  | [ 2  3  1 ] [ a ]      
+  | [ 5  6  1 ] [ b ]
+  | [ 7  8  1 ] [ c ]
+  |     Xₕᵀ       wₕ 
+   ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+先嘗試解出其中一部分變數。首先解c。
+極值出現在一次微分等於零的地方。
+
+2 ∑ (axᵢ + byᵢ + c) = 0
+
+      ∑ axᵢ + ∑ byᵢ
+c = - ————————————— = - ax̄ - bȳ
+            n
+
+    ∑xᵢ   2+5+7       ∑yᵢ   3+6+8
+x̄ = ——— = ————— , ȳ = ——— = —————
+     n      3          n      3  
+   ______________________________________________________
+  | 錯誤的分岐路線：
+  | 解出c之後，代入微分式子得到
+  | ax + by - ax̄ - bȳ = a(x-x̄) + b(y-ȳ) = 0
+  |
+  | 改寫成線性方程組 X̂ᵀw = 0，但是解不了！
+  | [ 2-x̄  3-ȳ ] [ a ]   [ 0 ]
+  | [ 5-x̄  6-ȳ ] [ b ] = [ 0 ]
+  | [ 7-x̄  8-ȳ ]         [ 0 ]
+  |      X̂ᵀ       w
+   ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+解出c之後，代入原本的最佳化式子。
+數據預先減去平均值，再做最佳化！
+minimize ∑ (axᵢ + byᵢ - ax̄ - bȳ)² subject to a² + b² = 1
+minimize ∑ [a(xᵢ-x̄) + b(yᵢ-ȳ)]²   subject to a² + b² = 1
+
+改寫成線性方程組 min ‖X̂ᵀw‖² subject to ‖w‖² = 1
+欲求w，就將X̂X̂ᵀ實施特徵分解，w是最小的特徵值的特徵向量。
+其中X̂X̂ᵀ稱做維度的共變異矩陣，又剛好是每筆數據的二次動差矩陣的總和。
+</pre>
+<p>另外提供二維數據的公式解。</p>
+<p><a href="http://mathworld.wolfram.com/LeastSquaresFittingPerpendicularOffsets.html" class="l">http://mathworld.wolfram.com/LeastSquaresFittingPerpendicularOffsets.html</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polynomial Regression</p>
+</div><div class="c">
+<p class="t">Polynomial Regression</p>
+<p>「多項式迴歸」。迴歸函數採用多項式函數。誤差採用平方誤差。</p>
+<img src="PolynomialRegression1.png">
+<p>演算法仍是Normal Equation。</p>
+<pre>
+例如用函數 f(x) = ax + b
+符合數據 (2,3) (5,6) (7,8)
+[ 2  1 ] [ a ]   [ 3 ]
+[ 5  1 ] [ b ] = [ 6 ]
+[ 7  1 ]         [ 8 ]
+
+例如用函數 f(x) = ax² + bx + c
+符合數據 (2,3) (5,6) (7,8)
+[  4  2  1 ] [ a ]   [ 3 ]
+[ 25  5  1 ] [ b ] = [ 6 ]
+[ 49  7  1 ] [ c ]   [ 8 ]
+
+例如用函數 f(x,y) = ax² + bxy + cy² + dx + ey + f
+符合數據 (2,3,4) (5,6,7) (7,8,9)
+                         [ a ]
+[ 2²  2×3  3²  2  3  1 ] [ b ]   [ 4 ]
+[ 5²  5×6  6²  5  6  1 ] [ c ] = [ 7 ]
+[ 7²  7×8  8²  7  8  1 ] [ d ]   [ 9 ]
+                         [ e ]
+                         [ f ]
+</pre>
+<p class="t">Underfitting / Overfitting</p>
+<p>用單純的函數去符合複雜的數據們，顯然符合的不太完美。</p>
+<p>用複雜的函數去符合單純的數據們，顯然事情被搞複雜了。</p>
+<img src="PolynomialRegression2.png">
+<p>如果我們不清楚數據的性質，也就無法抉擇函數了。那麼，該如何了解數據的性質呢？這屬於統計學的範疇，就此打住。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Curve Fitting</p>
+</div><div class="c">
+<p class="t">Curve Fitting / Surface Fitting</p>
+<p>「曲線擬合」與「曲面擬合」。迴歸標的採用曲線、曲面。誤差採用最短距離（垂直距離）的平方和。</p>
+<img src="PolynomialRegression3.png">
+<blockquote>
+Plot3D[x*x + y*y + x*y + x - y, {x, -2, 2}, {y, -2, 2}, PlotRange -> {-15, 15}, Boxed -> False, Axes -> False, Mesh-> None, ColorFunction -> (ColorData["CherryTones"][Rescale[#3, {-3, 3}]] &) ]
+</blockquote>
+<p>古代有一種做法叫做Principal Curve。我沒有研究。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Isotonic Regression</p>
+</div><div class="c">
+<p class="t">Isotonic Regression</p>
+<p>「保序迴歸」。迴歸函數採用遞增函數。</p>
+<p><a href="http://stackoverflow.com/questions/10460861/">http://stackoverflow.com/questions/10460861/</a></p>
+<p>採用絕對值誤差，時間複雜度O(NlogN)。</p>
+<p>採用平方誤差，時間複雜度O(N)。</p>
+<p class="t">迴歸函數的前後項差距在一定範圍內</p>
+<p><a href="http://www.careercup.com/question?id=5207197178920960">http://www.careercup.com/question?id=5207197178920960</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Regression.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:56 GMT -->
+</html>

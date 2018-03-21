@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+<style>
+<!--
+div.Section1
+	{page:Section1;}
+span.GramE
+	{}
+-->
+</style>
+</head>
+<body>
+
+<h1 align="center">Q10564: Paths through the Hourglass</h1>              
+<p><span lang="zh-tw">
+<img border="0" src="p10564.gif" align="left" width="440" height="470">在左邊像沙漏的圖中有一條路徑被標示出來。在沙漏中的路徑總是從最上方開始到最下方結束。當由某列中的某個格子往下列走時只能往左或往右一格。而路徑的值就是經過格子的值的總和。</span></p>   
+<p><span lang="zh-tw">一條路徑以一個數字以及一連串的動作組成。數字代表此路徑從最上方一列的哪一個格子開始走起（最左方的格子編號為 
+0）。動作為</span><span lang="en-us"> </span><b><span lang="zh-tw">R</span></b><span lang="en-us">
+</span><span lang="zh-tw">或</span><span lang="en-us"> </span><b>
+<span lang="zh-tw">L</span></b><span lang="en-us"> </span><span lang="zh-tw">
+其中之一，代表該往右下或左下方走。以左圖中的路徑為例：該路徑為</span> <b>2 RRRLLRRRLR</b></p>   
+<p>給你沙漏中每個格子的值，以及一個數 <b>S</b>，請你算出有多少條路徑的值為S。如果不只一條這樣的路徑存在，輸出最上方列起始位置最小的那條。如果還是不只一條存在，則輸出字典順序最小的那條。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p>每組測試資料的第一列有2個整數<span lang="en-us">N,S</span>（<span lang="en-us">2 &lt;=N &lt;= 20</span>,
+<span lang="en-us">0 &lt;= S &lt; 500</span>）<span lang="zh-tw">。N代表沙漏中最上方列格子的數目，S代表要求路徑的值。接下來的</span><span lang="en-us">
+<b>2N-1 </b></span>列描述此沙漏中每一列的情形。每一列中的數字均介於 0 到 9 之間，且以一空白字元相隔。沙漏中各列的格子數分別為<span lang="en-us"><b>N,</b>
+</span><b>N-1<span class="GramE">, ...,</span> 2, 1, 2, ..., N-1, N</b>.</p>            
+<p><span lang="zh-tw">當N</span><span lang="en-us">=S=0</span>時<span lang="zh-tw">代表輸入結束，測試資料的數目不會超過30</span>。請參考Sample Input。</p>            
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                          
+<p>對每組測試資料請輸出<span lang="en-us">2</span>列。
+第一列為路徑的數目，第二列為所要求路徑的表示法。如果所要求路徑不存在，第二列請輸出空白列。請參考<span lang="en-us">Sample Output</span>。</p>          
+<table border="1" width="100%" cellpadding="5">           
+  <tr>           
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>               
+  </tr>               
+  <tr>               
+    <td width="50%"><pre>6 41
+6 7 2 3 6 8
+1 8 0 7 1
+2 6 5 7
+3 1 0
+7 6
+8
+8 8
+6 5 3
+9 5 9 5
+6 4 4 1 3
+2 6 9 4 3 8
+2 7
+3 1
+2
+3 5
+5 26
+2 8 7 2 5
+3 6 0 2
+1 3 4
+2 5
+3
+7 2
+2 9 3
+1 0 4 4
+4 8 7 2 3
+0 0</pre></td>               
+    <td width="50%">         
+      <pre>1
+2 RRRLLRRRLR
+0
+
+5
+2 RLLRRRLR
+</pre>        
+    </td>              
+  </tr>              
+</table>              
+                                                
+</body>                                                
+                                                
+</html>

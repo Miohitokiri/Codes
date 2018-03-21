@@ -1,0 +1,44 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+<h1 align="center">Q378: Intersecting Lines</h1>          
+<p>平面中的兩條直線間的關係有3種：</p>
+<ol>
+<li>相交於一點
+<li>重疊（無限多交點）
+<li>平行（沒有交點）
+</ol>你的程式輸入4個點，分別代表2條直線。要請你輸出這2條直線的關係。
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p align="left">輸入的第一列有1個整數N,代表以下有N筆測試資料。</p> 
+<p align="left">接下來的N列每列有8個整數 x<sub>1</sub>y<sub>1</sub>x<sub>2</sub>y<sub>2</sub>x<sub>3</sub>y<sub>3</sub>x<sub>4</sub>y<sub>4</sub><sub>      
+</sub>，分別代表4個點（x<sub>1,</sub>y<sub>1</sub>）,（x<sub>2,</sub>y<sub>2</sub>）,（x<sub>3,</sub>y<sub>3</sub>）,（x<sub>4,</sub>y<sub>4</sub>）。其中（x<sub>1,</sub>y<sub>1</sub>）,（x<sub>2,</sub>y<sub>2</sub>）產生第1條直線，（x<sub>3,</sub>y<sub>3</sub>）,（x<sub>4,</sub>y<sub>4</sub>）產生第2條直線。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>&nbsp;Output</b></span></p>                  
+<p align="left">輸出的第一列內容為：INTERSECTING LINES OUTPUT。</p>      
+<p align="left">接下來的N列對應到輸入的N列，請輸出這2條直線的關係，如果是交於一點，請輸出POINT      
+然後是交點座標。如果這2條線是重疊，請輸出LINE。如果這2條線是平行，請輸出NONE。</p>    
+<p align="left">輸出的最後一列內容為：END OF OUTPUT。請參考Sample    
+Output。</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                     
+Input</b></span></p>                               
+<pre>5 
+0 0 4 4 0 4 4 0 
+5 0 7 6 1 0 2 3 
+5 0 7 6 3 -6 4 -3 
+2 0 2 27 1 5 18 5 
+0 3 4 0 1 2 2 5</pre>    
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                               
+<pre>INTERSECTING LINES OUTPUT
+POINT 2.00 2.00
+NONE
+LINE
+POINT 2.00 5.00
+POINT 1.07 2.20
+END OF OUTPUT</pre>
+                              
+</body>                              
+                              
+</html>                              

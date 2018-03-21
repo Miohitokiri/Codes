@@ -1,0 +1,55 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10368: Euclid's Game</h1>              
+<p align="left">Stan 和 Ollie 一起玩一個遊戲。這個遊戲開始時有 2 
+個自然數。首先由  
+Stan 
+開始，他可以將較大的數減去較小的數的正整數倍，但是一定要保證其結果不得為負數。例如：若這2個數是25和7，那  
+Stan 可以將25減7或減14或減21。接下來輪到 Ollie，他也是可以將目前較大的數減去較小的數的正整數倍，也仍然要保證其結果不得為負數。例如：若剛才 
+Stan 選擇 25減14，那目前的2個數就是（11,7），那 Ollie 
+只有一個選擇，就是 11減7。如此輪流玩，直到某個人可以將較大的數減去較小的數的正整數倍且結果為  
+0，那這個人就是這遊戲的贏家。</p>    
+<p align="left">舉例說明：如果以（25,7）開始遊戲可能像下面這樣子</p>   
+<pre>
+         25 7
+         11 7
+          4 7
+          4 3
+          1 3
+          1 0
+</pre>這遊戲 Stan 贏。　   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p><span lang="zh-tw">輸入含有多組測試資料，每組測試資料一列，有2個整數 
+，代表遊戲開始時的2個數。請注意：遊戲總是從 Stan 開始。</span></p>            
+<p><span lang="zh-tw">當輸入的2個數均為 0 代表輸入結束</span>。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                              
+<p>對每組測試資料請輸出一列這遊戲誰會贏，請你假設 Stan 
+和 Ollie 
+都是超完美玩家，也就是說如果這遊戲可以贏，那他一定不會失手。</p>           
+<table border="1" width="100%" cellpadding="5">             
+  <tr>             
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                      
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                     
+  </tr>                     
+  <tr>                     
+    <td width="50%">      
+      <pre>34 12
+15 24
+0 0</pre> 
+    </td>                     
+    <td width="50%">               
+      <pre>Stan wins
+Ollie wins
+</pre> 
+    </td>                    
+  </tr>                    
+</table>                    
+                                                      
+</body>                                                      
+                                                      
+</html>

@@ -1,0 +1,117 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q573: The Snail</h1>          
+<p align="right">原翻譯者：untitled          
+<p>在一個六呎深的井底裡，有一隻蝸牛想要爬出井口。這個蝸牛白天可以爬   
+3 呎高，不過晚上睡覺時牠會滑下來 1   
+呎。另外，這個蝸牛的「疲勞因子」為 10%，也就是說接下來的每一天爬的長度，都會比第一天爬的還要少   
+10%，也就是 3*0.10 = 0.3 呎（每天因為疲勞所少爬的長度都是<em>第一天</em>所能爬的長度的10%）。現在問你在第幾天這個蝸牛可以爬離這個井；也就是說蝸牛在第幾天起能爬<em>超過</em>   
+6   
+呎？由下面的表格可以看出，牠在第三天時就能夠爬離這個井。<br>
+<br>
+<div align="center">
+  <table cellPadding="3" border="1">
+    <tbody>
+      <tr>
+        <td align="middle">Day</td>
+        <td align="middle">這天開始的高度</td>
+        <td align="middle">這天爬的長度</td>
+        <td align="middle">白天爬完後的高度</td>
+        <td align="middle">晚上滑下來後的高度</td>
+      </tr>
+      <tr>
+        <td align="center">1</td>
+        <td align="center">0'</td>
+        <td align="center">3'</td>
+        <td align="center">3'</td>
+        <td align="center">2'</td>
+      </tr>
+      <tr>
+        <td align="center">2</td>
+        <td align="center">2'</td>
+        <td align="center">2.7'</td>
+        <td align="center">4.7'</td>
+        <td align="center">3.7'</td>
+      </tr>
+      <tr>
+        <td align="center">3</td>
+        <td align="center">3.7'</td>
+        <td align="center">2.4'</td>
+        <td align="center">6.1'</td>
+        <td align="center">-</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>你現在的工作是要解決這一類一般化的問題。根據問題的各個參數，蝸牛最後有可能會爬離井或者是又滑回井底。（也就是說，蝸牛的高度有可能超過井的深度，要不然就是負的）你必須算出到底最後是在哪一天發生了這樣的事件。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入包括多組測試資料，每組測試資料一列。每列有四個整數 H, U, D 和 F   
+，每個數字都會在 1 到 100 之間（含）。 H 代表井的深度。 U   
+代表蝸牛在第一個白天能爬多長。 D 代表每天晚上蝸牛會滑下多少。 F   
+則是「疲勞因子」，用百分之多少來表示。</p>    
+<p>蝸牛絕不會負的長度。如果因為疲勞因子，讓蝸牛能爬的長度變負的，就代表那一天蝸牛不會再往上爬。另外，無論蝸牛爬多高，在晚上的時候都會往下滑 D 呎。</p>       
+<p>如果 H = 0 就表示輸入結束。請參考Sample Input。</p>      
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對於每組測試資料，你都必須輸出相對應的一列，表示在哪一天這個蝸牛成功了（   
+succeeded ，即離開了井）或是失敗了（ failed   
+，即滑回井底）。輸出的格式請參考Sample Output。</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                              
+Input</b></span></p>                              
+<pre>6 3 1 10
+10 2 1 50
+50 5 3 14
+50 6 4 1
+50 6 3 1
+1 1 1 1
+1 100 100 100
+100 100 100 100
+100 100 100 1
+100 100 1 100
+100 100 1 1
+100 1 100 100
+100 1 100 1
+100 1 1 100
+100 1 1 1
+100 17 4 3
+100 17 14 3
+100 25 20 2
+100 75 50 50
+37 5 1 1
+100 8 5 2
+100 28 5 11
+100 21 1 9
+0 0 0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>success on day 3
+failure on day 4
+failure on day 7
+failure on day 68
+success on day 20
+failure on day 2
+success on day 1
+failure on day 2
+failure on day 2
+failure on day 101
+success on day 2
+failure on day 1
+failure on day 1
+failure on day 2
+failure on day 2
+success on day 9
+failure on day 13
+failure on day 22
+failure on day 3
+success on day 10
+failure on day 39
+success on day 7
+success on day 7</pre>
+                            
+</body>                            
+                            
+</html>                            

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0032)http://163.15.59.18/acm/q537.htm -->
+<HTML><HEAD><TITLE>Q537 Artificial Intelligence</TITLE>
+<META content="text/html; charset=big5" http-equiv=Content-Type>
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1 align=center>Q537: Artificial Intelligence</H1>
+<P>高中物理老師通常認為把問題隱藏在題目的文字中比單純計算要難得多，畢竟學生必須先看得懂題目才行！</P>
+<P>所以他們不喜歡把題目出成像``電壓＝10伏特，電流＝5安培，請問電功率＝？"這種類型，而比較喜歡出成``你有一組電路，包含一個電壓＝10伏特的電池和一個燈泡。若現在有5安培的電流通過燈泡，請問燈泡的電功率是多少？"（由於本題Input與英文有關，茲將原文收錄如下：``<TT>You 
+have an electrical circuit that contains a battery with a voltage of U=10V and a 
+light-bulb. There's an electrical current of I=5A through the bulb. Which power 
+is generated in the bulb?</TT>".）</P>
+<P>然而超過半數的學生並不會把注意力放在那些文字上，他們只會設法從文字中找出已知條件：電壓＝10伏特，電流＝5安培。然後思索``我該用哪條公式？Ah,  
+yes, P=I*V；所以P=10V*5A=500W。完成！"</P> 
+<P>OK,這個方法並不是每次都有用，所以通常這些學生在物理考試中得不到頂尖的成績，但至少這種簡單的演算法已足以獲得及格以上的成績。（遺憾但卻是事實）</P> 
+<P>現在我們要試試看電腦能不能通過高中物理考試，我們先來解決這個<TT>功率-電壓-電流(P-U-I</TT> type)的問題  
+，也就是說題目給任兩個已知條件，你要求出第三個。</P> 
+<P>你的工作就是寫一支程式可以讀入一段題目的文字，並根據上面所描述的簡易演算法來求出答案。</P> 
+<P align=left style="BACKGROUND-COLOR: #ffff00"><SPAN  
+style="BACKGROUND-COLOR: #ffff00"><B>Input</B></SPAN></P> 
+<P align=left>輸入檔的第一行會先告訴你有多少個題目要求答案。</P> 
+<P  
+align=left>每一個問題由一列包括兩個明確的已知條件和一些額外的文字組成。已知條件會以下列格式出現：<TT>I=</TT><I>x</I><TT>A</TT><tt> 
+</tt>或 <TT>U=</TT><I>x</I><TT>V</TT> 
+或者  
+<TT>P=</TT><I>x</I><TT>W（x屬於實數）</TT><BR>在單位（A，V或W）前可能會帶有一個數量級單位：m(milli,10的-3次方)，k(kilo,10的3次方)或M(Mega,10的6次方)。總而言之，已知條件（data  
+field）會遵守下列文法：</P> 
+<PRE>DataField ::= Concept '=' RealNumber [Prefix] Unit
+Concept   ::= 'P' | 'U' | 'I'
+Prefix    ::= 'm' | 'k' | 'M'
+Unit      ::= 'W' | 'V' | 'A'
+</PRE> 
+<P>額外說明 ：</P> 
+<UL> 
+  <LI>等號不會出現在已知條件（data field）外的地方。  
+  <LI>已知條件（data field）中不會出現空白字元。  
+  <LI>已知條件可能給　電壓＋功率　或　功率＋電流　或　電流＋電壓　三種形式。 </LI></UL> 
+<P align=left style="BACKGROUND-COLOR: #ffff00"><SPAN  
+style="BACKGROUND-COLOR: #ffff00"><B>Output</B></SPAN></P> 
+<P align=left>對每個題目必須輸出三列：</P>
+<UL>
+  <LI>第一列輸出``Problem #k"，k代表第幾題。  
+  <LI>第二列輸出答案（試所求輸出電壓、功率或電流）並將數量級轉換為基本單位及兩位有效小數位數（見sample output）  
+  <LI>第三列為空白行。 </LI></UL>
+<P align=left style="BACKGROUND-COLOR: #00ff00"><SPAN 
+style="BACKGROUND-COLOR: #00ff00"><B>Sample Input</B></SPAN></P><PRE>3
+If the voltage is U=200V and the current is I=4.5A, which power is generated?
+A light-bulb yields P=100W and the voltage is U=220V. Compute the current, please.
+bla bla bla lightning strike I=2A bla bla bla P=2.5MW bla bla voltage?
+</PRE> 
+<P align=left style="BACKGROUND-COLOR: #00ff00"><SPAN  
+style="BACKGROUND-COLOR: #00ff00"><B>Sample Output</B></SPAN></P><PRE>Problem #1
+P=900.00W
+
+Problem #2
+I=0.45A
+
+Problem #3
+U=1250000.00V</PRE></BODY></HTML> 

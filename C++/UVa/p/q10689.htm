@@ -1,0 +1,70 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10689: Yet another Number Sequence</h1>            
+<p>讓我們根據以下的函數來定義一種數列：</p>   
+<pre style="TEXT-ALIGN: center"><b><span style="FONT-SIZE: 12pt; mso-bidi-font-size: 10.0pt">f(0) = a<o:p>
+</o:p>
+</span></b></pre>
+<pre style="TEXT-ALIGN: center"><b><span style="FONT-SIZE: 12pt; mso-bidi-font-size: 10.0pt">f(1) = b<o:p>
+</o:p>
+</span></b></pre>
+<pre style="TEXT-ALIGN: center"><b><span style="FONT-SIZE: 12pt; mso-bidi-font-size: 10.0pt">f(n) = f(n-1) + f(n-2), n &gt; 1</span></b></pre>
+<p>當 a=0 , b=1 時，這數列就是費伯那西數列（Fibonacci Sequence）。若改變 
+a 和 b 的值，你會得到許多不同的數列。在這個問題中，給你 
+a,b 的值，請你找出 f(n) 的最右邊m位數字。例如：a=0, b=1, 
+f(12)=144，所以若 m=3，則答案是144。若 m=2，則答案是44。若 m=1，則答案是4。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p>輸入的第一列有一個正整數代表以下有幾組測試資料（最多10000組）。每組測試資料一列。含有4個整數 
+a b n m。其中 a,b 在<b> [0,100] </b>的範圍內， n 在 <b>[0,1000000000]</b><b> 
+</b>的範圍內，m 在 <b>[1,4] </b>的範圍內。</p>             
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                              
+<p>對每組測試資料輸出一列， f(n) 的最右邊m位數字。請不要輸出任何左方的 
+0（例如：089是不正確的）。</p>           
+<table border="1" width="100%" cellpadding="5">              
+  <tr>              
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                           
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                          
+  </tr>                          
+  <tr>                          
+    <td width="50%">              
+      <p class="MsoNormal" style="TEXT-ALIGN: justify"><b><span style="font-size: 11pt; font-family: Courier New; mso-bidi-font-size: 10.0pt">12<br>
+      0 1 11 3<br> 
+      0 1 42 4<br> 
+      0 1 22 4<br> 
+      0 1 21 4<br> 
+      0 1 12 1<br> 
+      0 1 12 2<br> 
+      0 1 12 3<br> 
+      0 1 12 4<br> 
+      99 100 123456789 1<br> 
+      99 100 123456789 2<br> 
+      99 100 123456789 3<br> 
+      99 100 123456789 4</span><span style="FONT-SIZE: 11pt; FONT-FAMILY: 'Courier New'; mso-bidi-font-size: 10.0pt"></o:p>   
+      </span></b>   
+    </td>                         
+    <td width="50%">                   
+      <p class="MsoNormal" style="TEXT-ALIGN: justify"><b><span style="font-size: 11pt; font-family: Courier New; mso-bidi-font-size: 10.0pt"><br>
+      89<br>
+      4296<br>
+      7711<br>
+      946<br>
+      4<br>
+      44<br>
+      144<br>
+      144<br>
+      9<br>
+      19<br>
+      919<br>
+      7919</span></b> 
+    </td>                      
+  </tr>                      
+</table>                      
+                                                        
+</body>                                                        
+                                                        
+</html>                                                        

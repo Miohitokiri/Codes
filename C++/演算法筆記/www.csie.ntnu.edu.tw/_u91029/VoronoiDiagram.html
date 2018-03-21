@@ -1,0 +1,168 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/VoronoiDiagram.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:39 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Voronoi Diagram</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Voronoi Diagram</p>
+</div><div class="c">
+<p class="t">Voronoi Diagram</p>
+<p>平面上散布許多點。平面上每一處，各自歸類於最近的點；自然而然的，形成了分界線，是中垂線。Voronoi Diagram是分界線組成的集合。Voronoi是發明者的姓氏。</p>
+<p>換個角度看。鄰近的點的中垂線，形成Voronoi Diagram。</p>
+<img src="VoronoiDiagram1.png">
+<p>Voronoi Diagram隱含著鄰近的資訊，所以「最靠近」、「距離最短」之類的問題，多半可以透過Voronoi Diagram解決。</p>
+<img src="VoronoiDiagram2.png">
+<p>Voronoi Diagram是大自然的圖案，諸如長頸鹿的斑紋、蜻蜓的翅膀、葉片的細胞壁。應用相當廣泛。</p>
+<div class="i"><img src="../../www.twwiki.com/uploads/wiki/b4/35/11032_1.jpg" width="240" height="160"> <img src="../../www.twwiki.com/uploads/wiki/84/0c/9011_1.jpg" width="200" height="133"></div>
+<p class="e">UVa 12109</p>
+<p class="t">Perpendicular Bisector</p>
+<p>「中垂線」，中學數學，不再贅述。</p>
+<img src="VoronoiDiagram3.png">
+<textarea>
+typedef complex<double> Point;
+typedef pair<Point,Point> Line;
+#define x real()
+#define y imag()
+
+Line pb(Point& a, Point& b)
+{
+	// ab中點。
+	Point c = (a + b) / 2.0;
+
+	// ab向量，顛倒、變號，得到法向量。
+	Point s = b - a;
+	swap(s.x, s.y);
+	s.x *= -1;
+
+	// 中垂線。兩點得一線。
+	return make_pair(c, c + s);
+}
+</textarea>
+<p>三角形的三中垂線，交於一點，是外接圓圓心，稱作外心。中垂線有等距、平分的感覺，圓有等距、歸心的感覺，兩者關係匪淺。</p>
+<img src="VoronoiDiagram4.png">
+<p>由此可知，Voronoi Diagram一個點至少連著三條邊。</p>
+<p class="t">Voronoi Diagram點和邊的數量</p>
+<img src="VoronoiDiagram5.png">
+<p>Voronoi Diagram看上去就像個平面圖。延伸至無限遠的邊，通通接往一個點，Voronoi Diagram就變成平面圖。</p>
+<p>運用平面圖歐拉公式v-e+f=2，輔以「一個點至少連著三條邊」的限制，可以推理出Voronoi Diagram最多有2N-5個點、3N-6條邊，都是O(N)。</p>
+<p class="t">延伸閱讀：勢力消長</p>
+<p>每個點設定不同的強度，兩點之間依照強度比例劃定界線。理論上可以生成所有平面圖？</p>
+<img src="VoronoiDiagram6.png">
+<p class="t">延伸閱讀：歸類於第k近的點</p>
+<p>平面上每一處，各自歸類於第k近的點，就形成了Order k Voronoi Diagram。至於這有什麼用途，我也不知道。</p>
+<p>為了辨識每塊區域歸類於哪一點，我們將每個點標上不同顏色，讓區域的顏色對應點的顏色。</p>
+<style>.i canvas {margin: 2px; width: 200px; height: 200px;}</style>
+<div class="i"><canvas id="VoronoiDiagram1" width="200" height="200"></canvas><canvas id="VoronoiDiagram2" width="200" height="200"></canvas><canvas id="VoronoiDiagram3" width="200" height="200"></canvas></div>
+<div class="i"><canvas id="VoronoiDiagram4" width="200" height="200"></canvas><canvas id="VoronoiDiagram5" width="200" height="200"></canvas><canvas id="VoronoiDiagram6" width="200" height="200"></canvas></div>
+<div class="i"><canvas id="VoronoiDiagram7" width="200" height="200"></canvas><canvas id="VoronoiDiagram8" width="200" height="200"></canvas><canvas id="VoronoiDiagram9" width="200" height="200"></canvas></div>
+<script>
+function DrawVoronoiDiagram(canvas, ctx, x, y, w = null, order = 1) {
+	var r = [255,255,255,255,146,  0,  0,239,250];
+	var g = [  0,174,192,255,208,176,176,228,250];
+	var b = [  0,201,  0,  0, 80, 80,240,176,250];
+
+	var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	var data = imageData.data;
+	var n = 0;
+	for (var i = 0; i < canvas.height; ++i)
+		for (var j = 0; j < canvas.width; ++j) {
+			var neighbor = new Array();
+			for (var k = 0; k < x.length; ++k) {
+				var dx = x[k] - j, dy = y[k] - i;
+				var d = (dx * dx + dy * dy);
+				if (w) d /= w[k];
+				neighbor[k] = {distance:d, site:k};
+			}
+			neighbor.sort(function(a,b){
+				if (a.distance < b.distance) return -1;
+				else if (a.distance > b.distance) return +1;
+				else return 0;
+			});
+
+			var p = neighbor[order - 1].site;
+			data[n]     = r[p];
+			data[n + 1] = g[p];
+			data[n + 2] = b[p];
+			data[n + 3] = 255;
+			n += 4;
+		}
+	ctx.putImageData(imageData, 0, 0);
+
+	// DrawPointArray
+//	ctx.fillStyle = "rgb(255,255,255)";
+	ctx.lineWidth = 1.5;
+	for (var i = 0; i < x.length; ++i) {
+		ctx.beginPath();
+		ctx.arc(x[i], y[i], 4, 0, Math.PI * 2, true);
+		ctx.fillStyle = "rgb(" + r[i] + "," + g[i] + "," + b[i] + ")";
+		ctx.fill();
+		ctx.strokeStyle = "rgb(0,0,0)";
+		ctx.stroke();
+	}
+}
+
+VoronoiDiagram();
+function VoronoiDiagram() {
+	var x = [10,38,71,53,76,55,42,37,23];
+	var y = [33,76,79,61,36,36,23,50,35];
+//	var w = [ 1, 2, 3, 4, 1, 2, 3, 4, 1];
+	for (var i = 0; i < x.length; ++i) x[i] *= 2.22, y[i] *= 2.22;
+
+	for (var i = 1; i <= x.length; ++i) {
+		var canvas = document.getElementById('VoronoiDiagram' + i);
+		var ctx = canvas.getContext('2d');
+		DrawVoronoiDiagram(canvas, ctx, x, y, null, i);
+
+		ctx.font = "12pt Verdana";
+		ctx.textBaseline = "top";
+		ctx.textAlign = "right";
+		ctx.fillStyle = 'rgb(0,0,0)';
+		ctx.fillText("order " + i, canvas.width, 0);
+
+		ctx.lineWidth = 2;
+		ctx.strokeRect(0, 0, canvas.width, canvas.height);
+	}
+}
+</script>
+<p>上方圖片以HTML5 Canvas繪製而成，演算法是窮舉法。有興趣的讀者請自行檢視網頁原始碼。</p>
+<p class="t">延伸閱讀：歸類於最遠的點</p>
+<p>既有最近，亦有最遠。平面上每一處，各自歸類於最遠的點，就形成了Farthest Point Voronoi Diagram。</p>
+<p>換個角度看。相離最遠的點，自然而然都在凸包上，證明請參考「<a href="Point2.html">Farthest Pair</a>」。相離最遠的點的中垂線，形成Farthest Point Voronoi Diagram。</p>
+<img src="VoronoiDiagram7.png">
+<p class="t">延伸閱讀：點改成其他東西</p>
+<p>我們可以把一個點改成一個圓、一條線段、一群點、一個多邊形等等圖形，得到各式各樣的Voronoi Diagram。</p>
+<p>這些都是進階課題，有興趣的讀者請自行尋找資料。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Voronoi Diagram: Half-plane Intersection</p>
+</div><div class="c">
+<p>枚舉每一點，求得該點的區域：與其他點形成的N-1條中垂線，求半平面交集。時間複雜度為O(N * NlogN)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Voronoi Diagram: Incremental Method</p>
+</div><div class="c">
+<p><a href="http://nodename.com/wpEmbeds/VoronoiToy/bin/PlanePointsApp.swf" class="l">http://nodename.com/wpEmbeds/VoronoiToy/bin/PlanePointsApp.swf</a></p>
+<p>online演算法，一次加一點。先找到當前輸入點相距最近的點，然後以中垂線繞行一圈求得當前輸入點的區域。</p>
+<img src="VoronoiDiagram8.png">
+<p>Voronoi Diagram的點數和邊數都是O(N)。就算是窮舉路線轉折點所在的邊，整體時間複雜度仍是O(N^2)。</p>
+<p>附帶一提，當給定的點都在凸包上時，使用Randomized Incremental Method可達O(N)。</p>
+<p><a href="http://www.cs.dartmouth.edu/reports/TR90-147.pdf">http://www.cs.dartmouth.edu/reports/TR90-147.pdf</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Voronoi Diagram: Divide and Conquer</p>
+</div><div class="c">
+<p><a href="http://students.info.uaic.ro/~emilian.necula/vor2.pdf">http://students.info.uaic.ro/~emilian.necula/vor2.pdf</a></p>
+<p>所有點分成左右兩側，分別求出Voronoi Diagram，然後合而為一。</p>
+<p>從左右Convex Hull的外公切線的中垂線開始行進，一旦撞到左右Voronoi Diagram，就改變行進方向。</p>
+<p>至於要如何清除多餘的Voronoi Diagram，我也不知道。</p>
+<p>時間複雜度是O(NlogN)，然而步驟繁雜，運行極慢，不實用。讀者只需知道Voronoi Diagram存在這麼一個解題策略就行了，不需浪費時間鑽研細節。</p>
+<img src="VoronoiDiagram9.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Voronoi Diagram: Fortune's Algorithm</p>
+</div><div class="c">
+<p><a href="http://www.cs.hmc.edu/~mbrubeck/voronoi.html">http://www.cs.hmc.edu/~mbrubeck/voronoi.html</a></p>
+<p>平移的掃描線。時間複雜度是O(NlogN)，實務上效率極佳。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/VoronoiDiagram.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:44 GMT -->
+</html>

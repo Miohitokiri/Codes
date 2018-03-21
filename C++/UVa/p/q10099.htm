@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10099: The Tourist Guide</h1>             
+<p>G先生是個導遊。他現在的任務就是帶著遊客從一個城市到另一個城市。在這些城市之間有一些道路連接（雙向的）。對每個相鄰的城市有提供巴士的服務（僅來往於這兩個城市之間），且巴士一趟能乘載的旅客有一定的上限。G先生有這些城市的地圖以及巴士的資料。他也知道要將遊客從一個城市帶到另一個城市不是一趟巴士就可以完成的。以下面有7座城市的地圖及巴士資訊為例說明：邊代表相連的城市有道路相連，邊上的數字則是代表巴士能承載的最大人數。</p> 
+<p align="center"><img border="0" src="p10099.gif" width="344" height="287"></p> 
+<p>現在，假如G先生想要帶99個遊客從城市1到城市7，他將至少需要5趟，而且他應該走的路徑為：1-2-4-7。但是G先生發現要他自己找出最少需花多少趟來將遊客從一個城市帶到另一個城市是非常困難的，所以他尋求你的幫助。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入包含多組測試資料。每組測試資料的第一列含有2個整數 
+N（N &lt;= 100）、R。N代表城市的數目，R則代表連接城市的道路數目。接下來的R列，每列含有三個整數C<sub>1</sub>,C<sub>2</sub>和P。C<sub>1</sub>,C<sub>2</sub>代表城市的號碼（介於1到N之間），P（P&gt;1）代表這路段巴士能承載的最大人數。再接下來的一列有3個整數S、D、T，代表G先生將帶T個遊客從S城市到D城市去。</p>                    
+<p>若 N=0， R=0 代表輸入結束。請參考Sample Input。</p>                    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                      
+<p>對每組測試資料輸出一列。找出G先生最少需花多少趟來將遊客從一個城市帶到另一個城市。每組測試資料後請輸出一空白列，輸出格式請參考Sample 
+Output。</p>                   
+<table border="1" width="100%" cellpadding="5">                      
+  <tr>                      
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                           
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                          
+  </tr>                                          
+  <tr>                                          
+    <td width="50%">                              
+      <pre>7 10
+1 2 30
+1 3 15
+1 4 10
+2 4 25
+2 5 60
+3 4 40
+3 6 20
+4 7 35
+5 7 20
+6 7 30
+1 7 99
+2 1
+1 2 50
+2 1 50
+0 0</pre> 
+    </td>                                       
+    <td width="50%">                                 
+      <pre>Scenario #1
+Minimum Number of Trips = 5
+
+Scenario #2
+Minimum Number of Trips = 2
+
+</pre> 
+    </td>                                      
+  </tr>                                      
+</table>                                      
+                                                                        
+</body>                                                                        
+                                                                        
+</html>                                                                        

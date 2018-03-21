@@ -1,0 +1,369 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/StringMatching3.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:30 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - String Matching</title></head><body>
+<div class="a"><div class="h">
+<p class="b">String Matching: Inverted Index</p>
+</div><div class="c">
+<p class="t">建立索引表處理字串匹配問題</p>
+<p>預先挑出重要單字，預先計算位置。將來進行字串比對，可以直接查表。</p>
+<p class="t">字元索引表</p>
+<p>找到每個字元的所在位置。</p>
+<pre>
+string:
+012345678910
+mississippi
+
+inverted index:
+i : 1 4 7 10
+m : 0
+p : 8 9 
+s : 2 3 5 6
+</pre>
+<p>建立過程正是Counting Sort的第一個步驟。時間複雜度為O(T+A)。</p>
+<textarea>
+char t[11+1] = "mississippi";
+vector<int> index[128];	// inverted index
+
+void inverted_index()
+{
+	for (int i=0; t[i]; ++i)
+		index[t[i]].push_back(i);
+}
+</textarea>
+<p class="t">字串匹配</p>
+<p>先查閱索引表，再實施窮舉法，時間複雜度為O(TP)。</p>
+<p>時間複雜度乍看之下沒有任何改進，但是實際上是大躍進！尤其是當各個字元的出現次數很平均、差不多相等，那麼窮舉次數就降低成1/128倍、執行速度增加128倍了！</p>
+<textarea>
+char t[11+1] = "mississippi";
+char p[4+1] = "issi";
+vector<int> index[128];	// inverted index
+
+void string_matching()
+{
+	inverted_index();
+
+	if (p[0] == '\0') return;
+
+	for (int i=0; i<index[p[0]].size(); ++i)
+	{
+		int x = index[p[0]][i];
+
+		bool match = true;
+		for (int j=1; p[j]; ++j)
+			if (t[x+j] != p[j])
+			{
+				match = false;
+				break;
+			}
+
+		if (match)
+			cout << "T的第" << x << "個字元開始為P";
+	}
+}
+</textarea>
+<p class="t">單字索引表</p>
+<p>實務上是建立單字索引表。以大量字串資料結構儲存單字。</p>
+<p>string/pattern變成了document/word。</p>
+<pre>
+documents:
+d[0] : "it is what it is"
+d[1] : "what is it"
+d[2] : "it is a banana"
+
+inverted index:
+"a"      : (2,2)
+"banana" : (2,3)
+"is"     : (0,1) (0,4) (1,1) (2,1)
+"it"     : (0,0) (0,3) (1,2) (2,0)
+"what"   : (0,3) (1,0)
+</pre>
+<p class="e">UVa 1597 ICPC 3134</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Move-to-front Transform</p>
+</div><div class="c">
+<p class="t">Move-to-front Transform</p>
+<pre>
+一、A種字元依序排隊。（將A種字元存入具有排名功能的資料結構）
+二、每當讀入一個字元，就印出字元的名次。（把名次數值轉型成ASCII字元）
+三、該字元插隊到最前面。
+</pre>
+<p>排名資料結構採用array，每次插隊需時O(A)，總時間複雜度O(NA)。</p>
+<p>排名資料結構採用binary search tree，每次插隊需時O(logA)，總時間複雜度O(NlogA)。</p>
+<p>出現地點比較密集（不是指出現次數比較多），名次數字比較小。是個奇妙的轉換，講不出個所以然。反覆實施MFT，不知道最後會怎麼樣。</p>
+<p class="t">Inverse Move-to-front Transform</p>
+<pre>
+一、A種字元依序排隊。（A種字元存入具有排名功能的資料結構）
+二、每當讀入一個名次，就印出字元。
+三、該字元插隊到最前面。
+</pre>
+<p>時間複雜度同前。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Burrows-Wheeler Transform</p>
+</div><div class="c">
+<p class="t">Burrows-Wheeler Transform</p>
+<p>輸入是一個字串，輸出是一個字串、附帶一個索引值。</p>
+<p>輸入字串長度為N。輸入字串循環位移，得到N個字串。N個字串實施排序，依序取得最後一個字元（也有人取第二個字元），作為輸出字串。並且記下輸入字串的排名。</p>
+<pre>
+            BWT
+"suffixes" ----> "xuffessi"   ("suffixes" is rank 5)
+</pre>
+<pre>
+                  suffixes        essuffix 0
+                  uffixess        ffixessu 1
+                  ffixessu        fixessuf 2
+          rotate  fixessuf  sort  ixessuff 3
+suffixes -------> ixessuff -----> ssuffixe 4
+                  xessuffi        suffixes 5*
+                  essuffix        uffixess 6
+                  ssuffixe        xessuffi 7
+                                         ^
+</pre>
+<p>後綴有著極快的排序演算法，因此改成後綴。</p>
+<p>輸入字串重複一遍，長度變為2N。排序前N個後綴，等同於排序原本N個循環字串！唯一例外：輸入字串只有一種字元、所有字元通通相同；然而這種情況下，BWT的結果顯而易見就是原本字串，大可不必實施排序。</p>
+<pre>
+"suffixes"          | "suffixessuffixes"
+sort cyclic strings | sort first N suffixes
+--------------------| ---------------------
+essuffix            | essuffixes      
+ffixessu            | ffixessuffixes  
+fixessuf            | fixessuffixes   
+ixessuff            | ixessuffixes    
+ssuffixe            | ssuffixes       
+suffixes            | suffixessuffixes
+uffixess            | uffixessuffixes 
+xessuffi            | xessuffixes     
+^^^^^^^^              ^^^^^^^^
+輸入字串有兩種以上字元，就能用前N個字元決定排序結果。
+</pre>
+<p>運用Suffix Array達成BWT，時間複雜度為O(N+A)。</p>
+<textarea>
+const int N = 8;			// 字串長度
+int s[N+N+1] = "suffixes";	// 字串，後面預留一倍空間。
+int sa[N];					// 後綴陣列
+int pivot;
+
+int cmp(const void* i, const void* j)
+{
+	return strncmp(s+*(int*)i, s+*(int*)j, N);
+}
+
+// 此處便宜行事，採用 O(N^2 * logN) 的後綴陣列演算法。
+void BWT()
+{
+	strncpy(s + N, s, N);
+	for (int i=0; i<N; ++i) sa[i] = i;
+	qsort(sa, N, sizeof(int), cmp);
+	// 當輸入字串的所有字元都相同，必須當作特例處理。
+	// 或者改用stable sort。
+
+	for (int i=0; i<N; ++i)
+		cout << s[(sa[i] + N-1) % N];
+
+	for (int i=0; i<N; ++i)
+		if (sa[i] == 0)
+		{
+			pivot = i;
+			break;
+		}
+}
+</textarea>
+<p>BWT令相同字元容易黏在一起，是主要特色。知名的應用是「<a href="Compression.html">Run-length Compression</a>」。</p>
+<p>想要相同字元黏在一起，為什麼不直接排序輸入字串的所有字元就好了？原因很簡單，因為沒辦法還原成原本字串。</p>
+<p class="t">Inverse Burrows-Wheeler Transform</p>
+<p>輸出字串、輸入字串的名次，還原成輸入字串。</p>
+<pre>
+            IBWT
+"suffixes" <----- "xuffessi"   (original string is rank 5)
+</pre>
+<p>IBWT的本質，是將N個循環字串，從排序之後的順序，還原成排序之前的順序。我們觀察排序之後的順序。</p>
+<p>一、最後一個字元重新排序，就是第一個字元。想一想為什麼？</p>
+<pre>
+ 0   .......x          e......x
+ 1   .......u  fill    f......u
+ 2   .......f  1st     f......f
+ 3   .......f  column  i......f
+ 4   .......e -------> s......e
+*5   .......s          s......s
+ 6   .......s          u......s
+ 7   .......i          x......i
+</pre>
+<p>二、第一個字元，循環左移，變成最後一個字元。依此找到對應字串。依此找到原字串每個字元的下一個字元。</p>
+<p>二之一、僅出現一次的字元：輕鬆找到對應字串。</p>
+<pre>
+  e......x
+  f......u
+  f......f　　　
+V i......f      get i->x
+  s......e
+  s......s
+  u......s
+  x......i V
+</pre>
+<p>二之二、出現兩次以上的字元：觀察第一個字元。第一個字元移除之後，字串先後次序不變。第一個字元循環位移之後，字串先後次序不變。依此找到對應字串。</p>
+<pre>
+  e......x
+  f......u
+  f......f         1      2
+  i......f     get s->s , s->u
+1 s......e
+2 s......s 1
+  u......s 2
+  x......i
+</pre>
+<p>運用Inverted Index達成IBWT，時間複雜度為O(N+A)。</p>
+<textarea>
+const int N = 8;			// 字串長度
+char t[N+1] = "xuffessi";	// 字串
+int pivot;
+int next[N];
+
+void IBWT()
+{
+	vector<int> index[256];
+	for (int i=0; i<N; ++i)
+		index[t[i]].push_back(i);
+
+	for (int i=0, n=0; i<256; ++i)
+		for (int j=0; j<index[i].size(); ++j)
+			next[n++] = index[i][j];
+
+	int p = pivot;
+	for (int i=0; i<N; ++i)
+		cout << t[p = next[p]];
+}
+</textarea>
+<p class="e">UVa 632 741</p>
+<p class="t">Dynamic Burrows-Wheeler Transform</p>
+<p>【待補文字】</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">String Matching: FM-Index</p>
+</div><div class="c">
+<p><a href="http://pizzachili.di.unipi.it/indexes.html">http://pizzachili.di.unipi.it/indexes.html</a></p>
+<p><a href="http://alexbowe.com/fm-index/">http://alexbowe.com/fm-index/</a></p>
+<p>大雜燴。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">String Matching: LZ-Index</p>
+</div><div class="c">
+<p><a href="http://pizzachili.di.unipi.it/indexes/LZ-index/">http://pizzachili.di.unipi.it/indexes/LZ-index/</a></p>
+<p>仿照Ziv-Lempel Compression，將字串切散成許多段。從頭掃描，遇到從未出現的前綴，就切斷。將每段字串存入Trie，將每段字串頭尾顛倒存入另一棵Trie，以便實施字串匹配。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">String Matching: Karp-Rabin Algorithm</p>
+</div><div class="c">
+<p class="t">運用數列處理字串匹配問題</p>
+<p>字元看作數值，字串看作數列。運用數列的知識，設計演算法。</p>
+<p class="t">以區間和篩選</p>
+<p>計算P的總和。窮舉T的區間和，區間長度是P的長度。</p>
+<p>當區間和相等，才有機會匹配成功，才需要比對字元。</p>
+<p>宛如初試與複試，先簡單快速篩選，再嚴格緩慢校對，省時。</p>
+<textarea>
+char t[11+1] = "mississippi";
+char p[4+1] = "issi";
+
+void matching()
+{
+	int sumt = 0, sump = 0;
+	for (int i=0; t[i]; ++i) sumt += t[i];
+	for (int i=0; p[i]; ++i) sump += p[i];
+
+	for (int i=0, j=4; i<11-4+1; ++i, ++j)
+	{
+		if (sumt == sump && memcmp(t+i, p, 4) == 0)
+			cout << "T的第" << i << "個字元開始為P";
+		sumt = sumt - t[i] + t[j];
+	}
+}
+</textarea>
+<p class="t">以多項式篩選</p>
+<p>區間和容易相等，容易誤判。篩選機制尚有改進空間。</p>
+<p>數列變成多項式。為了避免除法運算，次方順序設為由大到小。</p>
+<p>仿效x進位的觀念，令x的值大於等於字元種類，使得不同字串必是不同總和。</p>
+<p>變成多項式，導致新問題：總和太大，導致溢位。解法是減少底數x、設定模數m。這使得不同字串可能是相同總和。</p>
+<p>儘管仍舊不完美，但是篩選效果更好了。當多項式相等，字串差異也更大了，比對字元得以提早結束。最差時間複雜度O(TP)，平均時間複雜度O(T+P)。</p>
+<textarea>
+char t[11+1] = "mississippi";
+char p[4+1] = "issi";
+
+void matching()
+{
+	int x = 128;	// 字元種類數目
+	int m = 65536;	// 模數
+
+	int sumt = 0, sump = 0, x4 = 1;
+	for (int i=0; i<4; ++i)
+	{
+		sumt = (sumt * x + t[i]) % m;
+		sump = (sump * x + p[i]) % m;
+		x4 = (x4 * x) % m;
+	}
+
+	for (int i=0; i<=11-4; ++i)
+	{
+		if (sumt == sump && memcmp(t+i, p, 4) == 0)
+			cout << "T的第" << i << "個字元開始為P";
+		sumt = (sumt - t[i] * x4) % m * x % m + t[i+4];
+		sumt = ((sumt % m) + m) % m;	// 避免負數
+	}
+}
+</textarea>
+<p>位元運算，速度更快。使用二進位，底數x = 2，模數unsigned int = 2^32。</p>
+<textarea>
+unsigned char t[11+1] = "mississippi";
+unsigned char p[4+1] = "issi";
+
+void matching()
+{
+//	unsigned int x = 2;
+//	unsigned int m = (1 << 32);
+
+	unsigned int sumt = 0, sump = 0, x4 = (1 << 4);
+	for (int i=0; i<4; ++i)
+	{
+		sumt = (sumt << 1) + t[i];
+		sump = (sump << 1) + p[i];
+	}
+
+	for (int i=0; i<=11-4; ++i)
+	{
+		if (sumt == sump && memcmp(t+i, p, 4) == 0)
+			cout << "T的第" << i << "個字元開始為P";
+		sumt = ((sumt - t[i] * x4) << 1) + t[i+4];
+	}
+}
+</textarea>
+<p class="t">以雜湊函數篩選</p>
+<p>多項式，宛如字串雜湊函數djb2、sdbm。</p>
+<textarea>
+unsigned char t[11+1] = "mississippi";
+unsigned char p[4+1] = "issi";
+
+void matching()
+{
+	unsigned int x = 33;	// djb2
+//	unsigned int m = (1 << 32);
+
+	unsigned int hasht = 5381, hashp = 5381, x4 = 1;
+	for (int i=0; i<4; ++i)
+	{
+		hasht = hasht * x + t[i];
+		hashp = hashp * x + p[i];
+		x4 *= x;
+	}
+
+	for (int i=0; i<=11-4; ++i)
+	{
+		if (hasht == hashp && memcmp(t+i, p, 4) == 0)
+			cout << "T的第" << i << "個字元開始為P";
+		hasht = (hasht - t[i] * x4) * x + t[i+4];
+	}
+}
+</textarea>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/StringMatching3.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:30 GMT -->
+</html>

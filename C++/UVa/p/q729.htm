@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q729: The Hamming Distance Problem</h1>          
+<p>給2個相同長度的2元字串，比較他們在相同位置的內容，並計算各位置內容不一樣的總數，我們稱該數為它們之間的Hamming        
+distance。這任務可以經由對字串中各相同位置字元作XOR的運算或者做2進位的相加（但不進位）而得到。以下的例子為2個長度為10的2元字串A、B經過XOR運算。可以看出共有6個1，所以其Hamming   
+distance為6。</p>  
+<PRE>                               A      0 1 0 0 1 0 1 0 0 0
+                               B      1 1 0 1 0 1 0 1 0 0
+                            A XOR B = 1 0 0 1 1 1 1 1 0 0</PRE>
+<p>你的任務是給你字串的長度（N）及所要求的Hamming distance（H），請你輸出所有這樣的2元字串，也就是長度為N的二元字串，且恰好有H個1的字串。由數學我們得知這樣的字串共有C(N,H)個。也就是：</p>
+<pre>
+    N!
+─────
+(N-H)! H!
+</pre>
+
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個正整數，代表以下有多少組測試資料。</p>         
+<p>每組測試資料一列，含有2個正整數N、H（1 &lt;= H &lt;= N &lt;=   
+16）。N代表字串的長度，H代表Hamming distance。</p>           
+<p>請參考Sample Input。</p>           
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出所有長度為N，且Hamming distance為H的二元字串，並由小到大輸出。測試資料間請空一列。</p>       
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                   
+Input</b></span></p>                              
+<pre>2
+
+4 2
+
+3 2</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>0011
+0101
+0110
+1001
+1010
+1100
+
+011
+101
+110</pre>
+                            
+</body>                            
+                            
+</html>                            

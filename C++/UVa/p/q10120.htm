@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10120: Gift?!</h1>          
+<p>在一個小村莊裡有一條美麗的河流，在河流中有N顆露出水面的石頭排成一直列，並且我們對石頭從1到N編號（從左岸到右岸），如下所示：</p>  
+<p align="center">[左岸]─[石頭1]─[石頭2]─[石頭3]─............─[石頭N]─[右岸]</p>  
+<p>上圖中，岸邊到石頭以及相鄰石頭間的距離都是1公尺。</p>  
+<p>有一隻叫Frank的青蛙來到河的左岸，他的鄰居一隻叫Funny的青蛙對他說：</p>  
+<p>「Hello, Frank, 
+兒童節快樂。我有一個禮物要給你，看到了嗎？在第5號石頭上。」</p>  
+<p>「喔！太棒了，謝謝你，我會去拿。」</p>  
+<p>「等等，這禮物只送給聰明的青蛙。你不能直接跳過去拿。」</p>  
+<p>「喔，那我該如何做？」</p>  
+<p>「跳多次一點囉！首先你要跳到1號石頭上，然後看你想跳幾次就跳幾次，不論是往前跳或往後跳。但是你的第 
+i 次跳必須跳 2*i-1 
+公尺。另外，如果你在拿到禮物之前跳到左岸或右岸，遊戲就結束了，也就不能再跳了。」</p>  
+<p>「嗯......不簡單喔。讓我想一下。」Frank回答「我應該要試看看嗎？」</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>最多不會超過2000組測試資料，每組測試資料一列。每列有2個正整數N,M（2 
+&lt;= N &lt;=10<sup>6</sup>,&nbsp; 2&lt;= M &lt;= N）。N代表石頭的數目，M代表禮物放置的石頭的編號。</p>    
+<p>N=0 M=0代表輸入結束。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>如果Frank可能跳到放禮物的石頭，輸出Let me try!。否則請輸出Don't 
+make fun of me!</p> 
+<p>注意：在第2組測試資料中，Frank可以從石頭1，往前跳到石頭4，再往前跳到石頭9，然後往後跳到石頭2（得到禮物）。如果在最後一跳是往前，Frank就會跳到右岸，也就輸了遊戲。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>9 5
+12 2
+0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Don't make fun of me!
+Let me try!
+</pre>
+                            
+</body>                            
+                            
+</html>                            

@@ -1,0 +1,45 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q336: A Node Too Far</h1>          
+<p>為了避免網路中訊息（封包）在網路中無限的傳遞，每個訊息都含有一個存留時間（Time  
+To Live, TTL）的欄位。這個欄位的內容為這個訊息可以再被傳輸的次數。當一個訊息被傳輸到另一節點（可能是電腦、工作站等）時，這電腦會先將TTL減1，如果這節點就是此訊息要傳輸的目的地，那就不用理會TTL。否則此訊息就必須再被傳輸出去，但是如果TTL為0,則此訊息將不會再被傳輸。</p>  
+<p>在這個問題中，給你一些網路的描述，以及一訊息的起點及其TTL，請你寫一個程式算出有多少個節點是此一訊息無法到達的。以下面的網路為例說明：</p>  
+<p align="center"><img border="0" src="p336.gif" width="246" height="189"></p>  
+<p>假如有一個訊息從節點35開始送，且TTL為2，那他可以到達節點15,10,55,50,40,20,60。而此訊息無法到達節點30,47,25,45,65，因為在到達節點10,20,50,60時TTL已經被設為0了。如果一開始的TTL給為3，則除了節點45之外，其他的節點都可以到達了。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多個網路，每個網路的第一列有1個整數N代表在此網路中有多少個連結。接下來有N對正整數，每對正整數代表有網路線直接相連的2個節點的編號。任2個節點間最多只有1條網路線直接相連，且所有節點的數目不會超過30個。</p>     
+<p>接下來為對此網路所提出的問題，每個問題包含2個整數，分別代表訊息開始送出的節點編號及其TTL。對此網路的問題以一對0作為結束。</p>     
+<p>N=0代表整個輸入結束，請參考Sample Input。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一問題，輸出一列。包含這是第幾個問題（從1開始），有幾個點無法到達，起始的節點編號，起始的TTL等。請參考Sample 
+Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>16
+10 15   15 20   20 25   10 30   30 47   47 50   25 45   45 65
+15 35   35 55   20 40   50 55   35 40   55 60   40 60   60 65
+35  2   35  3    0  0
+
+14
+1 2   2 7   1 3   3 4   3 5   5 10   5 11
+4 6   7 6   7 8   7 9   8 9   8  6   6 11
+1 1   1 2   3 2   3 3   0 0  
+  
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Case 1: 5 nodes not reachable from node 35 with TTL = 2.
+Case 2: 1 nodes not reachable from node 35 with TTL = 3.
+Case 3: 8 nodes not reachable from node 1 with TTL = 1.
+Case 4: 5 nodes not reachable from node 1 with TTL = 2.
+Case 5: 3 nodes not reachable from node 3 with TTL = 2.
+Case 6: 1 nodes not reachable from node 3 with TTL = 3.</pre>
+                            
+</body>                            
+                            
+</html>                            

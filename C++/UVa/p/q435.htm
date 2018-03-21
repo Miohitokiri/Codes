@@ -1,0 +1,77 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q435: Block Voting</h1>          
+<p>在各國的議會中有不同的投票制度。有一種叫做政黨投票（Block  
+Voting）的制度，在這種制度中議員並不按照自己的意願投自己的一票，而是以黨團的意志來投票。也就是說對某一項法案，某黨的所有議員要不就全部贊成，要不就全部反對。絕不會有「跑票」的情形發生。  
+我們也清楚，大黨在投票時的影響力當然比小檔來的大。然而有時候小黨也有關鍵性的影響力（特別是在兩陣營相對抗時）。請看以下5個政黨的例子：           
+<p>　 
+<table border="1" width="96%"> 
+  <tr> 
+    <td width="13%" bgcolor="#FFFF99" align="center">政黨</td> 
+    <td width="12%" bgcolor="#FFFF99" align="center">票數</td> 
+    <td width="127%" rowspan="6" bgcolor="#CCFFCC"> 
+在此例子中，總票數為：7+4+2+6+6=25票，所以要通過某項法案需有一半以上，也就是13票。{A,B}兩黨的票數共7+4=11票，並未超過半數。但若C政黨加入其陣營，{A,B,C}的票數成為13票，就有超過半數了。所以C政黨雖小，也有機會扮演關鍵的角色。</td>
+  </tr>
+  <tr>
+    <td width="13%" align="center">A</td>
+    <td width="12%" align="center">7</td>
+  </tr>
+  <tr>
+    <td width="13%" align="center">B</td>
+    <td width="12%" align="center">4</td>
+  </tr>
+  <tr>
+    <td width="13%" align="center">C</td>
+    <td width="12%" align="center">2</td>
+  </tr>
+  <tr>
+    <td width="13%" align="center">D</td>
+    <td width="12%" align="center">6</td>
+  </tr>
+  <tr>
+    <td width="13%" align="center">E</td>
+    <td width="12%" align="center">6</td>
+  </tr>
+</table>
+<p>要衡量在政黨投票制度中一政黨的力量，John F. Banzhaf III 
+提出了權力指數（power index）。其主要的想法是，當2個陣營相對抗時（尚未包含要衡量的政黨），若此政黨加入票數未超過半數的某陣營，可以使該陣營的票數過半，則此政黨可以得全力指數1點。請注意：空陣營也是陣營。茲以上述例子中A政黨權力指數說明如下：扣除A政黨本身，其他4個黨共有2<sup>4</sup>=16種組合。其中有10種組合方式可經由A政黨的加入使此陣營由原先未達半數變成過半數，所以A的權力指數為10。</p>
+<p>你的任務就是寫一個程式算出各政黨的權力指數。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+輸入的第一列有一個正整數，代表以下有多少組測試資料。每組測試資料一列，每列的第一個正整數P（1 
+&lt;= P &lt;= 20）代表政黨的數目。接下來的P個正整數分別代表第1個政黨到第P個政黨的票數。所有政黨的票數和不會超過1000票。  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                           
+對每組測試資料依次輸出各政黨的權力指數，格式請參考Sample   
+Output。各組測試資料後亦請輸出一空白列。 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                        
+Input</b></span></p>                                               
+<pre>3
+5 7 4 2 6 6
+6 12 9 7 3 1 1
+3 2 1 1</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                 
+Output</b></span></p>                                               
+<pre>party 1 has power index 10
+party 2 has power index 2
+party 3 has power index 2
+party 4 has power index 6
+party 5 has power index 6
+
+party 1 has power index 18
+party 2 has power index 14
+party 3 has power index 14
+party 4 has power index 2
+party 5 has power index 2
+party 6 has power index 2
+
+party 1 has power index 3
+party 2 has power index 1
+party 3 has power index 1</pre>    
+                                             
+</body>                                             
+                                             
+</html>                                             

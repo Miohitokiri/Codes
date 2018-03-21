@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10008: What's Cryptanalysis</h1>          
+<p>密碼翻譯（cryptanalysis）是指把某個人寫的密文（cryptographic 
+writing）加以分解。這個程序通常會對密文訊息做統計分析。你的任務就是寫一個程式來對密文作簡單的分析。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第1列有一個正整數n，代表以下有多少列需要作分析的密文。</p>  
+<p>接下來的n列，每列含有0或多個字元（可能包含空白字元）</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每列包含一個大寫字元（A~Z）和一個正整數。這個正整數代表該字元在輸入中出現的次數。輸入中大小寫（例如：A及a）視為相同的字元。輸出時請按照字元出現的次數由大到小排列，如果有2個以上的字元出現次數相同的話，則按照字元的大小（例如：A在H之前）由小到大排列。</p> 
+<p>請注意：如果某一字元未出現在輸入中，那他也不應出現在輸出中。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                     
+Input</b></span></p>                              
+<pre>3
+This is a test.
+Count me 1 2 3 4 5.
+Wow!!!! Is this question easy?</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>S 7
+T 6
+I 5
+E 4
+O 3
+A 2
+H 2
+N 2
+U 2
+W 2
+C 1
+M 1
+Q 1
+Y 1</pre> 
+                            
+</body>                            
+                            
+</html>                            

@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10140: Prime Distance</h1>          
+<p>幾千年來，質數的問題一直為數學理論所感興趣。質數的定義是除了1與本身之外，沒有數可以除的盡。2,3,5,7,11是前幾個質數，然而質數出現的頻率越往後就越小了。我們感到興趣的是在一個範圍內，質數出現的密度是如何。所謂相鄰的質數是指有2個數都是質數，但是介於它們之間的數都不是質數。例如：7和11就是相鄰的質數。而2和3是唯一相鄰的數且是相鄰的質數。</p> 
+<p>在這個問題中，給你2個正整數L和U（1 &lt;= L &lt;U &lt;= 
+2147483647）。你的任務就是要找到2個相鄰的質數C1和C2（L &lt;= 
+C1 &lt; C2 &lt;= U）並且C2-C1是最小的。假如有不只一組，請輸出C1最小的那一組。另外，你也必須找出2個相鄰的質數D1和D2（L 
+&lt;= D1 &lt; D2 &lt;= U）並且D2-D1是最大的。同樣的，假如有不只一組，請輸出D1最小的那一組。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每筆測試資料一列，各有2個正整數 L,U。L和U之間的差不會超過1000000</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一測試資料，如果找不到相鄰的質數，請輸出There are 
+no adjacent primes. 否則請輸出含有C1、C2、D1、D2的敘述，請參考Sample 
+Output</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                       
+Input</b></span></p>                              
+<pre>1 17
+2 3
+14 17
+1000000 2000000</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>2,3 are closest, 7,11 are most distant.
+2,3 are closest, 2,3 are most distant.
+There are no adjacent primes.
+1000037,1000039 are closest, 1357201,1357333 are most distant.</pre> 
+                            
+</body>                            
+                            
+</html>                            

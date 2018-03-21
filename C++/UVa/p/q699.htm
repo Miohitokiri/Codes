@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q699: The Falling Leaves</h1>             
+<p>每年到了秋天樹葉漸漸染上鮮豔的顏色，接著就會落到樹下來。假如落葉發生在二元樹，那會形成多大的樹葉堆呢？</p>     
+<p>我們假設二元樹中的每個節點所落下的葉子的數目等於該節點所儲存的值。我們也假設葉子都是垂直落到地面上（真感謝沒有風把他們吹的到處都是）。最後，我們再假設節點之間水平的距離是以下列方式定義：某個節點到其左子樹以及到其右子樹的水平距離均為 
+<b>1</b>。以下圖來說明：</p>     
+<p align="center"><img border="0" src="p699.gif"></p>     
+<p align="left">含有5和含有6的節點位於同一水平位置（當然，他們垂直的位置不同）。含有7的節點位於含有5的節點和含有6的節點左邊一個位置。而含有3的節點則位於含有5的節點和含有6的節點右邊一個位置。當葉子開始落下時，上面的樹會在地面上形成3堆樹葉。最左邊那一堆有7片葉子（從最左邊那個節點產生的），再來的一堆含有11片葉子（從含有5及含有6這兩個節點產生的），最右邊的一堆則含有3片葉子（從最右邊那個節點產生的）。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                    
+<p>輸入含有多組測試資料。</p>               
+<p>每組測試資料代表一棵樹。描述樹的方法為給你根（root）的值，然後描述左子樹，然後描述右子樹。假如一個子樹是空的，其值為 
+-1。因此，上圖的樹可描述為：<tt>5 7 -1 6 -1 -1 3 -1 -1</tt>。 
+每個真實的節點含有一個大於0的值。</p>               
+<p>輸入的最後一棵樹其根的值為 -1，代表輸入結束（此樹不用輸出），請參考Sample 
+Input。</p>               
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                
+<p>對每組測試資料輸出3列，第1列輸出這是第幾組測試資料。第二列輸出落葉所形成的樹葉堆所含的葉片。由左到右，樹葉堆之間以一空格相隔，長度不會超過80個字元。第三列為一空白列。請參考Sample 
+Output。</p>             
+<table border="1" width="100%" cellpadding="5">                
+  <tr>                
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                             
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                            
+  </tr>                            
+  <tr>                            
+    <td width="50%">                
+      <pre>5 7 -1 6 -1 -1 3 -1 -1
+8 2 9 -1 -1 6 5 -1 -1 12 -1
+-1 3 7 -1 -1 -1
+-1</pre>
+    </td>                          
+    <td width="50%">                    
+      <pre>Case 1:
+7 11 3
+
+Case 2:
+9 7 21 15
+</pre>
+    </td>                         
+  </tr>                         
+</table>                         
+                                                           
+</body>                                                           
+                                                           
+</html>                                                           

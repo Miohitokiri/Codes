@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10193: All You Need Is Love</h1>          
+<p>IBM (International Beautiful Machines)公司發明了一種小玩意兒叫做「愛的算命機」。這台機器會回答你是否非常渴望愛情。這機器運作的情形是：請你輸入一僅含0和1的字串（稱為S），機器自己則定義一僅含0和1的字串（稱為L，Love的意思）。然後機器不斷的用S去減L（當然是2進位的減法），如果最後可以得到S=L，代表S是用Love做成的。如果最後L&gt;S，代表S不是用Love做成的。</p>  
+<p>舉例說明：假設S=&quot;11011&quot;，L=&quot;11&quot;。如果我們不斷的從S減去L，我們可以得到：11011、11000、10101、10010、1111、1100、1001、110、11。所以我們得到L了，也就是S是用Love做的。由於愛的算命機的某些限制，字串不可以有以0為開頭的，也就是說&quot;0010101&quot;、&quot;01110101&quot;、&quot;011111&quot;這些字串都是不合法的。另外，只有一個位元的字串也是不合法的。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個整數N（N&lt;10000），代表以下有幾組測試資料。每組測試資料2列，代表S1和S2字串，其長度都不會超過30個字元。你可以假設所有的字串都是合法的。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料輸出以下其中之一：</p> 
+<pre>Pair #p: All you need is love!
+Pair #p: Love is not all you need!</pre>
+在這裡p代表這是第幾組測試資料。如果S1和S2至少可以找到一個合法的L，使得S1和S2都可以用Love做成，則輸出第一種訊息。否則，請輸出第二種訊息。請參考Sample  
+Output。 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>5
+11011
+11000
+11011
+11001
+111111
+100
+1000000000
+110
+1010
+100</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Pair #1: All you need is love!
+Pair #2: Love is not all you need!
+Pair #3: Love is not all you need!
+Pair #4: All you need is love!
+Pair #5: All you need is love!</pre>
+                            
+</body>                            
+                            
+</html>                            

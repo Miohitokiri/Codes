@@ -1,0 +1,251 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Triangulation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:44 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Triangulation</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Triangulation</p>
+</div><div class="c">
+<p class="t">三角剖分</p>
+<p>平面上散布許多點。只以這些點作為三角形頂點，用線段連接產生三角形，三角形數量越多越好。所有線段形成一個「三角剖分」，通常有許多種。</p>
+<img src="Triangulation1.png">
+<p>因為三角形數量越多越好，所以三角剖分的外圍一定是凸包。</p>
+<img src="Triangulation2.png">
+<p>三角形的建構順序、建構地點都相當自由，也因此各種凸包演算法都可以順便求得三角剖分。</p>
+<p class="t">三角剖分的三角形個數、邊數</p>
+<p>計算凸包的三角剖分，再用剩下的點遞迴分割所在的三角形，最後處理共線的點。</p>
+<img src="Triangulation3.png">
+<p>令h是凸包點數，令k是其餘點數。凸包的三角剖分得到h-2個三角形；剩下的點，逐次用於三角剖分，每次都多出兩個三角形。由此可知，無論三角剖分長相如何，一個三角剖分固定有(h-2)+2k個三角形，是O(N)。</p>
+<p>同理可知，無論三角剖分長相如何，一個三角剖分固定有(2h-3)+3k條邊，亦是O(N)。</p>
+<p>這也呼應了平面圖歐拉公式v-e+f=2。</p>
+<p class="t">三角剖分的數量</p>
+<p>計算不同的三角剖分有多少種，目前除了窮舉法以外沒有更好的演算法，也無人知道這是P問題抑或是NP-complete問題。</p>
+<p class="t">Flip Graph</p>
+<p>一個三角剖分，翻轉一條邊，可以得到另一個三角剖分。注意到並不是每一條邊都能翻轉的。</p>
+<img src="FlipGraph1.png">
+<p>二維平面上，給定一個點集合，把所有三角剖分依照翻轉關係連接成一張無向圖，稱作Flip Graph，是連通的。</p>
+<img src="FlipGraph2.png">
+<p>Flip Graph有著許多謎團，例如點到點最短路徑（兩個三角剖分之間的最少翻轉次數）、直徑、連接性，目前都沒有演算法。</p>
+<p class="t">Tetrahedralization</p>
+<p>推廣到三維空間稱作「四面體剖分」。</p>
+<p>四面體剖分的Flip Graph目前完全不知道長什麼樣。</p>
+<p class="t">演算法（Graham's Scan）</p>
+<p>仿照「<a href="ConvexHull.html">Convex Hull: Graham's Scan</a>」，掃除凸包頂點的過程即可進行三角剖分。一如既往，共線的點不好處理。時間複雜度O(NlogN)，主要取決於排序的時間。</p>
+<img src="Triangulation4.png">
+<p class="t">演算法（Incremental Method）</p>
+<p>仿照「<a href="ConvexHull.html">Convex Hull: Incremental Algorithm</a>」，如果當前輸入點在三角形內部，則直接連線至三角形頂點；如果當前輸入點在所有三角形外部，則連線至凸包的切點與凹點。要小心當前輸入點在三角形上的情況。時間複雜度O(N^2)。</p>
+<img src="Triangulation5.png">
+<p>如果預先按照XY座標排序所有點（平移的掃描線），就能保證當前輸入點都在所有三角形外部。</p>
+<p>當前輸入點與凹點的連線，不超過三角剖分的邊數O(N)；當前輸入點與切點的連線，等同Andrew's Monotone Chain，時間複雜度是O(NlogN)。分開分析，總時間複雜度O(NlogN)。</p>
+<img src="Triangulation6.png">
+<p class="t">演算法（Divide and Conquer）</p>
+<p>仿照「<a href="ConvexHull.html">Convex Hull: Divide and Conquer</a>」，尋找外公切線的過程即可合併左右兩個三角剖分。時間複雜度O(NlogN)。</p>
+<img src="Triangulation7.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Minimum Weight Triangulation</p>
+</div><div class="c">
+<p class="t">Minimum Weight Triangulation</p>
+<p>線段長度總和最小的三角剖分，至今時間複雜度仍舊不明。</p>
+<p>判斷一個三角剖分是不是線段長度總和最小的三角剖分，則是NP-hard問題。</p>
+<p>Minimum Weight Triangulation的用途是製做一個節省印刷墨水的三角剖分。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Acute Triangulation</p>
+</div><div class="c">
+<p class="t">Acute Triangulation</p>
+<p>每一個角都是銳角（小於90°）的三角剖分。目前已經有演算法，但是還沒有一個定論，有興趣的話請自行搜尋論文。</p>
+<p>Acute Triangulation的用途是製做一個美觀的三角剖分。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Delaunay Triangulation（Minmax Angle Triangulation）</p>
+</div><div class="c">
+<p class="t">Voronoi Diagram與Delaunay Triangulation</p>
+<p>Delaunay是Voronoi的博士班學生。Delaunay Triangulation起初是從Voronoi Diagram發展來的。</p>
+<img src="DelaunayTriangulation1.png">
+<p>Voronoi Diagram變Delaunay Triangulation：以直線連結相鄰的點。簡單來說就是平面對偶、邊拉直。時間複雜度O(N)。</p>
+<img src="DelaunayTriangulation2.png">
+<p>Delaunay Triangulation變Voronoi Diagram：以直線連結相鄰的三角形的外接圓圓心，並且補上凸包每一條邊的中垂線。時間複雜度O(N)。</p>
+<img src="DelaunayTriangulation3.png">
+<p class="t">Delaunay Triangulation的數量</p>
+<p>只有三點以下共圓，Voronoi Diagram與Delaunay Triangulation只有唯一一種，互相對應。</p>
+<p>出現四點以上共圓，Voronoi Diagram仍然只有唯一一種，Delaunay Triangulation則有許多種。</p>
+<img src="DelaunayTriangulation4.png">
+<p class="t">性質：三角形外接圓，內部不含任何點</p>
+<img src="DelaunayTriangulation5.png">
+<p>【待補證明】</p>
+<p class="t">性質：最小的角盡量大</p>
+<img src="DelaunayTriangulation6.png">
+<p>【待補證明】</p>
+<p>Voronoi Diagram與Delaunay Triangulation，聚集了鄰近的點，排斥了偏遠的點。</p>
+<p>Voronoi Diagram的外表是中垂線與距離，Delaunay Triangulation的內裡則是圓與角度。</p>
+<p class="t">演算法（Edge Flip Algorithm）</p>
+<p>隨意求出一個三角剖分。不斷翻轉不符空圓性質的邊，使最小角逐漸增大（或者最小角不變、次小角增大，以此類推），就得到Minmax Angle Triangulation。時間複雜度不明。</p>
+<img src="DelaunayTriangulation7.png">
+<p>【待補證明】</p>
+<p class="t">演算法（Incremental Method）</p>
+<p>online演算法，隨時維護一個Minmax Angle Triangulation。</p>
+<p>每當輸入一點，馬上尋找不符空圓性質的三角形們，形成一個多邊形，清除內部的邊，連接當前輸入點與多邊形頂點們，就得到Minmax Angle Triangulation。時間複雜度O(N^2)。</p>
+<img src="DelaunayTriangulation8.png">
+<p>採用Flip Edge Algorithm，配合特殊資料結構，可以加速至O(NlogN)。此處略過不提。</p>
+<p class="t">演算法（Divide and Conquer）</p>
+<p>O(NlogN)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Compatible Triangulation</p>
+</div><div class="c">
+<p class="t">Compatible Triangulation</p>
+<p>兩個三角剖分，點數相同，每一點相互對應，每一個三角形的三個頂點也相互對應，稱作Compatible Triangulation。</p>
+<p>Compatible Triangulation在3D動畫領域相當重要，主要是讓物體外觀可以平滑變形。</p>
+<p>至今仍無演算法可求得Compatible Triangulation？</p>
+<p>https://cs.uwaterloo.ca/~tmchan/morph_soda.pdf</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polygon Triangulation</p>
+</div><div class="c">
+<p class="t">Polygon Triangulation</p>
+<p>簡單多邊形，沿對角線切割，成為許多三角形。對角線、多邊形互不交錯。通常有許多種。</p>
+<p>N個頂點，N-2個三角形，N-3條對角線。</p>
+<img src="PolygonTriangulation1.png">
+<p>「耳ear」是凸點與鄰點組成的三角形，而且未與其他邊相交。「嘴mouth」是凹點與鄰點組成的三角形。剩下的點沒有取名。</p>
+<img src="PolygonTriangulation2.png">
+<p>耳適合當作剖分對象。但是簡單多邊形一定有耳嗎？</p>
+<p>三角形的相鄰關係，恰是一棵樹。超過一點的樹，至少有兩葉。</p>
+<p>葉必是耳。超過三點的多邊形，至少有兩耳，且兩耳不重疊。</p>
+<p>也就是說，簡單多邊形無論長相，必有耳。甚至可以不斷刵耳，直到剩下三角形，得到三角剖分！</p>
+<img src="PolygonTriangulation3.png">
+<p class="t">演算法（Enumeration）</p>
+<p>窮舉所有點，判斷是否為耳（的凸點）？若為耳，則刵之。</p>
+<p>判斷一個點是否為耳（的凸點）有兩種方式：一、窮舉多邊形所有點。皆在三角形外，便是耳。二、窮舉多邊形所有邊。皆在三角形外，便是耳。大家習慣使用第一種方式。</p>
+<p>多邊形的資料結構是circular linked list，以便快速刵耳。</p>
+<p>未知點最初共N點。刵1次，至多添2點；刵N-3次，至多添2N-6點。未知點至多3N-6點。判斷一個點是否為耳需時O(N)，總時間複雜度為O((3N-6) * N) = O(N^2)。</p>
+<textarea>
+const int N = 100;	// 頂點數
+struct Point {float x, y;} p[N];	// 多邊形
+int L[N], R[N];		// circular linked list
+int ear[N];			// -1未知、0非耳、1是耳
+
+bool point_in_triangle(Point p, Point p1, Point p2, Point p3)
+{
+	Point v0 = p0 - p;
+	Point v1 = p1 - p;
+	Point v2 = p2 - p;
+	float c0 = cross(v0, v1);
+	float c1 = cross(v1, v2);
+	float c2 = cross(v2, v0);
+	return (c0 > 0 && c1 > 0 && c2 > 0)
+		|| (c0 < 0 && c1 < 0 && c2 < 0);
+}
+
+bool is_ear(int x)
+{
+	for (int i = R[R[x]]; i != L[x]; i = R[i])
+		if (point_in_triangle(p[i], p[x], p[L[x]], p[R[x]]))
+			return false;
+	return true;
+}
+
+void triangulation()
+{
+	// circular linked list 初始化
+	for (int i=0; i<N; ++i)
+		L[i] = i-1, R[i] = i+1;
+	L[0] = N-1, R[N-1] = 0;
+
+	// 一開始所有點都是未知點
+	memset(ear, -1, sizeof(ear));
+
+	// 刵N-3次
+	int i = 0;
+	for (int k=0; k<N-3; ++k)
+	{
+		// 嘗試找到一耳。根據兩耳定理一定找得到。
+		while (true)
+		{
+			// 未知點，判斷是否為耳。
+			if (ear[i] == -1) ear[i] = is_ear(i);
+			// 找到一耳。
+			if (ear[i] == 1) break;
+			// 多邊形下一點。
+			i = R[i];
+		}
+
+		cout << "找到耳" << L[i] << i << R[i];
+
+		// 刵耳後，左右鄰點成為未知點。
+		ear[R[i]] = ear[L[i]] = -1;
+
+		// 刵耳
+		R[L[i]] = R[i];
+		L[R[i]] = L[i];
+		i = R[i];
+	}
+
+	cout << "找到耳" << L[i] << i << R[i];
+}
+</textarea>
+<p class="e">ICPC 4426</p>
+<p class="t">演算法（Divide and Conquer）</p>
+<p><a href="http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html" class="l">http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html</a></p>
+<p>一、找到一耳。O(N)。二、刵N-3次。O(N^2)。</p>
+<p>此法不太健康，參考看看就好。</p>
+<p class="t">Art Gallery Problem</p>
+<p>一個簡單多邊形，至少要放幾個360度鏡頭，才能看到整個內部、顧及所有地方？</p>
+<img src="PolygonTriangulation4.png">
+<p>NP-complete問題，難以快速求得答案，但是可以快速估計答案的上限是ceil(n/3)個：三角剖分的點著色數為三，挑一個顏色放滿鏡頭，就能顧及每個三角形。</p>
+<p class="t">Point Location Problem</p>
+<p>快速查詢一個點位於哪個三角形。我不清楚有何用途。或許是用於動態三角剖分。</p>
+<img src="PolygonTriangulation5.png">
+<p class="t">Minimum Weight Triangulation</p>
+<p>一、所有三角形周長總和最小的多邊形三角剖分。</p>
+<p>採用Dynamic Programming，時間複雜度為O(N^2)。此問題與Matrix Chain Multiplication關係密切，時間複雜度可以加速至O(NlogN)。</p>
+<p>二、所有對角線長度總和最小的多邊形三角剖分。</p>
+<p>我沒有研究。</p>
+<p class="e">UVa 1331</p>
+<p class="t">Minmax Angle Triangulation</p>
+<p>《An O(n<sup>2</sup> log n) time algorithm for the minmax angle triangulation》</p>
+<p class="e">ICPC 3132 4458</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polygon Trapezoidalization</p>
+</div><div class="c">
+<p class="t">Polygon Trapezoidalization</p>
+<p>簡單多邊形，每個頂點發射水平線（垂直線），切割成許多梯形、三角形。梯形剖分只有唯一一種。</p>
+<img src="PolygonTrapezoidalization1.png">
+<p>梯形剖分的用途是建立區域相鄰關係，形成有向無環圖！掃描線的順序就是拓樸順序，方便設計高速演算法。有洞多邊形亦然。</p>
+<textarea>
+http://morris821028.github.io/2015/03/03/uva-754/
+</textarea>
+<p class="e">UVa 12310 ICPC 2479 3702</p>
+<p class="t">Convex Partition</p>
+<p>簡單多邊形，切成許多個凸多邊形。</p>
+<img src="PolygonTrapezoidalization2.png">
+<p>演算法是Hertel-Mehlhorn Algorithm。我沒有研究。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Envelope（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Convex Hull與Envelope互為點線對偶</p>
+<p>點集合求凸包，點線對偶，直線集合以半平面交集求包絡線。</p>
+<p>也就是說，求半平面交集的困難度等同於求凸包的困難度。</p>
+<p>【待補文字】</p>
+<p class="e">UVa 11756</p>
+<p class="t">增加一個維度的Convex Hull</p>
+<p>點座標(x, y)改成(x, y, x^2+y^2)之後，呈現拋物面。</p>
+<p>平面與拋物面的交集，投影至XY平面，恰是圓。圓半徑為r，平面與切面距離為r^2。</p>
+<p>【待補圖片】</p>
+<p>求得新座標的3D Convex Hull：</p>
+<p>自下方無限遠處仰視（下凸包投影至XY平面），就是Nearest Point Voronoi Diagram的對偶圖，空圓的三角剖分，也就是Delaunay Triangulation。</p>
+<p>自上方無限遠處俯視（上凸包投影至XY平面），就是Farthest Point Voronoi Diagram的對偶圖。</p>
+<p>【待補圖片】</p>
+<p class="t">增加一個維度的Envelope</p>
+<p>點座標(x, y)改成(x, y, x^2+y^2)之後，呈現拋物面。</p>
+<p>兩個座標，其兩個切面交集，投影至XY平面，恰是中垂線。</p>
+<p>【待補圖片】</p>
+<p>求得新座標的切面的3D Envelope：</p>
+<p>自下方無限遠處仰視（下包絡面投影至XY平面），就是Delaunay Triangulation。</p>
+<p>自上方無限遠處俯視（上包絡面投影至XY平面），就是Voronoi Diagram。</p>
+<p>【待補圖片】</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Triangulation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:01 GMT -->
+</html>

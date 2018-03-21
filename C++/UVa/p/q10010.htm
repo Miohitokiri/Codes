@@ -1,0 +1,63 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10010: Where's Waldorf?</h1>          
+<p>給你一個m*n的字元方塊（1 &lt;= m,n &lt;=50），以及一些字串，請你找出這些字串在字元方塊中出現的位置。請參考Sample    
+Output。</p> 
+<p>我們在字元方塊中尋找字串的方向可以有8個：往左、往右、往上、往下、往左上、往左下、往右上、往右下。另外，請忽略字元大小寫，即    
+<b>A</b> 和 <b>a</b> 應被視為相同的字元。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p align="left">輸入的第一列有一個整數代表以下有幾組測試資料。</p>       
+<p align="left">每組測試資料的第1列，有2個整數m,n（1         
+&lt;= m,n &lt;=50），代表接下來的文字方塊有m列，每列有n個字元。在文字方塊之後的一列有一個整數    
+k，代表接下來的k列為欲搜尋的字串。請參考Sample Input。</p>         
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                   
+<p align="left">每組測試資料中欲搜尋字串，請輸出其出現在文字方塊中的位置X    
+Y。（第X列，第Y行）</p>       
+<p align="left">如果在文字方塊中該字串出現在不只一個地方，請輸出在最左上方的那一組（以欲搜尋字串的第一個字元來比較）。所有欲搜尋的字串至少出現一次。</p>       
+<p align="left">測試資料間也請空一列。</p>      
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+input</b></span></p>                                      
+<pre>2
+
+8 11
+abcDEFGhigg
+hEbkWalDork
+FtyAwaldORm
+FtsimrLqsrc
+byoArBeDeyv
+Klcbqwikomk
+strEBGadhrb
+yUiqlxcnBjf
+4
+Waldorf
+Bambi
+Betty
+Dagbert
+
+2 2
+ab
+Ca
+3
+a
+ba
+a </pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                       
+Output</b></span></p>                                      
+<pre>2 5
+2 3
+1 2
+7 8
+
+1 1
+1 2
+1 1</pre>    
+                                     
+</body>                                     
+                                     
+</html>                                     

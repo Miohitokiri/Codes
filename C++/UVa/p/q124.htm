@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q124: Following Orders</h1>          
+<p>給你一些變數之間的條件限制（以 x&lt;y 
+的樣式）。你的任務是寫一個程式輸出所有符合條件的變數排列（由小到大）。例如：</p>  
+<p>給你3個變數x,y,x和2個條件限制：x&lt;y, x&lt;z，在這2個條件限制之下，這3個變數的排列有2種：xyz, 
+xzy</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料2列，第1列為所有的變數名字。第2列為變數的條件限制，每個條件限制包含2個變數 
+x y。代表 x&lt;y。變數之間可能有空白字元出現。請參考Sample 
+Input。</p>    
+<p>所有的變數都是一個字元，且是小寫英文字母。最少有2個變數，最多有20個變數。最少有1個條件限制，最多有50個條件限制。每組測試資料符合所有條件限制的變數排列數目最少1個，最多不會超過300個。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出所有符合條件的變數排列，每個一列，且各排列之間按字典順序排序。測試資料間請輸出一空白列，請參考Sample 
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>a b f g
+a b b f
+v w x y z
+v y x v z v w v</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>abfg
+abgf
+agbf
+gabf
+
+wxzvy
+wzxvy
+xwzvy
+xzwvy
+zwxvy
+zxwvy</pre>
+                            
+</body>                            
+                            
+</html>                            

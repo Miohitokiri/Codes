@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10295: Hay Points</h1>          
+<p>在某機關的每個員工都有一個關於其所負責工作的描述。這個工作描述表達了該員工的重要性，所以也常被用來決定一個員工的薪資。<p>人事部門希望能有一個叫做Hay   
+Point的系統，根據每個員工的工作描述，來幫他們自動完成計算薪資的工作。如果某個員工的工作描述中有指出控制大筆經費或管理許多人，那他的Hay   
+Point就會比較高，也就是薪水較高。你的任務就是完成這個Hay Point系統。我們會給你一個   
+Hay Point的字典以及許多人的工作描述。對每個人的工作描述，請你算出他得到多少Hay 
+Point。 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                
+<p>輸入的第一列有2個正整數，m,n（m&lt;=1000，n&lt;=100）。m代表在Hay   
+Point字典中有多少字。n代表有多少個工作描述。接下來的m列每列有一個英文單字（最多16個小寫字母）及一個實數（就是Hay 
+Point，範圍介於0到1000000之間）。在字典之後有n個工作描述，每個描述可能有一到多列。為了方便起見，所有的描述都被轉換為小寫英文字母，並且除了英文字母，數字，空白字元之外沒有其他字元。每一工作描述以只含有一句點的一列作為結束。請參考Sample Input。</p>      
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                  
+<p>根據輸入的工作描述中的每個字，如果這個字出現在字典中，則得到該字的Hay 
+Point。如果這個字未出現在字典中，則這個字得到0個Hay Point。對每個工作描述，輸出這位員工共得到多少Hay 
+Point。</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                  
+Input</b></span></p>                                 
+<pre>7 2
+administer 100000
+spending 200000
+manage 50000
+responsibility 25000
+expertise 100
+skill 50
+money 75000
+the incumbent will administer the spending of kindergarden milk money
+and exercise responsibility for making change he or she will share
+responsibility for the task of managing the money with the assistant
+whose skill and expertise shall ensure the successful spending exercise
+.
+this individual must have the skill to perform a heart transplant and
+expertise in rocket science
+.</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                     
+Output</b></span></p>                                 
+<pre>700150
+150</pre>
+                               
+</body>                               
+                               
+</html>                               

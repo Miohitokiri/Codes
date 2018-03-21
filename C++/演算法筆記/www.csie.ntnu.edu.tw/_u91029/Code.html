@@ -1,0 +1,367 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Code.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:47 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Code</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Code</p>
+</div><div class="c">
+<p class="t">Code</p>
+<p>資訊替換成代號，以代號記載資訊。這些代號稱做「碼」。</p>
+<pre>
+99，3qㄋ姑力i讀豬，偶會+ Uㄉ！
+口以ㄇ？ㄅ口以！
+(ﾟдﾟ)
+</pre>
+<p>程式設計就是將「電腦的工作資訊」替換成「程式碼」。</p>
+<pre>
+int main() {
+    int n = 1 + 1;
+    return 0;
+}
+</pre>
+<p>數學式子也是一種碼。大部分人類都不清楚原本的資訊為何。</p>
+<pre>
+e<sup>iπ</sup> + 1 = 0
+</pre>
+<p>「二元碼Binary code」，二進位字串，電腦設備所用的碼。本章節的主角。</p>
+<pre>
+011000100110100101101110011000010111001001111001
+</pre>
+<p>「摩斯電碼Morse Code」，戰爭通訊所用的碼。</p>
+<pre>
+-- --- .-. ... .
+</pre>
+<p>「點字Braille」，盲人所用的碼。</p>
+<pre>
+⠃ ⠗ ⠁ ⠊ ⠇ ⠇ ⠑
+</pre>
+<p>「條碼Barcode」，包裝標示所用的碼。知名的條碼如：商品的Code39、書籍的ISBN、導覽的QR Code。</p>
+<div class="i"><img src="https://upload.wikimedia.org/wikipedia/commons/2/28/EAN-13-ISBN-13.svg">
+<img width="128" height="*" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/QRcode_image.svg"></div>
+<p>「International Code of Signals」，船舶所用的碼。</p>
+<img width="200" height="*" src="../../upload.wikimedia.org/wikipedia/commons/f/fa/ICS-flags.png">
+<p>「外星人編碼」，一根棒子，精準地刻一刀，就能記載世上所有知識。找到刻記的高度，占筷子全長的幾分之幾，計算小數點後面所有位數，就得到了碼。無論要談什麼，只要刻一刀就好。</p>
+<p class="e">UVa 508</p>
+<p class="t">Encode / Decode</p>
+<p>「編碼」，資訊轉碼。「解碼」，碼轉資訊。</p>
+<pre>
+編碼 「cat」--->「011000110110000101110100」
+解碼 「cat」<---「011000110110000101110100」
+</pre>
+<p>資訊和碼最好一一對應，讓編碼與解碼不生歧義。只要知道每種碼的意義，就能獲知原本的資訊。火星文就是一種很不好的碼。</p>
+<p class="t">文字編碼</p>
+<p>文字、聲音、圖像、動作、感受，通通可以編碼。以下我們只討論文字編碼──最簡單、最基礎的編碼。</p>
+<p>英文變成二元碼，是參照「美國資訊交換標準碼ASCII」的規定。ASCII的設計理念是：拆散英文文字，成為單獨的字母、符號，各種不同的字符都有固定的二元碼。</p>
+<pre>
+ASCII
+英文字母a變成二元碼01100001，符號=變成二元碼00111101。
+</pre>
+<p>繁體中文變成二元碼，是參照現時流行的「萬國碼Unicode」或者逐漸落寞的「大五碼Big5」。</p>
+<pre>
+Unicode
+中文字「大」變成二元碼0101100100100111。（十六進位數字5927）
+Big5
+中文字「大」變成二元碼1010010001101010。（十六進位數字a46a）
+GB2312
+中文字「大」變成二元碼1011010011110011。（十六進位數字b4f3）
+</pre>
+<p>文字編碼是以字符為基本單位，從頭到尾掃描。</p>
+<p>編碼。從頭到尾掃描文字，每當發現一段文字有其對應的碼，就馬上換成碼。持續掃描下去，讓碼越接越長。</p>
+<pre>
+編碼cat
+掃描c，換成01100011
+掃描a，換成01100001
+掃描t，換成01110100
+最後得到011000110110000101110100
+</pre>
+<p>解碼。從頭到尾掃描碼，每當發現一段碼有其對應的文字，就馬上換成文字。持續掃描下去，讓文字越接越長。</p>
+<pre>
+解碼011000110110000101110100
+掃描0
+掃描1
+掃描1
+……
+掃描第8個位元1，發現01100011是字母c的碼，換成c
+……
+掃描第16個位元1，發現01100001是字母a的碼，換成a
+……
+掃描第24個位元0，發現01110100是字母t的碼，換成t
+最後得到cat
+</pre>
+<p class="t">Fixed-length Code / Variable-length Code</p>
+<p>設計碼，有兩種策略。</p>
+<p>「固定長度編碼」令每個字符的碼一樣長。比如ASCII。</p>
+<pre>
+A  00001
+B  00010
+C  00011
+D  00100
+⋮    ⋮
+Z  11010
+</pre>
+<p>「可變長度編碼」令各個字符的碼不等長。比如UTF-8。</p>
+<pre>
+A  000
+B  001
+C  0100
+D  0101
+⋮    ⋮
+Z  11111
+</pre>
+<p class="t">Fixed-length Code ：兩個碼千萬不能相同</p>
+<p>當兩個碼相同，解碼將產生歧義。</p>
+<pre>
+A  00001
+B  00010
+C  00001
+
+解碼00001...
+掃描前五個位元，得到00001，可能是A，也可能是B。
+</pre>
+<p class="t">Variable-length Code：一個碼千萬不能是另一個碼的前綴</p>
+<p>當一個碼是另一個碼的開頭，解碼將產生歧義。</p>
+<pre>
+A  011
+B  0111
+C  00111
+
+解碼011111...
+掃描前三個位元，得到011，可能是A。
+掃描前四個位元，得到0111，也可能是B。
+</pre>
+<p>也許你馬上聯想到0/1 Knapsack Problem、Sardinas-Patterson Algorithm，不過這不是本篇主旨。</p>
+<p class="t">碼的長度</p>
+<p>二元碼的情況下，N種字符，至少需要ceil(log₂N)個位元，才能讓每個字符擁有獨一無二的碼，讓解碼不生歧義。比如26個大寫英文字母，26 ≤ 2⁵，至少需5個位元。</p>
+<p class="e">UVa 444 10878 213 740 10851 739 10921 10415 1590</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">ASCII</p>
+</div><div class="c">
+<p class="t">American Standard Code for Information Interchange</p>
+<style>u {border: 1px solid black;}</style>
+<pre>
+ASCII Table
+<u>NUL</u> 00000000     00100000   @ 01000000   ` 01100000
+<u>SOH</u> 00000001   ! 00100001   A 01000001   a 01100001
+<u>STX</u> 00000010   " 00100010   B 01000010   b 01100010
+<u>ETX</u> 00000011   # 00100011   C 01000011   c 01100011
+<u>EOT</u> 00000100   $ 00100100   D 01000100   d 01100100
+<u>ENQ</u> 00000101   % 00100101   E 01000101   e 01100101
+<u>ACK</u> 00000110   & 00100110   F 01000110   f 01100110
+<u>BEL</u> 00000111   ' 00100111   G 01000111   g 01100111
+<u>BS </u> 00001000   ( 00101000   H 01001000   h 01101000
+<u>HT </u> 00001001   ) 00101001   I 01001001   i 01101001
+<u>LF </u> 00001010   * 00101010   J 01001010   j 01101010
+<u>VT </u> 00001011   + 00101011   K 01001011   k 01101011
+<u>FF </u> 00001100   , 00101100   L 01001100   l 01101100
+<u>CR </u> 00001101   - 00101101   M 01001101   m 01101101
+<u>SO </u> 00001110   . 00101110   N 01001110   n 01101110
+<u>SI </u> 00001111   / 00101111   O 01001111   o 01101111
+<u>DLE</u> 00010000   0 00110000   P 01010000   p 01110000
+<u>DC1</u> 00010001   1 00110001   Q 01010001   q 01110001
+<u>DC2</u> 00010010   2 00110010   R 01010010   r 01110010
+<u>DC3</u> 00010011   3 00110011   S 01010011   s 01110011
+<u>DC4</u> 00010100   4 00110100   T 01010100   t 01110100
+<u>NAK</u> 00010101   5 00110101   U 01010101   u 01110101
+<u>SYN</u> 00010110   6 00110110   V 01010110   v 01110110
+<u>ETB</u> 00010111   7 00110111   W 01010111   w 01110111
+<u>CAN</u> 00011000   8 00111000   X 01011000   x 01111000
+<u>EM </u> 00011001   9 00111001   Y 01011001   y 01111001
+<u>SUB</u> 00011010   : 00111010   Z 01011010   z 01111010
+<u>ESC</u> 00011011   ; 00111011   [ 01011011   { 01111011
+<u>FS </u> 00011100   < 00111100   \ 01011100   | 01111100
+<u>GS </u> 00011101   = 00111101   ] 01011101   } 01111101
+<u>RS </u> 00011110   > 00111110   ^ 01011110   ~ 01111110
+<u>US </u> 00011111   ? 00111111   _ 01011111 <u>DEL</u> 01111111
+註：有框框的是特殊字元，沒有實際的外型，無法顯示在螢幕上。
+註：第二排第一個是空白鍵。
+</pre>
+<pre>
+     0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15
+   +----------------------------------------------------------------
+0  | NUL SOH STX ETX EOT ENQ ACK BEL BS  HT  LF  VT  FF  CR  SO  SI
+16 | DLE DC1 DC2 DC3 DC4 NAK SYN ETB CAN EM  SUB ESC FS  GS  RS  US
+32 |     !   "   #   $   %   &   '   (   )   *   +   ,   -   .   /
+48 | 0   1   2   3   4   5   6   7   8   9   :   ;   <   =   >   ?
+64 | @   A   B   C   D   E   F   G   H   I   J   K   L   M   N   O
+80 | P   Q   R   S   T   U   V   W   X   Y   Z   [   \   ]   ^   _
+96 | `   a   b   c   d   e   f   g   h   i   j   k   l   m   n   o
+112| p   q   r   s   t   u   v   w   x   y   z   {   |   }   ~   DEL
+</pre>
+<p>ASCII一共有128種字元，每個字元對應的二元碼，換成數值剛好就是0到127的整數。可以想成編號0號到編號127號。</p>
+<p>128種字元當中，有些字元沒有實際的外型，通常作為特殊用途。例如編號0號的字元，在C程式語言當中用來當作字串的結尾符號。</p>
+<p>大部分的字元，在鍵盤上面都有對應的按鍵，例如qwe123`-=等等。少部分的字元，則沒有對應的按鍵，必須預先按住shift或者ctrl之後才能輸入。</p>
+<p>ASCII有英文字母、標點符號、數字、四則運算符號等等，卻沒有中文字、注音符號、微積分符號、可愛小圖示之類的。這是因為當初設計ASCII的人，從未想過電腦會普及遍佈全世界，所以只設計了一些簡易的符號。</p>
+<p class="t">1 byte</p>
+<p>早期的中央處理器，一次可以接受8 bit = 1 byte，因此我們就固定採用8 bit = 1 byte來儲存一個ASCII字元，每個ASCII字元對應的二元碼長度都是8。</p>
+<p>程式語言的char變數，記憶體大小正好就是1 byte，用來儲存一個ASCII字元。</p>
+<p>8 bit = 1 byte，一共有2^8 = 256種數字，照理來說可以對應256種字元。不過ASCII只有128種字元，所以剩下的128種，就有人拿來自由運用。</p>
+<p class="t">寫程式處理ASCII</p>
+<p>任何一本程式語言的書籍一定都有介紹，此處就不贅述了。</p>
+<textarea>
+void process_ASCII()
+{
+	// 在電腦螢幕上顯示字元
+	cout << "Hello World!";
+
+	// 用while迴圈不斷擷取鍵盤輸入的字元。
+	// cin.get()會暫停執行程式，
+	// 直到使用者輸入之後，才回傳字元，繼續執行程式。
+	char c;
+	while (c = cin.get())
+	{
+		// 在電腦螢幕上顯示字元
+		cout << c;
+
+		// 小寫字母改成大寫字母
+		if (c >= 'a' && c <= 'z')
+			cout << c - 'a' + 'A';
+	}
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Big5</p>
+</div><div class="c">
+<p class="t">Code Page</p>
+<p>ASCII只有英文字，沒有其他文字。世界各國為了讓電腦處理自家文字，以及處理原本就有的英文（以便讓電腦正常運作），於是世界各國皆以ASCII作為基礎，各自創造自己的碼以及編碼解碼方式，稱作「內碼表」。</p>
+<p>世界各國也共同商議了內碼表編號。例如編號950是繁體中文Big5、編號936是簡體中文GB 2312、編號932是日文Shift_JIS、編號819是西歐文字ISO 8859-1、編號37是美加文字EBCDIC US/Canada。</p>
+<p>同樣的碼，套用不同的內碼表，解碼出來的文字就完全不同！想要處理其他國家的檔案文件、網站頁面、軟體程式，就必須使用該國的內碼表！例如瀏覽日本網站就得換日文內碼表，閱讀西歐文件就得換西歐文字內碼表。</p>
+<p class="t">Big5</p>
+<p>如果第一個byte是正數或零，那麼就確定是ASCII的字元。如果第一個byte是負數，就再讀一個byte，兩個byte作為一個字元。</p>
+<p class="t">寫程式處理Big5</p>
+<p>我尚未找到好讀的資料，請讀者各顯神通。</p>
+<p>我有找到一篇講述Big5發展歷史的文章：</p>
+<p><a href="http://libai.math.ncu.edu.tw/~shann/Chinese/big5.html">http://libai.math.ncu.edu.tw/~shann/Chinese/big5.html</a></p>
+<p class="t">Big5的瑕疵：他國無法執行軟體</p>
+<p>直到現今，大家還是習慣使用自家的內碼表編寫程式。</p>
+<p>採用Big5製作軟體，凡出現繁體中文字，在繁體中文作業系統會顯示正確文字，在其他語言作業系統則會顯示亂碼。甚至當Big5與他國內碼表的解碼規則差太多時，解讀長度不一致，讀得太多太少，將造成程式指令大亂、程式當機。</p>
+<p>相對地，世界上所有國家都有這樣的問題。為了解決這個問題，微軟設計了AppLocale軟體，幫忙套用正確的內碼表。日文電腦遊戲玩家一定聽過AppLocale。</p>
+<p class="t">Big5的瑕疵：無法同時顯示多國文字</p>
+<p>採用Big5製作文件，只能同時看到英文字和繁體中文字，無法看到其他文字。為了同時看到其他文字，熱心人士推動了「Unicode補完計劃」，把簡體中文字、日文字硬是補進Big5裡面。靈感來自於當時正在發展的Unicode。</p>
+<p>當時因為Unicode不流行，許多電腦系統尚不支援Unicode，所以才出此奇招。現在Unicode已經普及，根本沒有必要使用Unicode補完計劃。</p>
+<p class="t">Big5的瑕疵：許功蓋問題</p>
+<p>許、功、蓋這三個字元（不只這三個），第二個byte剛好是\，剛好是C與C++程式語言的「接續上一行」功能，也是眾多程式語言的跳脫字元的開頭（例如\n與\t）。許功蓋一旦出現在程式碼當中，常常發生意想不到的結果。</p>
+<textarea>
+// 執行成功
+cout << "OK!";	// 這行將接續上一行，變成註解，不會執行。
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Unicode</p>
+</div><div class="c">
+<p class="t">Unicode</p>
+<p>替世界上的每一個文字暨符號，設定獨一無二的編號。簡單來說，就是把世上所有字符一一編號。</p>
+<p>建立Unicode是一件浩大的工程，人類從二十幾年前就開始動工，迄今已經接近完成，也相當普及了。詳細的發展歷程可以參考維基百科：<a href="http://zh.wikipedia.org/wiki/Unicode">http://zh.wikipedia.org/wiki/Unicode</a>。</p>
+<p>編號大體上是這樣安排：</p>
+<pre>
+前128個編號，與ASCII完全相同。
+再來到前65536 = 2byte個編號，是世界各國常見文字。
+再來到前4294967296 = 4byte個編號，是世界各國罕見文字。
+</pre>
+<p>編號通常使用十六進位表示法，開頭加上U+。</p>
+<pre>
+U+0041  <-> A
+U+FF21  <-> Ａ
+U+FF1F  <-> ？
+U+00E6  <-> æ
+U+597D  <-> 好
+U+3042  <-> あ
+U+2260  <-> ≠
+U+32A3  <-> ㊣
+U+262F  <-> ☯
+U+1F513 <-> 🔓
+U+2019F <-> 𠆟
+U+1F323 <-> 🌣
+</pre>
+<p>字型未包含的字元，則顯示成一個框框，裡面寫出編號。</p>
+<p class="t">UTF-8</p>
+<p>UTF-8是將Unicode編號變成二元碼的其中一種方式，其他的轉換方式還有UTF-16、UTF-32等等。轉換過程請參考：</p>
+<pre>
+簡易說明
+UTF-8：<a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html">http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html</a>
+
+詳細規格
+UTF-8：<a href="http://tools.ietf.org/html/rfc3629#page-4">http://tools.ietf.org/html/rfc3629#page-4</a>
+UTF-16：<a href="http://tools.ietf.org/html/rfc2781#section-2">http://tools.ietf.org/html/rfc2781#section-2</a>
+</pre>
+<p>現實生活中，沒有人使用Unicode儲存資料，而是使用UTF-8或者UTF-16儲存資料。例如網頁、電子郵件習慣使用UTF-8，文字檔案習慣使用UTF-16。至於UTF-32非常罕見。</p>
+<p class="t">寫程式處理UTF-8</p>
+<p>雖然UTF-8已經推行很久了，但是處理UTF-8的方法卻發展遲緩。現時想要處理UTF-8，大致上需要考慮下述五個方面：</p>
+<pre>
+一、IDE必須能夠顯示UTF-8格式的程式碼。
+二、Compiler必須能夠編譯UTF-8格式的程式碼。
+三、C/C++規格書必須定義UTF-8的變數、函式庫，Compiler也必須支援。
+四、OS必須能夠把系統資訊以UTF-8的格式呈現，像是目錄名稱、檔案名稱。
+五、Console必須能夠顯示UTF-8格式的文字。
+</pre>
+<p><a href="http://www.cplusplus.com/reference/codecvt/">http://www.cplusplus.com/reference/codecvt/</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Base64</p>
+</div><div class="c">
+<p class="t">Base64</p>
+<p><a href="https://zh.wikipedia.org/wiki/Base64">https://zh.wikipedia.org/wiki/Base64</a></p>
+<p>先前是把字符變成二元碼。此處則是角色互換，把二元碼變成可見字符。</p>
+<p>採用64種可見字符：大小寫英文字母52個、數字10個、加號+、斜線/。</p>
+<p>二元碼每3個字符（byte），替換成4個可見字符。256³ = 64⁴，資訊量相等。掃描到最後，如果不足3個字符，則額外添上一個或兩個等號=，以便精準記錄二元碼有多少字符。</p>
+<p>Base64應用廣泛。例如data URI：一個檔案實施Base64編碼，添上表頭，作為網址。瀏覽器將自動解碼，得到檔案。</p>
+<textarea>
+void encode(unsigned char* in, int n,
+			unsigned char* out, int& m)
+{
+	static char encode_table[] =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef"
+		"ghijklmnopqrstuvwxyz0123456789+/";
+
+	int i = 0, j = 0;
+	while (i < n)
+	{
+		unsigned int x = 0;
+		if (i < n) x |= (unsigned int)in[i++] << 16;
+		if (i < n) x |= (unsigned int)in[i++] << 8;
+		if (i < n) x |= (unsigned int)in[i++];
+		out[j++] = encode_table[(x>>18) & 0x3f];
+		out[j++] = encode_table[(x>>12) & 0x3f];
+		out[j++] = encode_table[(x>>6)  & 0x3f];
+		out[j++] = encode_table[ x      & 0x3f];
+	}
+	if (n % 3 == 2) out[j++] = '=';
+	if (n % 3 == 1) out[j++] = '=';
+//	m = 4 * ((n + 2) / 3);
+	m = j;
+}
+
+void decode(unsigned char* in, int n,
+			unsigned char* out, int& m)
+{
+	static unsigned int decode_table[256];
+	for (int i='A'; i<='Z'; i++) decode_table[i] = i - 'A';
+	for (int i='a'; i<='z'; i++) decode_table[i] = i - 'a' + 26;
+	for (int i='0'; i<='9'; i++) decode_table[i] = i - '0' + 52;
+	decode_table['+'] = 62;
+	decode_table['/'] = 63;
+	decode_table['='] = 0;
+
+	m = n / 4 * 3;
+	if (in[n-1] == '=') m--;
+	if (in[n-2] == '=') m--;
+
+	int i = 0, j = 0; 
+	while (i < n)
+	{
+		unsigned int x = 0;
+		x |= decode_table[in[i++]] << 18;
+		x |= decode_table[in[i++]] << 12;
+		x |= decode_table[in[i++]] << 6;
+		x |= decode_table[in[i++]];
+		if (j < m) out[j++] = (x>>16) & 0xff;
+		if (j < m) out[j++] = (x>>8)  & 0xff;
+		if (j < m) out[j++] =  x      & 0xff;
+	}
+}
+</textarea>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Code.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:51 GMT -->
+</html>

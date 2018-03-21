@@ -1,0 +1,117 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/State2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:16:13 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - State</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Markov Chain</p>
+</div><div class="c">
+<p class="t">Markov Chain</p>
+<p>許多個狀態，每個狀態都可以轉移到其他狀態，轉移機率的總和都是1。轉移機率習慣寫成一個矩陣，稱作「轉移矩陣Transition Matrix」、「隨機矩陣Stochastic Matrix」。</p>
+<img src="MarkovChain1.png">
+<p>選定一個狀態作為起點，不斷移動（不斷轉移狀態、狀態不斷變化），走出一條路線。考慮所有可能的路線，每一條路線都可以明確計算其機率。將所有路線，朦朧地幻想成一條路線，步步充滿隨機，這條路線叫做「馬可夫鏈」。</p>
+<img src="MarkovChain2.png">
+<p>Markov Chain可以看成圖論的有向圖：狀態是點，狀態轉移是邊，機率是邊的權重，轉移矩陣是圖論資料結構adjacency matrix。</p>
+<p>Markov Chain的主要功用，是預測事情的未來發展。一些體積微小、性質穩定的東西（例如空氣分子、細胞），適合使用Markov Chain模擬未來發展情況（例如氣體擴散、細胞繁殖）。Markov Chain是物理模擬、化學模擬領域的重要工具。</p>
+<p>動畫：<a href="http://setosa.io/blog/2014/07/26/markov-chains/">http://setosa.io/blog/2014/07/26/markov-chains/</a></p>
+<p class="t">走n步抵達什麼狀態？</p>
+<p>一個狀態的機率，是所有來源狀態各自乘上轉移機率，再加總。</p>
+<p>走1步，可以表示成矩陣乘以向量。矩陣是轉移矩陣的轉置，向量是每個狀態的抵達機率。一開始，起始狀態的抵達機率是1，其餘狀態的抵達機率是0。</p>
+<p>走n步，即是矩陣的n次方乘以向量。類似於圖論的Transitive Closure。</p>
+<p class="t">最終走向什麼狀態？</p>
+<p>走無限多步。矩陣的∞次方。中途可能收斂到某個狀態。</p>
+<p>直覺的演算法：一步一步走，矩陣一個一個乘。</p>
+<p>較快的演算法：計算eigenvalue的絕對值。</p>
+<p>數學家已經證明：</p>
+<pre>
+一、eigenvalue一定包含1。
+二、所有的eigenvalue，絕對值均小於等於1。
+</pre>
+<p>結局可能是：</p>
+<pre>
+一、只有一個1，其他均小於1：收斂至1的eigenvector的方向上面。
+二、有許多個1：收斂至這些eigenvector構成的區域裡面。
+三、有-1：狀態不斷循環。
+四、有虛數、其長度為1：狀態不斷循環。
+</pre>
+<p>若將這個世界的時間線想成是Markov Chain，那麼這個世界的未來，也許同歸於一，也許不斷輪迴。</p>
+<p class="t">途中走過什麼狀態？</p>
+<p>reducibility：狀態x到y，有路可通（機率大於零）。即是圖論的Reachability。</p>
+<p>periodicity：狀態x到x，所有可能的步數，找出其規律。即是找出經過A的環，找出其邊數，找出其規律。類似於圖論的Cycle Basis。</p>
+<p>recurrent：狀態x出發，所有路線都走回x，無法擺脫輪迴。</p>
+<p class="t">每個狀態出現多少次？</p>
+<p><a href="https://class.coursera.org/smac-002/lecture/">https://class.coursera.org/smac-002/lecture/</a></p>
+<p><a href="http://www.52nlp.cn/lda-math-mcmc-??gibbs-sampling1">http://www.52nlp.cn/lda-math-mcmc-和-gibbs-sampling1</a></p>
+<p><a href="http://www.52nlp.cn/lda-math-mcmc-??gibbs-sampling2">http://www.52nlp.cn/lda-math-mcmc-和-gibbs-sampling2</a></p>
+<p>當轉移機率滿足某些條件時，我們可以藉由隨機取樣，得到合法狀態，並且得到每個狀態的出現比例。</p>
+<p>關鍵字是stationary distribution、steady state distribution、equilibrium distribution。</p>
+<p class="e">UVa 10828 11021 11762 12730 11680 Timus 1766</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Animation State Machine</p>
+</div><div class="c">
+<p class="t">Animation State Machine</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/JEaVA8izycQ"></iframe>--></div>
+<img src="MarkovChain3.png">
+<p>遊戲動畫、遊戲AI、遊戲平衡的經典工具！</p>
+<p>這裡提供的Markov Chain只是推測，應該是錯的。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Random Walk</p>
+</div><div class="c">
+<p class="t">Random Walk on 3x3 Grid</p>
+<img src="MarkovChain4.png">
+<p>一個3x3的方格棋盤，左上角放著一個棋子。棋子可以上下左右移動一格，機率各是1/4。如果棋子出界，那麼棋子歸回原位。</p>
+<p>棋子走零步，停於左上的機率為1，其餘格子為0。</p>
+<p>棋子走一步，停於左上的機率為2/4，上、左的機率各為1/4，其餘為0。</p>
+<p>棋子走兩步，停於左上的機率為6/16，上、左的機率各為3/16，右上、左下的機率各為1/16，中央為2/16，其餘為0。</p>
+<p>那麼棋子走n步呢？</p>
+<img src="MarkovChain5.png">
+<pre>
+_______     [2]     [ 2 1 0 1 0 0 0 0 0 ] [1]
+|0|1|2|     [1]     [ 1 1 1 0 1 0 0 0 0 ] [0]
+|-+-+-|     [0]     [ 0 1 2 0 0 1 0 0 0 ] [0]
+|3|4|5|   1 [1]   1 [ 1 0 0 1 1 0 1 0 0 ] [0]
+|-+-+-|   - [0] = - [ 0 1 0 1 0 1 0 1 0 ] [0]
+|6|7|8|   4 [0]   4 [ 0 0 1 0 1 1 0 0 1 ] [0]
+‾‾‾‾‾‾‾     [0]     [ 0 0 0 1 0 0 2 1 0 ] [0]
+ board      [0]     [ 0 0 0 0 1 0 1 1 1 ] [0]
+ index      [0]     [ 0 0 0 0 0 1 0 1 2 ] [0]
+         ^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^ ^^^
+           x1                 A            x0
+</pre>
+<p>走一步的結果，採用遞歸法來分析：一個狀態的機率，是所有來源狀態各自乘上轉移機率，再加總。計算方式恰好符合線性變換的定義，於是可以寫成矩陣。</p>
+<p>走n步，即是計算矩陣的n次方。觀念如同圖論的「<a href="Transitivity.html">Transitive Closure</a>」。</p>
+<p>運用Markov Chain可以得知世界終焉之時，棋子大概會在哪。</p>
+<p>發揮想像力，應用非常廣。迷路回不了家的機率、人類經濟活動與最終財富分配等等。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：PageRank</p>
+</div><div class="c">
+<p class="t">PageRank</p>
+<p><a href="http://blog.csdn.net/monkey_d_meng/article/details/6556295">http://blog.csdn.net/monkey_d_meng/article/details/6556295</a></p>
+<p><a href="http://morris821028.github.io/2015/03/09/bigdata-page-rank/">http://morris821028.github.io/2015/03/09/bigdata-page-rank/</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Markov Decision Process（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Markov Decision Process</p>
+<p>「馬可夫決策程序」。</p>
+<p>【註：process是連續版本，chain是離散版本。此處的MDP是離散版本，照理要取名chain；而作者不知為何取名process。】</p>
+<p>類神經網路、馬可夫決策程序（以時刻展開），兩者構造大同小異，於是最近計算學家拿類神經網路的計算設備來研究馬可夫決策程序。</p>
+<p>http://ai.berkeley.edu/lecture_slides.html</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">應用：Pac-Man</p>
+</div><div class="c">
+<p class="t">Pac-Man</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/QilHGSYbjDQ"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Automaton（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Automaton</p>
+<p>「自動機」。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/State2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:16:18 GMT -->
+</html>

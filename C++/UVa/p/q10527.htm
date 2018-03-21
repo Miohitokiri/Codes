@@ -1,0 +1,55 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10527: Persistent Numbers</h1>            
+<p>我們如果把一個整數中的各個位數相乘會得到另一個整數，如果不斷的重複這個動作最後會得到一個個位數的數。例如：</p>   
+<pre><b>679</b> -&gt; <b>378</b> -&gt; <b>168</b> -&gt; <b>48</b> -&gt; <b>32</b> -&gt; <b>6</b>.</pre>
+<p>我們說679頑固（persistence）的程度是5，因為他花了5個步驟才變成一個個位數。目前已知存在有頑固程度11的數，我們不知道是否有頑固程度12的數，如果有的話，他的長度一定超過3000位數。</p>   
+<p>在本問題中給你一個數，請你找出是那個數經由上面的一個步驟（也就是把各個位數相乘）所得到的，這樣的數可能不只一個，請你找出最小的那個。例如：給你 
+18，你可以找出 29, 36, 63, 92, 233, 323, 332等，但是你的答案應該是 
+29。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p>每組測試資料一列。含有一個大於等於0的整數，長度最大到 
+<b>1000</b><b> </b>位數。</p>             
+<p><b>-1</b>代表輸入結束，請參考Sample Input。</p>             
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                              
+<p>對每組測試資料輸出一列，如上所述。如果找不到這樣的數，請輸出&quot;There 
+is no such number.&quot;。</p>           
+<table border="1" width="100%" cellpadding="5">              
+  <tr>              
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                      
+  </tr>                      
+  <tr>                      
+    <td width="50%">          
+      <pre>0
+1
+4
+7
+18
+49
+51
+768
+-1</pre>
+    </td>                      
+    <td width="50%">                
+      <pre>10
+11
+14
+17
+29
+77
+There is no such number.
+2688
+</pre>
+    </td>                     
+  </tr>                     
+</table>                     
+                                                       
+</body>                                                       
+                                                       
+</html>                                                       

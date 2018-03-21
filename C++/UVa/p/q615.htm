@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q615: Is It A Tree?</h1>          
+<p>在資料結構中，樹（tree）的定義為空的（null, void, nothing），或是由一或多個節點以及有向邊所組成，且需滿足以下的條件：</p>  
+<ul>
+  <li>只有一個點，我們稱做根（root），沒有任何邊指向他。</li>
+  <li>除了根以外的節點，都只有一個邊指向他。。</li> 
+  <li>從根到任一節點，都只有唯一的路徑。</li> 
+</ul>
+<p>例如在以下的圖中，以內有編號的圓形代表節點，以帶有箭號的直線代表有向邊。前2個是樹，但第三個不是。（節點8有2個邊指向他）</p>
+<p align="center"><img border="0" src="p615-1.gif" width="176" height="226">&nbsp;&nbsp;&nbsp; 
+<img border="0" src="p615-2.gif" width="231" height="266">&nbsp;&nbsp;&nbsp; <img border="0" src="p615-3.gif" width="174" height="252"></p>  
+<p>寫一個程式，讀入一圖形的資料，然後回答該圖是否為樹。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料代表一圖形，內容為邊的資料。每個有向邊以2個大於0的整數i,j表示，此2整數為節點的編號，代表從i節點有一有向邊連到j節點。0 
+0這個邊代表此組輸入資料結束。最後一組測試資料的內容為2個小於0的整數，代表整個輸入結束。請參考Sample 
+Input中的前3組測試資料，分別表示上方的3個圖形。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料輸出一列。輸出這是第幾組測試資料以及該組測試資料是否為樹。請參考Sample 
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                              
+Input</b></span></p>                              
+<pre>6 8  5 3  5 2  6 4
+5 6  0 0
+
+8 1  7 3  6 2  8 9  7 5
+7 4  7 8  7 6  0 0
+
+3 8  6 8  6 4
+5 3  5 6  5 2  0 0
+
+0 0
+1 2 0 0
+1 2 1 3 4 5 0 0
+1 1 0 0
+1 2 2 1 0 0
+1 2 1 2 0 0
+
+1 2 2 3 3 1 4 5 0 0 
+
+-1 -1</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>Case 1 is a tree.
+Case 2 is a tree.
+Case 3 is not a tree.
+Case 4 is a tree.
+Case 5 is a tree.
+Case 6 is not a tree.
+Case 7 is not a tree.
+Case 8 is not a tree.
+Case 9 is not a tree.
+Case 10 is not a tree.</pre>
+                            
+</body>                            
+                            
+</html>                            

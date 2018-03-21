@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q142: Mouse Clicks</h1>          
+<p>在windows作業系統中，你可以在桌面（desktop）上看到一些圖像（icon）或區域（工作視窗），他們在桌面都定義出一定的區域。當你按下滑鼠的按鍵時，系統必須知道現在滑鼠游標在哪裡，哪一個icon或工作視窗被選到了。在這個問題中，你要回答當滑鼠按鍵被按下去時，那一個icon或區域被選中了（按在區域的邊上也算選中）。如果滑鼠游標正好沒有在任何icon或工作視窗上，則距離游標最近的icon會被選上（有可能會同時選上2個以上相同距離且最近的icon）。舉例說明，以下圖表示電腦螢幕上桌面的配置關係圖：</p>  
+<p align="center"><img border="0" src="p142.gif" width="510" height="242"></p>  
+<p>當你在a的位置按下滑鼠按鍵時，A區域會被選中。當你在b的位置按下滑鼠按鍵時，1這個icon會被選中。當你在c的位置按下滑鼠按鍵時，6和7這2個icon會同時被選中，因為他們與c的距離相同。但是當你在&nbsp;d的位置按下滑鼠按鍵時，事情會變的含糊不清，因為這個位置同時位於B與C的區域中。要解決這個問題，我們得看是那個區域在比較上方，然後系統會選擇比較上方的區域。由於區域是大寫英文字母來表示，同時也是區域出現的次序，所以C區域比B區域晚出現，也就是說從桌面的配置來看，C區域會蓋住B區域的某部分。因此，當滑鼠按在d時，系統會選擇C區域。請注意：區域總是會蓋住icon，所已被遮蓋住的icon不需要被考慮。還有，左上角的座標為(0,0)</p>  
+<p>寫一個程式讀入一連串icon及工作視窗的資料，然後再讀入滑鼠按鍵時的游標位置資料，回答選中哪些物件。螢幕桌面可視為X-Y平面，所有的座標值均介於0到499，並且你可以假設icon和工作視窗均是整個位於螢幕桌面上。你的程式必須依icon讀入的順序從1開始依次來編號。並且依工作視窗讀入的順序從A開始依次來編號。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入包含許多列，每列的第一個字元表達了不同的資料型態。I代表icon，R代表工作視窗，M代表按下滑鼠按鍵。I和R可能混著出現，但是M一定是在輸入的最後面。</p>    
+<p>I之後一定跟著2個整數，代表此icon的中心座標。R之後一定跟著4個整數，代表此工作視窗左上角及右下角的座標。M之後一定跟個2個整數，代表滑鼠按鍵被按下時滑鼠游標所在的座標位置。至少一定有一個可見的icon，並且不會有超過25個工作視窗及50個icon。輸入的最後一列僅含有一#，代表輸入結束。請參考Sample  
+Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一個滑鼠按鍵事件，輸出一列。如果是選中工作視窗，請輸出工作視窗的編號。如果是選中icon，請輸出icon的編號（長度3,靠右對齊）。若同時選中超過2個icon，則依編號由小到大輸出。請參考Sample  
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>I       216     28
+R       22      19      170     102
+I       40      150
+I       96      138
+I       36      193
+R       305     13      425     103
+I       191     184
+I       387     200
+R       266     63      370     140
+I       419     134
+I       170     102
+M       50      50
+M       236     30
+M       403     167
+M       330     83
+#</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>A
+  1
+  6  7
+C</pre>
+                            
+</body>                            
+                            
+</html>                            

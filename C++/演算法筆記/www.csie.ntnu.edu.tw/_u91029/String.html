@@ -1,0 +1,461 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/String.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:07 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - String</title></head><body>
+<div class="a"><div class="h">
+<p class="b">String</p>
+</div><div class="c">
+<p class="t">String</p>
+<p>「字串」。一連串字元。字串的長度就是字元數目。</p>
+<p>例如aaabbbccc、48Dfua@~!0H、m、How are you?。</p>
+<p>有個特例是空字串：一個字元都沒有的字串，長度為零的字串。通常標記成Ø。</p>
+<p class="t">Character</p>
+<p>「字元」。字串的基本單元。</p>
+<p>例如字串How are you?的字元依序為：H、o、w、 、a、r、e、 、y、o、u、?。第一個字元是H，第四個字元是空白符號 ，最後一個字元是問號?。</p>
+<p>例如字串「你好嗎？」的第二個字元是「好」，第四個字元是全形問號「？」。</p>
+<p>ASCII Table規定了電腦中基本的128種字元，包括大寫小寫英文字母、標點符號、阿拉伯數字、數學運算符號、雜七雜八的符號。</p>
+<p class="t">Substring</p>
+<p>「子字串」。字串當中的一段字串。</p>
+<p>例如algo的子字串一共是Ø, a, l, g, o, al, lg, go, alg, lgo, algo。</p>
+<p class="t">Prefix</p>
+<p>「前綴」。字串開頭的一段字串。</p>
+<p>例如algo的前綴一共是Ø, a, al, alg, algo。</p>
+<p class="t">Suffix</p>
+<p>「後綴」。字串尾端的一段字串。</p>
+<p>例如algo的後綴一共是Ø, o, go, lgo, algo。</p>
+<p class="t">Sequence</p>
+<p>「數列」。一連串數字。數列的長度可以達到無限長。</p>
+<p>例如1 2 3 4 5、1 1 2 3 5 8 ...。</p>
+<p>字串學當中，習慣譯作「序列」而不是「數列」，習慣討論有限長度的數列，習慣把數列當作字串。</p>
+<p>字串與數列唯一的差異在於：字串的字元是有限多種；數列的數字是無限多種。屏除這項差異之後，字串與數列完全相同，字串可以視作數列、數列可以視作字串。</p>
+<p class="t">Subsequence</p>
+<p>「子序列」。字串當中由左到右挑取字元所構成的字串。</p>
+<p>例如algo的子序列一共是Ø, a, l, g, o, al, ag, ao, lg, lo, go, alg, alo, ago, lgo, algo。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">String資料結構: Array</p>
+</div><div class="c">
+<p class="t">Array</p>
+<img src="String1.png">
+<p>字串的字元依序填入陣列，最後用一個特殊符號標記字串結尾。</p>
+<textarea>
+char s[10];
+s[0] = 'a';
+s[1] = 'l';
+s[2] = 'g';
+s[3] = 'o';
+s[4] = '\0';	// 特殊符號，字串到此為止
+</textarea>
+<p>要不然也可以記錄最後一個字元的索引值、指標，這樣就不用加特殊符號。要不然也可以記錄字串長度，數值比前者多一。</p>
+<textarea>
+char s[10];
+int s_end = 3;		// 最後一個字元的索引值
+int s_length = 4;	// 字串長度
+s[0] = 'a';
+s[1] = 'l';
+s[2] = 'g';
+s[3] = 'o';
+</textarea>
+<p>缺點是插入字元、插入字串很慢，後方字元必須通通往後挪。</p>
+<p>可以直接使用STL的string。</p>
+<textarea>
+#include <string>
+string s = "algo";
+</textarea>
+<p class="e">UVa 10252</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">String資料結構: Rope</p>
+</div><div class="c">
+<p class="t">Rope</p>
+<img src="String2.png">
+<p><a href="https://en.wikipedia.org/wiki/Rope_(data_structure)">https://en.wikipedia.org/wiki/Rope_(data_structure)</a></p>
+<p>字串的子字串依序填入平衡二元樹的樹葉。樹葉是陣列。</p>
+<p>簡述其中幾個操作：</p>
+<p>印出字串：DFS遍歷所有節點。令N是字串長度，樹葉最多N個，節點最多2N-1個，時間複雜度O(N)。</p>
+<p>索引（取第K個字元）：令節點儲存子字串長度。從根往葉走，找到第K個字元所在樹葉，再從陣列取得第K個字元。時間複雜度O(logN)。</p>
+<p>銜接字串：兩棵樹，新增一個共同的樹根。令節點儲存子樹高度，以平衡高度。時間複雜度O(logN)。</p>
+<p>插入字串：從第K個字元切開，分枝成兩個新樹葉。其中一個樹葉再分支成原樹葉、新樹。時間複雜度O(logN)。</p>
+<p>熟悉二元樹，就能輕鬆推理出來，不必記誦。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量String資料結構: Array</p>
+</div><div class="c">
+<p class="t">Dictionary</p>
+<p>儲存大量字串的資料結構，大家通稱為Dictionary。就好比擁有即時排序功能的資料結構，大家通稱為Priority Queue。</p>
+<p>這些泛稱是用來凸顯資料結構的功能。有了這樣的泛稱，當遇到的問題隱含著字典的概念，就能直覺聯想到Dictionary資料結構，而不會被Array、BST這種不直覺的名稱困住了思考。</p>
+<p class="t">Array</p>
+<img src="String3.png">
+<p>各種經典的資料結構，皆可儲存大量字串，例如陣列。</p>
+<textarea>
+char dictionary[100][10];	// 100個字串，長度不超過10。
+int n;						// 字串個數
+
+void add(char* s)
+{
+	int i = 0;
+	for (; s[i]; i++)
+		dictionary[n][i] = s[i];
+	s[i] = '\0';
+	n++;
+}
+
+void add(char* s)
+{
+	char* t = dictionary[n++];
+	while (*s) *t++ = *s++;
+	*t = '\0';
+}
+
+void add(char* s)
+{
+	strcpy(dictionary[n++], s);
+}
+</textarea>
+<textarea>
+vector<string> dictionary;
+</textarea>
+<p class="t">Hash Table</p>
+<img src="String4.png">
+<p>使用字串雜湊函數，將字串化作索引值，存入Hash Table。</p>
+<p>經典的字串雜湊函數有djb2、sdbm、murmur3。</p>
+<p>可以直接使用STL的hash，不清楚是murmur哪一版。</p>
+<textarea>
+// djb2
+unsigned int hash(unsigned char* s)
+{
+	unsigned int n = 5381;
+	for (int i=0; s[i]; i++)
+		// n * 33 + s[i]
+		n = ((n << 5) + n) + s[i];
+	return n;
+}
+</textarea>
+<textarea>
+// sdbm
+unsigned int hash(unsigned char* s)
+{
+	unsigned int n = 0;
+	for (int i=0; s[i]; i++)
+		// n * 65599 + s[i]
+		n = (n << 6) + (n << 16) - n + s[i];
+	return n;
+}
+</textarea>
+<textarea>
+#include <string>
+#include <unordered_map>
+
+string s = "algo";
+hash<string> h;
+size_t n = h(s);
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量String資料結構: Binary Search Tree</p>
+</div><div class="c">
+<p class="t">Binary Search Tree</p>
+<img src="String5.png">
+<p>二元搜尋樹，一個節點儲存一個字串。</p>
+<textarea>
+char s[10][100];
+char t[100];
+
+struct cmp
+{
+	bool operator()(const char* a, const char* b)
+	{
+		return strcmp(a, b) < 0;
+	}
+};
+
+void string_matching()
+{
+	// 使用C++內建的紅黑樹
+	set<char*, cmp> dictionary;
+	for (int i=0; i<10; ++i)
+		dictionary.insert(s[i]);
+
+	set<char*, cmp>::iterator it = dictionary.find(t);
+	if (it == dictionary.end())
+		cout << "字典裡沒有t字串";
+	else
+		cout << "字典裡有t字串";
+}
+</textarea>
+<textarea>
+string s[10];
+string t;
+
+void string_matching()
+{
+	set<string> dictionary;
+	for (int i=0; i<10; ++i)
+		dictionary.insert(s[i]);
+
+	set<string>::iterator it = dictionary.find(t);
+	if (it == dictionary.end())
+		cout << "字典裡沒有t字串";
+	else
+		cout << "字典裡有t字串";
+}
+</textarea>
+<p class="e">UVa 148 156 245 642 630 10295 10282 10686 10896 429 10150</p>
+<p class="t">Ternary Search Tree</p>
+<img src="String6.png">
+<p>三元搜尋樹，一個節點儲存一個字元。左小孩是更小與相同的字串，右小孩是更大的字串，中小孩是原字串的後續字元。三元搜尋樹與二元搜尋樹等價。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量String資料結構: Trie</p>
+</div><div class="c">
+<p class="t">Trie【翻譯成「櫥」似乎不錯】</p>
+<img src="Trie1.png">
+<p>Trie是一棵特別的樹，一條由根往葉的路徑是一個字串。節點含有陣列，以陣列索引的方式進行紀錄，每一層的節點分別對應字串的每一個字元。</p>
+<img src="Trie2.png">
+<p>舉個簡單的例子。假設字元只有abcde五種。</p>
+<p>儲存字串abc：由樹根往下走，每一層的節點依序對應字串的每一個字元。多出來的樹葉，用來標記字串結尾，可以想成是'\0'。</p>
+<p>再儲存字串aeb：開頭相同的部分，歸併在一起。</p>
+<p>這種儲存字串的方式，類似於編排字典的方式，減低了檢索單字的困難度。Trie可以想作是多層次的索引表。</p>
+<p>相信各位對Trie的儲存方式已經駕輕就熟了。優點是速度飛快，缺點是耗費記憶體。最後提供Trie的常見圖示方式。</p>
+<img src="Trie3.png">
+<p class="e">UVa 902 10226 10391 10745</p>
+<p class="t">設計Trie的節點</p>
+<img src="Trie4.png">
+<p>ASCII一共有128種字元，一個節點只需要一條128格陣列。</p>
+<textarea>
+struct TrieNode
+{
+	TrieNode* a[128];	// 128種字元
+};
+</textarea>
+<p>如果遇到abc和abcde這種一個字串是另一個字串的前綴的例子，就無法判斷字串結尾。此時必須用一個變數判斷字串結尾。如此一來也可以儲存空字串了。</p>
+<textarea>
+struct TrieNode
+{
+	TrieNode* a[128];
+	bool word;		// 判斷現在是不是一個字串
+};
+</textarea>
+<p>如果字串可以重複出現，就用一個變數累計出現次數。</p>
+<textarea>
+struct TrieNode
+{
+	TrieNode* a[128];
+	int n;			// 統計字串出現次數
+};
+</textarea>
+<p>初始化。大功告成。</p>
+<textarea>
+struct TrieNode
+{
+	TrieNode* a[128];
+	int n;
+
+	TrieNode()
+	{
+		memset(a, 0, sizeof(TrieNode*) * 128);
+		n = 0;
+	}
+} *root = new TrieNode();
+</textarea>
+<p class="t">增加一個字串</p>
+<p>時間複雜度是O(S)，其中S是字串的長度。</p>
+<textarea>
+void add(char* s)
+{
+	TrieNode* p = root;
+	for (; *s; ++s)
+	{
+		if (!p->a[*s]) p->a[*s] = new TrieNode();
+		p = p->a[*s];
+	}
+	p->n++;
+}
+</textarea>
+<p class="t">尋找一個字串（判斷字串存不存在）</p>
+<p>時間複雜度是O(S)，其中S是字串的長度。</p>
+<textarea>
+bool lookup(char* s)
+{
+	TrieNode* p = root;
+	for (; *s; ++s)
+	{
+		if (!p->a[*s]) return false;
+		p = p->a[*s];
+	}
+	return p->n > 0;
+}
+</textarea>
+<p class="t">依照順序印出所有字串</p>
+<p>DFS走訪每個節點。時間複雜度等同於Trie的節點數量。</p>
+<textarea>
+char w[20+1];	// 20個字的字串
+
+void traversal(TrieNode* p = root, char* s = w)
+{
+	*s = '\0';
+	for (int i=0; i<p->n; ++i)
+		cout << w;
+
+	for (int i=0; i<128; ++i)
+		if (p->a[i])
+		{
+			*s = i;
+			traversal(p->a[i], s+1);
+		}
+}
+</textarea>
+<textarea>
+char w[20+1];	// 20個字的字串
+
+void traversal(TrieNode* p = root, char* s = w)
+{
+	if (!p) return;
+
+	*s = '\0';
+	for (int i=0; i<p->n; ++i)
+		cout << w;
+
+	for (int i=0; i<128; ++i)
+	{
+		*s = i;
+		traversal(p->a[i], s+1);
+	}
+}
+</textarea>
+<p class="t">釋放記憶體空間</p>
+<p>寫了new而不寫delete是大逆不道的事情！一定要記得寫！</p>
+<textarea>
+void release(TrieNode* p = root)
+{
+	for (int i=0; i<128; ++i)
+		if (p->a[i])
+			release(p->a[i]);
+	delete p;
+}
+</textarea>
+<p class="t">Double-Array Trie</p>
+<img src="Trie5.png">
+<p>所有節點合併成一條極長陣列，另外用一條陣列記錄節點大小、節點位置。</p>
+<p>優點是刪除了Trie的陣列末端空格，缺點是必須動態配置節點大小、節點位置。省空間、費時間。</p>
+<p>動態配置節點，大可不必自己實作，可以直接使用malloc/free、new/delete。</p>
+<p class="t">Compressed Trie</p>
+<img src="Trie6.png">
+<p>去掉沒有分岔、呈一直線的節點。</p>
+<img src="Trie7.png">
+<p>去掉節點之後，字串資訊不完整，必須做點處理：</p>
+<p>一、每個節點增加一個數字，記錄當前是第幾個字元。也就是開始分岔的字元。</p>
+<p>二、在樹葉裡儲存完整字串。每個節點增加一個指標，記錄當前節點要參考哪一個樹葉的字串。</p>
+<p>三、或者，在節點裡儲存片段字串，代價是必須動態配置字串空間大小。省空間、費時間。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量String資料結構: Automaton</p>
+</div><div class="c">
+<p class="t">Automaton</p>
+<p>自動機主要用於字串驗證（string verification）。依序讀取字串的各個字元，同時在自動機上移動；一旦字串讀取完畢、正好抵達自動機終點，那麼字串驗證成功。</p>
+<p>自動機亦可用於字串匹配（string matching）。許多字串匹配演算法，都可以順勢建構自動機，請參考「<a href="StringMatching.html">String Matching</a>」。</p>
+<p>自動機的特色是：仰賴一個lookup table，只需要反覆查表，就能完成字串驗證、字串匹配，而不需要特別的演算法。</p>
+<p>以圖論的觀點來看，先前章節都是用樹來儲存字串，此處則是用圖來儲存字串。然而圖的結構太過複雜，導致自動機難以建構，也無法直接插入字串、刪除字串、枚舉字串，只能搜尋字串。</p>
+<p>列出字串很慢，驗證字串很快，自動機有著NP-complete、one-way function的味道。</p>
+<p class="e">UVa 251 738 804 ICPC 4358</p>
+<p class="t">DAWG</p>
+<p><a href="https://en.wikipedia.org/wiki/Deterministic_acyclic_finite_state_automaton">https://en.wikipedia.org/wiki/Deterministic_acyclic_finite_state_automaton</a></p>
+<p class="t">Online Compact DAWG</p>
+<p><a href="http://www.shino.ecei.tohoku.ac.jp/~ayumi/papers/DAM2004_cdawg.pdf">http://www.shino.ecei.tohoku.ac.jp/~ayumi/papers/DAM2004_cdawg.pdf</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">String Manipulation</p>
+</div><div class="c">
+<p class="t">String Manipulation</p>
+<p><a href="http://en.wikipedia.org/wiki/String_function">http://en.wikipedia.org/wiki/String_function</a></p>
+<p>程式語言的內建函式庫，已經囊括所有常見的字串操作函式，建議讀者仔細研究。</p>
+<p class="e">UVa 483 492</p>
+<p>以下額外整理了一些稀奇古怪的字串操作。通常只會出現在求職面試的益智測驗，平常極少用到。</p>
+<p class="t">Rotate</p>
+<p>循環位移n個元素，只使用swap、不使用額外空間。時間複雜度O(N)。</p>
+<textarea>
+void rotate(int array[], int size, int n)
+{
+	reverse(array, 0, size-1);
+	reverse(array, 0, n-1);
+	reverse(array, n, size-1);
+}
+
+void reverse(int array[], int a, int b)
+{
+	while (a < b)
+		swap(array[a++], array[b--]);
+}
+</textarea>
+<p>Lyndon Word是指所有旋轉結果當中，字典順序最小者。時間複雜度O(N)。</p>
+<p><a href="http://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation" class="l">http://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation</a></p>
+<p class="e">UVa 719 ICPC 2755</p>
+<p>要判斷兩個字串旋轉後是否相等，時間複雜度O(N)。</p>
+<textarea>
+bool cyclic_equality(string a, string b, int N)
+{
+	a += a;
+	b += b;
+
+	int i = 0, j = 0;
+	while (i < N && j < N)
+	{
+		int n = 0;
+		while (a[i] == b[i]) n++;
+		if (n == N) return true;
+		if (a[i+n] > b[i+n])
+			i += n;
+		else
+			j += n;
+	}
+	return false;
+}
+</textarea>
+<p>要判斷兩個字串旋轉後是否相等，也可以運用字串比對：判斷aa是否出現b，時間複雜度O(N)。</p>
+<p class="t">Interleave</p>
+<p>字串A之中，由左到右參差穿插字串B，判斷是否可以形成字串C。</p>
+<p>A和B的全部字元就是C的全部字元。A和B都會是C的子序列。</p>
+<pre>
+A = abc
+B = xyz
+C = axbycz, xaybzc, abxycz, abcxyz, xyzabc, ......
+C != cbaxyz, abyxcz, ......
+</pre>
+<p>當A和B沒有共同的字元，得以採用Greedy Method，時間複雜度O(A+B)。</p>
+<textarea>
+bool interleave(char* a, char* b, char* c)
+{
+	for (; *c; c++)
+		if (*c == *a)
+			a++;
+		else if (*c == *b)
+			b++;
+		else
+			return false;
+
+	return !*a && !*b && !*c;
+}
+</textarea>
+<p>當A和B有共同的字元，只能採用Dynamic Programming，分割問題的方式等同Longest Common Subsequence，時間複雜度O(A*B)。程式碼就不提供了。</p>
+<p class="t">Cover</p>
+<p>從字串A找出最短的子字串，包含字串B每一種字元。時間複雜度O(N)。</p>
+<pre>
+http://www.cs.ucr.edu/~stelo/cpm/cpm10/23.pdf
+http://www.cas.mcmaster.ca/~bill/best/algorithms/02AllCovers.pdf
+http://stackoverflow.com/questions/2459653
+
+Input string 1: "this is a test string"
+Input string 2: "tist"
+Output string: "t stri"
+
+how can I approach towards finding smallest substring of string 1
+that contains all the characters from string 2?
+O(N) histogram
+</pre>
+<p class="t">Concatenate</p>
+<p>給定一個長字串與一堆短字串。現在要將短字串銜接成長字串，短字串得重複使用。判斷是否只有唯一一種銜接方式。</p>
+<p>Sardinas-Patterson Algorithm。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/String.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:18 GMT -->
+</html>

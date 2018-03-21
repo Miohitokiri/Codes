@@ -1,0 +1,8 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+commons.wikimedia.org	TRUE	/	FALSE	1999999999	WMF-Last-Access	28-Apr-2017
+.wikimedia.org	TRUE	/	FALSE	1999999999	GeoIP	TW:TNN:Tainan_City:22.99:120.20:v4
+upload.wikimedia.org	TRUE	/	FALSE	1999999999	WMF-Last-Access	28-Apr-2017
+.wikimedia.org	TRUE	/	FALSE	1999999999	WMF-Last-Access-Global	28-Apr-2017
+.plurk.com	TRUE	/	FALSE	1999999999	__cfduid	daa677d0d04b1b8fbd4fa10f2629839781493392787
+

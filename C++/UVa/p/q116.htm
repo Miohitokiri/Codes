@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q116: Unidirectional TSP</h1>          
+<p align="right">原翻譯者：untitled</p>
+<p>給你一個由整數組成的 m*n 
+方陣，你必須要寫個程式，來計算出「重量」（ weight ） 
+最小的路線。每條路線都是從第一直行的任何一格做為起點，走了若干步之後，至第 
+<i>n</i> 
+行（最後一行）的其中一格為終點。所謂的一步就是從第 <i>i</i> 
+行走至第 <i>i</i>+1 
+行，其中移動的時候只能走到原本的或是相鄰的一橫列（也就是走平的或是斜一格）。另外要注意的是，第一橫列和最後一橫列（第 
+<i>m</i> 
+列）也算是相鄰的，也可以這樣想，就是整個方陣是上下「包」起來的，看起來像一個倒著的圓柱體。總之，對於任何一格能夠走的下一步就如下圖所示：</p>
+<p><img border="0" src="p116.gif" width="67" height="99"></p>
+<p>所謂一個路徑的「<em>重量</em>」（<em>weight</em>）就是此路徑經過的 
+<i>n</i> 
+個格子裡，它們的整數總和。舉個例子，下面有兩個不同的5*6 
+方陣。（實際上你可以注意到它們的不同只在最後一列而已）</p>
+<p><img border="0" src="p116-2.gif" width="534" height="175"></p>
+<p>這兩個方陣的「最小重量路徑」（ minimal-weight path ）已經在上面分別標出來了。注意一下右邊的方陣，其利用了第一列和最後一列是相鄰的這個性質達到了最小的重量。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                   
+<p>輸入裡包含多組測試資料，每組代表一個方陣。每組測試資料的第一列為2個正整數 
+<i>m</i> 與 <i>n</i> （1 &lt;= m &lt;=10，1 &lt;= n &lt;= 100），依序表示這方陣有幾橫列和幾直行。而後就是 
+m*n 個整數，這些整數是按照「列順序」（ row major order 
+）來排列，也就是輸入裡的前 <i>n</i> 
+個數表示方陣的第一橫列，再下來的 <i>n</i> 
+個數表示第二橫列，依此類推。在輸入裡，同一列的數彼此間將會被一個以上的空白隔開。值得注意的是，這裡說的整數並不一定是正的。輸入以及計算的過程所出現的數均不會超過長整數（long）的範圍。                  
+<p>Sample Input中前2組測試資料所表達的方陣就是上方的2個圖，請參考。</p>       
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                        
+<p>對於每個方陣，你必須輸出兩列東西。第一列是「最小重量路徑」（ 
+minimal-weight path 
+），第二列則是其「重量」。對於第一列，你必須輸出 <i>n</i> 
+個正整數，依序表示在每一行，此路徑經過了第幾列。如果存在兩個以上的路徑其「重量」皆為最小，則輸出按照字典順序（ 
+lexicographically ）最小的那一個路徑。請參考Sample Output。</p>        
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                    
+Input</b></span></p>                                           
+<pre>5 6
+3 4 1 2 8 6
+6 1 8 2 7 4
+5 9 3 9 9 5
+8 4 1 3 2 6
+3 7 2 8 6 4
+5 6
+3 4 1 2 8 6
+6 1 8 2 7 4
+5 9 3 9 9 5
+8 4 1 3 2 6
+3 7 2 1 2 3
+2 2
+9 10 9 10</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                             
+Output</b></span></p>                                           
+<pre>1 2 3 4 4 5
+16
+1 2 1 5 4 5
+11
+1 1
+19</pre>
+                                         
+</body>                                         
+                                         
+</html>                                         

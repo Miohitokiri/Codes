@@ -1,0 +1,335 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Estimation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:56 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Estimation</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Estimation</p>
+</div><div class="c">
+<p class="t">Estimation（Parameter Estimation）</p>
+<p>「估計」就是選定一種分布（例如常態分布、二項式分布、Gamma分布），找到適當的參數（例如平均數、變異數、形狀參數），盡量符合手邊的一堆樣本。</p>
+<p>「估計」也是迴歸，函數改成機率密度函數，數據改成樣本。</p>
+<img src="Estimation1.png">
+<blockquote>
+Plot3D[PDF[MultinormalDistribution[{0, 0}, {{1, 0}, {0, 1}}], {x, y}], {x, -2, 2}, {y, -2, 2}, Boxed -> False, Axes -> False, Mesh -> Automatic, MeshFunctions -> {#3&}]
+</blockquote>
+<p class="t">Estimator</p>
+<p>以函數進行迴歸，所謂最符合就是誤差最小，例如Least Squares。以分布進行估計，所謂最符合就是機率最大，例如Maximum Likelihood、Maximum a Posterior。</p>
+<img src="Estimation2.png">
+<pre>
+一、已知樣本，欲求分布的參數。
+
+二、首先採用直接法，以樣本直接推導參數。
+　　然而十分困難，無法得到數學公式。
+
+三、於是採用試誤法，窮舉各種參數，一一驗證。
+　甲、針對一種參數：
+　　口、各個樣本一一代入分布，分別求得出現機率。求得總乘積。
+　　　　（此為ML。若為MAP，則額外乘上該分布參數的出現機率。）
+　　口、記錄總乘積最大者。
+　乙、取log，連乘化作連加。
+　　　避免機率越乘越小、低於浮點數精確度而變成零。
+　　　（取log最大值位置不變。）
+　丙、窮舉法太慢，需改用其他最佳化演算法。
+</pre>
+<p class="t">範例：店面一日人潮統計</p>
+<p>我準備好筆記本、手錶、提神飲料，從半夜12點開始，坐在麵店門口24小時，痴痴地等著客人上門，登記每位客人的到訪時間，做為樣本。我認為到訪時間呈Gamma分布，我想估計平均數和形狀參數是多少。</p>
+<p>【待補圖片】</p>
+<!--<img src="Estimation3.png">-->
+<p>平均數可能是0點、1點、2點、……、24點，看起來每一種都有可能。這個時候就應該使用Maximum Likelihood。</p>
+<p>【待補圖片】</p>
+<!--<img src="Estimation4.png">-->
+<p>不過根據我對真實世界的了解，我知道大家通常晚上六點下班，然後大家相約吃飯小酌一下。所以平均數是19點、20點、21點、22點的機率非常高！我也知道三更半夜，不太有人吃麵，所以平均數是2點、3點、4點的機率非常低！我認為平均數呈常態分布！這個時候就應該使用Maximum a Posterior。</p>
+<p>【待補圖片】</p>
+<!--<img src="Estimation5.png">-->
+<p class="t">延伸閱讀：Estimation</p>
+<p>以統計學慣用的代數符號，重新說明「估計」。</p>
+<pre>
+一、已知一堆樣本X = {x1, ..., xN}。
+　　已知特定分布的機率密度函數f(x, μ, σ², λ)。
+　　不知特定分布的參數Θ = {μ, σ², λ, ...}，
+　　像是機率密度函數的平均數μ、變異數σ²、形狀參數λ、...
+
+二、統計學家習慣把已知與未知寫成條件機率。
+　　p( μ,σ,λ,... | x1,...,xN,f ) 或者 p( Θ | X,f )
+
+三、所謂最符合，就是機率越大越好。
+　　max p( μ,σ²,λ,...  | x1,...,xN,f ) 或者 max p( Θ | X,f )
+
+四、找到此時平均數θ、變異數σ、形狀參數λ是多少。
+　　argmax p( μ,σ²,λ,... | x1,...,xN,f ) 或者 argmax p( Θ | X,f )
+　　μ,σ²,λ,...                                  Θ
+
+五、雖然我們知道p函數一定存在，但是我們不知道p函數長什麼樣，無從計算。
+</pre>
+<p>Maximum Likelihood：找到其中一種分布參數，在此參數下，各個樣本的機率，乘積最大。</p>
+<pre>
+一、ML是找到其中一種分布參數，在此參數下，這堆樣本的機率最大。
+　　argmax f(X|Θ)
+　　  Θ
+
+二、推定樣本之間互相獨立、不互相影響，就可以套用乘法定理。
+　　argmax f(X|Θ)
+　　  Θ
+　= argmax [ f(x1|Θ) * ... * f(xN|Θ) ]
+　　  Θ
+
+三、取 log 將連乘化作連加。取 log 後最大值位置仍相同。
+　　argmax log f(X|Θ)
+　　  Θ
+　= argmax log [ f(x1|Θ) * ... * f(xN|Θ) ]
+　　  Θ
+　= argmax     [ log f(x1|Θ) + ... + log f(xN|Θ) ]
+　　  Θ
+
+四、求得函數log f(X, Θ)的最大值。
+</pre>
+<p>Maximum a Posterior：找到其中一種分布參數暨樣本，出現機率的乘積最大。</p>
+<pre>
+一、MAP是計算各個樣本暨各個分布參數的出現機率，令總乘積最大。
+　　argmax p(X,Θ)
+　　  Θ
+
+二、套用貝式定理
+　　argmax p(X,Θ) = argmax { p(X|Θ) * p(Θ) }
+　　  Θ               Θ
+
+三、推定樣本之間互相獨立、不互相影響，就可以套用乘法定理。
+　　argmax p(X,Θ) = argmax { p(X|Θ) * p(Θ) }
+　　  Θ               Θ
+　= argmax { f(x1|Θ) * ... * f(xN|Θ) * p(Θ) }
+　　  Θ
+
+四、後面都跟Maximum Likelihood的步驟完全一樣，多了一項 p(Θ) 而已。
+
+　　argmax log f(X,Θ) = argmax log { p(X|Θ) * p(Θ) }
+　　  Θ                   Θ
+　= argmax log { f(x1|Θ) * ... * f(xN|Θ) * p(Θ) }
+　　  Θ
+　= argmax     { log f(x1|Θ) + ... + log f(xN|Θ) + log p(Θ) }
+　　  Θ
+</pre>
+<p>MAP是ML的通例。ML假設各種分布參數的出現機率均等，呈uniform distribution。MAP更加仔細考慮分布參數的出現機率，不見得要均等。</p>
+<p class="t">Model Selection / Model Validation</p>
+<p><a href="https://en.wikipedia.org/wiki/Model_selection">https://en.wikipedia.org/wiki/Model_selection</a></p>
+<p><a href="http://en.wikipedia.org/wiki/Regression_model_validation">http://en.wikipedia.org/wiki/Regression_model_validation</a></p>
+<p>我要怎麼知道一開始選擇的分布是對的？我要如何判斷到訪時間比較像Gamma分布，或者比較像Poisson分布呢？</p>
+<p>這屬於統計學的範疇，就此打住。我沒有研究。似乎大家都是自由心證。</p>
+<pre>
+AIC = -2*ln(likelihood) + 2*k,
+BIC = -2*ln(likelihood) + ln(N)*k
+k = model degrees of freedom
+N = number of observations
+</pre>
+<p class="t">Bias / Variance</p>
+<p>假設一開始選定的分布是對的！如果不對，此段落沒啥好談。</p>
+<p>Bias是指「窮舉各種樣本組成，分別估計參數，所有結果的平均數」與「真實參數」的差值。</p>
+<p>Bias是衡量估計參數對不對的指標。不好的Estimator，可以證明估計參數鐵定失準。</p>
+<p>Variance就是變異數，此處我們是算「窮舉各種樣本組成，分別估計參數，所有結果的變異數」。</p>
+<p>Variance此處用來衡量估計參數的浮動範圍。我們希望對於奇葩的樣本組成，估計結果仍然差不多，浮動範圍越小越好。</p>
+<p>Bias和Variace是兩件事情。即便正確，還是可以有浮動範圍。</p>
+<p>仔細推導Bias和Variance的關係式。平方誤差的平均數，由Bias和Variance組成。完美的估計，令平方誤差達到極小值、為定值，而此時Bias和Variance此消彼長，魚與熊掌不可兼得。</p>
+<pre>
+mean square error = (bias)² + variance
+</pre>
+<p>儘管我們不可能知道真實參數是多少，不過卻可以得到魚與熊掌不可兼得的結論：無論採用哪種Estimator，Bias和Variance無法同時令人滿意。</p>
+<p class="t">演算法（樣本平均數、樣本變異數）</p>
+<p>經典的分布，估計平均數、變異數，採用Maximum Likelihood，一次微分等於零、二次微分大於零，推導公式解，公式解多半是所有樣本的「母體平均數」、「母體變異數」。母體二字常省略。</p>
+<pre>
+μ = (x₁ + ... + x<sub>N</sub>) / N
+σ² = [ (x₁ - μ)² + ... + (x<sub>N</sub> - μ)² ] / N
+</pre>
+<p>母體平均數沒有問題，其Bias等於零，證明省略。</p>
+<p>母體變異數則有問題，其Bias不是零，Maximum Likelihood不可靠。分母設定成N-1，其Bias才是零。證明省略。</p>
+<p>這稱做「樣本平均數」、「樣本變異數」。</p>
+<pre>
+<u>x</u> = (x₁ + ... + x<sub>N</sub>) / N
+s² = [ (x₁ - <u>x</u>)² + ... + (x<sub>N</sub> - <u>x</u>)² ] / (N-1)
+</pre>
+<p>另外補充一下。根據大數定律，當樣本無限多、樣本互相獨立（樣本隨機取得），則母體平均數趨近分布平均數。大可不必透過Maximum Likelihood。</p>
+<p>但是我查不到母體變異數趨近分布變異數的任何資料。</p>
+<p class="t">演算法（Expectation-Maximization Algorithm）</p>
+<p>經典的分布，諸如二項式分布、常態分布，估計時採用ML或MAP，可以推導確切的函數式子，甚至微分式子。運氣好，推導公式解；運氣差，套用最佳化演算法。</p>
+<p>專為ML和MAP設計的最佳化演算法，找到機率最大值。</p>
+<p><a href="http://www.seanborman.com/publications/EM_algorithm.pdf">http://www.seanborman.com/publications/EM_algorithm.pdf</a></p>
+<p><a href="http://www.cs.cmu.edu/~awm/10701/assignments/EM.pdf">http://www.cs.cmu.edu/~awm/10701/assignments/EM.pdf</a></p>
+<pre>
+一、凹（凸）函數定義可以寫成內插。
+　　內插之後函數值必然上升（下降）。
+　　註：凹函數的外觀是隨時向上凸，定義不太直覺。
+二、機率函數的期望值就是一種內插！
+　　如果機率函數是凹（凸）函數，
+　　想求極值，那就好辦，不斷求期望值即可！
+三、改變ML函數、移動log位置，變成一個凹函數。
+　　證明此凹函數小於等於原式，是ML函數的下界。
+四、凹函數求期望值、往上爬，函數值嚴格上升。
+　　ML函數的函數值必然同時跟著上升。
+五、根據現在位置，
+　　不斷求一個新的凹函數，不斷求期望值、往上爬。
+　　最後就會得到區域極值，類似Hill Climbing演算法。
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Normal Regression</p>
+</div><div class="c">
+<p class="t">Normal Distribution</p>
+<p>機率論課程有教，就不多介紹了。</p>
+<pre>
+            e<sup>-(k-μ)²/2σ²</sup>
+P(X = k) = ―――――――――――
+              √<u>2σ²</u>
+</pre>
+<p>若選定「<a href="http://en.wikipedia.org/wiki/Normal_distribution">Normal Distibution</a>」進行估計，參數μ為樣本平均數，參數σ^2為樣本變異數。</p>
+<p class="t">Linear Regression with Normal Error</p>
+<p><a href="http://www.robots.ox.ac.uk/~fwood/teaching/W4315_Fall2011/Lectures/lecture_3/lecture_3.pdf">http://www.robots.ox.ac.uk/~fwood/teaching/W4315_Fall2011/Lectures/lecture_3/lecture_3.pdf</a></p>
+<p>線性迴歸，迴歸函數添上誤差項，誤差項推定為常態分布。此即訊號學的「<a href="http://en.wikipedia.org/wiki/Additive_white_Gaussian_noise">Additive White Gaussian Noise</a>」。</p>
+<p>現在要盡量符合數據。由於迴歸函數含有常態分布，只好從迴歸改為估計，採用Maximum Likelihood。</p>
+<p>由於是經典分布，式子漂亮，得直接運用「一次微分等於零」，推導公式解。</p>
+<p>可以發現：添加誤差項、採用Maximum Likelihood實施估計，未添加誤差項、採用Least Squares實施迴歸，兩者結果恰好一致！</p>
+<p>也就是說：普通的線性迴歸，已經內建「誤差項呈常態分布」的效果！我們直接實施普通的線性迴歸即可，大可不必設定誤差項，自尋煩惱。</p>
+<p>網路上有人把這件事情解讀成：Maximum Likelihood是Least Squares的通例。雖然不那麼正確，但是也不能說完全錯誤。</p>
+<p class="t">Normal Regression</p>
+<p>換個角度解釋方才的事情。</p>
+<pre>
+一、每筆數據，最後一個維度，由不同的 1D Normal Distribution 產生。
+　　每筆數據，前面幾個維度，用於各個 1D Normal Distribution 的平均數 μ。
+二、推定各個 1D Normal Distribution 的平均數 μ 呈線性成長。
+　　μ = ax + b
+三、推定各個 1D Normal Distribution 的變異數 σ² 皆相同。
+</pre>
+<p>迴歸函數是線性函數，代表各個常態分布的平均數。</p>
+<p>為何我們迫令變異數皆相同呢？N+1個關係式（N筆數據、平均數線性成長）、N+1個未知數（N種平均數、一種變異數），得到唯一解。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Poisson Regression</p>
+</div><div class="c">
+<p class="t">Log-linear Model</p>
+<p><a href="http://en.wikipedia.org/wiki/Generalized_linear_model">http://en.wikipedia.org/wiki/Generalized_linear_model</a></p>
+<p>線性函數進行迴歸，容易推導公式解。於是統計學家以線性函數為基礎，產生各種函數。</p>
+<p>此處要使用的是log-linear model，取log之後是線性函數。</p>
+<pre>
+y = e<sup>ax + b</sup> , log(y) = ax + b
+</pre>
+<p class="t">Poisson Distribution</p>
+<p>機率論課程有教，就不多介紹了。</p>
+<pre>
+P(X = k) = λ<sup>k</sup> e<sup>-k</sup> / k!
+</pre>
+<p>若選定「<a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distibution</a>」進行估計，參數λ為樣本平均數。</p>
+<p class="t">Poisson Regression</p>
+<pre>
+一、每筆數據，最後一個維度，由不同的 1D Poisson Distribution 產生。
+　　每筆數據，前面幾個維度，用於各個 1D Poisson Distribution 的平均數 λ。
+二、推定各個 1D Poisson Distribution 的平均數 λ 呈指數成長。
+　　λ = e<sup>ax + b</sup> , log(λ) = ax + b
+</pre>
+<p>數據的維度可以推廣到三維以上。</p>
+<pre>
+2D: (x, f(x))           ==> λ = e<sup>ax + b</sup>
+3D: (x, y, f(x,y))      ==> λ = e<sup>ax + by + c</sup>
+4D: (x, y, z, f(x,y,z)) ==> λ = e<sup>ax + by + cz + d</sup>
+</pre>
+<p>數據可以分組。一組數據，共用一個Poisson Distribution。</p>
+<p><a href="http://biostat.tmu.edu.tw/page/tmudata/ch9.pptx">http://biostat.tmu.edu.tw/page/tmudata/ch9.pptx</a></p>
+<p>Poisson Regression推定平均數呈指數成長，符合真實世界的常見情況。當然也可以更換成別種成長方式。</p>
+<p class="t">演算法</p>
+<p>【待補文字】</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Logistic Regression</p>
+</div><div class="c">
+<p class="t">Logistic Function</p>
+<p>「<a href="http://en.wikipedia.org/wiki/Logistic_function">Logistic Function</a>」初始成長緩慢、中途成長迅速、飽和成長緩慢，是真實世界的常見情況。
+<p>「<a href="http://en.wikipedia.org/wiki/Logit">Logit Function</a>」是其反函數。</p>
+<p>此函數源於物流學，理應翻譯為「物流函數」，卻翻譯為「邏輯函數」。莫名奇妙。</p>
+<p class="t">Bernoulli Distribution</p>
+<p>擲一次硬幣，正面機率p，反面機率1-p。</p>
+<pre>
+P(X = 1) = p
+P(X = 0) = 1-p
+</pre>
+<p>若選定「<a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli Distribution</a>」進行估計，參數p為樣本平均數。注意到：數據只能是0或1。</p>
+<p class="t">Bernoulli Regression（Logistic Regression）</p>
+<p><a href="http://www.mc.vanderbilt.edu/gcrc/workshop_files/2004-11-12.pdf">http://www.mc.vanderbilt.edu/gcrc/workshop_files/2004-11-12.pdf</a></p>
+<pre>
+一、每筆數據，最後一個維度，由不同的 1D Bernoulli Distribution 產生。
+　　每筆數據，前面幾個維度，用於各個 1D Bernoulli Distribution 的出現機率 p。
+二、推定各個 1D Bernoulli Distribution 的出現機率 p 呈物流函數成長：
+　　p = 1/(1+e<sup>-(ax + b)</sup>)
+　　另一種解釋，推定其勝算（odds）呈指數成長：
+　　p/(1-p) = e<sup>ax + b</sup>
+　　另一種解釋，推定其Logit Function呈線性成長：
+　　log(p/(1-p)) = ax + b , log(p) - log(1-p) = ax + b
+</pre>
+<p class="t">演算法</p>
+<p>採用Maximum Likelihood，經過偏微分，可以找到某兩個式子成立時，有最大值。</p>
+<pre>
+http://www.real-statistics.com/logistic-regression/basic-concepts-logistic-regression/
+http://www.real-statistics.com/logistic-regression/finding-logistic-regression-coefficients-using-newtons-method/logistic-regression-using-newtons-method-detailed/
+</pre>
+<p>此二式難以推導公式解，故採用最佳化演算法Newton's Method。</p>
+<textarea>
+int x[10], y[10];
+double a, b;
+
+double p(int i, int d)
+{
+	double t = exp(a + b * x[i]);
+	if (d == 0)
+		return 1 - 1 / (1 + t);
+	else if (d == 1)	// d/da
+		return t / ((1+t)*(1+t));
+	else				// d/db
+		return x[i]*t / ((1+t)*(1+t));
+}
+
+double f(int k, int d)
+{
+	double res = 0;
+	for (int i = 0; i < 10; i++)
+		res += (p(i, d) - (d==0?y[i]:0)) * (k==0?1:x[i]);
+	return res;
+}
+
+void logistic_regression()
+{
+	// x0
+	a = 0; b = 0;
+
+	for (int k = 0; k < 50; k++)
+	{
+		// Jacobian matrix
+		double J[2][2] =
+		{
+			{ f(0,1), f(0,2) },
+			{ f(1,1), f(1,2) }
+		};
+
+		// Jacobian matrix inverse
+		double det = J[0][0] * J[1][1] - J[0][1] * J[1][0];
+		double invJ[2][2] =
+		{
+			{ J[1][1]/det, -J[1][0]/det },
+			{ -J[0][1]/det, J[0][0]/det }
+		};
+
+		// xn+1 = xn - inv(J(x)) * F(x)
+		double F[2] = { f(0,0), f(1,0) };
+		a -= (invJ[0][0] * F[0] + invJ[0][1] * F[1]);
+		b -= (invJ[1][0] * F[0] + invJ[1][1] * F[1]);
+	}
+
+	cout << a << b;
+}
+</textarea>
+<p class="e">UVa 10727</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Gaussian Process Regression</p>
+</div><div class="c">
+<p class="t">Gaussian Process Regression（Kriging）</p>
+<p>多項式內插，引入機率的概念，讓內插函數擁有浮動範圍。</p>
+<p><a href="http://en.wikipedia.org/wiki/Kriging">http://en.wikipedia.org/wiki/Kriging</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Estimation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:57 GMT -->
+</html>

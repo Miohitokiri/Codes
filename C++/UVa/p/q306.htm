@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q306: Cipher</h1>          
+<p>Bob和Alice開始使用一種全新的編碼策略。令人訝異的他們並未採用公開金鑰密碼系統（Public 
+Key Cryptosystem），而是採用秘密鍵（secret keys）的方式來編碼及解碼。在1996年2月16日在費城他們上次見面的時候，他們選定了他們的秘密鍵。這些秘密鍵是由1到n的整數所構成，但是排列的順序卻是他們任意挑選的。在編碼的時候採用以下的原則：</p>  
+<p>把要編碼的訊息（明文）寫在秘密鍵下面，每個字元與秘密鍵的一數字對齊。位於位置i的字元經編碼後其位置為 
+a<sub>i</sub>，a<sub>i</sub>為秘密鍵中第i個位置的值。明文中的每個字元編碼後就得到密文了。這密文還可以用同樣的策略再加密，經過了k次加密後他們交換他們的密文。</p>  
+<p>明文的長度一定小於等於n。如果明文的長度小於n，就在其後方加上空白字元使得其長度剛好為n。你的任務是幫助Bob和Alice寫一個程式讀入秘密鍵，以及k，以及一連串要加密的明文，然後輸出密文。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料，每組測試資料的第一列有一個整數n（0 
+&lt; n &lt;= 200），代表秘密鍵的長度。接下來的一列為秘密鍵，含有n個整數，內容為1到n的某種排列。再接下來的每列為k與明文，其中以一空白字元分隔。請注意：每列以換列符號(End 
+of Line)當作結束，但是換列符號不列入明文。當遇到k=0的一列時代表此組測試資料結束。另外，k可能相當大（但是不會超出C語言中int的範圍），所以請注意你程式的演算法，否則可能導致Time 
+Limit Exceeded.</p>    
+<p>當遇到n=0時代表整個輸入結束。請參考Sample Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料中的每列明文，輸出加密後的密文（長度一定為n）。每組測試資料後請空一列。請參考Sample 
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>10
+4 5 3 7 2 8 1 6 10 9
+1 Hello Bob
+2 Hello Bob
+1995 CERC
+0
+5
+1 2 3 5 4
+1 Hello
+0
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>BolHeol  b
+lelBo Hob 
+C RCE     
+
+Helol</pre>
+                            
+</body>                            
+                            
+</html>                            

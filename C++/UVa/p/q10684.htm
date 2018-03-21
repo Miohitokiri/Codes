@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0046)http://www2.dmhs.kh.edu.tw/homework/q10706.htm -->
+<HTML><HEAD><TITLE></TITLE>
+<META http-equiv=Content-Type content="text/html; charset=big5">
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1 align=center>Q10684: The jackpot</H1>
+<p>有一個人想要快速的致富而且不用太辛苦工作，他決定要在以賭場作為生涯職場。所以他開始研究別的賭客輸贏的情況，這樣他才能制訂一個贏的策略。由於他不懂電腦，所以他雇用你寫一個程式來幫助他。</p>       
+<p>你首先的任務是寫一個程式在一連串的賭局中辨識出連續的賭局最大可能贏的錢。每場賭局以一個整數來表示贏或輸的金額。正數代表贏，負數代表輸。例如：有6局賭局金額如下：</p>       
+<p>-99&nbsp; 10&nbsp; -9&nbsp; 10&nbsp; -5&nbsp; 4</p>       
+<p>連續的賭局最大可能贏的錢為 11，出現在第2,3,4這連續三局中。</p>       
+<P style="BACKGROUND-COLOR: #ffff00" align=left><SPAN         
+style="BACKGROUND-COLOR: #ffff00"><B>Input</B></SPAN></P>        
+<P>每組測試資料的第一列有一個正整數 N &lt;= 10000&nbsp;，代表數列的長度。接下來有N個整數（絕對值小於1000），代表這N局賭局輸贏的金額。</P>         
+<P>當N= 0 代表輸入結束。請參考Sample Input。</P>          
+<P style="BACKGROUND-COLOR: #ffff00" align=left><SPAN           
+style="BACKGROUND-COLOR: #ffff00"><B>Output</B></SPAN></P>          
+<P>對每組測試資料輸出一列，在這N局賭局中，連續的賭局最大可能贏的錢是多少。</P>         
+<P>如果輸入的資料不可能贏錢，則輸出 &quot;Losing streak.&quot;</P>         
+<P>輸出格式請參考Sample Output。</P>         
+<TABLE cellPadding=5 width="100%" border=1>         
+  <TBODY>         
+  <TR>         
+    <TD width="35%" bgColor=#00ff00><B>Sample Input</B></TD>              
+    <TD width="65%" bgColor=#00ff00><B>Sample Output</B></TD></TR>              
+  <TR>              
+    <TD width="35%">              
+      <pre>6
+-99 10 -9 10 -5 4
+3
+-999 100 -9
+5
+12 -4 
+-10 4 
+9
+3
+-2 -1 -2
+0
+</pre>
+    </TD>          
+    <TD width="65%">          
+             
+      <pre>The maximum winning streak is 11.
+The maximum winning streak is 100.
+The maximum winning streak is 13.
+Losing streak.
+
+
+
+
+
+</pre>
+    </TD></TR></TBODY></TABLE></BODY></HTML>           

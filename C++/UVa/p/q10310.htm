@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10310: Dog and Gopher</h1>          
+<p>在田野中有一隻田鼠和一隻狗。狗想要吃掉田鼠，而田鼠則要儘速的逃進鼠洞中（田表面有許多鼠洞）。狗和田鼠都不是數學專家，但是也都不笨。當田鼠決定了某一個鼠洞後，就以一定的速度直線的跑去。而狗則非常擅長解讀肢體語言，當他一知道田鼠要往那個洞跑，就以田鼠2倍的速度直線奔去，想要抓住田鼠。假如狗先到達那個洞，田鼠就會被吃掉，否則，田鼠就可安全逃走。</p>  
+<p>你必須幫田鼠選一個洞，使他可以逃離狗的魔掌（如果這樣的洞存在的話）。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入包含好幾組測試資料，每組測試資料的第1列有一個整數n和4個浮點數x<sub>gopher</sub>,y<sub>gopher</sub>,x<sub>dog</sub>,y<sub>dog</sub>。n（n   
+&lt;= 1000）代表本組測試資料有多少個鼠洞，4個浮點數（均介於-10000及+10000之間）代表田鼠及狗的x-y座標。接下來的n列，每列有2個浮點數，代表每個鼠洞的座標。（所有的浮點數都到小數點後3位）</p>   
+<p>測試資料間有一空白列。請參考Sample Input</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料輸出一列。如果田鼠可以逃走，請輸出<span style="mso-bookmark: SECTION00011000000000000000"><b style="mso-bidi-font-weight: normal">&quot;</b></span><a name="SECTION00011000000000000000"><b style="mso-bidi-font-weight: normal">The 
+gopher can escape through the hole at (<i>x</i></b></a><span style="mso-bookmark: SECTION00011000000000000000" class="GramE"><b style="mso-bidi-font-weight: normal">,<i>y</i></b></span><span style="mso-bookmark: SECTION00011000000000000000"><b style="mso-bidi-font-weight: normal">).&quot;</b></span>。(x,y)是某一個洞的座標。如果田鼠無法逃走，請輸出<b style="mso-bidi-font-weight: normal">&quot;The   
+gopher cannot escape.&quot;</b></p>   
+<p>請注意：如果田鼠可以從不只一個洞逃走，請輸出在輸入中最前的洞。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                        
+Input</b></span></p>                              
+<pre>1 1.000 1.000 2.000 2.000
+1.500 1.500
+ 
+2 2.000 2.000 1.000 1.000
+1.500 1.500
+2.500 2.500</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>The gopher cannot escape.
+The gopher can escape through the hole at (2.500,2.500).</pre> 
+                            
+</body>                            
+                            
+</html>                            

@@ -1,0 +1,394 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/ConvexHull.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:16 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Convex Hull</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Convex Hull</p>
+</div><div class="c">
+<p class="t">Convex Hull</p>
+<p>中譯「凸包」或「凸殼」。在多維空間中有一群散佈各處的點，「凸包」是包覆這群點的所有外殼當中，表面積暨容積最小的一個外殼，而最小的外殼一定是凸的。</p>
+<img src="ConvexHull1.png">
+<blockquote>
+p = RandomInteger[10, {50, 3}]; Show[HighlightMesh[ConvexHullMesh[p], {Style[1, Black, Thick], Style[2, Opacity[0.7]]}], Graphics3D[{PointSize[0.03], Point[p]}]]
+</blockquote>
+<p>至於「凸」的定義是：圖形內任意兩點的連線不會經過圖形外部。「凸」並不是指表面呈弧狀隆起，事實上凸包是由許多平坦表面組成的。</p>
+<img src="ConvexHull2.png">
+<p>以下討論比較簡單的情況：替二維平面上散佈的點，找到凸包。</p>
+<p>二維平面上的凸包是一個凸多邊形，在所有點的外圍繞一圈即得凸包。另外，最頂端、最底端、最左端、最右端的點，一定是凸包上的點。</p>
+<img src="ConvexHull3.png">
+<p>計算凸包時需考慮一些特殊情況：一、凸包上多點重疊；二、凸包上多點共線；三、凸包呈一條線段、一個點、沒有點。通常我們會簡化資訊，以最少的點來記錄凸包，去掉重疊、共線的點。</p>
+<p class="e">UVa 109 132 218 361 596 675 681 811 819 10002 10065 10078 10135 10173 10256 10625 11168 11626 ICPC 4450</p>
+<p class="e">UVa 802 10089 ICPC 7585</p>
+<p class="t">任意圖形的凸包</p>
+<p>任意圖形都能求出凸包。例如一個多邊形的凸包、大量三角形的凸包、大量線段的凸包。這些問題都可以簡化為一群點的凸包。</p>
+<img src="ConvexHull4.png">
+<p>圓形、曲線的凸包，我們以下不討論。</p>
+<img src="ConvexHull5.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Jarvis' March（Gift Wrapping Algorithm）</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<img src="Jarvis%27March1.png">
+<p>從一個凸包上的頂點開始，順著外圍繞一圈，順時針或逆時針都可以。</p>
+<p>每當尋找下一個要被包覆的點，則窮舉平面上所有點，找出最外圍的一點來包覆。可以利用叉積運算來判斷。</p>
+<p>時間複雜度為O(N*M)，N為所有點的數目，M為凸包的頂點數目。</p>
+<textarea>
+// P為平面上散佈的點。設定為10點。
+// CH為凸包上的頂點。設定為逆時針方向排列。
+struct Point {int x, y;} P[10], CH[10];
+
+// 小於。用以找出最低最左邊的點。
+bool compare(const Point& a, const Point& b)
+{
+	return (a.y < b.y) || (a.y == b.y && a.x < b.x);
+}
+
+// 向量OA叉積向量OB。大於零表示從OA到OB為逆時針旋轉。
+int cross(Point& o, Point& a, Point& b)
+{
+	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+}
+
+// 兩點距離的平方
+int length2(Point& a, Point& b)
+{
+	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+}
+
+// 以o點作為中心點，a點比較遠，b點比較近。
+bool far(Point& o, Point& a, Point& b)
+{
+	return length2(o, a) > length2(o, b)
+}
+
+void Jarvis_march()
+{
+	/* 起點必須是凸包上的頂點。這裡用最低最左邊的點作為起點。 */
+
+	int start = 0;
+	for (int i=0; i<10; ++i)
+		if (compare(P[i], P[start]))
+			start = i;
+
+	/* 包禮物，逆時針方向。 */
+	int m = 0;			// m 為凸包頂點數目
+	CH[m] = P[start];	// 記錄起點
+
+	for (int m=1; true; ++m)
+	{
+		/* 找出位於最外圍的一點，若凸包上有多點共線則找最遠的一點。 */
+
+		int next = start;
+		for (int i=0; i<10; ++i)
+		{
+			int c = cross(CH[m-1], P[i], P[next]);
+			if (c > 0 ||
+				c == 0 && far(CH[m-1], P[i], P[next]))
+				next = i;
+		}
+
+		if (next == start) break;	// 繞一圈後回到起點了
+		CH[m] = P[next];			// 記錄方才所找到的點
+	}
+}
+</textarea>
+<p>實作時請多多運用指標、索引值，儘量避免搬動原本資料。此處的程式碼是不良示範，僅供參考。</p>
+<p>如果想找出凸包上重疊的點與共線的點，則改為尋找離上一點最近的點，並且標記目前已包過的點。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Graham's Scan</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>由前面章節可知：凸包上的頂點很有順序的沿著外圍繞行一圈，這個順序是時針順序。</p>
+<p>Graham's Scan嘗試先將所有點依照時針順序排好，再來做繞行一圈的動作，繞行途中順便掃除凸包內部的點，如此就不必以窮舉所有點的方式來尋找最外圍的點。<p>
+<img src="Graham%27sScan1.png">
+<p>要讓所有點依照時針順序排好，只要將中心點設定在凸包內部或者凸包上，然後讓各點依照角度排序即可。如果把中心點設定在凸包外部，結果就不見得是時針順序了。包覆時必須按照時針順序，才能確保結果正確。</p>
+<img src="Graham%27sScan2.png">
+<p>一般來說，選擇凸包上的頂點當作中心點是比較好的，因為角度排序時的夾角皆小於180°，可以使用叉積運算來排序（大於180°叉積得負值、等於180°叉積等於零，導致排序錯誤）。另一個好處是，中心點也可以作為包覆的起點。</p>
+<img src="Graham%27sScan3.png">
+<p>角度排序時，遇到角度相同的情況，要小心排序。通常是讓距離中心點較近的點排前面。也可以排後面，但是不能亂排。</p>
+<img src="Graham%27sScan4.png">
+<p>掃除的過程當中，經常株連許多點。使用stack資料結構來儲存凸包，逐一判斷stack頂端的點，逐一彈出凹陷的點。凹陷的點必定不是凸包上的頂點。</p>
+<img src="Graham%27sScan5.png">
+<textarea>
+// P為平面上散佈的點。設定為10點。
+// CH為凸包上的頂點。設定為逆時針方向排列。可以視作一個stack。
+struct Point {int x, y;} P[10+1], CH[10+1];
+
+// 向量OA叉積向量OB。大於零表示從OA到OB為逆時針旋轉。
+int cross(Point& o, Point& a, Point& b)
+{
+	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+}
+
+// 小於。用以找出最低最左邊的點。
+bool compare_position(const Point& a, const Point& b)
+{
+	return (a.y < b.y) || (a.y == b.y && a.x < b.x);
+}
+
+/*
+// 小於。以P[0]當中心點做角度排序，角度由小排到大（即逆時針方向）。
+// 角度相同時，順序隨便。
+bool compare_angle(const Point& a, const Point& b)
+{
+	return cross(P[0], a, b) > 0;
+}
+*/
+
+// 小於。以P[0]當中心點做角度排序，角度由小排到大（即逆時針方向）。
+// 角度相同時，距離較離中心點較近的點排前面。
+bool compare_angle(Point& a, Point& b)
+{
+	// 加入角度相同時，距離長度的判斷。
+	int c = cross(P[0], a, b);
+	return c > 0 ||
+			(c == 0 && length2(P[0], a) < length2(P[0], b));
+}
+
+void Graham_scan()
+{
+	// 這裡用最低最左邊的點作為起點，並將中心點換到第零點。O(N)
+	swap(P[0], *min_element(P, P+10, compare_position));
+
+	// 其餘各點依角度排序。O(NlogN)
+	sort(P+1, P+10, compare_angle);
+
+	// 直接把中心點作為起點，開始包覆，逆時針方向。O(N)
+	P[N] = P[0];	// 讓程式方便處理包至最後一點的情況。
+
+	int m = 0;		// m 為凸包頂點數目
+	for (int i=0; i<=10; ++i)
+	{
+		// 掃除凹陷的點
+		while (m >= 2 && cross(CH[m-2], CH[m-1], P[i]) <= 0) m--;
+		// 添加新的點
+		CH[m++] = P[i];
+	}
+
+	m--;	// 最後一個點是重複出現的起點，故要減一。
+}
+</textarea>
+<p>如果想找出凸包上重疊的點、共線的點，必須特別小心處理剛開始包、快包好時那些重疊的點、共線的點。一種解決方式是：從最低最左點開始，分頭往左右兩邊包，包至最高最右點。相當麻煩。</p>
+<img src="Graham%27sScan6.png">
+<p>至於凸包退化成線段或點的情況，則更難解決，此處不討論。</p>
+<p>總而言之，此演算法無法漂亮的解決多點共線的問題。</p>
+<p class="t">時間複雜度</p>
+<p>尋找起點的時間O(N)。加上排序的時間O(NlogN)。加上包覆的時間O(N)：總共前進N次，最多倒退N次，共為2N次。</p>
+<p>全部加起來是O(NlogN)，主要取決於排序的時間。</p>
+<p class="t">星狀多邊形</p>
+<p>星狀多邊形（star-shaped polygon）的定義是：多邊形內部存在一個點，可以看到整個多邊形內部。也就是說，星狀多邊形可以直接依照連接順序包覆，不必再做角度排序。</p>
+<img src="Graham%27sScan7.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Andrew's Monotone Chain</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>前面章節採用時針順序，此處改為座標順序。以X座標大小排序，當X座標相同則以Y座標大小排序。</p>
+<img src="Andrew%27sMonotoneChain1.png">
+<p>先從起點開始，按照順序掃描，找到下半凸包。再從終點開始，按照相反順序掃描，找到上半凸包。合起來就是完整的凸包。</p>
+<img src="Andrew%27sMonotoneChain2.png">
+<p>一口氣解決了凸包有重疊的點、共線的點、退化成線段和點的問題，是相當優美的演算法。</p>
+<p>時間複雜度為排序的時間O(NlogN)，加上包覆的時間O(N)。總共是O(NlogN)。</p>
+<textarea>
+// P為平面上散佈的點。設定為10點。
+// CH為凸包上的頂點。設定為逆時針方向排列。可以視作一個stack。
+struct Point {int x, y;} P[10], CH[10+1];
+
+// 向量OA叉積向量OB。大於零表示從OA到OB為逆時針旋轉。
+double cross(Point& o, Point& a, Point& b)
+{
+	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+}
+
+// 小於。依座標大小排序，先排 x 再排 y。
+bool compare(Point& a, Point& b)
+{
+	return (a.x < b.x) || (a.x == b.x && a.y < b.y);
+}
+
+void Andrew_monotone_chain()
+{
+	// 將所有點依照座標大小排序
+	sort(P, P+10, compare);
+
+	int m = 0;	// m 為凸包頂點數目
+
+	// 包下半部
+	for (int i=0; i<10; ++i)
+	{
+		while (m >= 2 && cross(CH[m-2], CH[m-1], P[i]) <= 0) m--;
+		CH[m++] = P[i];
+	}
+
+	// 包上半部，不用再包入方才包過的終點，但會再包一次起點
+	for (int i=10-2, t=m+1; i>=0; --i)
+	{
+		while (m >= t && cross(CH[m-2], CH[m-1], P[i]) <= 0) m--;
+		CH[m++] = P[i];
+	}
+
+	m--;	// 最後一個點是重複出現兩次的起點，故要減一。
+}
+</textarea>
+<textarea>
+// 點、下凸包、上凸包
+struct Point {int x, y;} P[10], L[10], U[10];
+
+void Andrew_monotone_chain()
+{
+	sort(P, P+10, cmp);
+
+	int l = 0, u = 0;	// 下凸包的點數、上凸包的點數
+	for (int i=0; i<10; ++i)
+	{
+		while (l >= 2 && cross(L[l-2], L[l-1], P[i]) <= 0) l--;
+		while (u >= 2 && cross(U[u-2], U[u-1], P[i]) >= 0) u--;
+		L[l++] = P[i];
+		U[u++] = P[i];
+	}
+}
+</textarea>
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Quick Hull Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<img src="QuickHullAlgorithm1.png">
+<img src="QuickHullAlgorithm2.png">
+<img src="QuickHullAlgorithm3.png">
+<pre>
+一、找出最左點與最右點，連線，所有點分為上半部與下半部。
+　　上半部與下半部分開求解。
+二、處理上半部，找出上半凸包：
+　甲、找到距離底線最遠的點，形成一個三角形區域。
+　　　（如果有許多點，就找最靠近左端點的那一點。避免凸包上多點共線。）
+　乙、運用叉積運算，找出三角形外部的點，分為左、右兩份。
+　　　至於三角形內部、三角形上的點，不會是凸包頂點，盡數剔除之。
+　丙、左、右兩份分別遞迴求解，直到找出上半凸包。
+　　　三角形的兩翼，分別做為左、右兩份的底線。
+三、處理下半部，找出下半凸包。
+</pre>
+<p>儘管時間複雜度是O(N^2)，卻是實務上最有效率的演算法。此演算法的好處是：預先剔除凸包內部大部分的點，而且不必預先排序所有點。</p>
+<p>排序的時間複雜度是O(NlogN)，空間複雜度是O(N)。當點的數量很大時，例如一千萬，時間約是一千萬的23倍。又由於記憶體不足，必須採用外部排序，需要更多時間。</p>
+<p>此演算法一開始掃描一次所有點，找到三角形外部的點，時間約是一千萬的1倍。如果三角形外部的點很少，例如一千點，那麼接下來的步驟得以節省許多時間。因此，總時間通常遠低於一千萬的23倍。</p>
+<p>遞迴呼叫函數很花時間。當遞迴一兩次後，點數變少，此時可以直接套用其他凸包演算法，節省時間，例如Andrew's Monotone Chain。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Divide and Conquer</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<pre>
+一開始將所有點以X座標位置排序。
+Divide：將所有點分成左半部和右半部。
+Conquer：左半部和右半部分別求凸包。
+Combine：將兩個凸包合併成一個凸包。
+</pre>
+<img src="ConvexHullD%26C1.png">
+<p>合併凸包，找到兩條外公切線即可。從左凸包最右點、右凸包最左點開始，固定左端順時針轉、固定右端逆時針轉，輪流前進直到卡死，就得到下公切線，時間複雜度為O(N)。</p>
+<img src="ConvexHullD%26C2.png">
+<p>注意到，下公切線並不見得是左右兩凸包的最低點連線，所以就算一開始抓的是左右凸包的最低點，運氣不好時，仍需要O(N)時間才能找到下公切線。況且抓最低點有可能已經衝過頭了。</p>
+<img src="ConvexHullD%26C3.png">
+<p>附帶一提，內公切線也可如法炮製，改為從左凸包最左點、右凸包最右點開始。如果一個取內側、一點取外側，找公切線有可能衝過頭。</p>
+<img src="ConvexHullD%26C4.png">
+<p>正確性證明：找外公切線的過程中絕對不會與兩凸包相交、找內公切線的過程中一定會與兩凸包相交，卡死時即是相交與不相交的分際，分際即是公切線。</p>
+<p>時間複雜度為下述兩項總和：一、一次排序的時間，通常為O(NlogN)；二、Divide and Conquer向下遞迴O(logN)深度，合併凸包需要O(N)時間，總共為O(NlogN)。</p>
+<p class="t">不預先排序</p>
+<p>一開始可以不必排序，只要把所有點分成兩等份即可。兩個凸包合併成一個凸包時，兩個凸包可能會重疊，仍然可以用O(N)時間解決，不過演算法較複雜，此處省略之。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Incremental Method</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>這是online演算法，隨時維護一個凸包。每當輸入一點，如果此點在凸包內部就直接捨棄；不然就計算此點與當前凸包的兩條切線，然後更新凸包。</p>
+<img src="ConvexHullOnline1.png">
+<p>要找切線，窮舉切點即可。切點的左右鄰點都在切線同側，反之則否，判斷僅需O(1)時間。要小心切線與邊重疊的情況。</p>
+<img src="ConvexHullOnline2.png">
+<p>凸包的資料結構採用circular list，找到兩個切點後，移除其間的連續凹點僅需O(1)時間。總時間複雜度是O(N^2)。</p>
+<p class="t">改進</p>
+<p>換個角度想，想要找到新凸包，直接窮舉新凸包的頂點不就好了？</p>
+<img src="ConvexHullOnline2.png">
+<p>以試誤法嘗試舊凸包的每個頂點。以當前輸入點為基準，若為凸面、切點，則留下；若為凹面，則捨棄。最後就得到新凸包。</p>
+<p>如此一來就不需要特殊資料結構了。時間複雜度是O(N^2)。</p>
+<p class="t">加速</p>
+<p>以當前輸入點為基準，切點的一側是凸面，另一側是凹面，切點恰為凹凸分際。故可用Binary Search找切點。</p>
+<p>凸包的資料結構可以採用Splay Tree，找切點、移除連續頂點僅需O(logN)均攤時間。總時間複雜度是O(NlogN)。</p>
+<p>Splay Tree作排序時，可以參考凸包最左下點，以角度排序。</p>
+<p class="t">預先排序</p>
+<p>預先按照XY座標排序所有點（平移的掃描線），此演算法便與Andrew's Monotone Chain大同小異，時間複雜度為O(NlogN)。</p>
+<p>預先排序之後，當前輸入點必在凸包外部（點不重複時）、必有兩條切線。</p>
+<p class="t">預先隨機排列</p>
+<p>隨機排列、排序，兩者概念相反。</p>
+<p>預先隨機排列所有點，則第i回合固定新增兩點、平均掃描N/i點，平均時間複雜度為O(NlogN)。推廣到三維空間仍然如此。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull: Chan's Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<img src="Chan%27sAlgorithm1.png">
+<p>原理是Trial and Error與Divide and Conquer。</p>
+<pre>
+一、假設凸包最多有M個點。
+二、使用試誤法，依序嘗試2^(2^0)、2^(2^1)、2^(2^2)、……這些數值作為M。
+　甲、每M個點為一組，所有點被分作⌈N/M⌉組。
+　　　O(N)。
+　乙、每一組各自求凸包，一共得到⌈N/M⌉個凸包。《Graham's Scan》
+　　　O(MlogM * ⌈N/M⌉) = O(NlogM)。
+　丙、嘗試求出這些凸包的凸包。《Jarvis' March》
+　　　O(3 * ⌈N/M⌉ * M) = O(N)。
+　　子、每個凸包各用一個指標，指著各自的最低點。
+　　　　O(N)。
+　　丑、找出所有凸包的最低點，從最低點開始包覆。
+　　　　O(N)。
+　　寅、每當尋找下一個要被包覆的點：
+　　　回、各凸包各自找出最靠外面的一點，一共得到⌈N/M⌉個點。
+　　　　　由指標處繼續往後找，指標只進不退。要預覽下一點。
+　　　　　O(3 * ⌈N/M⌉)，均攤。
+　　　回、再從這⌈N/M⌉個點當中，看看哪一點最靠外面。
+　　　　　O(⌈N/M⌉)。
+　　卯、若包了M個點還未形成凸包，則馬上停止，回到步驟二！
+　　　　如果途中形成凸包，即是正解。演算法結束。
+</pre>
+<p class="t">時間複雜度</p>
+<p>步驟二的時間複雜度是O(NlogM)，M每次都不同。對M進行試誤時，謹慎的選擇M的數值，可以將所有步驟二的時間複雜度總和，強壓在O(NlogM)以內。</p>
+<pre>
+對M進行試誤時，
+用0、1、2、……、M，整體的時間複雜度為：
+O(Nlog0 + Nlog1 + Nlog2 + ... + NlogM) = O(N * logM * M)
+
+用2^0、2^1、2^2、……、M，整體的時間複雜度為：
+O(N*0 + N*1 + N*2 + ... + NlogM) = O(N * logM * logM)
+
+用2^(2^0)、2^(2^1)、2^(2^2)、……、M，整體的時間複雜度為：
+O(N*1 + N*2 + N*4 + ... + NlogM) = O(N * logM)
+
+用N，直接就找到答案，不過整體的時間複雜度，不是我們所要的：
+O(NlogN)
+</pre>
+<p>選擇M的原理，其實就是「<a href="SequenceManipulation.html">倍增搜尋</a>」。</p>
+<p>總時間複雜度是O(NlogM)，N為所有點的數目，M為凸包的頂點數目，是目前時間複雜度最低的演算法。然而實際執行起來，比先前介紹的演算法來得慢。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Hull of Simple Polygon: Melkman's Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>求出一簡單多邊形的凸包。</p>
+<p><a href="http://cgm.cs.mcgill.ca/~athens/cs601/Melkman.html">http://cgm.cs.mcgill.ca/~athens/cs601/Melkman.html</a></p>
+<p>時間複雜度為O(N)。是相當優美的演算法。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Layers</p>
+</div><div class="c">
+<p class="t">Convex Layers（Onion）</p>
+<p>由外往內，一層一層的凸包，每一層都是一個Convex Layer。全部的Convex Layer合稱為一個「洋蔥」。</p>
+<img src="ConvexLayers1.png">
+<p>最內部的Convex Layer可能退化成一個點或是一條線段。</p>
+<img src="ConvexLayers2.png">
+<p class="t">演算法</p>
+<p>使用Jarvis' March一直繞圈，時間複雜度為O(N^2)。</p>
+<p>排序所有點之後，不斷找出剩餘諸點的凸包，最多找O(N)次凸包。可以採用Graham's Scan或者Andrew's Monotone Chain。總時間複雜度為O(NlogN) + O(N^2) = O(N^2)。</p>
+<p class="e">ICPC 3655</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/ConvexHull.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:10:35 GMT -->
+</html>

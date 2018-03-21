@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q272: TeX Quotes</h1>          
+<p align="right">原翻譯者：untitled
+<p>TeX 是一種由 Donald Knuth 
+所發展出的一套文書排版軟體。這套軟體可以將原始文件檔加上一些像字型等型態後，轉成一份很漂亮的文件。而一份漂亮的文件是需要用 
+`` 和 &quot; 
+來把別人說的話給「引」出來，而不是用大部份鍵盤上有的 <tt>&quot;</tt> 
+。雖然鍵盤裡通常不會有這種有方向的雙引號鍵，不過上面有左單引號 
+<tt>`</tt> （有人叫 backquote ），和右單引號 <tt>'</tt> （有人叫 
+apostrophe 或 quote 
+）。你可以在你的鍵盤上找一下，不過要小心不要將 <tt>`</tt> 
+與 <code>\</code> （ backslash 鍵）搞混了。而在 TeX 
+裡，使用者可以輸入兩個左單引號 <tt>``</tt> 
+來構成一個左雙引號 `` ，或者是兩個右單引號 <tt>''</tt> 
+來構造一個右單引號 '' 
+，不過呢，通常大家打字時都很習慣用普通的雙引號 <tt>&quot;</tt> 
+來引述別人的話。
+<p>如果原始文件檔內容是：
+<p><tt>&quot;To be or not to be,&quot; quoth the bard, &quot;that is the 
+question.&quot;</tt>
+<p>則 TeX 作出來的文件並不會是我們所想要的：
+<p>``To be or not to be,&quot; quoth the bard, ``that is the question.&quot;
+<p>為了要得到上面的文件，我們需要把原始文件變成這個樣子：
+<p><tt>``To be or not to be,'' quoth the bard, ``that is the question.''</tt>
+<p>你現在必須要寫一個程式，將普通的雙引號（<tt>&quot;</tt>），轉成有方向性的雙引號，而其它文字則不變。而在把普通的雙引號換掉的時候，要特別注意，當要開始引述一句話時要用 
+<tt>``</tt> ，而結束引述時要用 <tt>''</tt> 
+。不用擔心會有多層巢狀引號的情形，也就是第一個引號一定是用 
+<tt>``</tt> 來代替，再來用 <tt>''</tt>，然後用 <tt>``</tt> 
+，接著用 <tt>''</tt> ，依此類推。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input 
+and Output</b></span></p>               
+<p>輸入是若干列的文字，其中有偶數個雙引號（ <tt>&quot;</tt> 
+），以 end-of-file 
+做結束。輸出的文字必須和輸入的一模一樣，除了：
+<ul>
+  <li>每一組雙引號的第一個 <tt>&quot;</tt> 必須用兩個 <tt>`</tt> 
+    字元（就是 <tt>``</tt> ）來代替
+  <li>每一組雙引號的第二個 <tt>&quot;</tt> 必須用兩個 <tt>'</tt> 
+    字元（ 就是 <tt>''</tt>）來代替。</li>
+</ul>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                              
+Input</b></span></p>                              
+<pre>&quot;To be or not to be,&quot; quoth the Bard, &quot;that
+is the question&quot;.
+The programming contestant replied: &quot;I must disagree.
+To `C' or not to `C', that is The Question!&quot;</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>``To be or not to be,'' quoth the Bard, ``that
+is the question''.
+The programming contestant replied: ``I must disagree.
+To `C' or not to `C', that is The Question!''</pre>
+                            
+</body>                            
+                            
+</html>                            

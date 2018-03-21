@@ -1,0 +1,1726 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Audio.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:22:44 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Audio</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Audio</p>
+</div><div class="c">
+<p class="t">Audio</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/eKFTSSKCzWA"></iframe>--></div>
+<p>感受「聲音sound」是人類的本能。音樂、說話、風吹草動蟲鳴鳥叫等等聲響，都是「聲音sound」。</p>
+<p>與科技裝置有關係的聲音，則稱作「聲音audio」。電視播放的聲音、電話通話的聲音等等，都是「聲音audio」。</p>
+<p class="t">Sample</p>
+<p>聲音源自振動。耳膜感受空氣振動，在腦中產生聲覺。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/qgdqp-oPb1Q"></iframe>--></div>
+<p>要讓電腦處理聲音，必須預先讓聲音變成數字，也就是讓聲音經過「取樣sampling」與「量化quantization」兩個步驟。取樣把時間變成離散，量化把振幅變成離散。</p>
+<p>先取樣（得到數列），再量化（四捨五入），最後得到一串整數數列。每個數字稱作「樣本sample」或「訊號signal」。</p>
+<img src="Audio1.png">
+<p>「取樣sampling」與「量化quantization」的關鍵參數：</p>
+<p>duration持續時間：聲音總共多少秒。數值越高，訊號越多。</p>
+<p>sampling rate取樣頻率：一秒鐘有多少個訊號。數值越高，音質越好。電腦的聲音檔案，通常採用48000Hz或44100Hz。手機與電話的聲音傳輸，公定為8000Hz。</p>
+<p>bit depth位元深度：一個訊號用多少個位元記錄。數值越高，音質越好。電腦的聲音檔案，通常採用16-bit或24-bit。16-bit的每個訊號是[-32768,+32767]的整數，符合C語言的short變數。</p>
+<p>channel聲道：同時播放的聲音訊號總共幾條。每一條聲音訊號都是一樣長。舉例來說，民眾所熟悉的雙聲道，其實就是同時播出兩條不同的聲音訊號。</p>
+<p>取樣頻率、持續時間、聲道，相乘之後就是訊號數量。再乘以位元深度，就是容量大小。再除以8，可將單位換成byte。</p>
+<p>順帶一提，不管是聲音或者是其他信息，只要是經過取樣與量化得到的資料，總稱PCM data。「脈衝編碼調變pulse-code modulation, PCM」源自訊號學，所以名稱才會如此不直覺。</p>
+<p class="t">Audio的資料結構</p>
+<p>在電腦當中，聲音是很多串整數數列，資料結構是陣列。</p>
+<textarea>
+short pcm[96000];
+// duration = 1 second
+// sampling rate = 48000Hz
+// bit depth = 16-bit
+// channel = 2 (stereo)
+</textarea>
+<p>各種聲音資料的取樣頻率和時間長度不盡相同。統合方式：動態陣列、可變長度陣列。</p>
+<textarea>
+int chn = 2;			// channel
+int fs = 48000;			// sampling rate (times/second)
+int t = 1;				// duration      (second)
+int n = fs * t * chn;	// sample number (times)
+// C++的可變長度陣列
+short pcm[n];
+// C++的動態陣列，用完記得delete
+short* pcm = new short[n];
+// C的動態陣列，用完記得free
+short* pcm = malloc(sizeof(short) * n);
+</textarea>
+<p>各種聲音資料的位元深度不盡相同。統合方式：採用32-bit浮點數，讀檔後將訊號數值縮放成[-1,+1]，才進行聲音處理；存檔前調回原本範圍。</p>
+<textarea>
+float array1[fs * t];	// [-1, +1]
+float array2[fs * t];	// [-1, +1]
+</textarea>
+<p class="t">Amplitude</p>
+<p>聲音訊號的數值，代表空氣振動的幅度。基準訂為0，範圍訂為±32767（當位元深度是16-bit）。<a href="http://blog.bjornroche.com/2009/12/int-float-int-its-jungle-out-there.html">也有人使用其他設定</a>。</p>
+<p>振幅高，聽起來大聲。振幅低，聽起來小聲。</p>
+<img src="Audio2.png">
+<p class="t">Frequency</p>
+<p>人類擅於感受的不是振動的幅度，而是振動的頻率。</p>
+<p>頻率高，聽起來尖銳。頻率低，聽起來低沉。</p>
+<img src="Audio3.png">
+<p>順便介紹「取樣定理」：x Hz的波，取樣頻率至少要是2x Hz，才能明確分辨上下次數，頻率保持相同（而振幅總是失真）。</p>
+<p>也就是說，取樣頻率48000Hz，頂多只能記錄24000Hz以下的聲音。但是別擔心，人類聽覺範圍是20Hz至20000Hz。</p>
+<img src="Audio4.png">
+<p class="t">Frame</p>
+<p>訊號很長，變化很大，因此必須將訊號分成小段處理，使得小段之內變化很小。每個小段都稱作一個「框」或「幀」。</p>
+<img src="Audio5.png">
+<p>當取樣頻率是48000Hz、框是512個訊號，則此框占有512/48000 ≈ 0.01秒，人耳無法分辨這麼短時間的變化，人聲也無法控制這麼短時間的變化，可以說是足夠細膩了。</p>
+<p>為了讓變化更連續，於是讓框交疊。</p>
+<p class="t">Frequency的圖表</p>
+<p>以下內容的先備知識是「<a href="Wave.html">Wave</a>」。</p>
+<p>振動十分複雜，難以測量頻率。計算學家的共識是：運用離散版本Fourier Transform，將訊號數值分解成簡諧波，解析頻率。因為簡諧波是最漂亮的振動方式，所以適合當作公定標準。</p>
+<img src="Audio6.png">
+<p>spectrum頻譜：一個特定時間點的頻率分布圖。</p>
+<p>實務上的做法是：截取一小段時間範圍的訊號，實施快速傅立葉轉換，得到每一種頻率的波的強度、相位。</p>
+<p>比如48000Hz的取樣頻率、256點訊號，則頻譜總共256種頻率。第一種頻率是0Hz，接著每一種頻率相差48000Hz / 256 = 187.5Hz。</p>
+<p>前128種、後128種左右對稱，後128種沒有實際作用。呼應取樣定理，資訊量只剩一半。</p>
+<audio id="audio1" src="Audio1.ogg" controls></audio>
+<style>canvas {border: 1px solid black;}</style>
+<canvas id="spectrum" width="512" height="256"></canvas>
+<script>
+var spectrum = function() {
+var canvas      = document.getElementById('spectrum');
+var ctx         = canvas.getContext('2d');
+var audio       = document.getElementById('audio1');
+
+var toggle = 0;
+canvas.onclick = function() {toggle = (toggle + 1) % 2;}
+
+// audio.onloadedmetadata = function() {};
+var audioCtx     = new AudioContext();
+var analyser     = audioCtx.createAnalyser();
+analyser.fftSize = 256;
+var data         = new Uint8Array(analyser.frequencyBinCount);
+var source       = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+source.connect(audioCtx.destination);
+
+var id;
+audio.onplay  = function() {id = requestAnimationFrame(draw);};
+audio.onpause = function() {cancelAnimationFrame(id);};
+
+function draw() {
+	analyser.getByteFrequencyData(data);
+
+	if (toggle == 0) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "brown";
+		for (var i = 0; i < data.length; i++) {
+			var magnitude = data[i];
+			ctx.fillRect(i * 4, canvas.height, 3, -magnitude);
+		}
+	} else if (toggle == 1) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "black";
+		ctx.beginPath();
+		ctx.moveTo(-2, canvas.height - data[0]);
+		for (var i = 0; i < data.length; i++) {
+			var magnitude = data[i];
+			ctx.lineTo(i * 4 + 2, canvas.height - magnitude);
+		}
+		ctx.stroke();
+	}
+
+	ctx.textBaseline = 'top';
+	ctx.fillText("click to toggle", 0, 0);
+
+	id = requestAnimationFrame(draw);
+}
+}();
+</script>
+<p>spectrogram頻譜圖：所有時間點的頻率分布圖。</p>
+<p>三維的繪圖方式：如下面影片。</p>
+<p>二維的繪圖方式：將強度長短改成亮度高低，讓一個頻譜變成一條垂直線，讓各個時間點的頻譜橫向拼成一個長方形。如下面動畫。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ah47p5nzZa4"></iframe>--></div>
+<audio id="audio2" src="Audio1.ogg" controls></audio>
+<canvas id="spectrogram" width="500" height="256"></canvas>
+<script>
+var spectrogram = function() {
+var canvas       = document.getElementById('spectrogram');
+var ctx          = canvas.getContext('2d');
+var audio        = document.getElementById('audio2');
+var audioCtx     = new AudioContext();
+var analyser     = audioCtx.createAnalyser();
+analyser.fftSize = 512;
+var data         = new Uint8Array(analyser.frequencyBinCount);
+var source       = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+source.connect(audioCtx.destination);
+
+audio.onloadedmetadata = function() {
+	canvas.width = Math.ceil(audio.duration * 20);
+};
+
+var id;
+audio.onplay  = function() {id = requestAnimationFrame(draw);};
+audio.onpause = function() {cancelAnimationFrame(id);};
+
+function draw() {
+	analyser.getByteFrequencyData(data);
+	var x = audio.currentTime * 20;
+
+	for (var i = 0; i < data.length; i++) {
+		c = Math.round(data[i]);
+		ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
+		ctx.fillRect(x, canvas.height - i, 1, 1);
+	}
+
+	id = requestAnimationFrame(draw);
+}
+}();
+</script>
+<p>人類對於地震波的感覺是取log的。如同地震波，人類對於幅度與頻率的感覺也是取log的。有時候，頻譜、頻譜圖的座標軸會取log，以符合人類聽覺感受。</p>
+<p class="t">Window</p>
+<p>原本完整的聲音波形，硬生生被框截斷，頻譜將產生誤差。解法：將框的兩端的訊號漸漸減弱，減少影響。也就是乘上一個中央高、兩側低的函數，數值皆介於零到一之間，稱作「<a href="http://en.wikipedia.org/wiki/Window_function">窗函數Window Function</a>」。</p>
+<img src="Audio7.png">
+<p class="t">Filter</p>
+<p>頻譜是分析聲音的工具。濾波器則是修改聲音的工具。</p>
+<p>例如刪除聲音的高頻部分，稱做lowpass filter。</p>
+<img src="Audio8.png">
+<p>濾波器有時域與頻域兩大類。</p>
+<p>時域濾波器，直接的修改訊號。計算速度飛快，但是需要「數位訊號處理」的數學知識。例如<a href="http://www.cs.cf.ac.uk/Dave/CM0268/PDF/10_CM0268_Audio_FX.pdf">shelving filter</a>。</p>
+<p>頻域濾波器，間接的修改頻譜。原訊號FFT得到頻譜，修改頻譜（例如把低頻的強度和相位調成0，形成highpass filter），再IFFT得到新訊號。</p>
+<textarea>
+const int frame_size = 512;
+
+void hamming_window(float window[], int n)
+{
+	const float π = 3.1415926f;
+	for (int i=0; i<n; i++)
+		window[i] = 0.54f - 0.46f * cos( (float)i * 2.0f * π / (n-1) );
+}
+
+void triangle_window(float window[], int n)
+{
+	for (int i=0; i<n/2; ++i)
+		window[i] = window[n-1-i] = (float)i / (float)(n/2);
+}
+
+void process(float src[], float dst[], int n)
+{
+	for (int i=0; i<n; ++i) dst[i] = 0;
+
+	// precalculate window
+	float window[frame_size];
+	hamming_window(window, frame_size);
+
+	float triangle[frame_size];
+	triangle_window(triangle, frame_size);
+
+	// overlap 50% frame
+	for (int i=0; i<n; i+=frame_size/2)
+	{
+		// src >>> frame
+		float frame[frame_size] = {};
+		for (int j=0; j<frame_size && i+j<n; j++)
+			frame[j] = src[i+j] * window[j];
+
+		// FFT -> do something -> inverse FFT
+		float magnitude[frame_size], phase[frame_size];
+		fft(frame, magnitude, phase, frame_size);
+		filter(magnitude, phase, frame_size);
+		ifft(magnitude, phase, frame, frame_size);
+
+		// frame >>> dst
+		for (int j=0; j<frame_size && i+j<n; j++)
+			dst[i+j] += frame[j] / window[j] * triangle[j];
+	}
+}
+</textarea>
+<p class="t">使用C/C++處理聲音</p>
+<p>C與C++本身沒有處理聲音的函式庫。</p>
+<p>你可以土法煉鋼，參考WAV、OGG、MP3的規格書（MP3有版權、須付費申請授權），自己寫程式讀取聲音訊號；然後利用Windows API、<a href="http://stackoverflow.com/questions/12717138/">Linux視窗介面的工具</a>、Cocoa，自己寫程式播放聲音訊號。</p>
+<p>你也可以拍手煉成，直接使用現成的函式庫。然而我不清楚有什麼知名的函式庫。</p>
+<p class="t">使用Qt/C#/Java處理聲音</p>
+<p>這些語言把「聲音播放器、聲音特效」與「聲音訊號處理」拆開。前者無法存取訊號，只能讀取聲音檔案並且播放。後者才能存取聲音訊號。</p>
+<p>聲音播放器。Java的AudioClip。Qt的QSound。C#的SoundPlayer。這些語言的處理機制大同小異，函式名稱既統一又直覺，例如play、pause、volume、loop等等。</p>
+<p>聲音處理。Java的AudioInputStream。Qt的QAudioInput與QAudioOutput。C#要援引Windows API。這些語言的處理機制都不一樣，而且函式庫發展不完善。你必須自行編寫很多程式碼，自己看著辦吧。</p>
+<p>結果就是，學生和教師傾向使用MATLAB或python。</p>
+<p class="t">使用HTML與JavaScript處理聲音</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web_Audio_API">https://developer.mozilla.org/en-US/docs/Web_Audio_API</a></p>
+<p>&lt;audio&gt;只是一個播放器，我們無法從&lt;audio&gt;取得完整的聲音資料，必須從自己電腦或網路取得完整的聲音資料。</p>
+<p>讀取聲音。為求簡單起見，這裡不介紹如何從網路讀取聲音串流，這裡只介紹如何從自己電腦讀取聲音檔案。</p>
+<textarea>
+<input type="file" id="input" />
+<script>
+var input = document.getElementById('input');
+input.onchange = function(event)
+{
+	var file = event.target.files[0];
+
+	var reader = new FileReader();
+	reader.onload = function(event)
+	{
+		var ctx = new AudioContext();
+		ctx.decodeAudioData(event.target.result).then(function(audioBuffer)
+		{
+			// first channel. Float32Array. [-1,+1].
+			var data = audioBuffer.getChannelData(0);
+			var rate = audioBuffer.sampleRate;
+		});
+	}
+	reader.readAsArrayBuffer(file);
+};
+</script>
+</textarea>
+<p>播放聲音。其構造是圖論的<a href="Graph.html">圖</a>，每個節點可以是聲音，也可以是一些聲音效果，例如變大聲、回音、合成多個聲音。將輸入節點一路串聯到輸出節點，然後播放聲音。</p>
+<textarea>
+<script>
+var sampleRate   = 8000;
+var sampleNumber = 12000;	// 1.5 seconds
+var ctx    = new AudioContext();
+
+// 製作聲音資料
+var buffer = ctx.createBuffer(1, sampleNumber, sampleRate);
+var data   = buffer.getChannelData(0);	// Float32Array
+for (var i = 0; i < sampleNumber; ++i)
+	data[i] = Math.sin((Math.PI * 2) * i * f / sampleRate);
+
+// 製作節點、串連節點、播放聲音
+var node    = ctx.createBufferSource();
+node.buffer = buffer;
+node.connect(ctx.destination);
+node.start(0);
+//node.start(ctx.currentTime);
+</script>
+</textarea>
+<p>處理聲音。讀者可以自行探索。</p>
+<textarea>
+<script>
+var ctx = new AudioContext();
+var oscillator = ctx.createOscillator();
+oscillator.type = 2;
+oscillator.frequency.value = 500;
+oscillator.connect(ctx.destination);
+oscillator.start(0);
+</script>
+</textarea>
+<p>瀏覽器為了安全起見，有時候預設禁止讀取本機檔案。如果你想做實驗，必須修改瀏覽器設定。做好實驗記得改回來。</p>
+<pre>
+Firefox
+網址列輸入 about:config
+security.fileuri.strict_origin_policy 的值改為 false
+http://kb.mozillazine.org/Security.fileuri.origin_policy
+</pre>
+<p class="t">使用現成工具處理聲音</p>
+<p>知名的聲音編輯軟體是<a href="http://web.audacityteam.org/">Audacity</a>、<a href="http://sox.sourceforge.net/">SoX</a>，聲音生成軟體是<a href="http://www.dazegraffiti.com/2013/03/puredata-1.html">Pure Data</a>。</p>
+<p>知名的聲音控制函式庫是<a href="https://en.wikipedia.org/wiki/Virtual_Studio_Technology">VST</a>、<a href="https://en.wikipedia.org/wiki/Audio_Units">AU</a>、<a href="https://en.wikipedia.org/wiki/Real_Time_AudioSuite">RTAS</a>，聲音播放函式庫是<a href="https://en.wikipedia.org/wiki/DirectSound">DirectedSound</a>、<a href="https://en.wikipedia.org/wiki/OpenAL">OpenAL</a>。</p>
+<p class="t">課程、書籍、網站</p>
+<pre>
+https://class.coursera.org/audio-001/lecture
+http://www.ee.columbia.edu/~dpwe/e4896/outline.html
+http://www.cs.cf.ac.uk/Dave/CM0268/PDF/10_CM0268_Audio_FX.pdf
+https://ccrma.stanford.edu/~jos/
+http://www.ness-music.eu
+http://www.dafx.de/
+https://mitpress.mit.edu/books/audio-programming-book
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Audio Synthesis（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Audio Synthesis</p>
+<p>合成。以建構組合的方式製作聲音。</p>
+<p>聲音合成分為電子觀點、資工觀點，兩套學問大相逕庭。這裡只談資工觀點。</p>
+<pre>
+電子觀點：利用電子元件，以振盪器、濾波器製作聲音，發展成電子琴。
+資工觀點：利用中央處理器，以簡諧波、數學運算製作聲音，發展成音樂編輯軟體。
+</pre>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/JAtxHQEGreM"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/bD0Boaq-Zfk"></iframe>--></div>
+<p>前人研擬了許多種聲音合成的策略。加法合成是最基本的策略。</p>
+<pre>
+   additive synthesis：加法合成。疊加許多個波。
+subtractive synthesis：減法合成。利用濾波器，刪除某些頻率。
+   granular synthesis：顆粒合成。堆砌一丁點長度的聲音。特色是嘈雜。
+  wavetable synthesis：建立聲音波形的資料表，直接套用現成的波形。
+</pre>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/YdV6b1gLe2Y"></iframe>--></div>
+<p>前人創造了兩種聲音合成的原理：簡諧波、數位波導。等你創造第三種。</p>
+<p><a href="https://en.wikipedia.org/wiki/Additive_synthesis">simple harmonic wave</a>：數學上，簡諧波是最理想的振動方式。數學上，根據「傅立葉級數」，任意數列皆可拆解成不同頻率的簡諧波。因此有人認為，反向操作，疊加各種頻率的簡諧波，可以生成各種聲音。<a href="http://zerojudge.tw/Problems?tag=%e8%81%b2%e9%9f%b3%e8%99%95%e7%90%86">這是我設計的一套練習題</a>。</p>
+<canvas id="sinewave2" width="430" height="64"></canvas>
+<script>
+var sinewave2 = function() {
+var canvas       = document.getElementById('sinewave2');
+var ctx          = canvas.getContext('2d');
+
+ctx.font = "32pt Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillStyle = "green";
+ctx.fillText("click me", canvas.width/2, canvas.height/2);
+
+var c = 0;
+var loop = 0, id = 0;
+var fps = 20, fpsInterval = 1000 / fps;
+var now, then, elapsed;
+canvas.onclick = function() {
+	c = 0;
+	loop = 1000;
+	then = Date.now();
+	if (!id) id = requestAnimationFrame(draw);
+};
+
+function draw() {
+	id = requestAnimationFrame(draw);
+	now = Date.now();
+	elapsed = now - then;
+	if (elapsed < fpsInterval) return;
+	then = now - (elapsed % fpsInterval);
+
+	var xunit = 1;
+	var yunit = 32;
+	var n = 430;
+	var speed = 40;
+
+	var y = Math.sin(Math.PI * 2 * c / n) * Math.pow(0.99, c/10);
+	c += speed;
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgb(192,0,0)";
+	ctx.beginPath();
+	function f(n) {
+		if (n >= 0) return Math.sqrt(n);
+		else return -Math.sqrt(-n);
+	}
+	for (var i = 0; i < n/2; i++)
+		ctx.lineTo(i*xunit, canvas.height / 2 + f(y * i / n) * yunit);
+	for (var i = n/2; i < n; i++)
+		ctx.lineTo(i*xunit, canvas.height / 2 + f(y * (n-i) / n) * yunit);
+	ctx.stroke();
+
+	if (--loop) id = requestAnimationFrame(draw);
+	else id = 0;
+}
+}();
+</script>
+<style>.music {display: block; margin: .5em auto .5em auto; padding-left: 1.5em; border: 3px groove yellow; border-radius: 4px; background: gold url(music-note-icon.png) left center no-repeat;}</style>
+<input class="music" id="sinewave" type="text" size="70" maxlength="50" value="533-422-1234555-" onkeypress="sinewave(event);"></input>
+<script>
+function sinewave(event) {
+	if (event.keyCode != 13) return;
+	var rate = 8000, beat = 4;
+	var src = music(document.getElementById('sinewave').value, rate, beat);
+
+	var dst = new Float32Array(src.length);
+	for (var i=1; i<dst.length; ++i)
+		dst[i] = src[i] - 0.95 * src[i-1];
+	play(src, rate);
+}
+
+function music(cmd, rate, beat) {
+	if (cmd.length == 0) return;
+	var F     = [0,261.63,293.66,329.63,349.22,392.00,440.00,493.88,523.25];
+	var data  = new Float32Array(rate / beat * cmd.length);
+	var x = 0;
+	for (var k=0; k<cmd.length; ++k) {
+		var f = F[cmd[k] - '0'];
+		var t = 1;
+		while (k+1 < cmd.length && cmd[k+1] == '-') k++, t++;
+
+		for (var i=0; i<rate/beat*t; ++i)
+			data[x+i] = Math.sin(Math.PI * 2 * f * i / rate);
+		x += rate/beat*t;
+	}
+	return data;
+}
+</script>
+<script>
+function play(data, rate) {
+	var ctx    = new AudioContext();
+	var buffer = ctx.createBuffer(1, data.length, rate);
+	buffer.copyToChannel(data, 0);
+
+	var node    = ctx.createBufferSource();
+	node.buffer = buffer;
+	node.connect(ctx.destination);
+	node.start(0);
+}
+</script>
+<textarea>
+void sinewave(float dst[], int n, float f)
+{
+	const π = 3.1415926f;
+	for (int i=0; i<n; ++i)
+		dst[i] = sin(2 * π * f * i / fs);
+}
+</textarea>
+<p><a href="https://en.wikipedia.org/wiki/Karplus?trong_string_synthesis">digital waveguide</a>：模仿琴弦的振動方式，產生琴弦聲。<a href="https://ccrma.stanford.edu/~jos/wg.html">正在形塑成一套理論</a>。</p>
+<canvas id="waveguide2" width="430" height="64"></canvas>
+<script>
+var waveguide2 = function() {
+var canvas       = document.getElementById('waveguide2');
+var ctx          = canvas.getContext('2d');
+
+ctx.font = "32pt Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillStyle = "green";
+ctx.fillText("click me", canvas.width/2, canvas.height/2);
+
+var loop = 0, id = 0;
+canvas.onclick = function() {
+	init();
+	loop = 1000; 
+	if (!id) id = requestAnimationFrame(draw);
+};
+
+var data;
+var c = 0;
+function init() {
+	c = 0;
+	var R = 48000, f = 440.00, N = Math.floor(R / f);
+	data = new Float32Array(N);
+	for (var i=0; i<N; ++i) data[i] = (Math.random() - 0.5) * 2;
+}
+
+function draw() {
+	var xunit = 8;
+	var yunit = 64;
+	var n = data.length;
+	for (var i=0; i<4800; ++i) {
+		data[c] = data[c] * 0.95 + data[(c+1+n)%n] * (1.0 - 0.95);
+		c = (c + 1) % n;
+	}
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgb(192,0,0)";
+	ctx.beginPath();
+	for (var i = 0; i < n/2; i++) {
+		var y = Math.round((data[(c+i)%n] + data[(c+n-1-i)%n]) * yunit);
+		ctx.lineTo(i*xunit, canvas.height / 2 + y);
+	}
+	ctx.stroke();
+
+	if (--loop) id = requestAnimationFrame(draw);
+	else id = 0;
+}
+}();
+</script>
+<input class="music" id="waveguide" type="text" size="70" maxlength="50" value="533-422-1234555-" onkeypress="waveguide(event);"></input>
+<script>
+function waveguide(event) {
+	if (event.keyCode != 13) return;
+	var cmd = document.getElementById('waveguide').value;
+	if (cmd.length == 0) return;
+
+	var F     = [0,261.63,293.66,329.63,349.22,392.00,440.00,493.88,523.25];
+	var beat  = 4;
+	var rate = R = 8000;
+	var data = new Float32Array(R / beat * cmd.length);
+	var x = 0;
+	for (var k=0; k<cmd.length; ++k) {
+//		alert(cmd[k]);
+		var f = F[cmd[k] - '0'];
+		var t = 1;
+		while (k+1 < cmd.length && cmd[k+1] == '-') k++, t++;
+
+		if (f != 0) {
+			var N = Math.floor(R / f);
+			for (var i=0; i<R/beat*t; ++i)
+				if (i < N)
+					data[x+i] = (Math.random() - 0.5) * 2;
+				else
+					data[x+i] = data[x+i-N] * 0.95 + data[x+i+1-N] * (1.0 - 0.95);
+		} else {
+			for (var i=0; i<R/beat*t; ++i)
+				data[x+i] = 0;
+		}
+		x += R/beat*t;
+	}
+
+	play(data, rate);
+}
+</script>
+<textarea>
+void waveguide(float dst[], int n, float f)
+{
+	// 兩倍弦長：波來回走過琴弦一遍的週期。
+	int t = (float)fs / f;
+
+	for (int k=0; k<n/t; ++k)
+		if (k == 0)
+		{
+			// 撥弦：隨機的初始狀態。
+			for (int i=0; i<t; ++i)
+				dst[i] = random(-1.0, +1.0);
+		}
+		else
+		{
+			// 駐波：波來回走過琴弦一遍，返回原處。
+			const float w = 0.9;
+			float* y = &dst[t * j];
+			for (int i=0; i<t; ++i)
+			{
+				// 調整音色：波在琴弦端點反射時，發生diffuse。
+				// （diffuse的程度，跟琴弦材質、琴弦鬆緊有關。）
+				y[i] = y[i   - t] * w
+				     + y[i+1 - t] * (1.0f - w);
+				// 調整音量：波在琴弦端點反射時，能量逸散。
+//				y[i] *= 0.99;
+			}
+		}
+
+	// 最後有n%t個訊號沒填寫。
+}
+</textarea>
+<textarea>
+void waveguide(float dst[], int n, float f)
+{
+	const float w = 0.9;
+	int t = (float)fs / f;
+
+	for (int i=0; i<n; ++i)
+		if (i < t)
+			dst[i] = random(-1.0, +1.0);
+		else
+			dst[i] = dst[i   - t] * w
+			       + dst[i+1 - t] * (1.0f - w);
+//			dst[i] *= 0.99;
+}
+</textarea>
+<p class="t">Sound Effect</p>
+<p><a href="http://en.wikipedia.org/wiki/Sound_effect">效果</a>。修改聲音，呈現其他風格。<a href="http://www.willpirkle.com/rackafx/book-algorithms/">已有電子觀點的專書</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/oBQu6PZ6FBE"></iframe>--></div>
+<p>首先來個範本：「紅豆生南國，春來發幾枝」。</p>
+<!--
+<style>button:after {content: "🔊︎";} button {display: block; margin: .5em auto .5em auto; width: 4em; height: 2em; color: white; background: linear-gradient(to top left, navy, lightblue); border-radius: 8px; border: 4px ridge navy; font-size: 16pt;} button:active {border: 4px groove navy; background: linear-gradient(to bottom right, navy, lightblue);} .i button {display: inline;} button + audio {width: 0; display: none;}</style>
+<script>window.onload = function(){var x = document.querySelectorAll('button'); for (var b of x) b.onclick = function(){this.nextElementSibling.play();};}</script>
+<button></button><audio src="AudioEffect-origin.wav"></audio>
+-->
+<audio src="AudioEffect-origin.wav" controls></audio>
+<p>gain：音量放大（縮小）。振幅乘上倍率。波形於垂直方向伸展或壓扁。</p>
+<img src="AudioEffect1.png">
+<audio src="AudioEffect-gain.wav" controls></audio>
+<textarea>
+void gain(short src[], short dst[], int n, float scalar)
+{
+	for (int i=0; i<n; ++i) 
+		dst[i] = src[i] * scalar;
+}
+</textarea>
+<p>normalization：校準聲音波形，中央為0，最高振幅為1。等同於聲音盡量調到最大聲。</p>
+<img src="AudioEffect2.png">
+<audio src="AudioEffect-normalize.wav" controls></audio>
+<textarea>
+void normalize(float src[], float dst[], int n)
+{
+	float max = -1.0, min = +1.0;
+	for (int i=0; i<n; ++i)
+	{
+		max = std::max(max, src[i]);
+		min = std::min(min, src[i]);
+	}
+
+	float mid  = (max + min) / 2.0;
+	float gain = (max - min) / 2.0;
+	for (int i=0; i<n; ++i)
+	{
+		dst[i] = src[i];	// copy
+		dst[i] -= mid;		// shift
+		dst[i] /= gain;		// scale
+	}
+}
+</textarea>
+<textarea>
+// 簡易版本，不位移。
+void normalize(float src[], float dst[], int n)
+{
+	float amp = 0;
+	for (int i=0; i<n; ++i)
+		amp = max(amp, fabs(src[i]));
+
+	for (int i=0; i<n; ++i)
+		dst[i] = src[i] / amp;
+}
+</textarea>
+<p>pre-emphasis：有時候錄音環境不佳，錄製到的聲音濛濛霧霧。微分運算可使聲音清晰。副作用是音量下降。<p>
+<p>連續函數的情況下，簡諧波，微分之後，仍是簡諧波。離散數列的情況下，波形會稍微失真。</p>
+<audio src="AudioEffect-emphasize.wav" controls></audio>
+<textarea>
+void emphasize(short src[], short dst[], int n)
+{
+	dst[0] = src[0];
+	for (int i=1; i<n; ++i)
+		dst[i] = src[i] - 0.95 * src[i-1];
+		// 有人喜歡進行微調，於是附加權重，例如0.95。
+}
+</textarea>
+<p>smoothing：有時候錄音環境不佳，錄製到的聲音唧唧吱吱。平均值可抑制雜訊。副作用是聲音模糊不清、音量下降。</p>
+<p>連續函數的情況下，簡諧波，取區間平均值，仍是簡諧波。離散數列的情況下，波形會稍微失真。</p>
+<audio src="AudioEffect-smooth.wav" controls></audio>
+<textarea>
+void smooth(short src[], short dst[], int n, int k)
+{
+	int sum = 0;
+	for (int i=0; i<n; ++i)
+	{
+		sum += src[i];
+		if (i-k >= 0) sum -= src[i-k];
+		dst[i] = sum / k;
+	}
+}
+</textarea>
+<p>mixing：混音。混和好幾道聲音。其實就是加權平均值。</p>
+<p>為了避免超過數值上下限，為了維持原音量、原音色，<a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html">有時會做複雜的處理</a>。</p>
+<img src="AudioEffect3.png">
+<audio src="AudioEffect-mix.wav" controls></audio>
+<textarea>
+void mix(float src1[], float w1, float src2[], float w2, float dst[], int n)
+{
+	for (int i=0; i<n; ++i)
+		dst[i] = src1[i] * w1 + src2[j] * w2;
+}
+</textarea>
+<p>echo：回聲。相同聲音稍後再度出現。其實就是延遲與混音（位移與疊加）。</p>
+<img src="AudioEffect4.png">
+<audio src="AudioEffect-echo.wav" controls></audio>
+<textarea>
+void echo(float src[], float dst[], int n, int k)
+{
+	// 延遲 16000 / 48000 = 0.25 秒，音量減少一半。
+//	k = 16000;
+
+	for (int i=0; i<n; ++i)
+	{
+		dst[i] = src[i];
+		if (i-k >= 0) dst[i] += src[i-k] / 2.0f;
+	}
+
+	normalize(dst, dst, n);
+}
+</textarea>
+<p>reverb：迴響。餘音繞樑。反覆回音，間隔極短。聽起來彷彿位於寬敞的密閉空間。</p>
+<p>將反射路徑改成直線，可以發現回聲的本質，是不同地點的聲音，抵達人耳時有時間差；接觸牆壁時，有如套用濾波器。實作的方式很簡單：位移、濾波器、疊加。</p>
+<img src="AudioEffect5.png">
+<audio src="AudioEffect-reverb1.wav" controls></audio>
+<audio src="AudioEffect-reverb2.wav" controls></audio>
+<textarea>
+// 模組化的實作方式
+void reverb(float src[], float dst[], int n)
+{
+	copy(src, ech, n);
+	for (int k=0; k<10; ++k)
+	{
+		delay(ech, 1600);
+		gain(ech, 0.9);
+		filter(ech);
+		for (int i=0; i<n; ++i)
+			dst[i] += ech[i];
+	}
+	normalize(dst, dst, n);
+}
+</textarea>
+<textarea>
+// 直接的實作方式
+void reverb(float src[], float dst[], int n)
+{
+	var delay = 0, gain = 1.0;
+	for (int k=0; k<10; ++k)
+	{
+		for (int i=0; i<n; ++i)
+			if (i - delay >= 0)
+				dst[i] += src[i - delay] * gain;
+
+		gain *= 0.7;
+		delay += 1600;
+	}
+}
+</textarea>
+<textarea>
+// 更好的實作方式
+void reverb(float src[], float dst[], int n)
+{
+	int delay = 1600, gain = 0.7;
+	for (int i=0; i<n; ++i)
+	{
+		dst[i] = src[i];
+		if (i - delay >= 0)
+			dst[i] += dst[i - delay] * gain;
+	}
+}
+</textarea>
+<textarea>
+// 多個聲源。即便沒有無限反射，效果仍然很好。
+void reverb(float src[], float dst[], int n)
+{
+	float s1[n], s2[n], s3[n];
+	copy(src, s1); delay(s1, 1600); gain(s1, 0.7);
+	copy(src, s2); delay(s2, 3200); gain(s2, 0.6);
+	copy(src, s3); delay(s3, 6400); gain(s3, 0.5);
+	mix(src, s1, s2, s3, dst, n);
+}
+</textarea>
+<p>pitch shifting：移調。改變頻率。</p>
+<p>調整播放速度（伸縮時間軸），頻率就改變。副作用是聲音長度也改變。比較理想的演算法，請見後面章節。</p>
+<img src="AudioEffect6.png">
+<audio src="AudioEffect-shift1.wav" controls></audio>
+<audio src="AudioEffect-shift2.wav" controls></audio>
+<audio src="AudioEffect-shift3.wav" controls></audio>
+<textarea>
+void pitch_shift(float src[], float dst[], int n, float scalar)
+{
+	// 正向處理，但是dst沒填滿。
+//	for (int i=0; i<n; ++i)
+//		dst[i * scalar] = src[i];
+
+	// 逆向處理，才能填滿dst。但是索引值不是整數。
+//	for (int i=0; i<n; ++i)
+//		dst[i] = src[i / scalar];
+
+	// 因此需要內插。
+	for (int i=0; i<n; ++i)
+	{
+		float j = i / scalar;
+		int j1 = floor(j);
+		int j2 = ceil(j);
+		// linear interpolation
+		float w = j - j1;
+		dst[i] = src[j1] * w + src[j2] * (1-w);
+	}
+}
+</textarea>
+<p>chorus：合唱。混和好幾道聲音，每道聲音的頻率略有變動、延遲時間略有差異。</p>
+<audio src="AudioEffect-chorus.wav" controls></audio>
+<textarea>
+void chorus(float src[], float dst[], int n)
+{
+	float src1[n], src2[n], src3[n], src4[n];
+	pitch_shift(src1, 1.05); delay(src1, 50);
+	pitch_shift(src2, 1.02); delay(src2, 40);
+	pitch_shift(src3, 0.98); delay(src3, 50);
+	pitch_shift(src4, 0.95); delay(src4, 60);
+	for (int i=0; i<n; ++i)
+		dst[i] = src[i] + src1[i] + src2[i] + src3[3] + src[4];
+	normalize(dst, n);
+}
+</textarea>
+<p>robot sound：簡易做法是混和兩道聲音，頻率略高、頻率略低的聲音。</p>
+<p>根據數學公式cos(a)cos(b) = cos(a-b) + cos(a+b)，一個簡諧波，乘上另一個簡諧波，就得到頻率略高、頻率略低的兩個簡諧波疊加在一起。這個技術其實就是AM，收音機的調幅。</p>
+<p>根據傅立葉級數，原訊號可以看成一群簡諧波相加。根據分配律，原訊號乘上一個簡諧波，可以看成一群簡諧波個別乘上一個簡諧波，最後再疊加。</p>
+<audio src="AudioEffect-robot.wav" controls></audio>
+<textarea>
+void robot(float src[], float dst[], int n, float f)
+{
+//	f = 500;	// 頻率差異，單位Hz。
+
+	const float π = 3.1415926f;
+	for (int i=0; i<n; ++i)
+		dst[i] = src[i] * sin(π * 2.0 * f * i / fs);
+}
+</textarea>
+<p>harmonics：和聲。混和好幾道聲音，每道聲音的頻率皆不同。</p>
+<p>想要好聽的和聲，必須按照樂理，選擇適當音階（請見後面章節）。現在的流行音樂，幾乎每一首歌都套用和聲效果來修飾聲音。</p>
+<textarea>
+skip
+</textarea>
+<p>distortion：失真。降低聲音品質，聽起來像破音。</p>
+<p>失真方法非常多。例如requantization：重新量化，從16-bit變成8-bit，甚至更低，聽起來宛如收音機，哧哧的。例如clipping：振幅乘上一個比較大的倍率，讓振幅超過±32767並且截斷，聽起來嘩嘩的；這是電子吉他經典音效，很多人喜歡這味。</p>
+<audio src="AudioEffect-quantize.wav" controls></audio>
+<audio src="AudioEffect-clip.wav" controls></audio>
+<textarea>
+void quantize(float src[], float dst[], int n, int q)
+{
+//	q = 15;	// 幾乎失真
+	for (int i=0; i<n; ++i)
+		dst[i] = (float)(((int)round(src[i] * 32767.0f) >> q) << q) / 32767.0f;
+}
+
+void clip(float src[], float dst[], int n, float scalar)
+{
+//	scalar = 10.0;	// 幾乎通通爆表
+	for (int i=0; i<n; ++i)
+	{
+		dst[i] = src[i] * scalar;
+		dst[i] = min(dst[i], +1.0);
+		dst[i] = max(dst[i], -1.0);
+	}
+}
+</textarea>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/G2Rhh_4GZmU"></iframe>--></div>
+<p>equalization：調整每個頻帶的音量，使得聽起來均勻。套用許多個濾波器即可。</p>
+<p>人類聽覺對於每種頻率的音量感受能力都不同，機制十分複雜（請見後面章節），難以設計演算法。目前是由專業的錄音師，手動調整各頻帶音量。前面的影片就是一個示範。</p>
+<img src="AudioEffect7.png">
+<textarea>
+http://www.cs.cf.ac.uk/Dave/CM0268/PDF/10_CM0268_Audio_FX.pdf
+</textarea>
+<p>wah-wah：電子吉他經典音效，聽起來哇哇叫。用濾波器放大某段頻帶的聲音。隨著時間，頻帶來回移動。</p>
+<img src="AudioEffect8.png">
+<audio src="AudioEffect-wahwah.wav" controls></audio>
+<textarea>
+http://www.cs.cf.ac.uk/Dave/CM0268/PDF/10_CM0268_Audio_FX.pdf
+</textarea>
+<textarea>
+void wahwah(float src[], float dst[], int n,
+			int fmin, int fmax, int fspeed)
+{
+	float yh[n], yb[n], yl[n];
+
+//	fmin   = 500;	// 頻帶移動範圍（Hz）
+//	fmax   = 2000;
+//	fspeed = 5000;	// 頻帶移動速度（Hz/sec）
+	#define f(i) fc(i,fmin,fmax,fspeed)	// 頻帶當前位置（Hz）
+
+	float π = 3.1415926f;
+	float Q1 = 2 * 0.05;				// 頻帶寬度（係數）
+	float F1 = 2 * sin(π * f(0) / fs);
+	yh[0] = src[0];
+	yb[0] = F1 * yh[0];
+	yl[0] = F1 * yb[0];
+
+	for (int i=1; i<n; i++)
+	{
+		F1 = 2 * sin(π * f(i) / fs);
+		yh[i] = src[i] - yl[i-1] - Q1 * yb[i-1];
+		yb[i] = F1 * yh[i] + yb[i-1];
+		yl[i] = F1 * yb[i] + yl[i-1];
+	}
+
+	normalize(yb, dst, n);
+}
+
+// 頻帶當前位置（Hz）
+inline float fc(int i, int fmin, int fmax, int fspeed)
+{
+	float df = (float)i * fspeed / fs;
+	float fgap = fmax - fmin;
+	float cnt = floor(df / fgap);
+	df -= fgap * cnt;
+	return ((int)cnt % 2 == 0) ? fmin + df : fmax - df;
+}
+</textarea>
+<p>pitch bending：轉音。頻率平滑地增減（頻譜的強度平滑地位移）。【查無資料】</p>
+<p>morphing：一種聲音，平滑柔順地轉化成另一種聲音。推測是每個頻帶各自轉音。【查無資料】</p>
+<p class="t">Sound Design</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fbDFAaPfl28"></iframe>--></div>
+<p>設計。綜合上述技巧，創造各式各樣的聲音。</p>
+<p>已有<a href="http://www.dazegraffiti.com/2013/03/puredata-1.html">工具</a>和<a href="http://aspress.co.uk/sd/index.php">專著</a>。這裡就不整理了。</p>
+<p class="t">Sound Interaction Design</p>
+<p><a href="http://en.wikipedia.org/wiki/Sonic_interaction_design">互動設計</a>。根據人類對於聲音的感受，利用聲音傳遞訊息、溝通互動。</p>
+<p>例如有人研究<a href="http://www.sound101.org/">什麼是恐怖的聲音</a>。</p>
+<p class="t">Audio Analysis</p>
+<p>分析。以下介紹幾個基礎的分析項目。</p>
+<p>peak detection：找到波形的尖峰。</p>
+<img src="AudioAnalysis1.png">
+<pre>
+一、消除鋸齒：方法很多，諸如
+　口、時域的平滑效果（k點平均值）（k點中位數）。
+　口、頻域的刪除高頻（高頻形成鋸齒）。
+　口、時域的<a href="Regression.html">Linear Prediction</a>（迴歸函數）。
+二、尋找極值：中央高、兩側低。
+三、估計峰尖：極值前後，三點做拋物線內插，求出拋物線頂點。
+</pre>
+<textarea>
+void peak_detection(float src[], int n)
+{
+	/* 5-point moving average */
+
+	const int k = 5;
+	const int ½k = k / 2;
+	float y[n];
+	float sum = 0;
+	for (int i = -½k, p = -k, q = 0; i<n; ++i)
+	{
+		if (p >= 0) sum -= src[p];
+		if (q <  n) sum += src[q];
+		p++; q++;
+		if (i <  0) continue;
+		if      (i <    ½k) y[i] = sum / q;
+		else if (i >= n-½k) y[i] = sum / (n-p);
+		else                y[i] = sum / k;
+	}
+
+	/* find index of maximum */
+
+	vector<float> peak;
+	for (int i=1; i<n-1; ++i)
+		if (y[i] > y[i-1] && y[i] > y[i+1])
+			peak.push_back(i);
+
+	/* parabola interpolation */
+
+	for (int i=0; i<peak.size(); ++i)
+	{
+		int j = peak[i];
+		if (src[j] > src[j-1] && src[j] > src[j+1])
+			peak[i] = (src[j+1] - src[j-1]) / 2.0f
+					/ (src[j] + src[j] - src[j+1] - src[j-1]);
+		else
+			// 當初smooth做的不夠，導致極值是凹的。
+			peak[i] = max(src[j-1], src[j+1]);
+	}
+}
+</textarea>
+<p><a href="https://ccrma.stanford.edu/~pdelac/research/MyPublishedPapers/icmc_2001-pitch_best.pdf">frequency detection</a>：找到波形的頻率。</p>
+<img src="AudioAnalysis2.png">
+<pre>
+時域的方法
+peak detection：找到兩個波峰，位置相減得到波長，波長倒數得到頻率。僅適合純音。
+zero-crossing rate：波形穿越零的次數。僅適合純音。
+ ACF：位移、相乘、加總（內積）。各種位移量，找最大值。
+AMDF：位移、相減再絕對值、加總（絕對值誤差）。各種位移量，找最小值。
+ YIN：位移、相減再平方、加總（平方誤差）。各種位移量，除以前綴和，找最小值。
+複合：例如 ACF / (AMDF + 1.0)，找最大值。
+
+頻域的方法
+peak detection：找到強度最高的頻率。計算速度較慢。
+</pre>
+<textarea>
+// zero-crossing rate
+float frequency_detection(float src[], int n)
+{
+	int zero = 0;
+//	for (int i=0; i<fs-1; ++i)
+	for (int i=0; i<n-1; ++i)
+	{
+		if ((src[i] > 0 && src[i+1] <= 0)
+		 || (src[i] < 0 && src[i+1] >= 0))
+			zero++;
+	}
+
+//	return (float)zero / 2.0f;
+	return (float)zero / n * fs / 2.0f;
+}
+</textarea>
+<textarea>
+// ACF & AMDF & YIN
+float frequency_detection(float src[], int n)
+{
+	int gap = 0;
+	float max = -1e18;
+	float min = +1e18;
+	float yin_sum = 0;
+	for (int i=1; i<n/2; ++i)	// gap
+	{
+		float acf = 0, amdf = 0, yin = 0;
+		for (int j=0; j+i<n; ++j)
+		{
+			acf  += pcm[j] * pcm[j+i];
+			amdf += fabs(pcm[j] - pcm[j+i]);
+			yin  += (pcm[j] - pcm[j+i])
+			      * (pcm[j] - pcm[j+i]);
+		}
+//		if (acf  > max) max = acf , gap = i;
+//		if (amdf < min) min = amdf, gap = i;
+//		yin_sum += yin;
+//		float r = yin / yin_sum;
+//		if (r    < min) min = r   , gap = i;
+		float r = acf / (amdf + 1.0);
+		if (r    > max) max = r   , gap = i;
+	}
+	return (float)fs / gap;
+}
+</textarea>
+<p><a href="Wave.html">Fourier transform</a>：波形分解成一群簡諧波，頻率為整數倍。</p>
+<p>傅立葉轉換的計算結果，經常轉換成頻譜。除了廣為人知的頻譜之外，還有許多衍生產物，命名方式是翻轉字母順序，非常搞笑。</p>
+<p>specmurt和cepstrum主要用於共鳴聲音，例如樂器聲、說話聲。共鳴產生諧音：強度頻譜上，強度規律地出現，其頻率呈倍數。頻率軸取log，讓出現間隔成為等距，叫做specmurt。強度規律地出現，宛如波，於是有人再度套用一次傅立葉轉換找到基頻（個人認為莫名其妙），叫做cepstrum。由於頻譜有一些重大缺點，又加上計算時間長，所以並不好用。</p>
+<img src="AudioAnalysis3.html">
+<pre>
+spectrum：頻譜。分為強度頻譜、相位頻譜。
+specmurt：名稱不詳。頻譜的座標軸，頻率取log，符合人類聽覺感受。
+cepstrum：倒頻譜。強度頻譜，強度值取log，實施（逆向）傅立葉轉換。
+</pre>
+<textarea>
+const float π = 3.1415026;
+
+void ft(float xr[], float xi[], int n,
+        float yr[], float yi[]        )
+{
+	float ω = 2.0 * π / n;
+	for (int i=0; i<n; i++)
+	{
+		yr[i] = 0; yi[i] = 0;
+		for (int j=0; j<n; j++)
+		{
+			float er = cos(-ω*i*j);
+			float ei = sin(-ω*i*j);
+			yr[i] += xr[j] * er - xi[j] * ei;
+			yi[i] += xr[j] * ei + xi[j] * er;
+		}
+	}
+}
+
+void ift(float xr[], float xi[], int n,
+         float yr[], float yi[]        )
+{
+	float ω = 2.0 * π / n;
+	for (int i=0; i<n; i++)
+	{
+		yr[i] = 0; yi[i] = 0;
+		for (int j=0; j<; j++)
+		{
+			float er = cos(ω*i*j);
+			float ei = sin(ω*i*j);
+			yr[i] += xr[j] * er - xi[j] * ei;
+			yi[i] += xr[j] * ei + xi[j] * er;
+		}
+	}
+}
+
+void spectrum(float real[], float imag[], int n,
+              float magnitude[], float phase[]  )
+{
+	for (int i=0; i<n; ++i)
+	{
+		magnitude[i] = sqrt(real[i] * real[i] + imag[i] * imag[i]) / n;
+		phase[i]     = atan2(imag[i], real[i]);
+	}
+}
+
+void cepstrum(float magnitude[], int n,
+              float cepstrum[]         )
+{
+	float ar[n], ai[n], br[n], bi[n];
+	for (int i=0; i<n; ++i) ar[i] = log(magnitude[i]);
+	for (int i=0; i<n; ++i) ai[i] = 0;
+	ift(ar, ai, n, br, bi);
+	for (int i=0; i<n; ++i)
+		cepstrum[i] = sqrt(br[i]*br[i] + bi[i]*bi[i]);
+}
+</textarea>
+<p>envelope detection：找出波形、強度頻譜的包絡線。</p>
+<p>波形劇烈變動，處處尖峰；波形簡化為包絡線，容易辨認尖峰。</p>
+<img src="AudioAnalysis4.html">
+<pre>
+聲音訊號波形的包絡線（時域）：
+　回、正向傅立葉轉換，數列後半（共軛對稱部分）設為0，
+　　　逆向傅立葉轉換，取絕對值，乘以2。
+　回、Hilbert transform，取絕對值。
+　　　效果同上。
+</pre>
+<pre>
+                                   |  Assume g(t) x cos(wt)
+1. fourier transform               |  G(f) * 0.5 (delta(w) + delta(-w))
+2. negative frequency: value -> 0  |  G(f) * 0.5 delta(w)
+3. inverse fourier transform       |  0.5 g(t) x e^iwt
+4. abs                             |  0.5 |g(t)|
+5. multiply 2                      |  |g(t)|
+</pre>
+<textarea>
+void envelope(float frame[], int n,
+              float env[])
+{
+	float ar[n], ai[n], br[n], bi[n];
+	for (int i=0; i<n; ++i) ai[i] = 0;
+	fft(frame, ai, n, br, bi);
+	for (int i=n/2; i<n; ++i) br[i] = bi[i] = 0;
+	ifft(br, bi, n, ar, ai);
+	for (int i=0; i<n; ++i)
+		env[i] = sqrt(ar[i]*ar[i] + ai[i]*ai[i]) / n * 2;
+}
+</textarea>
+<img src="AudioAnalysis5.html">
+<pre>
+強度頻譜的包絡線（頻域）：
+　回、聲音訊號實施linear prediction，轉換到頻域。稱做<a href="https://ccrma.stanford.edu/~jos/sasp/Spectral_Envelope_Linear_Prediction.html">LPC spectrum</a>。
+　　　linear prediction的項數，設定成尖峰數量的兩倍（共軛對稱）。pole即尖峰。
+　回、強度頻譜套用lowpass filter。因其具有平滑效果。
+　　　不合邏輯，比較少用。
+　回、承上，改成取log，並且改成在頻域實施lowpass filter。
+　　　此即<a href="https://ccrma.stanford.edu/~jos/sasp/Spectral_Envelope_Cepstral_Windowing.html">cepstrum</a>乘上0或1。
+　　　不合邏輯，比較少用。
+</pre>
+<textarea>
+https://www.phon.ucl.ac.uk/courses/spsci/dsp/lpc.html
+</textarea>
+<p class="t">Audio Coding</p>
+<p>編碼。請見下面影片。</p>
+<div class="z"><!--<iframe src="http://embed.ted.com/talks/lang/zh-tw/neil_harbisson_i_listen_to_color.html"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/w6lRq5spQmc"></iframe>--></div>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/119794119"></iframe>--></div>
+<p class="t">Audio Compression</p>
+<p>壓縮。主要的應用是<a href="http://en.wikipedia.org/wiki/Audio_file_format">聲音檔案</a>，盡量減少檔案容量、盡量維持聲音品質。例如大家耳熟能詳的MP3。</p>
+<p>MP3受版權保護。使用編碼功能，必須付費申請授權。因此所有的程式語言都沒有編碼功能，頂多只有解碼功能。但是如果你想要研究原始碼，可以參考<a href="http://stackoverflow.com/questions/7339408/">LAME</a>：據說不是MP3、純粹做為教育用途的開源專案。</p>
+<p class="t">Audio Player</p>
+<p>播放器。播放音樂，一幀一幀處理。沒什麼特別的。知名應用是隨身聽。</p>
+<p>開發韌體時，從硬碟或網路讀取聲音資料、將處理後的聲音資料傳送到音效卡，兩者的時間是不同步的，前者斷斷續續，後者必須連續。此時你需要一個circular queue做為緩衝。circular queue和frame的相對大小，決定了播放品質。</p>
+<p class="t">Audio Stream</p>
+<p>串流。主要的應用是線上音樂。例如背景雄厚的<a href="https://zh.wikipedia.org/zh-tw/KKBOX">KKBox</a>和被人告發的<a href="http://mrjamie.cc/2012/03/06/now-in/">Now.in</a>。</p>
+<p>我沒有研究背後技術。估計黑白兩道的問題遠比技術問題困難的多。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/DrKO_lAt_P8"></iframe>--></div>
+<p class="t">Radio</p>
+<p>收音機、無線電、無線電視，以電磁波傳送資料。</p>
+<p>電磁波的特性是低頻（低能量）易受干擾、高頻（高能量）不易受干擾。我們利用超高頻的sine wave調整訊號，升高訊號的頻率。調整方式一共兩種，調整振幅AM與調整頻率FM，相信大家耳熟能詳。</p>
+<a href="../../commons.wikimedia.org/wiki/File_Amfm3-en-de.html"><img src="../../upload.wikimedia.org/wikipedia/commons/a/a4/Amfm3-en-de.gif"></a>
+<pre>
+AM, amplitude modulation：sine wave的振幅等於原訊號。
+FM, frequency modulation：sine wave的頻率等於原訊號（的倍率、再加一常數）。
+</pre>
+<pre>
+AM調整訊號：sine wave與訊號，點對點相乘。
+AM還原訊號：包絡線。
+FM調整訊號：sine wave的參數是訊號。
+FM還原訊號：FM微分得AM。AM求包絡線得訊號。
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Music（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Music</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/yz7GZ8YOjTw"></iframe>--></div>
+<p>音樂。遵守規律的聲音。</p>
+<pre>
+聲音的要素：pitch、timbre、loudness、duration
+音樂的要素：beat、rhythm、melody、harmonics
+</pre>
+<p>音樂家認知中的音樂，就是讓以上要素遵守規律、遵守樂理。</p>
+<p>例如pitch遵守十二平均律、duration遵守全音符、二分音符、四分音符，harmonics遵守大調、小調。</p>
+<pre>
+聲音訊號的要素：amplitude(volume)、frequency(pitch)
+</pre>
+<p>然而計算學家別無選擇，只能從聲音訊號下手，從volume和pitch這兩條路線開始發展。</p>
+<p class="t">Volume</p>
+<img src="Music1.html">
+<p>音量。振幅決定音量。</p>
+<p>大家傾向用平均振幅作為音量。舉例來說，正弦波的平均振幅等於最大振幅開根號。</p>
+<p>volume和loudness不一樣。volume是聲音訊號本身的大小聲，loudness是人耳感知到的大小聲。人類的聽覺系統，對於相同音量、不同頻率的聲音，聽到的是不同響度的聲音，請參考後面Audition章節。</p>
+<p class="t">Onset Detection</p>
+<img src="Music2.html">
+<p><a href="https://en.wikipedia.org/wiki/Onset_(audio)">發聲偵測</a>。給定聲音訊號，找到音符的開始時刻、結束時刻。</p>
+<p>onset是聲音開始時刻。offset是聲音結束時刻。</p>
+<pre>
+energy：能量 = 頻域平方和 = 時域平方和。
+<a href="http://msp.ucsd.edu/Publications/icmc98.ps">bonk~</a>：每個頻帶分開統計。
+       相鄰兩幀，套用Hann窗，頻譜強度點對點相除，找出商大於1的頻率，加總其強度。
+       不同頻率可做不同加權。
+       o(t) = sum w(f) max(0, |Xt(f)| / |Xt-1(f)| - 1)
+               f
+<a href="http://williambrent.conflations.com/papers/ICMC-bark-2011.pdf">bark~</a>：bonk~加強版，頻帶採用Bark's frequency scale。
+</pre>
+<p class="t">Beat Tracking</p>
+<img src="Music3.html">
+<p>節拍偵測。給定聲音訊號，找到音符們的間隔時間。</p>
+<pre>
+<a href="http://www.ee.columbia.edu/~dpwe/e4896/lectures/E4896-L10.pdf">onset detection + dynamic programming</a>：追蹤振幅的peak。
+</pre>
+<p class="t">Rhythm Extraction</p>
+<p>韻律偵測。偵測一連串的節拍。</p>
+<p class="t">ADSR Envelope: attack decay sustain release</p>
+<img src="Music4.html"><!--paino vs guitar-->
+<p>一個數學模型，用來描述樂器演奏一個拍子的音量變化。可進一步用來分辨樂器。</p>
+<p>敲擊琴鍵時，振幅急遽上升、急遽下降。按住琴鍵時，振幅幾乎不變。放開琴鍵時，振幅快速下降，直至歸零。</p>
+<p>為了更加擬真，像是Yamaha電子琴甚至推廣到八段變化。</p>
+<p class="t">Pitch</p>
+<p>音高。聲音聽起來的高低。音高高則尖銳。音高低則低沉。</p>
+<p>關於振幅高低，有volume和loudness兩個詞彙可以區分實際高低和聽覺高低。然而，關於頻率高低，只有pitch一個詞彙，代表聽覺高低；於是計算學家只好把pitch也當作實際高低。</p>
+<img src="Music5.html">
+<p>音樂當中，音高必須符合音階。Do Re Mi Fa Sol La Si。人類研究了數百年，總結出「十二平均律」，建立了<a href="http://people.virginia.edu/~pdr4h/pitch-freq.html">音階與頻率的對應表</a>。每個音階的頻率是固定值，而且組合起來特別好聽。</p>
+<pre>
+一、任何一個音階，
+　　頻率乘以二（琴弦長度變一半），升為高音。
+　　頻率除以二（琴弦長度變兩倍），降為低音。
+二、以440Hz為基準，叫做中音A。
+　　也就是說，高音A是880Hz，低音A是220Hz，更低音A是110Hz。
+三、兩個A之間，切成12段。考慮頭尾，總共13個音階。
+　　音階包含A B C D E F G。其他音階用升降記號♯和♭表示。
+四、為了區別高中低音，於是補上數字。
+　　以C為開端，不是以A為開端。
+　　中音是數字3。高音加1。低音減1。
+</pre>
+<textarea>
+void note_to_frequency(char note[3])
+{
+	int k[128];
+	k['A'] = 0; k['B'] = 2; k['C'] = 3; k['D'] = 5;
+	k['E'] = 7; k['F'] = 8; k['G'] = 10;
+
+	int n = k[note[0]];
+	if (note[1] == '#') n++;
+	if (note[1] == 'b') n--;
+
+	int level = (note[2] ? note[2] : note[1]) - '0';
+	n += (level - 4 - (note[0] >= 'C')) * 12;
+	float f = 440.0 * pow(2.0, (float)n / 12.0);
+	cout << f;
+}
+
+void frequency_to_note(float f)
+{
+	char note[12][3] = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
+
+	int n = round(log2(f / 440.0) * 12.0);
+	int k = (n % 12 + 12) % 12;
+	cout << note[k];
+	int level = 4 + (n - k) / 12 + (note[k][0] >= 'C');
+	cout << level;
+}
+
+void frequency_adjust(float f)
+{
+	int n = round(log2(f / 440.0) * 12.0);
+	f = 440.0 * pow(2.0, (float)n / 12.0);
+	cout << f;
+}
+</textarea>
+<p class="t">Formant</p>
+<img src="Music6.html">
+<p>不同樂器演奏相同音階，聽起來都不一樣。一個原因是ADSR，另一個原因是附帶其他頻率。根據駐波現象，基本頻率的正整數倍，都會一起出現；通常標記為F0、F1、F2、……，其中F0是基本頻率，F1是兩倍，F2是三倍，以此類推，統稱「共振峰」。</p>
+<p>相同樂器演奏相同音階，聽起來也可能不一樣。例如銅管樂器的送氣強弱，就會改變駐波、改變共振峰。</p>
+<p><a href="http://www.phy.ntnu.edu.tw/demolab/html.php?html=teacher/sound/index">目前的實驗都是選擇特定時刻的波形</a>。似乎尚未有人研究形成駐波的過程、形成特定音色的原因。如果你知道請告訴我。</p>
+<p class="t">Formant Detection<br>F0 Detection（Pitch Detection）</p>
+<img src="Music7.html">
+<p>共振峰偵測。求出特定時刻（實務上是一幀）的共振峰。</p>
+<p>有時我們只在意F0。</p>
+<p>在時域，多種頻率以不同強度疊合，波形複雜，無法精準辨認波長。先前介紹的frequency detection演算法效果不佳。</p>
+<p>在頻域，由於離散傅立葉轉換的缺點spectral leakage，頻譜無法精準呈現駐波現象。先前介紹的peak detection演算法效果不佳。</p>
+<p>尋找F0極度困難。理想的做法是捨棄演算法，改以物理儀器測量F0。但是對於已經數位化，儲存成WAV、MP3格式的聲音，我們別無他法，只能從聲音訊號下手，設計演算法去估計F0。</p>
+<pre>
+gcd：頻域所有峰的最大公因數。誤差很大。
+cepstrum：倒頻譜，第一個高峰就是F0。誤差很大。
+<a href="http://www.coe.montana.edu/ee/rmaher/publications/maher_jasa_0494_2254-2263.pdf">Maher-Beaucham</a>：試誤法猜F0。
+                針對一個F0，算F0...Fn跟頻域所有峰的匹配誤差，找誤差最小者。
+<a href="http://iwk.mdw.ac.at/lit_db_iwk/download.php?id=18114">DIO</a>：許多個bandpass filter (Nuttall window)，一個濾波器得到一個F0。
+     峰到峰、谷到谷、零到零（上坡）、零到零（下坡），一共四個波長。
+     四個波長平均值，當作F0。
+     四個波長變異數，最小的當作最佳F0。
+</pre>
+<p class="t">Formant Tracking<br>F0 Tracking（Pitch Tracking）（Melody Extraction）</p>
+<img src="Music8.html">
+<p><a href="http://www.justinsalamon.com/melody-extraction.html">共振峰追蹤</a>。求出每個時刻（實務上是每一幀）的共振峰。</p>
+<p>有時我們只在意F0。</p>
+<p>困難點：一、波形複雜，F0容易誤認為原本的兩倍或者一半。二、attack與decay時期，駐波尚未到達穩態，共振峰變化大。三、release時期，駐波消逝，共振峰不明顯。</p>
+<p>實務上是用dynamic programming、hidden Markov model預測F0走向。</p>
+<pre>
+<a href="https://www.ee.columbia.edu/~dpwe/papers/Talkin95-rapt.pdf">RAPT</a>：動態規劃。自己看。
+</pre>
+<p class="t">Pitch Shifting（Pitch Modification）<br>Time Stretching（Time-scale Modification）</p>
+<img src="Music9.html">
+<p>伸縮時間軸，重新取樣，就能同時改變音高與長度。前面章節曾經提到過。</p>
+<textarea>
+void resample(float src[], float dst[], int n, float scalar)
+{
+	for (int i=0; i<n; ++i)
+	{
+		float j = i / scalar;
+		int j1 = floor(j);
+		int j2 = ceil(j);
+		float w = j - j1;
+		dst[i] = src[j1] * w + src[j2] * (1-w);
+	}
+}
+</textarea>
+<p>如果只想改變音高，或者只想改變長度呢？我們可以運用分治法的概念，將聲音訊號切成小段處理。</p>
+<p>一、音高改變，長度不變：每框分別伸縮，然後疊加。</p>
+<p>二、長度改變，音高不變：每框分別位移，然後疊加。</p>
+<img src="Music10.html">
+<p>重疊之處，影響音質，必須克服，因而發展一系列演算法：</p>
+<pre>
+<a href="https://www.ee.columbia.edu/~dpwe/e4896/lectures/E4896-L09.pdf">OLA</a>：疊加。淡入淡出，可採用三角窗（線性內插）或者Hann窗。
+<a href="http://www.surina.net/article/time-and-pitch-scaling.html">SOLA</a>：找到重疊誤差最小的位置，例如correlation最小。
+<a href="https://www.ee.columbia.edu/~ronw/adst-spring2010/lectures/lecture6.pdf">PSOLA</a>：找epoch/F0 peak、建框（以peak為中心）、套窗、移位、疊加。
+</pre>
+<textarea>
+http://www.surina.net/article/SOLA_example.zip
+</textarea>
+<p>上述演算法都在對抗重疊問題。有人將聲音訊號進行傅立葉轉換，微調每個框的每個頻率的相位，令波形銜接，解決重疊問題。</p>
+<pre>
+<a href="http://www.guitarpitchshifter.com/algorithm.html">phase vocoder</a>：在頻域處理，微調相位，讓波形連續。
+</pre>
+<textarea>
+http://www.guitarpitchshifter.com/matlab.html
+</textarea>
+<p>最後補充一下。調音高和調長度這兩個問題，解決其中一個，就可以間接解決另一個。首先伸縮時間軸，讓音高和長度皆改變，然後用一調回原本音高，就是二；用二調回原本長度，就是一。</p>
+<p>實務上是直接的方式好呢？還是間接的方式好呢？我不清楚。</p>
+<p class="t">Pitch Bending</p>
+<img src="Music11.html">
+<p>滑音。頻率平滑變動。我查不到任何演算法。</p>
+<pre>
+glissando：兩個音階之間，彈奏所有音階。離散。
+portamento：兩個音階之間，音高圓滑變動。連續。
+            吉他就是按著弦滑動。鋼琴沒辦法。
+legato：數個音階，只有一次attack。聲音連續不斷。
+        吉他是撥一次弦，按很多次弦。
+        鋼琴不得不按鍵，只能按了下一個、才放上一個，越按越小力，慢慢放開踏板，
+        聽起來彷彿只有attack一次。
+vibrato：音高抖動。
+         吉他就是按弦並揉弦。鋼琴沒辦法。
+</pre>
+<p class="t">Monophony / Polyphony</p>
+<img src="Music12.html">
+<p>單音：一次演奏一個音階。複音：同時演奏多個音階。</p>
+<p>複音更難追蹤音高。大家正在研究當中。</p>
+<pre>
+Prominent pitch in polyphonic signals 2012：自己看。
+</pre>
+<p class="t">使用現成工具處理音樂</p>
+<p>也許是<a href="http://www.surina.net/soundtouch/">SoundTouch</a>。</p>
+<p><a href="http://www.audiocontentanalysis.org/">這本書</a>做了些簡介。歷年的音樂檢索會議可以找到一些主題，例如<a href="http://www.music-ir.org/mirex/wiki/2015:Task_Captains">2015年</a>和<a href="http://www.music-ir.org/mirex/wiki/2014:Task_Captains">2014年</a>的主題列表。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Music Composition（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Musical Instrument</p>
+<p>樂器。已有<a href="https://ccrma.stanford.edu/software/stk/">函式庫</a>、<a href="http://chuck.stanford.edu/">程式語言</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Mh0VX74alwk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/kfrONZjakRY"></iframe>--></div>
+<p class="t">Audio Restoration</p>
+<p>修復。<a href="https://www-sigproc.eng.cam.ac.uk/Main/SJGSpringer">已有專著</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ZVHnrobKhc0"></iframe>--></div>
+<p class="t">Audio Multitrack Recording</p>
+<p>多種聲音合成一段聲音。即是先前介紹的「混音mixing」。</p>
+<p>實務上的作法是使用音樂編輯軟體，混合所有聲音。可以自己扮演全部角色，也可以在網路上和陌生人組成一個樂團，關鍵字：Multitrack Acapella、Multitrack Cover。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/AVbPnDf3TIw"></iframe>--></div>
+<p class="t">Audio Source Separation</p>
+<p>一段聲音分成多種聲音。</p>
+<p>目前的做法是錄製各種樂器的聲音，在頻域實施比對。難度很高。</p>
+<p class="t">Score-to-Audio Alignment</p>
+<p>樂譜變成聲音訊號。</p>
+<p>記載音樂，大家一律使用數學符號，不過不是大家從小到大慣用的數學符號，而是小豆芽、五線譜。</p>
+<p>播放真實的樂器聲音：<a href="http://onlinesequencer.net/">http://onlinesequencer.net/</a></p>
+<p>電腦合成的樂器聲音：檔案格式MIDI。</p>
+<p class="t">Audio-to-Score Alignment（Score Following）</p>
+<p>聲音訊號變成樂譜。難度很高。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/gjX9IN26bzU"></iframe>--></div>
+<p class="t">Audio-to-Audio Alignment（Melody Recognition）</p>
+<p>聲音訊號與聲音訊號的匹配。相仿的概念有哼唱選歌、旋律辨識、以聲音搜尋聲音。</p>
+<p>目前的做法是套用比對數列的演算法Dynamic Time Warping、分類數列的演算法Hidden Markov Model等等。</p>
+<p class="t">Audio Feature Description</p>
+<p>特徵描述。找到聲音的重點，以數值形式記錄下來。</p>
+<p>倒頻譜cepstrum：FT → abs → log → IFT → abs。頻譜的絕對值（或絕對值平方）取log，實施逆傅立葉轉換。</p>
+<p><a href="http://home.ieis.tue.nl/dhermes/lectures/soundperception/04AuditoryFilter.html">bark frequeney scale</a>是人類聽覺系統擅於感知的24個頻帶。</p>
+<p><a href="https://en.wikipedia.org/wiki/Mel-frequency_cepstrum">MFCC, Mel-frequency cepstrum coefficients</a>：模擬人耳聽覺系統，擷取各個頻帶的強度。</p>
+<p><a href="https://en.wikipedia.org/wiki/Harmonic_pitch_class_profiles">HPCP</a>：音樂的調性。</p>
+<p class="t">Audio Genre Classification</p>
+<p>依照曲風實施分類。</p>
+<p class="t">Audio Emotion Recognition</p>
+<p>感情辨識。<a href="http://www.crcpress.com/product/isbn/9781439850466">已有專著</a>。</p>
+<p class="t">Music Composition（Algorithmic Composition）</p>
+<p>電腦自動作曲。例如虛擬的作曲家Emilly Howell。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/jLR-_c_uCwI"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/h_r_ZfeDaOM"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Speech（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Speech</p>
+<iframe src="http://embed.ted.com/talks/lang/zh-tw/julian_treasure_how_to_speak_so_that_people_want_to_listen.html"></iframe>
+<p>語音。人類說話聲音。Audio與Text兩大領域的合體。</p>
+<p class="t">Phoneme / Syllable</p>
+<p>音素。ㄅㄆㄇㄈ……ㄢㄣㄤㄥㄦ。</p>
+<p>音節。例如ㄏㄠˇ、ㄎㄜˇ、ㄞˋ。中文很特別，一個中文字一定是一個音節。唯一例外是兒化音：尾端連著ㄦ音。不過台灣人不說兒化音。</p>
+<p>語言學以音素為基本單位，計算學則傾向以音節為基本單位。兩個音素拼在一起，仔細觀察波形，中間有著過渡過程，中間有著連續變化。各種拼法、各種變化，難以分解，只好視作一個整體，以音節為基本單位。</p>
+<img src="Speech1.html">
+<p>一、音節變成聲音訊號：</p>
+<p>理論上必須模擬口腔、舌頭、送氣。至今無人成功。</p>
+<p>實務上是真人錄音。人工朗讀四百餘種音節，儲存成聲音檔案，建立音節與聲音檔案的對照表。</p>
+<img src="Speech2.html">
+<p>二、聲音訊號變成音節：</p>
+<p>理論上必須分析各種音節的波形特性。至今無人成功。</p>
+<p>實務上是分類演算法。給定一種音節的聲音訊號，切Frame，求聽覺特徵MFCC，額外綜合一次微分、二次微分，用DCT壓縮，得到一條數列（一個數值是39個係數、一個數值對應一個Frame）。套用數列分類演算法Hidden Markov Model或者Neural Network，辨識音節。</p>
+<p>已有知名工具<a href="http://htk.eng.cam.ac.uk/">HTK</a>、<a href="https://github.com/botonchou/libdnn">libdnn</a>、<a href="http://kaldi.sourceforge.net/">Kaldi</a>，大可不必自己實作。</p>
+<p>之所以採用分類演算法、採用機率模型，是因為要包容每一個人的說話腔調。</p>
+<p class="t">延伸閱讀：Phonetic Transcription</p>
+<img src="Speech3.html">
+<p>音標。音素所對應的文字符號。以文字記載發音方式。</p>
+<p>音標已有國際標準，稱做<a href="https://zh.wikipedia.org/wiki/???單?">國際音標</a>，可以表示全世界所有語言的發音。中文並未使用國際音標，而是自創<a href="https://zh.wikipedia.org/wiki/瞍Ｚ??潮">拼音（中國）</a>、<a href="https://zh.wikipedia.org/wiki/瘜券蝚西?">注音（台灣）</a>。本篇文章採用後者。</p>
+<p class="t">延伸閱讀：Vowel / Consonant</p>
+<p>元音與輔音。母音與子音。不好解釋，請讀者自己查資料。</p>
+<p>注音（台灣）的聲母ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏ……，介母與韻母ㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ，不等於子音和母音。</p>
+<p>母音，嘴巴有送氣，聲帶有震動，能明顯看到pitch。子音，嘴巴有送氣，聲帶無震動，抓不太到pitch。根據嘴巴送氣的方式，子音區分成爆音、摩擦音、氣音。</p>
+<p>既然以音節為基本單位，那麼母音子音不太重要。不過還是稍微提一下如何辨識母音子音。</p>
+<img src="Speech4.html">
+<p>一、辨識母音，可以使用F1-F2 vowel chart。</p>
+<img src="Speech5.html">
+<p>二、辨識子音，可以使用<a href="https://en.wikipedia.org/wiki/Voice-onset_time">voice onset time</a>：氣流通過與聲帶震動的時機。清音濁音可以套用voice onset time的概念來分類。</p>
+<p>不過想藉由聲音訊號計算出voice onset time，幾乎是天方夜譚，因為麥克風偵測不太到嘴巴送氣，只偵測的到聲帶震動。如果可以加個氣流計，肯定有幫助。</p>
+<p class="t">Tone</p>
+<img src="Speech6.html">
+<p>聲調。單一音節的頻率變化。</p>
+<p>普通話（中國）、國語（台灣）的聲調，共四種，即是一二三四聲。注意到輕聲不是聲調，輕聲是音量較低。<a href="https://zh.wikipedia.org/wiki/隤踹?">粵語的聲調</a>，共九種。<a href="https://zh.wikipedia.org/wiki/隤踹?">閩南語的聲調</a>，共七種。都不好學。</p>
+<img src="Speech7.html">
+<p>世界上大部分的語言都缺乏聲調，他們的聲調僅僅是多音節單字的頻率起伏。日語只有持平、上揚、下降，例如「あめ」，下降是「下雨」、上揚是「糖果」。英語只有持平、主重音、次重音，例如「present」，主重音在前是「現在」、主重音在後是「呈現」。</p>
+<p>大部分的語言都缺乏聲調。聲調不是顯學，聲調沒有知名演算法。讀者請自行搜尋期刊論文。</p>
+<pre>
+http://person2.sol.lu.se/SidneyWood/praate/wavformedform.html
+https://speechformants.files.wordpress.com/2007/12/methods-of-formant-tracking-fadhlis.pdf
+</pre>
+<p>下面是「紅豆生南國，春來發幾枝」。綠色線是音量（dBSPL）。黃色線是音高（F0）。音高不變就是一聲、音高上升就是二聲、音高下降就是四聲、下去再上來就是三聲。</p>
+<audio id="Speech1" src="Speech1.wav" controls></audio>
+<canvas id="tone" width="500" height="128"></canvas>
+<script>
+var tone = function() {
+var canvas       = document.getElementById('tone');
+var ctx          = canvas.getContext('2d');
+var audio        = document.getElementById('Speech1');
+audio.onloadedmetadata = function() {canvas.width = Math.ceil(audio.duration * 100);};
+
+var fsize        = 1024;
+var audioCtx     = new AudioContext();
+var analyser     = audioCtx.createAnalyser();
+analyser.fftSize = fsize;
+var freq         = new Uint8Array(analyser.frequencyBinCount);
+var data         = new Uint8Array(analyser.fftSize);
+var source       = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+source.connect(audioCtx.destination);
+
+var id;
+audio.onplay  = function() {id = requestAnimationFrame(draw);};
+audio.onpause = function() {cancelAnimationFrame(id);};
+
+var lastx      = 0;
+var lastenergy = 0;
+var lastpitch  = 0;
+function draw() {
+	analyser.getByteFrequencyData(freq);
+	analyser.getByteTimeDomainData(data);
+
+	var x = audio.currentTime * 100;
+
+	for (var i = 0; i < freq.length; i++) {
+		c = Math.round(freq[i]);
+		ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
+		ctx.fillRect(lastx, canvas.height - i, x - lastx, 1);
+	}
+
+	var energy = Math.log(getEnergy(freq));
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = "green";
+	ctx.beginPath();
+	ctx.moveTo(lastx, canvas.height - (lastenergy - 10) * 10);
+	ctx.lineTo(x,     canvas.height - (energy - 10) * 10);
+	ctx.stroke();
+	lastenergy = energy;
+
+	var pitch = getPitch(data);
+	if (energy < 11.7) pitch = 0;
+	pitch -= 80;
+	ctx.strokeStyle = "yellow";
+	ctx.beginPath();
+	ctx.moveTo(lastx, canvas.height - lastpitch);
+	ctx.lineTo(x,     canvas.height - pitch);
+	ctx.stroke();
+	lastpitch = pitch;
+	lastx = x;
+
+	id = requestAnimationFrame(draw);
+}
+
+function getEnergy(fSample) {
+	var iEnergy = 0;
+	for (var i=0; i<fSample.length; ++i)
+		iEnergy += fSample[i] * fSample[i];
+	return iEnergy;
+}
+
+// [iBegin, iEnd) 的加權平均。
+function masscenter(array, iBegin, iEnd) {
+	var sum = 0, wsum = 0;
+	for (var i = iBegin; i < iEnd; ++i) {
+		if (i >= 0 && i < array.length) {
+			sum += array[i];
+			wsum += array[i] * i;
+		}
+	}
+	if (sum < 1e-6) return 0;
+	return wsum / sum ;
+}
+
+// 找到 [iBegin, iEnd) 最低點，以擷取基頻F0。
+function trough(fAMDF, iBegin, iEnd) {
+	// 找到全域最低點。
+	var iTrough = iBegin;
+	var fTroughValue = fAMDF[iBegin];
+	for (var i = iBegin + 1; i < iEnd; i++)
+		if (fAMDF[i] < fTroughValue)
+			fTroughValue = fAMDF[iTrough = i];
+
+	// 加權平均。
+	var iTroughBegin = iTrough - 2;
+	var iTroughEnd   = iTrough + 2;
+	if (iTroughBegin < iBegin) iTroughBegin = iBegin;
+	if (iTroughEnd   > iEnd  ) iTroughEnd   = iEnd;
+	var fTrough = masscenter(fAMDF, iTroughBegin, iTroughEnd);
+	return fTrough;
+}
+
+var fAMDF = new Float32Array(fsize / 2);
+function getPitch(fSample) {
+	var iBegin = 326;	// 48000Hz / 300 = 147Hz for man
+	var iHalfLength = fSample.length >> 1;
+	var i, j;
+	for (i = iBegin; i < iHalfLength; i++) {
+		// 最多疊三倍週期，防止高頻oversampling。
+		var AMDF = 0, ACF = 0;
+		for (j = 0; j < i * 3 && j < iHalfLength; j++) {
+			AMDF += Math.abs(fSample[j] - fSample[j + i]);
+			ACF  += fSample[j] * fSample[j + i];
+		}
+
+		// normalize
+		if (j == iHalfLength) AMDF /= iHalfLength, ACF /= iHalfLength;
+		else AMDF /= (i * 3), ACF /= (i * 3);
+
+		fAMDF[i] = AMDF;
+	}
+
+	// 找到AMDF函數第一個高峰，從高峰之後開始找最低點。
+	var p = iBegin;
+	while (p < iHalfLength && fAMDF[p] < fAMDF[p + 1]) p++;
+	p = trough(fAMDF, p, iHalfLength);
+	if (p == 0) return 0;
+	return audioCtx.sampleRate / p;
+}
+}();
+</script>
+<p class="t">延伸閱讀：歌曲與聲調</p>
+<p>歌曲常常受到聲調影響。</p>
+<p>音階的頻率是固定不動的，聲調的頻率是一直變動的，兩者互相衝突。唱歌時，若想講求音準，就不能做聲調變化。</p>
+<p>中文歌曲不做聲調變化，很難聽得懂歌詞；若做了轉音技巧，更加聽不懂。英文歌曲不做聲調變化，仍然聽得懂歌詞；若做了轉音技巧，更加好聽。</p>
+<p>常有人說：中文歌曲不看字幕根本聽不懂在唱什麼；英文歌曲轉音好美、爆發力十足。這種崇洋媚外的心理，原罪就是聲調。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/3JWTaaS7LdU?start=190&end=225"></iframe>--></div>
+<p>想要解決聽不懂的問題，最好的解決方式是在編曲填詞之時，仔細考慮聲調（以及稍後提到的韻律），讓樂曲的音階變化符合歌詞的聲調變化。經典範例是江蕙的家後，唱歌即唸歌，十足有味道。</p>
+<p>國語流行歌手所寫的台語歌，常常讓人覺得缺乏味道，正是因為沒有考慮聲調。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/aNJ548W9DlQ"></iframe>--></div>
+<p class="t">Prosody</p>
+<p>韻律。說話的節奏和聲調。說話的抑揚頓挫。</p>
+<p>例如口語說「星期天我們去郊遊」，「星期天」速度輕快，「我們」相對地緩慢沉重。</p>
+<p>語言學家自有一套解釋韻律的方式，此非本人專長，這裡就不介紹了。計算學家解釋韻律，只能從聲音訊號的基本要素下手：音量變化、音高變化、發聲長短。例如口語說「可愛」與「真可愛」，通常後者的「可」字時間較短、音高較低、音量較低。</p>
+<p>這三者當中，目前研究最多的是音高變化。針對F0變化。知名的模型是<a href="http://www.homepages.ucl.ac.uk/~uclyyix/yispapers/Xu_Theories_Models_authorV.pdf">PENTA model</a>、<a href="https://en.wikipedia.org/wiki/Fujisaki_Model">Fujisaki model</a>，大膽假設F0的變化是由那些因素造成的。</p>
+<p>韻律可以比擬成語言的風格。相近的文化人種，韻律多半相似。心情起伏、健康好壞，韻律經常隨之變動。計算學也許可以解析這些事情。不過台灣沒人用計算學研究韻律，台灣最接近的單位是中研院語言學研究所。</p>
+<p class="t">Voice Activity Detection</p>
+<pre>
+1.
+butterworth 低通濾波器就是k點平均值，篩選頻率44100/k
+公式 y[i] = a1*x[i+1] + a2*x[i+2] + ...
+            b1*y[i-1] + b2*y[i-2]
+篩個400Hz可做VAD
+用滑動視窗求441點訊號(0.01秒)的平方和當做個準則
+
+2.
+先LPC再做FFT，頻譜會比較圓滑，第一高峰第二高峰就是F1與F2。
+http://clas.mq.edu.au/acoustics/speech_spectra/fft_lpc_settings.html
+44100Hz成年大叔44+2個，成年大姐姐36+2個
+http://mi.eng.cam.ac.uk/~ajr/SA95/node38.html
+
+a = lpc(hamming(512) .* sig, 16);
+h = (1 ./ fft([a zeros(1, 512-17)])).';
+
+3.
+訊號/頻譜平方和，算10log10(sum)
+</pre>
+<p class="t">使用現成工具處理語音</p>
+<p>知名的語音處理工具有<a href="http://www.fon.hum.uva.nl/praat/">Praat</a>、<a href="http://www.phon.ucl.ac.uk/resource/sfs/">SFS</a>、<a href="http://www.ee.ic.ac.uk/hp/staff/dmb/voicebox/voicebox.html">VOICEBOX</a>。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Speech Synthesis（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Speech Synthesis（Text-to-Speech）</p>
+<p>語音合成。文字變成聲音訊號。經典演算法是<a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.118.5905">MBROLA</a>。</p>
+<p>台灣話由<a href="http://tts.itri.org.tw/">工業研究院</a>、<a href="http://www.iq-t.com/SYSCOM/com01_01.asp">網際智慧（自然輸入法）</a>解決，沒有對外公開技術。我推測的作法是：</p>
+<pre>
+一、人工朗讀四百餘種音節（甚至兩音節、三音節），儲存成聲音檔案。
+二、建立中文字（詞）與音節的對照表。
+三、以自然語言處理的演算法，進行分詞。
+四、汲取對應的聲音檔案。
+五、適當調整音高、音量、音長，符合台灣人說話韻律。
+</pre>
+
+<p>語音合成非常實用。例如機場與火車的時刻地點廣播、服務專線、文章朗誦，盲人網頁瀏覽器、電子字典（不過現在都是真人發音居多）、機器人、初音未來等等。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/AvtSxt54o1M"></iframe>--></div>
+<p class="t">Speech Recognition（Speech-to-Text）</p>
+<p>語音辨識。聲音訊號變成文字。</p>
+<p>台灣話由谷歌解決，沒有公開技術。讀者要是進不去谷歌，可以先從<a href="http://speech.ee.ntu.edu.tw/courses.html">李琳山</a>、<a href="http://berlin.csie.ntnu.edu.tw/Courses_I_have_Taught.htm">陳柏琳</a>的課程下手。</p>
+<p>目前的做法是將問題切開成聲音與文字兩大部分，依序擊破。</p>
+<pre>
+聲音部分：聲音變成音節。
+文字部分：音節變成文字。即是輸入法！
+</pre>
+<p>聲音部分。給定聲音訊號，切Frame、算MFCC、用DCT壓縮，得到一條數列（一個數值對應一個Frame，數值是向量），套用數列分類演算法Hidden Markov Model或者Neural Network，得到音節。知名工具是<a href="http://htk.eng.cam.ac.uk/">HTK</a>、<a href="https://github.com/botonchou/libdnn">libdnn</a>、<a href="http://kaldi.sourceforge.net/">Kaldi</a>。</p>
+<img src="SpeechRecognition1.html">
+<p>文字部分。建立大型語料庫，統計每個詞彙的出現頻率，套用n-gram或者Directed Acyclic Graph，統計最有可能出現的句子。知名工具是<a href="http://www.nltk.org/">NLTK</a>。</p>
+<img src="SpeechRecognition2.html">
+<p>大型語料庫是搜尋引擎公司的絕活，導致目前的語音辨識機制必須透過網路：先在手機解決聲音部分，再上傳谷歌解決文字部分。一來是讓大家使用最新的語料庫、辨識流行關鍵字，一來避免大家拷貝整個語音辨識程式。</p>
+<p>語音辨識應用非常廣泛。例如自動生成字幕：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/kTvHIDKLFqc"></iframe>--></div>
+<p>語音查號：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/uNfluFG-Dew"></iframe>--></div>
+<p>語音搜尋：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/kxToOTjmviw"></iframe>--></div>
+<p>語音揀貨：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ZfMlAHyI27k"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/J5MnyD1XAy8"></iframe>--></div>
+<pre>
+倉庫管理是個很重要的工作，
+以往的方式，是採用RFID技術，
+也就是在每個貨物上面貼條碼標籤，
+想要檢驗貨物，就以人力拿著刷條碼機，
+翻轉一下貨物，找到貨物上的條碼，
+然後掃描一下條碼，
+就像便利商店結帳那樣。
+接著貨物的相關資訊，就會透過網路，
+傳送到中央機房的資料庫裡面。
+
+貨物形狀千奇百怪，
+一手拿著刷條碼機，一手要從貨物上找到條碼，
+似乎有點麻煩。
+科技始終來自於惰性，
+就有人想到出一張嘴的方法：把語音辨識技術用在揀貨上面！
+只要戴個藍芽耳麥，一邊散步一邊念出貨品名稱，
+就能取代刷條碼機了，
+是不是很方便呢？
+
+最厲害的，
+是將貨品名稱轉為人工語音，
+直接對揀貨員下指令，
+如此揀貨員就不用拿著一張報表、拿著一台PDA，
+能夠空出一雙手、到處去搬貨物了。
+
+說不定不久之後，
+就能看到超商店員自顧自的碎碎念呢。
+</pre>
+<p>終極目標是靠一張嘴寫程式。另外，語音辨識也可以做為關鍵步驟，發展其他功能，諸如語音翻譯、語音轉手語、語音命令（Siri、旋風衝鋒）。</p>
+<p class="t">Speech Translation（Speech-to-Speech）</p>
+<p>語音翻譯。語音變成文字、翻譯文字、文字變成語音。</p>
+<p>科學家和工程師正在克服這個問題！Gartner的預測是未來五年內可以突破。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/EKToTEH8mPM"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/cJIILew6l28"></iframe>--></div>
+<p class="t">Speaker Recognition</p>
+<p>語者辨識。聲紋辨識。分辨講話的人是誰。</p>
+<p>主要的做法是找共振峰。目前還在發展當中。</p>
+<p>語者辨識的應用是身分鑑識，類似指紋辨識。</p>
+<p class="t">Speech Verification / Speech Evaluation</p>
+<p>語音驗證、語音評分。判斷當事人說話是否標準、有多標準。</p>
+<p>目前的做法是，套用比對數列的演算法Dynamic Time Warping、分類數列的演算法Hidden Markov Model等等。另外提供音高、F1/F2圖等等資訊。</p>
+<p>實際應用如英語學習軟體、聽障人士的語言訓練。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/8lUat8RZEt4"></iframe>--></div>
+<p class="t">Speech Emotion Recognition</p>
+<p>語音情緒辨識。從當事人的說話聲音，了解其心情。</p>
+<p>已經有人建立語音情緒的聲音資料庫。目前的做法是直接套用<a href="Classification.html">Classification</a>演算法，缺乏內涵。</p>
+<p>實際應用如<a href="http://news.secr.ncku.edu.tw/files/14-1054-132268,r81-1.php">躁症鬱症的區分</a>。</p>
+<p class="t">Speech Summarization</p>
+<p>語音摘要。找到說話內容重點。</p>
+<p>其實就是文字摘要，另外再考慮語調、情緒等等。我不清楚有沒有人做。</p>
+<p class="t">Time-compressed Speech</p>
+<p>長話短說。</p>
+<p class="t">Vocoder</p>
+<p>人聲實施聲音特效。可以參考開源專案<a href="http://ml.cs.yamanashi.ac.jp/world/">WORLD</a>。</p>
+<p>改變頻率高低之後，聽起來就像是變性一樣。一般來說男生低、女生高，所以調高頻率後聽起來像女聲，調低頻率後聽起來像男聲。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Qnj2oU8MYCI"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/KWK3PRNjZdI"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fE1zsZvzRms"></iframe>--></div>
+<p class="t">Singing Voice Correction（Pitch Correction）</p>
+<p><a href="https://en.wikipedia.org/wiki/Pitch_correction">校正音高</a>。音痴的救星。偶像歌手必備工具。</p>
+<p>校正之後再合聲，難聽的聲音的也會變得好聽，單調的曲子的也會變得豐富。所有流行歌曲都是這樣處理。大家也都習慣聽造假的聲音。</p>
+<p>知名軟體是Auto-Tune。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/0uIzOUh1t8M"></iframe>--></div>
+<p class="t">Singing Voice Synthesis（Speech-to-Singing）</p>
+<p>文字轉歌曲。給定樂譜和文字，變成歌聲。</p>
+<p>目前的做法是直接錄製人類發聲（略過Text-to-Speech），然後套用Vocoder調整節拍和音高。</p>
+<p>知名的應用是VOCALOID初音未來、UTAU夏語遙。夏語遙的網站有提供人類發聲的聲音檔案。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/4HZCw5mXLUk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/shs0rAiwsGQ"></iframe>--></div>
+<p>至於拉丁語系的音節系統也有人做，例如<a href="http://host.oddcast.com/demo_ttsing/">oddcast</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/7FClOh-5a20"></iframe>--></div>
+<p class="t">Singing Voice Recognition（Singing-to-Speech）</p>
+<p>歌曲轉文字。</p>
+<p class="t">Singing Voice Separation</p>
+<p>從歌曲中分離人聲與伴奏。</p>
+<p>知名的應用是伴唱帶。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/_ilErbGsXPo"></iframe>--></div>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Audio.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:29:06 GMT -->
+</html>

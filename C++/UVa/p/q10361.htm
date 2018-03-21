@@ -1,0 +1,51 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10361: Automatic Poetry</h1>       
+<p>&quot;喔！又是這種謎語！&quot;羅拉說。</p>
+<p>在電腦遊戲&quot;古墓奇兵14&quot;中，羅拉如同往常在埃及古墓中奔跑。現在她站在一道看起來像日耳曼風格的門前，要解決一道謎語才可以過關。這一次的謎語是一種叫做Schuttelreim的詩詞。例子如下：</p>
+<p class="MsoNormal" style="TEXT-ALIGN: justify; mso-layout-grid-align: none">Ein 
+Kind <span class="GramE">halt</span> seinen Schnabel nur,<span class="GramE"><br>
+wenn</span> es hangt an der Nabelschnur.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p>這種詩詞似乎是典型的德國風格。有趣的是這種奇怪的詩詞如果有人給你第一列，以及第二列的開頭，你就可以自己完成這首詩詞。你的任務就是寫一個程式來自動的完成這首詩詞，所以古墓奇兵中的羅拉可以專心在動作部分，而不用在智力方面傷腦筋。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">輸入的第一列有一個整數n，代表以下有幾組測試資料。每組測試資料2列，第一列的格式如下：</p>            
+<p align="center">s<sub>1</sub>&lt;s<sub>2</sub>&gt;s<sub>3</sub>&lt;s<sub>4</sub>&gt;s<sub>5</sub></p>            
+<p align="left">其中s<sub>i</sub>可能是空的或小寫的字串或空白。第二列將是小寫的字串或空白而且以...作為結束。每列的長度不會超過100個字元。請參考Sample 
+Input。</p>            
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對每一組測試資料的2列：l<sub>1</sub>及l<sub>2</sub>，你必須按以下的規則輸出2列：c<sub>1</sub>及c<sub>2</sub>。</p>  
+<ul>
+  <li>
+    <p align="left">把 l<sub>1</sub>的&quot;&lt;&quot;和&quot;&gt;&quot;拿掉之後，就得到c<sub>1</sub>。</li>
+  <li>
+    <p align="left">c<sub>2</sub><sub> </sub>和 l<sub>2</sub>一樣，但是把 
+    l<sub>2</sub> 最後的...換成 l<sub>1 </sub>的 s<sub>4</sub>s<sub>3</sub>s<sub>2</sub>s<sub>5</sub>。</li>
+</ul>
+<p align="left">請參考Sample Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample        
+input</b></span></p>                 
+<pre>3
+ein kind haelt seinen &lt;schn&gt;abel &lt;n&gt;ur
+wenn es haengt an der ...
+weil wir zu spaet zur &lt;&gt;oma &lt;k&gt;amen
+verpassten wir das ...
+&lt;d&gt;u &lt;b&gt;ist
+...</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                   
+Output</b></span></p>                  
+<pre>ein kind haelt seinen schnabel nur
+wenn es haengt an der nabel schnur
+weil wir zu spaet zur oma kamen
+verpassten wir das koma amen
+du bist
+bu dist</pre>
+                  
+</body>                  
+                  
+</html>                  

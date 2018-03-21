@@ -1,0 +1,75 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q131: The Psychic Poker Player</h1>        
+<p align="left">有一種常見的撲克牌遊戲叫&quot;梭哈&quot;（就是你在電影<b>賭神</b>中常見的那種遊戲），每個人各發給5張牌，然後根據牌的花色或點數的組合，給予不同等級的名稱例如：同花順，2對等等。</p>
+<p align="left">現在有一個類似的遊戲，一個玩家先發給5張牌，然後桌上另有5張牌。玩家的5張牌是打開的，而桌上的5張牌是蓋著的。玩家可以換掉手上的牌0～5張（換的時候按桌上的牌的順序來更換），所以他當然希望換牌之後能得到最好的牌。由於桌上的牌是蓋著的，一般人是無法知道牌的內容的，所以他必須依照機率來決定該換掉哪些牌。但是在這個問題中，我們的玩家具有特異功能，就是他能看穿桌上那5張蓋著的牌。因此他可以明確的知道該換掉哪些牌以得到最好的結果。你的任務就是寫一個程式來指點他該換掉哪些牌，使得最後手上的牌等級最高。以下簡單介紹梭哈中由高到低各等級牌的名稱：</p>
+<ul>
+  <li>
+    <p align="left"><b>Straight flush: </b>（中文翻譯：同花順）5張牌同一花色（flush），並且形成一個順子（straight）。例如：8H   
+    9H TH JH QH</li> 
+  <li>
+    <p align="left"><b>Four of a kind:</b>（中文翻譯：4條或鐵枝）4張牌同一個點數。例如：8H 8D 8C 8S 
+    9D&nbsp;</li> 
+  <li>
+    <p align="left"><b>Full House:</b>（中文翻譯：葫蘆）3張同一點數，另2張同一點數。例如：8H 8D 8C 7S 
+    7D</li> 
+  <li>
+    <p align="left"><b>Flush:</b>（中文翻譯：同花）5張牌同一花色。例如：6H   
+    9H TH JH QH</li> 
+  <li>
+    <p align="left"><b>Straight:</b>（中文翻譯：順子）5張牌的點數為連續的。例如：8S 
+    9H TH JH QD。請注意，A是比較特別的：點數T   
+    J Q K A是順子，A 2 3 4 5也是順子，而 J Q K A 2不是順子。</li> 
+  <li>
+    <p align="left"><b>Three of a kind:</b>（中文翻譯：3條）3張牌同一個點數，另2張牌不同點數。例如：8H 8D 8C AH 
+    9D</li> 
+  <li>
+    <p align="left"><b>Two pairs:</b>（中文翻譯：2對）有2組2張牌同一個點數，另1張牌不同點數。例如：8H   
+    8D 5C 5H 9D</li> 
+  <li>
+    <p align="left"><b>One pair:</b>（中文翻譯：1對）有2張牌同一個點數，另3張牌皆不同點數。例如：8H   
+    8D KC 5H 2D</li> 
+  <li>
+    <p align="left"><b>High Card:</b>（中文翻譯：不知道，就是最爛的就是了）沒有以上任何情況就屬於high   
+    card。例如：AH   
+    9D 7C 3H 2D</li> 
+</ul>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">每組測試資料一列，有10張牌。前5張為玩家一開始手上的5張牌，後5張為桌上蓋著的5張牌。每張牌以2個字元代表，第一個字元為點數（A=Ace,  
+2-9, T=10, J=Jack, Q=Queen, K=King），第二個字元為花色（C=Clubs, D=Diamonds,  
+H=Hearts, S=Spades）。牌與牌之間有一空白，並且輸入的10張牌一定是合法的。也就是不會有重複的牌出現。</p>           
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對每組測試資料先輸出玩家一開始手上的那5張牌，然後輸出桌上那5張牌。然後輸出經過換牌（0～5張）之後所產生最好的牌的等級。輸出格式請參考Sample  
+Output。Sample Output 9組測試資料的結果就是梭哈由高到低的9個等級。另外請注意：玩家手上的5張牌順序是沒有意義的，是不重要的。但是桌上的5張牌順序卻是重要的，例如：如果你要換掉手上的2張牌的話，一定要用桌上牌的前2張去換才行。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample           
+input</b></span></p>                    
+<pre>TH JH QC QD QS QH KH AH 2S 6S
+2H 2S 3H 3S 3C 2D 3D 6C 9C TH
+2H 2S 3H 3S 3C 2D 9C 3D 6C TH
+2H AD 5H AC 7H AH 6H 9H 4H 3C
+AC 2D 9C 3S KD 5S 4D KS AS 4C
+KS AH 2H 3C 4H KC 2C TC 2D AS
+AH 2C 9S AD 3C QH KS JS JD KD
+6C 9C 8C 2D 7C 2H TC 4C 9S AH
+3D 5S 2H QD TD 6S KH 9H AD QH</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Output</b></span></p>                     
+<pre>Hand: TH JH QC QD QS Deck: QH KH AH 2S 6S Best hand: straight-flush
+Hand: 2H 2S 3H 3S 3C Deck: 2D 3D 6C 9C TH Best hand: four-of-a-kind
+Hand: 2H 2S 3H 3S 3C Deck: 2D 9C 3D 6C TH Best hand: full-house
+Hand: 2H AD 5H AC 7H Deck: AH 6H 9H 4H 3C Best hand: flush
+Hand: AC 2D 9C 3S KD Deck: 5S 4D KS AS 4C Best hand: straight
+Hand: KS AH 2H 3C 4H Deck: KC 2C TC 2D AS Best hand: three-of-a-kind
+Hand: AH 2C 9S AD 3C Deck: QH KS JS JD KD Best hand: two-pairs
+Hand: 6C 9C 8C 2D 7C Deck: 2H TC 4C 9S AH Best hand: one-pair
+Hand: 3D 5S 2H QD TD Deck: 6S KH 9H AD QH Best hand: highest-card</pre>
+                   
+</body>                   
+                   
+</html>                   

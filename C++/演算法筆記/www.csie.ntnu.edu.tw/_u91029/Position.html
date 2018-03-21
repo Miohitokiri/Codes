@@ -1,0 +1,135 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Position.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:59:39 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Position</title></head><body>
+<div class="a"><div class="h">
+<p class="b">大量Point資料結構: k-Dimensional Tree</p>
+</div><div class="c">
+<p class="t">摘要</p>
+<pre>
+           | build      | build      | search     | orthogonal
+           | time       | space      | (ins/del)  | range search
+-----------+------------+------------+------------+--------------
+KD-Tree    | O(NlogN)   | O(N)       | O(logN)    | O(N<sup>1-1/D</sup> + K)
+Range Tree | O(Nlog<sup>D-1</sup>N) | O(Nlog<sup>D-1</sup>N) | O(log<sup>D</sup>N)   | O(log<sup>D</sup>N + K)
+</pre>
+<p class="t">k維樹</p>
+<p>大量儲存多維平面上的點，並且依照地緣關係來排序。常縮寫為k-d tree、kd-tree。以下分別介紹一維和二維的情形。</p>
+<p class="t">一維KD-Tree</p>
+<img src="KD-Tree1.png">
+<p>1D-Tree的原理與Binary Search Tree十分類似，但是長相卻有點不同。在1D-Tree當中，資料全部集中在樹葉；得補一些數據到內部節點，才能做搜尋。</p>
+<p class="t">一維KD-Tree：建立</p>
+<img src="KD-Tree2.png">
+<p>建立的方法，是把數線上的點分為左右兩等份，然後分別遞迴下去。習慣上是挑中位數位置的點作為分割點，分割點劃分於左側。</p>
+<p>求分割點時，是使用時間為O(N)的求中位數演算法，而不是使用時間為O(NlogN)的排序演算法，才能達到理論上的時間複雜度。然而實際上排序演算法比較容易實作，效率也不錯。</p>
+<p>時間複雜度為O(NlogN)，空間複雜度為O(2N - 1) = O(N)。</p>
+<p class="t">一維KD-Tree：插入、刪除、搜尋</p>
+<img src="KD-Tree3.png">
+<p>插入、刪除、搜尋的方式跟Binary Search Tree的概念完全相同，時間複雜度都是O(logN)。</p>
+<p class="t">一維KD-Tree：大範圍搜尋</p>
+<img src="KD-Tree4.png">
+<p>有一個重要的應用，是找出一個區間裡面所有的點。概念上是以搜尋範圍的左、右邊界值，分別搜尋一次，途中順便遍歷符合搜尋範圍內的子樹。</p>
+<p>真正在實作時，則是同時以搜尋範圍的左、右邊界值進行搜尋：甲、如果搜尋完全落在分割點的其中一側，那麼就依照二元搜尋樹的規則繼續搜尋；乙、如果搜尋範圍橫跨分割點，那麼左右子樹都要搜尋；丙、如果搜尋範圍包含一整條分割區段，就可以直接遍歷整棵子樹，也可以當作是乙的情況來處理。</p>
+<p>時間複雜度是O(2*logN + 2*K-1) = O(logN + K)，K為區間裡面的點數目。</p>
+<p class="t">延伸閱讀：另外一種建立一維KD-Tree的方式</p>
+<img src="KD-Tree5.png">
+<p>1D-Tree另外有一種獨特的建樹方式：先排序所有資料，需時O(NlogN)，然後再以bottom-up順序建立1D-Tree，需時O(2N - 1) = O(N)。整體的時間複雜度仍相同。</p>
+<p>讀者可能會想：既然要先排序，那乾脆就把資料放到陣列，排序完之後，直接二分搜尋不就好了，幹嘛需要1D-Tree呢？你想的沒錯，一維的情況下，資料又不會變動時，的確沒有這個必要。</p>
+<p class="t">延伸閱讀：內部節點有兩種記錄方式</p>
+<img src="KD-Tree6.png">
+<p>內部節點有兩種記錄方式。基本的方式是記錄分割點座標，這是仿照Binary Search Tree的原理；進階的方式是記錄其下所有樹葉的數值範圍，實作起來會複雜一點。這兩種記錄方式也可以同時使用。</p>
+<p>採用進階的方式有一個好處：可以允許樹葉當中有許多相同座標的點。如此一來，座標相同的點就能進行左右兩等份，閃避了分割點的二元搜尋規則。</p>
+<p>一般來說，KD-Tree沒有必要使用進階的方式。在Range Tree當中，才有必要用到進階的方式。</p>
+<p class="t">二維KD-Tree</p>
+<img src="KD-Tree7.png">
+<p>兩個維度依序作為等分的依據，輪流遞迴下去。</p>
+<p class="t">二維KD-Tree：建立</p>
+<img src="KD-Tree8.png">
+<p>先以垂直線，把平面上的點分為左右兩等份，左右兩區域各自再以水平線，將平面上的點等分為上下兩等份。垂直、水平如此不斷輪流遞迴下去，直到每個區域都只剩一個點。</p>
+<p>時間複雜度為O(NlogN)。空間複雜度為O(2N - 1) = O(N)。</p>
+<p class="t">二維KD-Tree：插入、刪除、搜尋</p>
+<img src="KD-Tree9.png">
+<p>插入、刪除、搜尋的方式跟Binary Search Tree的概念完全相同，時間複雜度都是O(logN)。</p>
+<p class="t">二維KD-Tree：大範圍搜尋</p>
+<img src="KD-Tree10.png">
+<p>有一個重要的應用，是找出一個長方形範圍裡面所有的點：甲、如果搜尋範圍完全落在分割線的其中一側，那麼就依照二元搜尋樹的規則繼續搜尋；乙、如果搜尋範圍橫跨分割線，那麼左右子樹都要搜尋；丙、如果搜尋範圍包含一整塊分割區域，就可以直接遍歷整棵子樹，也可以當作是乙的情況來處理。</p>
+<p>搜尋時，垂直方向最多遇到O(sqrtN)個區域，水平方向最多遇到O(sqrtN)個區域，因此搜尋的時間複雜度是O(2*sqrtN + 2K-1) = O(sqrtN + K)，K為長方形裡面的點數目。</p>
+<p class="t">高維KD-Tree</p>
+<p>建立時間為O(NlogN)，建立空間為O(N)，插入、刪除、搜尋的時間為O(logN)，搜尋D體形範圍的時間為O(N<sup>1-1/D</sup> + K)。</p>
+<p class="e">Timus 1369 ICPC 6041</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量Point資料結構: Range Tree</p>
+</div><div class="c">
+<p class="t">範圍樹</p>
+<p>大量儲存多維平面上的點，並且依照地緣關係來排序，用途和「k維樹」一模一樣。</p>
+<p>「範圍樹」的基本操作都比「k維樹」略遜一籌，但是「範圍樹」做大範圍搜尋時，竟神奇地比「k維樹」快上許多。以下分別介紹一維和二維的情形。</p>
+<p class="t">一維Range Tree</p>
+<p>就是一維KD-Tree。</p>
+<p class="t">二維Range Tree</p>
+<img src="RangeTree1.png">
+<p>一棵X座標為主的1D-Tree，每一個內部節點都連繫到一棵Y座標為主的1D-Tree，由內部節點所管轄的點所構成。</p>
+<p>X樹可能有X座標相同、Y座標不同的點；Y樹可能有Y座標相同、X座標不同的點。因此，內部節點改為記錄其下所有樹葉的數值範圍，如此一來，座標相同的點就能進行左右兩等份。</p>
+<p class="t">二維Range Tree：建立</p>
+<img src="RangeTree2.png">
+<p>甲、首先建立X樹；乙、於回溯時，使用Merge Sort將子樹的點重新依照Y座標排序；丙、同時，拿排序好的點，以bottom-up方式，建立Y樹。</p>
+<p>X樹的高度是O(logN)，樹根到樹葉的路徑長度是O(logN)。對於X樹的其中一個樹葉，只可能出現在O(logN)棵Y樹當中。如此便算出空間複雜度為O(NlogN)。</p>
+<p>時間複雜度為O(NlogN)，空間複雜度為O(NlogN)。</p>
+<p class="t">二維Range Tree：插入、刪除、搜尋</p>
+<img src="RangeTree3.png">
+<p>先以X座標搜尋X樹，沿途每一個內部節點，再以Y座標深入搜尋Y樹。</p>
+<p>時間複雜度是O((logN)^2)。</p>
+<p class="t">二維Range Tree：大範圍搜尋</p>
+<img src="RangeTree4.png">
+<p>有一個重要的應用，是找出一個長方形範圍裡面所有的點。以長方形的左、右邊界值，分別搜尋X樹，找出在左、右邊界範圍內的所有子樹及樹葉，再以上、下邊界值，深入搜尋Y樹。</p>
+<p>概念上可以解讀成：先過濾X座標，再過濾Y座標。</p>
+<p>時間複雜度是O((logN)^2 + K)，K為長方形裡面的點數目。終於比KD-Tree快！</p>
+<p class="t">高維Range Tree</p>
+<p>建立時間為O(Nlog<sup>D-1</sup>N)，建立空間為O(Nlog<sup>D-1</sup>N)，插入、刪除、搜尋的時間為O(log<sup>D</sup>N)，搜尋D體形範圍的時間為O(log<sup>D</sup>N + K)。</p>
+<p class="t">延伸閱讀：Fractional Cascading</p>
+<img src="RangeTree5.png">
+<p>當資料不會變動時，可以把最深維度的1D-Tree改為陣列，就可以利用Fractional Cascading減少搜尋的時間，搜尋的時間可以除掉一個logN。</p>
+<p>搜尋的時間變為O(log<sup>D-1</sup>N)，搜尋D體形範圍的時間變為O(log<sup>D-1</sup>N + K)。</p>
+<p class="e">ICPC 6045</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量Interval資料結構: Interval Tree</p>
+</div><div class="c">
+<p class="t">區間樹</p>
+<p>置放大量區間，並且進行排序的資料結構。</p>
+<img src="IntervalTree1.png">
+<p>排序2N個區間端點，以中位數位置的端點做為分界線。樹根是橫跨兩側的區間，依照左端點排序；左子樹是位於左側的區間；右子樹是位於右側的區間。</p>
+<p>空間O(N)，建立O(NlogN)，搜尋O(logN + K)。</p>
+<p class="t">另一種區間樹</p>
+<img src="IntervalTree2.png">
+<p>平衡的Binary Search Tree，以區間左端點作為鍵值。每個節點額外記錄其子樹所有區間的右邊界。</p>
+<p>空間O(N)，建立O(NlogN)，搜尋O(logN + K)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量Interval資料結構: Segment Tree</p>
+</div><div class="c">
+<p class="t">線段樹</p>
+<p>置放大量區間，並且進行排序的資料結構。</p>
+<img src="SegmentTree1.png">
+<p>排序2N個區間端點，將數線切成最多2N-1個區段，一個區段對應一個樹葉。</p>
+<p>top-down觀點：標記區間涵蓋的子樹，只標記子樹樹根。</p>
+<p>bottom-up觀點：標記區間涵蓋的樹葉，往上合併標記。</p>
+<p>儲存一個區間，每一層最多標記兩個節點，整棵樹最多標記2logN個節點。儲存N個區間的空間複雜度為O(NlogN)。</p>
+<p>空間O(NlogN)，建立O(NlogN)，搜尋O(logN + K)。</p>
+<p class="e">UVa 10535 ICPC 4108</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">大量Shape資料結構: Binary Space Partitioning Tree</p>
+</div><div class="c">
+<p class="t">Binary Space Partitioning Tree</p>
+<p><a href="http://en.wikipedia.org/wiki/Binary_space_partitioning">http://en.wikipedia.org/wiki/Binary_space_partitioning</a></p>
+<p>大量儲存多維空間裡的圖形，並且依照地緣關係來排序。常縮寫為BSP tree。</p>
+<p>概念仿照KD-Tree。任取一筆資料，做為分界處，將空間劃分成左右兩區，將剩餘資料分為左右兩堆，遞迴分割下去。橫跨分界處的資料，必須切開，成為左右兩份。</p>
+<p>三維空間，資料是三角形：隨便抓一個三角形，做為分界面，將空間劃分成左右兩區，並將其餘三角形們劃分成左右兩堆，遞迴分割下去。</p>
+<p>二維平面，資料是線段：仿前。</p>
+<p>二維平面、三維空間，資料是點：即是KD-Tree。</p>
+<p class="e">UVa 1542 ICPC 2105</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Position.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:59:49 GMT -->
+</html>

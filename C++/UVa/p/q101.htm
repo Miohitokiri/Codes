@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q101: The Blocks Problem</h1>          
+<p>在早期人工智慧的領域中常常會用到機器人，在這個問題中有一支機器手臂接受指令來搬動積木，而你的任務就是輸出最後積木的情形。</p>
+<p>一開始在一平坦的桌面上有n塊積木（編號從0到n-1）0號積木放在0號位置上，1號積木放在1號位置上，依此類推，如下圖。</p>
+<p align="center"><img border="0" src="p101.gif" width="433" height="52"></p> 
+<p>機器手臂有以下幾種合法搬積木的方式（a和b是積木的編號）：</p> 
+<ul>
+  <li>move a onto b<br>
+    在將a搬到b上之前，先將a和b上的積木放回原來的位置（例如：1就放回1的最開始位罝）</li>
+  <li>move a over b<br>
+    在將a搬到b所在的那堆積木之上之前，先將a上的積木放回原來的位罝（b所在的那堆積木不動）</li>
+  <li>pile a onto b<br>
+    將a本身和其上的積木一起放到b上，在搬之前b上方的積木放回原位</li>
+  <li>pile a over b<br>
+    將a本身和其上的積木一起搬到到b所在的那堆積木之上</li>
+  <li>quit<br>
+    動作結束</li>
+</ul>
+<p>前四個動作中若a=b，或者a, b在同一堆積木中，那麼這樣的動作算是不合法的。所有不合法的動作應該被忽略，也就是對各積木均無改變。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p>輸入含有多組測試資料，每組測試資料的第一列有一個正整數n（0 
+&lt; n &lt; 25），代表積木的數目（編號從0到n-1）。接下來為機器手臂的動作，每個動作一列。如果此動作為 
+quit 
+，代表此組測試資料輸入結束。你可以假設所有的動作都符合上述的樣式。請參考Sample Input。</p>       
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                        
+<p>每組測試資料輸出桌面上各位置積木的情形（每個位置一列，也就是共有n列），格式請參考Sample Output。</p>       
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                   
+Input</b></span></p>                                          
+<pre>10
+move 9 onto 1
+move 8 over 1
+move 7 over 1
+move 6 over 1
+pile 8 over 6
+pile 8 over 5
+move 2 over 1
+move 4 over 9
+quit
+4
+pile 0 over 1
+pile 2 over 3
+move 1 onto 3
+quit</pre>            
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                            
+Output</b></span></p>                                          
+<pre>0: 0
+1: 1 9 2 4
+2:
+3: 3
+4:
+5: 5 8 7 6
+6:
+7:
+8:
+9:
+0: 0
+1:
+2: 2
+3: 3 1</pre>
+                                        
+</body>                                        
+                                        
+</html>                                        

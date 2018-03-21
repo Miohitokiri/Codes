@@ -1,0 +1,40 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10284: Chessboard in FEN</h1>        
+<p align="left">在FEN（Forsyth-Edwards Notation）中,一個西洋棋的棋盤描述如下：</p> 
+<p align="left">. 盤面的內容描述是由最上列到最下列<br>
+. 以 / 符號來分隔相鄰的列<br>
+. 每一列由左到右描述<br>
+. 白方以大寫字元來表達各個角色：PNBRQK分別代表士兵、騎士、主教、城堡、皇后、國王<br>
+. 黑方以小寫字元來表達各個角色：pnbrqk分別代表士兵、騎士、主教、城堡、皇后、國王<br>
+. 空白格子以1～8的數字表示，例如5即代表連續的5個空格。<br>
+. 每一列的數字及各角色的和一定為8<p align="left">舉例說明：<p align="left">5k1r/2q3p1/p3p2p/1B3p1Q/n4P2/6P1/bbP2N1P/1K1RR3，此FEN就是表達如下的棋盤
+<p align="center"><img border="0" src="p10284.gif" width="171" height="171"></p>
+<p>而 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR 
+就代表一個棋盤剛開始的狀態。</p>
+<p>你的任務很簡單，給你一個FEN表達的棋盤，請你算出有多少個空格目前不會受到任何棋子的攻擊。（如果你不知道西洋棋各角色如何攻擊，問一下別人，或參考<a href="q10196.htm">Q10196 
+Check the Check</a>）</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">每組測試資料一列，含有一FEN的棋盤。注意：所表達的不一定是合理的棋盤，每列中不會有空白。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">每組測試資料請輸出該棋盤中有多少個空白格子（未被佔據的格子）目前是不會被攻擊的。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample         
+input</b></span></p>                    
+<p class="MsoNormal" style="TEXT-ALIGN: justify"><span style="COLOR: black; FONT-FAMILY: 'Courier New'; FONT-SIZE: 11pt">k1r/2q3p1/p3p2p/1B3p1Q/n4P2/6P1/bbP2N1P/1K1RR3<br>
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR</span><o:p>
+&nbsp;</o:p> 
+</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Output</b></span></p>                    
+<p class="MsoNormal" style="TEXT-ALIGN: justify"><span style="COLOR: black; FONT-FAMILY: 'Courier New'; FONT-SIZE: 11pt">3<br>
+16</span></p>
+                   
+</body>                   
+                   
+</html>                   

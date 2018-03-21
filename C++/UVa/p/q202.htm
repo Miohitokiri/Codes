@@ -1,0 +1,49 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q202: Repeating Decimals</h1>   
+<p align="left">1/33=0.030303030303…為一個循環小數，在這裡03這2個數字會永遠循環下去(cycle length=2)。以下是幾個分數的十進位表示法     
+</p>       
+<p align="center"><img src="p202.gif">　   
+</p>       
+<p align="left">寫一個程式輸入分數的分子和分母然後算出其十進位小數表示法的循環節。在此我們定義循環節為最先出現之最小長度的不斷重複數字串。所以，1/250=0.04000000…的循環節為（0），其cycle length=1。655/990=0.6616161616161616161…的循環節為（61），其cycle length=2。    
+</p>       
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>      
+<p align="left">每組測試資料一列，包含有2個數x,y，分別代表分子和分母。x為非負整數，y為正整數，且x,y&lt;=3000</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>    
+<p align="left">對每一組測試資料，輸出其十進位的表示法及循環節的長度。以刮號將循環節表示出來。如果循環節長度大於50，則只要輸出前50個，後面用...表示即可。每組測試資料後請輸出一空白列。詳細格式請參考Sample   
+Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample          
+Input</b></span></p>       
+<pre>76 25
+5 43
+1 397
+1 1
+0 558</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample        
+Output</b></span></p>       
+<pre>76/25 = 3.04(0)
+   1 = number of digits in repeating cycle
+
+5/43 = 0.(116279069767441860465)
+   21 = number of digits in repeating cycle
+
+1/397 = 0.(00251889168765743073047858942065491183879093198992...)
+   99 = number of digits in repeating cycle
+
+1/1 = 1.(0)
+   1 = number of digits in repeating cycle
+
+0/558 = 0.(0)
+   1 = number of digits in repeating cycle
+
+</pre>
+       
+</body>       
+       
+</html>       

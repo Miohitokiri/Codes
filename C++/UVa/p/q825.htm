@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q825: Walking on the Safe Side</h1>          
+<p>在正方城這個城市走路是件相當容易的事，因為所有的道路都是像棋盤的線一樣，把城市切割成一塊一塊的正方形。大部分的十字路口都是安全的，行人可以直接通過。然而也有少數的十字路口比較危險，所以建有地下道或天橋供行人通過。<p>現在有一個人想要從位於城市西北方（也就是左上角）的公園十字路口到位於東南方（也就是右下角）的車站十字路口去。由於他是個懶惰的人，他不想要走比需要多一點點的路，也就是說他一定是往下或往右走，絕對不會往上或往左走。另外，他也不喜歡走天橋或地下道，所以他會避開這些危險的十字路口。你的任務就是幫他算一下從左上角走到右下角有多少種不同的走法。<p>以下的圖顯示出有4條東西向的道路，有5條南北向的道路，有3個十字路口是危險的。所以從左上角走到右下角要走(N-1)+(W-1) 
+= 3+4 = 7格的距離，並且總共有4種不同的走法。          
+<p align="center"><img border="0" src="p825.jpg" width="417" height="290">
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+輸入的第一列有一個正整數，代表以下有多少組測試資料。每組測試資料的第一列有2個整數W,N（均不大於100），W代表東西向道路的數目，N代表南北向道路的數目，編號如上圖所示。接下來的W列代表這W條東西向道路，每列的第一個數為這是第幾條東西向道路，接下來有0個或多個不等的數，代表某些南北向道路與這條東西向道路相交的十字路口是危險的。<p>輸入的第一列與第一組測試資料之間，以及各組測試資料之間均有一空白列，第一組Sample 
+Input表示的路如上圖所示，請參考。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                          
+每組測試資料輸出一列，為一個整數。代表這個人從左上角走到右下角有多少種不同的走法。
+<p>測試資料間亦請空一列。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                       
+Input</b></span></p>                                              
+<pre>2
+
+4 5
+1
+2 2
+3 3 5
+4
+
+5 5
+1
+2 1 2 3 4 
+3 1 2 3  
+4 1 2 3 5  
+5 1 2 3 </pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                
+Output</b></span></p>                                              
+<pre>4
+
+0</pre>   
+                                            
+</body>                                            
+                                            
+</html>                                            

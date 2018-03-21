@@ -1,0 +1,35 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q555: Bridge Hands</h1>
+<p align="left">很多撲克牌遊戲，例如橋牌，都必須把52張牌輪流發給4個玩家。所以每個玩家有13張牌。厲害的玩家拿到牌就可以直接玩了，但是一般的玩家通常需要先把牌按照花色及點數排序一下。</p>   
+<p align="left">在這個問題裡面，我們定義花色大小的順序為：CLUBS&lt;DIAMONDS&lt;SPADES&lt;HEARTS（我們從現在起分別以C、D、S、H來代表以上四個花色）。至於點數方面，我們定義大小的順序為：2&lt;3&lt;4&lt;5&lt;6&lt;7&lt;8&lt;9&lt;T&lt;J&lt;Q&lt;K&lt;A（T代表10，J代表Jack，Q代表Queen，K代表King，A代表Ace）。</p>   
+<p align="left">四個玩家分別坐在東南西北四個位置。其中一個被指定為發牌者，當他發牌的時候是從他左邊那一位開始依順時鐘方向發起，直到把最後一張牌發給自己。請參考下圖。本問題就是請你寫一個程式來模擬發牌及排序的過程。</p>   
+<p align="center"><img border="0" src="p555.gif" width="136" height="131"></p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>  
+<p align="left">輸入包含好幾組測試資料，每組測試資料3列。第一列有一個字元代表發牌者（N,E,S,W其中之一，若此字元為#代表輸入結束），接下來的2列為牌的內容，每列26張牌。這52張牌就是發牌者要依序發給各家的牌（每2個字元代表一張牌，例如：CQ代表此張牌花色為CLUB且點數為Q）。請參考Sample 
+Input。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p> 
+<p align="left">每組輸入資料請輸出四列，每位玩家一列，並且按照S,W,N,E的順序輸出。請注意：玩家手上的牌需經過排序。輸出格式請參考Sample 
+Output</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample   
+Input</b></span></p>  
+<pre>N
+CQDTC4D8S7HTDAH7D2S3D6C6S6D9S4SAD7H2CKH5D3CTS8C9H3C3
+DQS9SQDJH8HAS2SKD4H4S5C7SJC8DKC5C2CAHQCJSTH6HKH9D5HJ
+#</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample   
+Output</b></span></p>  
+<pre>S: C3 C5 C7 CT CJ D9 DT DJ S3 SK H2 H9 HT
+W: C2 C4 CK D4 D5 D6 DQ DA S4 S8 ST SJ H8
+N: C6 C8 C9 CA D8 S9 SA H4 H5 H6 H7 HJ HA
+E: CQ D2 D3 D7 DK S2 S5 S6 S7 SQ H3 HQ HK</pre>
+  
+</body>  
+  
+</html>  

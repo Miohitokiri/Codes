@@ -1,0 +1,47 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10126: Zipf's Law</h1>       
+<p>給你一篇文章，你的任務就是寫一個程式來找出出現 n次的字（wrod，連續的英文字母定義為一個字，不論大小寫，也就是說apple和Apple視為相同的字。字的長度最大不會超過40個字元）。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">輸入含有多組測試資料。每組測試資料的第一列有一個正整數 
+n，接下來為一篇跨有多列的文章，每列的長度不會超過1000個字元。測試資料的最後一列內容為&quot;EndOfText&quot;，代表此組測試資料結束。EndOfText這個字不會出現在上面的文章中，而這個字也不該被當成文章中的字，他純粹是用來作測試資料結束判斷用的。請參考Sample  
+Input。</p>            
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對每一組測試資料請輸出在文章中出現 n次的字。每個字一列，全部小寫字母，且按照字母的次序。如果沒有這樣的字，請輸出一列：There 
+is no such word.</p>  
+<p align="left">測試資料間請空一列，請參考Sample Output。</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample         
+input</b></span></p>                 
+<pre>2
+
+In practice, the difference between theory and practice is always
+greater than the difference between theory and practice in theory.
+	- Anonymous
+
+Man will occasionally stumble over the truth, but most of the
+time he will pick himself up and continue on.
+        - W. S. L. Churchill
+EndOfText
+10
+In practice, the difference between theory and practice is always
+greater than the difference between theory and practice in theory.
+	- Anonymous
+EndOfText</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                   
+Output</b></span></p>                  
+<pre>between
+difference
+in
+will
+
+There is no such word.</pre>
+                  
+</body>                  
+                  
+</html>                  

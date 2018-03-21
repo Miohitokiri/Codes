@@ -1,0 +1,787 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Optimization.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:20 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Optimization</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Optimization</p>
+<p class="w">而世之奇偉、瑰怪、非常之觀，常在於險遠，</p>
+<p class="w">而人之所罕至焉，故非有志者不能至也。《王安石．游褒禪山記》</p>
+</div><div class="c">
+<p class="t">楔子</p>
+<p>電腦是計算機，只會計算數字。要讓電腦代替人腦處理真實世界的問題，首先要將人腦的抽象想法，一一對應到電腦的實際數值。</p>
+<img src="Optimization1.png">
+<p>人腦考慮的「效果最好」與「效果最差」，放到了電腦就被設定成「數字最大」與「數字最小」。人腦考慮的「問題」與「各種可能性」，放到了電腦就被設定成「函數」與「各種輸出入」。</p>
+<p>於是乎，人腦考慮的「最好作法」與「最差作法」，放到了電腦就是「最佳化」！</p>
+<p class="t">Optimization</p>
+<p>求根找到零，最佳化找到極值。找到確切的輸入數值與輸出數值，輸出數值是最大值（最小值），稱作「最佳化」。</p>
+<img src="Optimization2.png">
+<p>以函數圖形表達函數的極值：最大值就是最高的地方，最小值就是最低的地方。有時候最大值、最小值會在無限遠的地方。</p>
+<img src="Optimization3.png">
+<p>中學數學談過一點點多項式函數的最佳化，比如一元二次多項式函數的最佳化（求拋物線的頂點）。大學微積分課程也談過多項式函數最佳化，比如一階導數等於零。</p>
+<p>以下則是談一般的函數的最佳化。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">特殊函數類型</p>
+</div><div class="c">
+<p class="t">容易找到極值的函數類型</p>
+<img src="Optimization4.png">
+<p>Unimodal Function：單峰函數。先嚴格遞增、再嚴格遞減的函數。只有遞增或者只有遞減，也算是單峰函數。</p>
+<p>Convex Function：凸函數。隨便劃一道割線，函數曲線總是凹下去的函數。凸函數是單峰函數。凸函數的斜率是遞增函數。</p>
+<p>Concave Function：凹函數。凸函數上下顛倒。注意到凸函數看起來是凹的，凹函數看起來是凸的，不要問我為什麼。</p>
+<p>Lipschitz Function：平緩函數。任意割線的斜率的絕對值，小於等於一個定值。</p>
+<p>Polynomial Function：多項式函數，無限可微的函數。「梯度等於零」的地方是極值、鞍點，可以手工推導公式解。</p>
+<p class="t">Ternary Search（三分搜尋）</p>
+<img src="Optimization5.png">
+<p>求根可用二分搜尋，求極值可用三分搜尋。</p>
+<p>適用於單峰函數、凸函數、凹函數。</p>
+<textarea>
+double ternary(double L, double R, double (*f)(double))
+{
+	// log3(double max / double min) ≈ 1300
+	for (int i=0; i<1300; i++)
+	{
+		double x1 = L + (R-L)/3;
+		double x2 = R - (R-L)/3;
+		if (f(x1) < f(x2))	L = x1;
+		else				R = x2;
+	}
+	return L;
+}
+</textarea>
+<p class="e">UVa 1476 10385 11243 11562 11613 ICPC 5009 7598</p>
+<p class="t">Ensemble Average（總體平均）</p>
+<img src="Optimization6.png">
+<p>三個臭皮匠勝過一個諸葛亮。實施多種最佳化演算法，得到多種極值。如果這些極值位置們都不是正確位置，那麼這些極值位置們的加權平均值，通常更接近正確位置。權重由人類手動調整。</p>
+<p>適用於凸函數、凹函數。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">地面勘查類型</p>
+</div><div class="c">
+<p class="t">概論</p>
+<img src="OptimizationEarth1.png">
+<blockquote>
+Show[
+Plot3D[BesselJ[0, Norm[{x, y}]], {x, -4Pi, 4Pi}, {y, -4Pi, 4Pi}, PlotRange -> {-1, 1}, Boxed -> False, Mesh -> None, Axes -> False, PlotPoints -> 50, ColorFunction -> (ColorData["CherryTones"][Rescale[#3, {-4, 4}]] &)],
+
+ParametricPlot3D[{{-5, u, BesselJ[0, Norm[{-5, u}]]}, {u, -8, BesselJ[0, Norm[{u, -8}]]}}, {u, -4Pi, 4Pi}, PlotStyle -> {Red, Red}]
+]
+</blockquote>
+<blockquote>
+ParametricPlot3D[{v Cos[u], v Sin[u], 5 Cos[Pi/10] BesselJ[0, v]}, {u, 0, 4 (Pi/2)}, {v, 0, 15}, Boxed -> False, Axes -> False, Mesh -> None]
+</blockquote>
+<p>選一個起點，一步一腳印，走向極值。</p>
+<p class="t">Hill Climbing（登山法）</p>
+<img src="OptimizationEarth2.png">
+<p>沿著函數圖形的表面前進。隨便往某個方向跨出一步，確定是往上，就直直走；確定是往下，就不走。最後成功登頂。</p>
+<p>步伐太大，會越過山峰，走往低處。只要步伐持續變小，仍可攻頂。但是步伐變小太快，便會在山腰掙扎，無法登頂。取捨兩難。</p>
+<p>選擇各種起點，登上各個山峰。由於無法預測最高峰的位置，只好隨機嘗試多種起點、實施多次登山法，依賴運氣尋找最高峰。嘗試越多起點，越能找到最高峰，越能避免落入區域極值。</p>
+<p>適用：連續函數。缺陷：可能停在山腰。可能只找到區域極值。</p>
+<textarea>
+const float ∞ = 1e10;			// 無限大
+const float ε = 1e-5;			// 精確度
+const float π = acos(0) * 2;	// 圓周率
+
+Point hill_climbing(float (*f)(float, float))
+{
+	float x = random(-∞, +∞);
+	float y = random(-∞, +∞);
+	float z = f(x, y);
+
+	float step = 1.0;	// 步伐大小
+	float rate = 0.9;	// 步伐大小漸漸變小，才能精準攻頂。
+						// 若步伐變小太快，可能走不到山頂。
+	while (step > ε)
+	{
+		// 隨便往某個方向跨出一步
+		float θ = random(0, 2.0 * π);
+		float xnew = x + cos(θ) * step;
+		float ynew = y + sin(θ) * step;
+		// 確定是往上，就直直走；確定是往下，就不走。
+		float znew = f(xnew, ynew);
+		if (znew > z) x = xnew, y = ynew, z = znew;
+		else step *= rate;
+	}
+
+	return (Point){x, y, z};
+}
+</textarea>
+<p class="t">Simulated Annealing（模擬退火法）</p>
+<img src="OptimizationEarth3.png">
+<p>登山法改良版。允許往下走，以便翻山越嶺。</p>
+<p>隨便往某個方向跨出一步，確定是往上，就走；確定是往下，以機率exp(Δf⋅t)決定走或不走，其中Δf是上升高度（往下走時是負值），t是時刻（大於等於1）。大致上來說，往下越陡就越不想往下，年紀越大就越不想往下。</p>
+<p>註：原論文只找山谷、未找山峰。原論文沒有時刻t，而是溫度T；溫度不斷下降，因此機率公式是exp(Δf/T) 。</p>
+<p>適用：連續函數。缺陷：可能停在山腰。可能只找到區域極值。</p>
+<textarea>
+Point simulated_annealing(float (*f)(float, float))
+{
+	float x = random(-∞, +∞);
+	float y = random(-∞, +∞);
+	float z = f(x, y);
+
+	float step = 1.0;	// 步伐大小
+	float rate = 0.9;	// 步伐大小漸漸變小，才能精準攻頂。
+	float threshold = 0.01;	// 往下走的機率界限
+
+	for (int t = 0; step > ε; t++)
+	{
+		float θ = random(0, 2.0 * π);
+		float xnew = x + cos(θ) * step;
+		float ynew = y + sin(θ) * step;
+		float znew = f(newx, newy);
+		if (znew > z || exp((znew-z)*t) > threshold)
+			x = xnew, y = ynew, z = znew;
+		else
+			step *= rate;
+	}
+
+	return (Point){x, y, z};
+}
+</textarea>
+<p class="e">UVa 10228 ICPC 5102</p>
+<p class="t">Gradient Descent（梯度下降法）</p>
+<p>登山法改良版。直接朝著梯度方向走，不必試誤。</p>
+<p>X座標、Y座標、……分開處理，互不干涉。當前位置，求得相鄰高度差，座標大的高度減去座標小的高度，正負值可判別相對高低。當前位置座標，加上相鄰高度差，就是往上走。若相鄰高度差越多，則前後座標差越多。坡越陡、跨越遠、走越快。</p>
+<img src="OptimizationEarth4.png">
+<blockquote>
+Plot[BesselJ[0, Norm[{-5, y}]], {y, -4Pi, 4Pi}, PlotRange -> {-1,1}]
+Plot[BesselJ[0, Norm[{x, -8}]], {x, -4Pi, 4Pi}, PlotRange -> {-1,1}]
+</blockquote>
+<p>梯度是相鄰高度差再除以dx，功效差不多。因為數學家喜歡梯度，所以採用梯度。為了得到梯度，函數必須一次可微。</p>
+<p>梯度大小是傾斜程度。梯度方向是最陡的方向，是等高線的垂直方向。沿梯度方向走會上升、得極大值，沿梯度反方向走會下降、得極小值。步伐太大，會走之字路線，無傷大雅。</p>
+<p>註：原論文只找山谷、未找山峰，因而取名為「下降」。</p>
+<img src="OptimizationEarth5.png">
+<p>適用：一次可微函數。優點：方向明確，不必隨機亂走試誤，攻頂速度快。缺陷：可能停在山腰。可能只找到區域極值、鞍點。</p>
+<textarea>
+const float Δ = 1e-8;	// dx dy的跨距
+
+Point gradient_descent(float (*f)(float, float))
+{
+	float x = random(-∞, +∞);
+	float y = random(-∞, +∞);
+	float z = f(x, y);
+
+	float step = 1.0;	// 步伐大小
+	float rate = 0.9;	// 步伐大小漸漸變小，才能精準攻頂。
+
+	while (step > ε)
+	{
+		// 使用高度差
+		// 亦可視作使用梯度，將除以Δ併入step，節省時間。
+		x += (f(x+Δ, y) - z) * step;
+		y += (f(x, y+Δ) - z) * step;
+		z = f(x, y);
+		step *= rate;
+	}
+
+	return (Point){x, y, z};
+}
+</textarea>
+<textarea>
+// 預先手算梯度公式，寫成程式碼，當作參數傳入。
+Point gradient_descent(float (*f)(float, float),
+                       float (*∇f[2])(float, float))
+{
+	.......
+
+	while (step > ε)
+	{
+		// 使用梯度
+		x += ∇f[0](x, y) * step;
+		y += ∇f[1](x, y) * step;
+		......
+}
+</textarea>
+<p class="t">Nonlinear Conjugate Gradient Method（非線性共軛梯度法）</p>
+<p>梯度下降法改良版。前進方向是「本次的梯度」與「上次的前進方向」的加權平均。權重有許多種選擇，每個人自有一套理論：</p>
+<p><a href="http://people.cs.vt.edu/~asandu/Public/Qual2011/Optim/Hager_2006_CG-survey.pdf">http://people.cs.vt.edu/~asandu/Public/Qual2011/Optim/Hager_2006_CG-survey.pdf</a></p>
+<p><a href="http://sebastianruder.com/optimizing-gradient-descent/">http://sebastianruder.com/optimizing-gradient-descent/</a></p>
+<p>最近走紅的演算法有AdaDelta、ADAM，層出不窮。</p>
+<p>註：演算法名稱雖源自「<a href="LinearEquation.html">Conjugate Gradient Method</a>」，內容卻毫無關聯。古代數學家考慮欠周的結果。</p>
+<p class="t">Fixed Point Iteration（不動點遞推法）</p>
+<p>可微函數，「極值與鞍點」總是出現在「梯度等於零」的地方。不考慮無限遠的地方。</p>
+<pre>
+stationary points of f(x) = roots of ∇f(x)
+</pre>
+<p>結合梯度下降法，求根變成求不動點。</p>
+<pre>
+stationary points of f(x) = fixed points of x + λ ∇f(x)
+</pre>
+<p>全域極值是特例。</p>
+<pre>
+argmax f(x) ⊆ stationary points of f(x)
+</pre>
+<img src="OptimizationEarth6.png">
+<p>極值與鞍點總是出現在梯度等於零的地方，即是求根。等式兩側加x，即是求不動點。等式兩側乘λ加x，仍是求不動點。</p>
+<p>不動點遞推法的收斂條件：函數梯度乘λ加x是平緩函數。大家習慣令函數是凹函數、凸函數，再自訂適當的λ大小。</p>
+<p>乘λ加x的情況下，不動點遞推法即是梯度下降法！不動點遞推法是梯度下降法的正統根源，擁有清楚的收斂條件。</p>
+<pre>
+max f(x)
+∇f(x) = 0
+λ ∇f(x) = 0
+λ ∇f(x) + x = x
+let ∇g(x) = λ ∇f(x) + x
+    g(x) = λ f(x) + 0.5 x²
+then find fixed point of ∇g(x).
+</pre>
+<p class="t">Proximal Point Algorithm（鄰近點演算法）</p>
+<p>不動點遞推法改良版。故事本應劃下句點，有人卻故意創造了prox函數：額外創造維度z，令拋物線x²自由平移，取最小值位置；又除以λ，不影響最小值位置。最後把不動點遞推法等價換成prox函數，重新稱作鄰近點演算法。應該是為了裝逼。</p>
+<pre>
+                            1
+prox  (z) = argmin { f(x) + —— ‖x - z‖² }
+    λf         x            2λ
+
+let ∇g(x) = prox(x) = λ ∇f(x) + x
+then find fixed point of ∇g(x).
+</pre>
+<p class="t">Newton's Method（牛頓法）</p>
+<img src="OptimizationEarth7.png">
+<p>牛頓法原先是求根的方法，找到函數等於零的地方。由於極值與鞍點總是出現在梯度等於零的地方，因此只要事先求得梯度，就可以套用牛頓法求得極值（連同鞍點）了。</p>
+<p>求得梯度需要一次微分，牛頓法的過程需要再一次微分，前後合計兩次，等同二次微分。</p>
+<p>輸入變數只有一個的情況下，牛頓法非常實用。牛頓法可以視作梯度下降法的改良版，步伐大小是二次微分的倒數（曲率半徑越大、路線越直、步伐越大），攻頂速度更快。</p>
+<p>輸入變數有許多個的情況下，牛頓法不太實用。當函數有N個輸入變數，其梯度有N個方向，得到N個函數。N個函數同時實施牛頓法，每一步需時O(N^2)，計算時間更久。</p>
+<p>適用：二次可微函數。缺陷：繼承全部缺陷，計算時間更久。</p>
+<p class="t">Quasi-Newton Method（擬牛頓法）（類牛頓法）</p>
+<p>牛頓法改良版。二次微分的部分，改成其他類似的東西。有許多種選擇，每個人自有一套理論：</p>
+<p><a href="https://en.wikipedia.org/wiki/Quasi-Newton_method">https://en.wikipedia.org/wiki/Quasi-Newton_method</a></p>
+<p>最近走紅的演算法有BHHH、BFGS，層出不窮。</p>
+<p>註：古時候尚未發明程式語言。古人遇到迴圈，習慣寫成向量運算、矩陣運算、級數。簡單明瞭的數學概念，經過古人的轉換，往往讓現代人摸不著頭緒。請讀者好自為之。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">空中勘查類型</p>
+</div><div class="c">
+<p class="t">概論</p>
+<p>地面勘查經常癱在山腰、卡在山丘，只好改為飛行模式。像偵察機一樣飛來飛去，不被山峰峽谷阻擋。</p>
+<p>這類的演算法，完全憑感覺，一個比一個唬爛，連一個數學性質都不必證明。但是我們也沒有更好的方法了。面對亂七八糟的函數，只好用亂七八糟的算法。</p>
+<p class="t">Particle Swarm Optimization（粒子演算法）</p>
+<p><a href="https://www.youtube.com/watch?v=_bzRHqmpwvo">https://www.youtube.com/watch?v=_bzRHqmpwvo</a></p>
+<pre>
+一、散佈N個粒子。一個粒子對應一個可行解。
+　　position[1...N];	// x
+　　solution[1...N];	// f(x)
+二、以個人過去最佳解、團體過去最佳解，決定粒子的速度。
+　　然後移動粒子，讓粒子飛往最佳解。
+　　velocity[i] =
+　　　2.0 * rand(0 ~ 1) * (best_position[i] - position[i]) +
+　　　2.0 * rand(0 ~ 1) * (best_position[best_particle_index] - position[i]);
+三、更新個人最佳解、團體最佳解。
+　　best_solution[i] = max(best_solution[i], solution[i])
+  　　and record best_position[i];
+　　best_particle_solution = max_arg(best_solution[1...N])
+　　  and record best_particle_index;
+四、重複二三，直到解夠好。
+</pre>
+<p>附帶一提，這與粒子的真實行為完全無關。</p>
+<p class="t">Bee Colony Optimization（蜜蜂演算法）</p>
+<p><a href="https://www.youtube.com/watch?v=zxcb6ZBj5PE">https://www.youtube.com/watch?v=zxcb6ZBj5PE</a></p>
+<pre>
+一、散佈N個食物。一個食物對應一個可行解。
+　　position[1...N];	// x
+　　solution[1...N];	// f(x)
+二、N隻蜜蜂分頭前往N個食物並返回，但是腦中記得的位置會有偏差。
+　　position[i] +=
+　　　rand(-1 ~ +1) * position[rand(1 ~ N expect i)];
+三、每隻蜜蜂皆從N個食物中挑一個去，機率由解的好壞決定。
+　　probability[i] = solution[i] / ( solution[1] + ... + solution[N] )
+　　返回時腦中記得的位置一樣會有偏差。公式同二。
+四、如果某個食物連續K個回合沒去，食物自動消滅。
+　　隨機散佈食物，補足食物直到N個。
+五、重複二三四，直到解夠好。
+</pre>
+<p>附帶一提，這與蜜蜂的真實行為完全無關。</p>
+<p class="t">Fruit Fly Optimization（果蠅演算法）</p>
+<p>《果蠅最佳化演算法：最新演化式計算技術》</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">排列組合類型</p>
+</div><div class="c">
+<p class="t">概論</p>
+<p>隨意拼湊函數輸入，試著讓函數輸出是極值。</p>
+<p>這類的演算法，不僅憑感覺，而且還是隨機亂猜的，唬爛無上限。一個演算法，就能開一學期的課，令人不得不嘖嘖稱奇。</p>
+<p class="t">Genetic Algorithm（基因演算法）</p>
+<p><a href="https://www.youtube.com/watch?v=ejxfTy4lI6I">https://www.youtube.com/watch?v=ejxfTy4lI6I</a></p>
+<p>靈感來自於染色體減數分裂的過程，優良的基因不斷遺傳下去，逐代演化出更適應環境的基因。基因演算法把答案比擬成染色體，把好的答案不斷分裂再結合，成為更好的答案。</p>
+<p>附帶一提，這與基因的真實行為完全無關。</p>
+<pre>
+1.
+[初始化]
+一開始先隨便弄出幾個x。本例是四個。
+
+	1010101010
+	1011001011
+	1110101011
+	0010101000
+
+2.
+[fitness function]
+根據問題特性，定義好壞程度。
+
+	f(1010101010) = 678
+
+3.
+[selection]
+隨便找個位置切一刀，每個x都被分成兩段。
+
+	1010101  010
+	1011001  011
+	1110101  011
+	0010101  000
+
+4.
+[crossover]
+隨便找兩組你覺得夠優良的x，交叉相接變成新答案。
+重複一直做，直到x數目跟原先一樣多。本例是四個。
+
+	1010101 \/ 010  ->  1010101 -- 011
+	1011001 /\ 011      1011001 -- 010 
+
+
+	1010101011
+	1011001010
+	1110101010
+	1010101000
+
+5.
+[mutation]
+每個x都隨便找一個地方把數字改掉，也可以不改。
+
+	1010111011
+	1011001000
+	1110101010
+	1010101001
+
+6.
+重複3. 4. 5.，直到裡面有一個x是你滿意的，令f(x)最大的那個x。
+</pre>
+<pre>
+1. 隨機產生N個x。
+2. 計算fitness function。
+3. 重複以下步驟，直到有一個x讓人滿意。
+　甲、selection。
+　乙、crossover。
+　丙、mutation。
+　丁、計算fitness function。
+</pre>
+<p>演算法的過程，大致就是如此。細部的實作方式、參數的調校方式，隨人話虎爛。</p>
+<p>一開始的x的足夠豐富，多演化幾次，就可以得到不錯的結果。一開始的x足夠豐富，可以避免進入區域極值。mutation用於增加x的豐富性，以跳脫區域極值。</p>
+<p class="t">範例：0/1 Knapsack Problem</p>
+<pre>
+N個物品。選出其中幾個。
+
+[初始化]
+答案設計成N個二進位數字，
+0代表對應的物品不在背包內，
+1代表對應的物品在背包內。
+
+[fitness function]
+是背包內物品總價值，數值越大越好。
+</pre>
+<p>當「特定組合」具有深邃的影響力，造成最佳解、次佳解們都包含著同一（幾）套「特定組合」，此時就適合使用基因演算法。以0/1背包問題為例，一套好的物品組合方式可以有效節省背包空間，只要依賴幾套好的物品組合方式，就留有足夠的背包空間，能夠隨心所欲的放入其他物品；所有接近最佳解的答案，答案的其中一小段，都會是那幾套固定的物品組合方式──這種情況就非常適合使用基因演算法。</p>
+<p class="e">UVa 10715</p>
+<p class="t">範例：Minimum Spanning Tree</p>
+<pre>
+E條邊。選出V-1條。
+
+[初始化]
+答案設計成E個二進位數字，
+0代表對應的邊不是MST。
+1代表對應的邊是MST。
+
+[fitness function]
+是MST的權重，數值越大越好。
+</pre>
+<p>用人眼觀察，很直覺的就能在小區域找出最佳的子樹，那便是一套「特定組合」。</p>
+<p class="t">範例：Travelling Salesman Problem</p>
+<pre>
+N個城市，C(N,2)條路。選出N條。
+
+[初始化]
+答案被迫設計成0到N-1的數字，代表一條路徑。
+
+[fitness function]
+是路徑的權重，數值越小越好。
+
+[crossover]
+哈哈哈，很難搞。
+
+[mutation]
+可以有好幾種方式：
+1. 隨便交換兩個數字。
+2. 隨便找一段數字，顛倒前後順序。
+3. 隨便拿出一個數字，隨便插入到其他地方。
+</pre>
+<p>旅行推銷員問題也具有「特定組合」的性質，只不過它的答案並不適合分裂再結合，最好不要堅持使用基因演算法，自尋煩惱。</p>
+<p class="t">Ant Colony Optimization（螞蟻演算法）</p>
+<p><a href="https://www.youtube.com/watch?v=hXUCCRiNBOc">https://www.youtube.com/watch?v=hXUCCRiNBOc</a></p>
+<p>靈感來自於螞蟻覓食的過程，螞蟻發現食物後會沿途留下強烈的費洛蒙，驅使其他螞蟻沿著路線前進，不斷留下更多費洛蒙，吸引更多螞蟻；也有螞蟻會另闢新路，而找到更簡潔的路線。螞蟻演算法把答案比擬成螞蟻覓食的路徑，把好的答案不斷做局部調整，成為更好的答案。</p>
+<p>螞蟻演算法有各式各樣的版本，這裡介紹其中一個經典版本Ant Colony System，主要是計算一條最短的覓食路徑。</p>
+<p>附帶一提，這與螞蟻的真實行為完全無關。</p>
+<pre>
+1.
+[初始化]
+一開始先建立一個地圖，地圖上有P個地點。
+有一些地點是食物，有一個地點是蟻窩。
+
+地點與地點間皆有道路，
+所有道路的費洛蒙都預設為1.0。
+
+2.
+[state transition rule]
+一隻螞蟻從蟻窩出發。
+每次踏上一個地點，螞蟻有兩種選擇，
+　　◎探索：隨便走一條路。機率為q。
+　　◎追蹤：走費洛蒙最強的道路。機率為1-q。
+
+q是螞蟻選擇探索的機率，自行設定在0到1之間。
+
+為了不讓螞蟻打轉繞圈，所以會讓螞蟻避開去過的地點。
+在探索和追蹤前，要先過濾掉去過的地點。
+
+所有食物都找到後就直接回蟻窩，
+沒找到所有食物就不准回蟻窩。
+總之就是要刻意弄出一條「嘗遍天下美食」的路線。
+
+3.
+[local updating rule]
+螞蟻回巢之後，
+剛剛走過的每一條道路，費洛蒙都會加強，
+道路的費洛蒙會變成下列兩者相加後的數值，
+　　◎自然蒸發，餘下：原本費洛蒙值，乘上1-ρ。
+　　◎螞蟻路過，添加：道路起點所連接的道路當中，最大的那個費洛蒙值，乘上p。
+
+ρ是費洛蒙蒸發的程度，自行設定在0到1之間。
+通常會把參數設的很好，讓相加之後，費洛蒙會比原本增加一些，而不是變更少。
+
+4.
+有N隻螞蟻，依序做2. 3.這件事。
+
+5.
+[global updating rule]
+N隻螞蟻回巢之後，
+地圖上所有道路的費洛蒙都會蒸發一定比例。
+　　◎自然蒸發，餘下：原本費洛蒙值，乘上1-α。
+
+而目前的最佳路線，在蒸發之後，竟會神奇地額外增加一些費洛蒙。
+　　◎最佳路線，添加：目前最佳解的數值，倒數後，再乘上α。
+
+α是費洛蒙蒸發的程度，自行設定在0到1之間。
+
+6.
+2. 3. 4. 5.，重複執行R次。
+途中不斷記錄最好的路線。
+</pre>
+<pre>
+1. 初始化地圖與費洛蒙。
+2. 以下動作執行R次：
+　　1. N隻螞蟻依序找路線，不是同時找路線：
+　　　　1. state transition rule，一隻螞蟻找一條路線。 
+　　　　   此路線是由蟻窩出發，經過所有食物各一次，然後回到蟻窩。
+　　　　2. 記錄目前最佳路線。
+　　　　3. local updating rule，更新路線費洛蒙。
+　　2. global updating rule，更新所有道路費洛蒙。
+</pre>
+<p>演算法的過程，大致就是如此。細部的實作方式、參數的調校方式，隨人話虎爛。</p>
+<p>螞蟻數量足夠豐富，可以避免進入區域極值。隨機探索用於增加答案豐富性，跳脫區域極值。</p>
+<p class="t">範例：Travelling Salesman Problem</p>
+<pre>
+N個城市，C(N,2)條路。選出N條。
+
+[初始化]
+答案設計成0到N-1的數字，代表一條路徑。
+地圖上每個地點都有食物。
+地圖上可以任意挑一地點作為蟻窩。
+</pre>
+<p>當答案具有「特定排列」的性質，就適合採用螞蟻演算法。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Online Optimization</p>
+<p class="w">故兵無常勢，水無常形。能因敵變化而取勝者，謂之神。《孫子》</p>
+</div><div class="c">
+<p class="t">概論【尚無專有名詞】</p>
+<p>針對時時變化的函數。函數有如波浪。</p>
+<p>照理應該取名為Dynamic Optimization，不過這個標題通常是指控制系統最佳化，例如運動規劃、軌跡規劃。因此我只好暫且取名為Online Optimization了。</p>
+<p class="t">Mean Shift（平均值移動）</p>
+<pre>
+一、均勻散布粒子。
+二、以上次的極值座標為中心，
+　　取得鄰近範圍內所有粒子。（範圍自訂，通常是規定半徑長度。）
+三、範圍內所有粒子各自求函數值。
+四、範圍內所有粒子的座標，求加權平均（權重是函數值），得到新的極值座標。
+</pre>
+<p>另一種觀點是取樣。樣本（粒子）的密度，當作是函數值的大小。可以想成是找到粒子密度最高的地方。【待補文字】</p>
+<p class="t">Particle Filter（粒子濾波器）</p>
+<pre>
+一、以上次的極值座標為中心，
+　　散布n個粒子，呈高斯分布。（範圍自訂，範圍即變異數）
+　　粒子不用飛來飛去了，直接散布。
+二、n個粒子各自求函數值。
+三、n個粒子的座標，求加權平均（權重是函數值），得到新的極值座標。
+四、或者不採用加權平均。
+　　想像n個粒子各有磁場（高斯分布），強弱由函數值大小決定，
+　　形成joint distribution（高斯混和分布）。
+　　下一回合依此分布散布粒子。
+</pre>
+<p class="t">Follow The Leader（跟隨領導）</p>
+<p>Ensemble Average改良版，適用於凸函數、凹函數。</p>
+<p>前幾次的函數相加後，找到極值位置，推定為本次的極值位置、或者本次的登山起點。找極值位置時，只找幾個重點位置。</p>
+<p>重點位置隨便找，指引我們向前進──儘管非常唬爛，但是效果出眾，於是有人認真進行數學分析：</p>
+<p><a href="http://courses.cs.washington.edu/courses/cse599s/14sp/scribes.html">http://courses.cs.washington.edu/courses/cse599s/14sp/scribes.html</a></p>
+<p>還有其他進階版本FTRL、FTRL-Proximal。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graphical Optimization</p>
+<p class="w">萬物並作，吾以觀復。夫物芸芸，各復歸其根。《老子》</p>
+</div><div class="c">
+<p class="t">概論【尚無專有名詞】</p>
+<p>函數層層複合，甚至形成階層架構、網路架構。</p>
+<p>照理應該取名為Network Optimization，不過這個標題通常是指組合最佳化，例如最短路徑、最大流。因此我只好暫且取名為Graphical Optimization了。</p>
+<p>演算法正在發展中。以下整理一些可能相關的概念：</p>
+<pre>
+計算 computational graph derivative
+物理 spring network
+機械 inverse kinematics / graph optimization
+統計 markov process
+計算 greedy method
+摺紙 https://zhuanlan.zhihu.com/p/23186434
+</pre>
+<p class="t">Backpropagation（反向傳播法）</p>
+<p>梯度下降法。走一步時，從最外層的函數，由外往內一層層剝開，反向遞推得到每一層的步伐大小。</p>
+<p>缺陷是vanishing gradient problem與exploding gradient problem。</p>
+<p>梯度是「f(x)變化」和「x變化」的比值，想要從f(x)變成x，只需計算函數梯度。函數複合和函數梯度有著抵銷效果。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Multi-Objective Optimization</p>
+<p class="w">魚，我所欲也，熊掌，亦我所欲也；</p>
+<p class="w">二者不可得兼，舍魚而取熊掌者也。《孟子》</p>
+</div><div class="c">
+<p class="t">概論</p>
+<p>找到一個輸入，同時最佳化多個函數。</p>
+<p>通常不存在如此完美的輸入，所以只好折衷。</p>
+<p class="t">Scalarization</p>
+<p>多個函數，極值位置通常不相等。多個函數的加減乘除，極值位置毫無規律。我們難以制定任何策略。這種情況下，大家只好尋求心靈勵志書籍、感恩師父感恩上人了。</p>
+<pre>
+{ minimize f(x)
+{ minimize g(x)
+</pre>
+<p>然而值得一提的是，兩個凸函數相加之後，仍是凸函數；而且新極值位置，夾在原極值位置之間，不會歪太多。得到折衷方案：最佳化兩個凸函數的和，找到極值位置。</p>
+<pre>
+{ minimize f(x)   f,g are convex
+{ minimize g(x)  ---------------->  minimize f(x) + g(x)
+</pre>
+<p>為了調整極值位置，可以添上權重。為了保持是凸函數，權重不能是負數。權重可以自由設定，沒有所謂最適當的權重。</p>
+<p>注意到，除了權重，函數本身的斜率變化也會影響極值位置。即使權重各0.5，極值位置也通常不在正中央。因此這個手法是任憑感覺、碰碰運氣。</p>
+<pre>
+minimize α f(x) + β g(x)   (α ≥ 0, β ≥ 0)
+</pre>
+<p>可以推廣成多個凸函數。max只要加上負號就變成min。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Constraint Satisfaction</p>
+</div><div class="c">
+<p class="t">概論</p>
+<p>只有約束條件。</p>
+<p class="t">Branch and Bound（分支定界法）</p>
+<p>這是一個過時的演算法，觀念陳舊，已被淘汰。</p>
+<p>n個變數x1…xn，找f(x)的可行解。</p>
+<p>在線性規劃問題當中，b&b每次將其中一個變數xi的「邊界（可能是上限或者是下限）」給確定下來。由於x的大小與f(x)的大小有直接關連，所以藉由調整每個變數xi的上下限，就能夾擠出f(x)的極值。</p>
+<p><a href="https://www.youtube.com/watch?v=BbrZsG7zesE">https://www.youtube.com/watch?v=BbrZsG7zesE</a></p>
+<p>在離散組合問題當中，b&b又不一樣了。b&b每次將其中一個變數xi的「確切數值」給確定下來。由於x的大小與f(x)的大小沒有直接關連，所以採用了比較複雜的策略：一開始設定f(x)的極值的下限是零，隨著已知變數越來越多，逐步增加f(x)的極值的下限，以逼近f(x)的極值。至於f(x)的極值的上限，並沒有用來尋找極值，主要是用來阻止多餘的分支。</p>
+<p><a href="https://www.youtube.com/watch?v=nN4K8xA8ShM">https://www.youtube.com/watch?v=nN4K8xA8ShM</a></p>
+<p>在離散組合問題當中，b&b跟state space search基本相同。唯一的差異在於，作業研究（工管）講到b&b的時候，通常會簡化矩陣的row和column，只拿不為零的數值來分支。人工智慧（資工）講到state space search的時候，是使用原本矩陣。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Constrained Optimization（Under Construction!）</p>
+<p class="w">天將降大任於斯人也，必先苦其心志，勞其筋骨，餓其體膚，空乏其身，</p>
+<p class="w">行拂亂其所為，所以動心忍性，曾益其所不能。《孟子》</p>
+</div><div class="c">
+<p class="t">概論</p>
+<p>施加限制，以求得更對味的答案。</p>
+<p>納入約束條件，約束條件是好幾道等式、不等式。約束條件的幾何意義是邊界範圍，彷彿包圍網。</p>
+<img src="ConstrainedOptimization1.html">
+<p class="t">Lagrange Multiplier（拉格朗日乘數）</p>
+<p>僅適合可微函數。將問題轉換成微分方程式。</p>
+<p>可行解所在之處，目標函數與約束條件，梯度方向一致、梯度大小不明（設定成未知倍率）。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/SS/2016/machine-learning/ml16-part08-linear_svms.pdf">http://www.vision.rwth-aachen.de/media/course/SS/2016/machine-learning/ml16-part08-linear_svms.pdf</a></p>
+<p>約束條件是等式。</p>
+<pre>
+minimize f(x)   subject to g(x) = 0
+---> ∇f(x) = λ ∇g(x)
+</pre>
+<p>約束條件是不等式。有個雞肋的稱呼「<a href="https://en.wikipedia.org/wiki/Karush?uhn?ucker_conditions">KKT Conditions</a>」。</p>
+<pre>
+minimize f(x)   subject to h(x) ≥ 0
+---> ∇f(x) = μ ∇h(x)   (μ ≤ 0)
+</pre>
+<p>約束條件推廣成任意個。併入目標函數，通通相加即可。</p>
+<pre>
+minimize f(x)   subject to g(x) = 0, h(x) ≥ 0
+---> ∇f(x) = λ ∇g(x) + μ ∇h(x)   (μ ≤ 0)
+</pre>
+<p>進一步整理成「梯度等於零」、「求駐點」的格式。</p>
+<pre>
+∇f(x) = λ ∇g(x) + μ ∇h(x)       (μ ≤ 0)
+∇f(x) - λ ∇g(x) - μ ∇h(x) = 0   (μ ≤ 0)   移項
+∇f(x) + λ ∇g(x) + μ ∇h(x) = 0   (μ ≥ 0)   變數替換，方便起見不改名
+∇[f(x) + λ g(x) + μ h(x)] = 0    (μ ≥ 0)   先微後加等同先加後微
+</pre>
+<p>注意，求駐點不等同求極值！正解通常位於鞍點、而非極值。</p>
+<pre>
+optimize [f(x) + λ g(x) + μ h(x)]   ✘
+</pre>
+<p>幾何觀點：</p>
+<img src="ConstrainedOptimization2.html">
+<pre>
+[level set, aka contour line]
+consider the function with unity(?), continuity and differentiability.
+1. all level sets has no intersection and fill the whole space. (unity)
+2. each component of a level set must keep inflating or deflattening. (continuity)
+3. each point on level set has an unique tangent. (differentiability)
+
+[lagrange multiplier]
+find the intersection of level set and g(x) = 0. 
+at the intersection, they have same tangent.
+consider the gradient at the intersection.
+ { bi-direction is the same. being perpendicular to the tangent.
+ { magnitude is unknown. so give it a proper scalar.
+
+[kkt conditions]
+now find the intersection of level set and g(x) <= 0.
+g(x) <= 0 forms a region, that usually not being connected.
+
+case 1. f(x)'s optimum is inside the region.
+        at the optimum, f(x)'s gradient is 0.
+        so give g(x)'s gradient a zero scalar.
+
+case 2. f(x)'s optimum is outside the region.
+        so find the intersection of f(x)'s level set and g(x)'s boundary.
+        because g(x) <= 0, outward flux is positive.
+
+case 2a. when find maximum, level set moves via f(x)'s gradient. (膨脹或收縮)
+         level set is approaching from outside of g(x) = 0. (外切或內切)
+         at intersection, gradient of f(x) and g(x) has different sign.
+         so give it a proper scalar with - sign. aka scalar < 0.
+
+case 2b. when find minimum. bala bala via oppsite direction of gradient.
+         at intersection, gradient of f(x) and g(x) has indentical sign.
+         so give it a proper scalar > 0.
+
+                       | ∇f(x) = u ∇g(x) | ∇f(x) + u ∇g(x) = 0
+max f(x) st g(x) <= 0  | u <= 0           |  >=
+max f(x) st g(x) >= 0  | u >= 0           |  <=
+min f(x) st g(x) <= 0  | u >= 0           |  <=
+min f(x) st g(x) >= 0  | u <= 0           |  >=
+</pre>
+<p>解析觀點：</p>
+<img src="ConstrainedOptimization3.html">
+<pre>
+f(x,y)求極值，x y必須滿足g(x,y) = 0。
+
+因為 g(x,y) = 0
+湊得 f(x,y) = f(x,y) - λ g(x,y)   for all (x,y) : g(x,y) = 0
+
+觀察 h(x,y) = f(x,y) - λ g(x,y) 這一個 h 函數。
+觀察 λ ，可以發現不管 λ 怎麼變，
+符合 g(x,y) = 0 的 (x,y) ，其函數值 h(x,y) 永遠不變；
+但是其他地方的函數值就會一直變。
+欲求永遠不變的地方：
+對 λ 進行偏微分，讓斜率是 0。
+
+另外一方面， f(x,y) - λ g(x,y) 的極值，也就是 f(x,y) 的極值。
+欲求 f(x,y) - λ g(x,y) 的極值：
+對 x 進行偏微分，讓斜率是 0。
+對 y 進行偏微分，讓斜率是 0。
+
+三條偏微分方程式聯立之後，就得到符合條件的極值。
+{ ∂h(x,y)/∂λ = 0
+{ ∂h(x,y)/∂x = 0
+{ ∂h(x,y)/∂y = 0
+
+也就是
+{ g(x,y) = 0
+{ ∂f(x,y)/∂x + λ × ∂g(x,y)/∂x = 0
+{ ∂f(x,y)/∂y + λ × ∂g(x,y)/∂y = 0
+
+概念上也可以看作是增加一個λ變量、增加一個維度來解決問題。
+
+附帶一提，二式三式合起來，即是梯度。梯度恰是λ倍。
+∇f(x,y) - λ ∇g(x,y) = 0
+∇f(x,y) = λ ∇g(x,y)
+
+一開始湊式子的時候改成加法 h(x,y) = f(x,y) + λ g(x,y)
+結果相差一個負號，但是意義上等價 ∇f(x,y) = -λ ∇g(x,y)
+</pre>
+<p class="t">Regularization（正則化）</p>
+<pre>
+minimize f(x)   subject to g(x) = 0, h(x) ≥ 0, ...
+</pre>
+<p>根據Lagrange Multiplier，約束條件併入目標函數，變成梯度等於零（求鞍點、而非極值）。</p>
+<pre>
+d/dx [f(x) + α g(x) + β h(x) + ...] = 0  (α ≥ 0, β ≥ 0, ...)
+</pre>
+<p>α β ...自訂實際數值。如果運氣非常好，將變成最佳化問題。</p>
+<pre>
+minimize f(x) + α g(x) + β h(x) + ...   (α ≥ 0, β ≥ 0, ...)
+</pre>
+<p>α β ...理應是未知數，不過此處改成了自訂數值。我們視問題需要，訂立適當數值。數值越小，約束條件的影響力就越小，類似於加權平均的概念。</p>
+<p>g(x) h(x) ...是約束條件，從可行解之中，挑出偏愛的解。我們視問題需要，訂立適當函數，例如x的長度越小越好g(x) = ‖x‖；物理學的做功越少越好g(x) = F x。</p>
+<p>明定準則、施予規範，故稱之為「正則化」。優點是可以微調，缺點是全憑運氣。</p>
+<p>加個二次拋物線函數，讓原本函數變更窄，但是靠近極值地方比較平。</p>
+<p>regularization和scalarization式子相似，但是背後原理不同。</p>
+<p class="t">Linear Programming（線性規劃）</p>
+<p>僅適合線性函數。將問題轉換成線性方程組。</p>
+<p>請見本站文件「<a href="LinearEquation.html">Linear Programming</a>」。</p>
+<p class="t">Alternating Direction Method of Multipliers</p>
+<p><a href="http://stanford.edu/class/ee364b/lectures/admm_slides.pdf">http://stanford.edu/class/ee364b/lectures/admm_slides.pdf</a></p>
+<p>目標函數是凸函數們的線性函數，約束條件是線性函數。</p>
+<pre>
+min u f(x) + v g(x)   subject to a x + b y = 0
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convex Duality（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Legendre Duality（Convex Conjugate）</p>
+<p>凸函數的對偶。畫個切線求截距。</p>
+<p>動態規劃有一個技巧是：最佳解位於直線們的包絡線，經過點線對偶，最佳解位於凸包切線的截距。正是此對偶。</p>
+<pre>
+maximum: largest value
+minimum: smallest value
+supremum: least upperbound function
+infimum: most lowerbound function
+epigraph: upper area (of convex function)
+hypograph: below area (of concave function)
+</pre>
+<pre>
+https://en.wikipedia.org/wiki/Fenchel's_duality_theorem
+let f is convex, g is concave, f*(y) = sup { xᵀy - f(x) }
+inf { f(x) - g(x) } = sup { g*(y) - f*(y) }
+D f(x) = [D f*(y)]⁻¹ 
+</pre>
+<pre>
+sup { ⟪x,∇f(x)⟫ - f(x) }
+</pre>
+<pre>
+Fenchel inequality: f(x) + f*(y) ≥ ⟪x,y⟫
+Moreau decomposition: x = prox f(x) + prox f*(x)
+infimal convolution: (f ◇ g)(x) = inf { f(y) + g(x − y) }
+Fenchel duality: (f ◇ g)* = f* + g* , (f + g)* = f* ◇ g*.
+</pre>
+<p class="t">Lagrange Duality</p>
+<p>可微函數的對偶。製造新維度，窮舉斜率λ，求最高截距。</p>
+<pre>
+http://www.eng.newcastle.edu.au/eecs/cdsc/books/cce/Slides/Duality.pdf
+http://www.onmyphd.com/?p=duality.theory
+http://www.cnblogs.com/90zeng/p/Lagrange_duality.html
+</pre>
+<p class="t">Linear Programming Duality</p>
+<p>線性函數的對偶。線性規劃必有拉格朗日對偶。</p>
+<pre>
+https://people.ok.ubc.ca/bauschke/Research/68.pdf
+</pre>
+<pre>
+max cx   subject to Ax ≤ b
+min by   subject to Aᵀy ≥ c
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Optimization.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:33 GMT -->
+</html>

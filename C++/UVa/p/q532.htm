@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q532: Dungeon Master</h1>          
+<p align="right">原翻譯者：jkto</p>
+<p>你陷入一個 3D 城堡的迷宮中， 
+需要找到一條快速的路逃出去！ 
+這個城堡由空的或填滿石頭的立方體組成, 
+向東、西、南、北以及上、下移動一個單位個需要一分鐘。 
+你不能斜的移動， 
+並且迷宮最外層的每一面都包含著堅固的石牆。可能逃的出去嗎? 
+如果可能的話,，最少需要花多少時間呢？ 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+輸入含有多組測試資料，每組測試資料的第一列有3個正整數L、R、C（均介於1到30之間）。<br>
+<br>
+<i>L</i> 表示迷宮有幾層<i><br>
+R</i> 和 <i>C</i> 表示每層有幾列幾行
+<p>之後共有L個區塊（每個區塊代表一層），每個區塊含有 <i>R</i> 
+列，每列有 <i>C</i> 個字元。 每個字元表示迷宮的一個單位。 
+'<tt>#</tt>'表示這個單位充滿石頭， 而 '<tt>.</tt>' 
+表示這是個空的空間。你的起始位置在標明 '<tt>S</tt>' 的地方, 
+出口在 '<tt>E</tt>' 之處. 在一層描述完後有一列空白區隔。 若<i>L</i>=<i>R</i>=<i>C=0</i> 
+代表輸入結束，請參考Sample Input。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                         
+每個迷宮有一列的輸出。 如果可以達到出口的話， 請輸出：<tt>Escaped 
+in </tt><i>x</i><tt> minute(s).</tt>其中的 <i>x</i> 
+表示最短離開時間。如果沒有辦法逃出去請輸出：<tt>Trapped!</tt>       
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                    
+Input</b></span></p>                                           
+<pre>3 4 5
+S....
+.###.
+.##..
+###.#
+
+#####
+#####
+##.##
+##...
+
+#####
+#####
+#.###
+####E
+
+1 3 3
+S##
+#E#
+###
+
+0 0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                             
+Output</b></span></p>                                           
+<pre>Escaped in 11 minute(s).
+Trapped!</pre>
+                                         
+</body>                                         
+                                         
+</html>                                         

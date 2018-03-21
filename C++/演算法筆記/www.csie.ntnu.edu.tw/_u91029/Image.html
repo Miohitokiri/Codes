@@ -1,0 +1,1487 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Image.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:29:07 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Image</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Image</p>
+</div><div class="c">
+<p class="t">Pixel與Image</p>
+<div class="i"><img src="Pixel1.jpg" width="125" height="188"> <img src="Pixel2.jpg"></div>
+<p>一張電腦圖片、一幅螢幕畫面、一臺電子跑馬燈，都是由許多小光點組成，一個小光點就是一個「像素」、「畫素」。大量的小光點排列整齊，宛如棋盤方格，構成一張「圖片」。</p>
+<p>小光點夠小夠密集，或者相對來說，小光點很遠很渺小，那麼觀看圖片時，相鄰的小光點將糊在一起，彷彿是柔順平滑的圖片。</p>
+<p>電視機與相機經常強調畫素與解析度。畫素很高，意思是小光點很多；解析度很高，意思是小光點很密，使得圖片清晰銳利。</p>
+<p class="t">Red, Green, Blue</p>
+<img src="Pixel3.png">
+<p>電腦當中，以整數0到255，代表小光點的亮度。0是最暗，255是最亮。256種數值已經足夠細膩，超越人類視覺對於亮度的辨別能力！</p>
+<p>一個像素擁有三個數值，代表紅光、綠光、藍光的亮度；簡稱RGB，紅綠藍的首字母。</p>
+<p>三色光疊合，得到各種顏色。RGB都是255，疊合之後就是白光、呈現白色。RGB都是0，就是無光、呈現黑色。RGB都一樣，則呈現灰色。RGB不一樣，則呈現各式各樣的彩色。</p>
+<p>第一張圖片是範例圖片；第二張圖片是保留R值（G值與B值設定為0）；第三張圖片是保留G值；第四張圖片是保留B值。右邊三張圖片的對應像素相加之後，就會形成左圖。</p>
+<div class="i"><img src="Image1.png"> <img src="Pixel4.png"> <img src="Pixel5.png"> <img src="Pixel6.png"></div>
+<pre>
+舉例來說
+第二張圖片裡面，某一個像素的顏色 (255,   0,   0)
+第三張圖片裡面，對應的像素的顏色 (  0, 123,   0)
+第四張圖片裡面，對應的像素的顏色 (  0,   0, 247)
+這三張圖片相加起來，得到第一張圖片裡面，對應的像素的顏色
+(255, 0, 0) + (0, 123, 0) + (0, 0, 247) = (255, 123, 247)
+
+熟悉數學的讀者，可以把「RGB值相加」想做是「向量相加」。
+但是「RGB值相加」與「向量相加」，兩者背後的原理完全不相干，切莫搞混。
+</pre>
+<p class="t">Alpha</p>
+<p>有些圖片額外增加一個數值，代表透明程度；簡稱A，alpha的首字母。</p>
+<p>0是完全透明、呈現背景底色；255是完全不透明、呈現圖片原色；其餘數值則按比例混合圖片顏色與背景底色。</p>
+<p>左圖所有像素的A值都是255，完全不透明，看不到網頁背景的顏色；中圖所有像素的A值是127，透明的程度是50%，看得到一點網頁背景的顏色；右圖中央A值高、外圍A值低。</p>
+<div class="i"><img src="Image1.png"> <img src="Pixel7.png"> <img src="Pixel8.png"></div>
+<pre>
+舉例來說
+圖片裡面有一個像素的顏色 (255, 123,  10)，透明程度 34
+背景裡面對應的像素的顏色 (  0,   0, 255)
+
+按比例混合（加權平均）（線性內插），得到顯示的顏色
+  (255, 123, 10) * 34/256   +   (0, 0, 255) * 222/256
+= (255*34/256, 123*34/256, 10*34/256 + 255*222/256)
+
+由於RGB值必須是整數，所以計算結果必須再取floor/ceil/round。
+</pre>
+<p class="t">Image的資料結構</p>
+<p>圖片的資料結構，一般是二維陣列，一個元素儲存三個數字RGB，或者儲存四個數字RGBA。</p>
+<img src="Pixel9.png">
+<p>注意到：存取矩陣元素、存取圖片像素，行列次序剛好顛倒。套用圖片函式庫時，要尤其小心。</p>
+<textarea>
+const int X = 1024, Y = 768;
+struct Color {unsigned char r, g, b;};
+Color image[Y][X];
+
+void drawPixel(int x, int y, Color color)
+{
+	image[y][x] = color;
+}
+
+bool onImage(int x, int y)
+{
+	return x >= 0 && x < X && y >= 0 && y < Y;
+}
+
+void initImage()
+{
+	memset(image, 0xff, sizeof(image));	// 白色
+}
+</textarea>
+<p class="e">UVa 706 10267</p>
+<p class="t">使用C/C++處理圖片</p>
+<p>C與C++本身沒有處理圖片的函式庫。</p>
+<p>你可以土法煉鋼，參考BMP、JPEG、PNG的規格書，自己寫程式讀取圖片擷取像素；然後利用<a href="https://msdn.microsoft.com/zh-tw/library/aa984108.aspx">Windows API</a>、<a href="http://stackoverflow.com/questions/12717138/">Linux視窗介面的工具</a>、Cocoa，自己寫程式把圖片像素畫在螢幕上。</p>
+<p>你也可以拍手煉成，直接使用現成的函式庫，例如<a href="http://opencv.org/books.html">OpenCV</a>、<a href="http://cimg.sourceforge.net/reference/">CImg</a>，都是不錯的選擇。</p>
+<p><a href="http://zerojudge.tw/Problems?tag=%e5%bd%b1%e5%83%8f%e8%99%95%e7%90%86">這是我設計的練習題目</a>。</p>
+<p class="t">使用Qt/C#/Java處理圖片</p>
+<p>這些語言處理圖片的方式都大同小異。首先建立一個圖片物件（Qt的QImage、C#的Image、Java的Image與ImageIO），然後建立一個視窗，覆寫視窗的重繪函式，取其繪圖物件（Qt的QPaint、C#的Graphics、Java的Graphics），把圖片畫在視窗當中。</p>
+<p class="t">使用Python處理圖片</p>
+<p>Python本身沒有處理圖片的函式庫，必須另行安裝。</p>
+<p>知名函式庫是<a href="http://python-pillow.org/">pillow</a>，容易上手。</p>
+<textarea>
+from PIL import Image
+img = Image.open("image.png")
+width, height = img.size
+
+for y in range(height):
+	for x in range(width):
+		rgba = img.getpixel((x,y))
+		rgba = (255 - rgba[0],  # R
+				255 - rgba[1],  # G
+				255 - rgba[2],  # B
+				rgba[3]      ); # A
+		img.putpixel((x,y), rgba)
+
+img.show()
+img.save("new.png")
+</textarea>
+<p class="t">使用HTML與JavaScript處理圖片</p>
+<p><a href="http://www.w3schools.com/tags/canvas_drawimage.asp">http://www.w3schools.com/tags/canvas_drawimage.asp</a></p>
+<p>將圖片畫在網頁上，只消幾行程式碼。首先在HTML當中，建立一個&lt;img&gt;以及一個&lt;canvas&gt;。然後在JavaScript當中，利用drawImage()將&lt;img&gt;的圖片畫在&lt;canvas&gt;上面。</p>
+<p>也可以利用createElement()，動態建立&lt;img&gt;與&lt;canvas&gt;。圖片的部分，也可以利用Image()建構子，動態建立&lt;img&gt;。</p>
+<textarea>
+<canvas id="canvas"></canvas>
+<img src="image-2.html" id="img" style="display:none;">
+<script>
+var canvas = document.getElementById("canvas");
+var ctx    = canvas.getContext("2d");
+var img    = document.getElementById("img");
+ctx.drawImage(img, 0, 0);
+</script>
+</textarea>
+<p>我們無法直接從&lt;img&gt;得到像素。必須先將&lt;img&gt;的圖片畫在&lt;canvas&gt;上面，再利用getImageData()得到像素。其成員.data是一條一維陣列，依序存放每個像素的RGBA值。</p>
+<p>修改好每個像素的數值之後，最後利用putImageData()將像素畫在&lt;canvas&gt;上面，便大功告成了。</p>
+<textarea>
+<canvas id="canvas"></canvas>
+<img src="image-2.html" id="img" style="display:none;">
+<script>
+var canvas = document.getElementById('canvas');
+var ctx    = canvas.getContext('2d');
+var img    = document.getElementById('img');
+ctx.drawImage(img, 0, 0);
+
+var w      = img.naturalWidth;
+var h      = img.naturalHeight;
+var imgdt  = ctx.getImageData(0, 0, w, h);
+var a      = imgdt.data;
+
+for (var k=0; k<a.length; k+=4)
+{
+	a[k  ] = 255 - a[k  ];	// R
+	a[k+1] = 255 - a[k+1];	// G
+	a[k+2] = 255 - a[k+2];	// B
+	a[k+3] = 255;			// A
+}
+
+canvas.width = w;
+canvas.height = h;
+ctx.putImageData(imgdt, 0, 0);
+</script>
+</textarea>
+<p>想要宣告像素，可以利用createImageData()。想要拷貝像素，可以直接拷貝陣列。</p>
+<textarea>
+var imgdt2 = ctx.createImageData(w, h);
+var a2     = imgdt2.data;
+</textarea>
+<textarea>
+var imgdt2 = ctx.createImageData(w, h);
+var a2     = new Uint8ClampedArray(imgdt.data);
+imgdt2.data.set(a2);
+</textarea>
+<p>學會擷取像素之後，就能做一些簡單的實驗了，例如顛倒色彩（255減掉原本的數值）、彩色變灰階（RGB相加除以三）、失焦模糊（取鄰近像素求平均值）。</p>
+<div class="i"><img src="Pixel10.png"> <img src="Pixel11.png"> <img src="Pixel12.png"></div>
+<p>甚至可以即時處理影片。影片可以想成是很多張圖片組成的。</p>
+<video id="video1" controls><source src="material/mov_bbb.ogg" type="video/ogg"></video>
+<canvas id="Pixel13"></canvas>
+<script>
+var video = document.getElementById("video1");
+video.addEventListener('play',function(){var i=window.setInterval(function(){Pixel13();},20);},false);
+video.addEventListener('pause',function(){window.clearInterval(i);},false);
+video.addEventListener('ended',function(){clearInterval(i);},false);
+
+var bufcanvas = document.createElement('canvas');
+var bufctx    = bufcanvas.getContext('2d');
+
+function Pixel13() {
+	var canvas = document.getElementById('Pixel13');
+	var ctx    = canvas.getContext('2d');
+	var img    = video;
+	var w      = img.videoWidth;
+	var h      = img.videoHeight;
+	bufcanvas.width  = w;
+	bufcanvas.height = h;
+	bufctx.drawImage(img, 0, 0);
+	var imgdt  = bufctx.getImageData(0, 0, w, h);
+	var a      = imgdt.data;
+	for (var k=0; k<a.length; k+=4) {
+		a[k  ] = 255 - a[k  ];
+		a[k+1] = 255 - a[k+1];
+		a[k+2] = 255 - a[k+2];
+		a[k+3] = 255;
+	}
+
+	canvas.width  = w;
+	canvas.height = h;
+	ctx.putImageData(imgdt, 0, 0);
+}
+</script>
+<p class="t">使用Photoshop/GIMP處理圖片</p>
+<p>Image的演算法，早已經製作成套裝軟體。商業軟體，例如<a href="http://zh.wikipedia.org/wiki/Adobe_Photoshop">Adobe Photoshop</a>；開源軟體，例如<a href="http://zh.wikipedia.org/wiki/GIMP">GIMP</a>；臺灣人自製的軟體，例如<a href="http://zh.wikipedia.org/wiki/PhotoCap">PhotoCap</a>與<a href="http://zh.wikipedia.org/wiki/Ulead_PhotoImpact">Ulead PhotoImpact</a>，都是不錯的選擇。</p>
+<p>只要發揮創意，就能做出各種圖片特效。完全不需要學習程式語言與數學，只需要仔細閱讀軟體使用說明書。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/vd3z44g36Og"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Color（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Color</p>
+<p>一道光包含許多個<a href="Wave.html">波</a>。人類看見一道光，卻只感受到一種<a href="http://en.wikipedia.org/wiki/Color">色</a>。</p>
+<p>從光到色的機制尚未釐清。目前只知道：一、人類視覺無法解析每一個波，只能感受混和結果。二、不同的光（不同的波的組合），可以是相同的色。彷彿數學術語「投影」。</p>
+<p>波有兩個要素：振幅、頻率。一道光的成分，可以畫成頻譜：橫軸是頻率，縱軸是振幅，一個峰是一個波。</p>
+<img src="Color1.html">
+<p>振幅平方，決定<a href="http://en.wikipedia.org/wiki/Luminous_energy">光能</a>；頻率，決定<a href="http://en.wikipedia.org/wiki/Hue">色相</a>。混和數種光能的宏觀感受，稱作<a href="http://en.wikipedia.org/wiki/Brightness">亮度</a>；混和數種色相的宏觀感受，稱作<a href="http://en.wikipedia.org/wiki/Chromaticity">彩度</a>。</p>
+<p>這只是簡易解釋，人類視覺機制並非如此單純。亮度和彩度會互相干涉，不能分開討論。</p>
+<p>人眼擁有四種感光細胞，可以感知頻率和振幅。其中一種無法轉換成彩度，屬於夜視能力，此處不討論。</p>
+<p>工程師設計實驗，製造各種頻率、各種振幅的簡諧波，請民眾辨別亮度和彩度。最後以統計學來估計三種感光細胞的感光程度。感光程度偏高之處，是紅綠藍三色。</p>
+<p>理應取得感光細胞進行生物實驗，不過至今無人這樣做。</p>
+<p class="t">Color Space</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_space">色彩空間</a>。人類視覺所能感知的所有顏色，化作數值。</p>
+<p><a href="http://en.wikipedia.org/wiki/CIE_1931_color_space">CIE RGB</a>：模仿人眼機制，以三個波，固定頻率（紅綠藍），調整光強，得到一種色，令其數值是光強比例。然而三種單色光，也少於人類所能分辨的色，於是數值有時是負數，模擬那些色，彷彿數學術語「外插」。</p>
+<p>工程師假設：三種感光細胞的三個刺激量，決定了色。一個刺激量是每種頻率的光強乘以感光程度之後求和（點積）。以實驗數據反推感光程度，感光程度有時是負數。雖然這個數學模型完全不符合人眼機制，但是方便設計電路、方便計算。</p>
+<p><a href="http://en.wikipedia.org/wiki/CIE_1931_color_space">CIE XYZ</a>：調整成非負數。</p>
+<p><a href="http://en.wikipedia.org/wiki/Lab_color_space">CIE L*a*b*</a>：數值差距等於顏色差距。</p>
+<p class="t">Color Model</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_model">色彩模型</a>。數值與顏色的對應方式，通常只對應到人類視覺所能感知的一部分顏色。數值格式符合人類作業需求。</p>
+<p><a href="http://en.wikipedia.org/wiki/RGB_color_model">RGB</a>：紅綠藍，螢幕。光的三原色。用於電腦螢幕。</p>
+<p><a href="http://en.wikipedia.org/wiki/CMYK_color_model">CMYK</a>：青洋紅黃黑，顏料的三原色，外加黑色。用於印刷。</p>
+<p><a href="http://en.wikipedia.org/wiki/HSL_and_HSV">HSL和HSV</a>：色相、飽和度、亮度。用於電腦美術。</p>
+<p><a href="https://en.wikipedia.org/wiki/YUV">YUV</a>：類比視訊。其中YCbCr用於JPEG壓縮。</p>
+<p class="t">Color Palette</p>
+<p><a href="http://en.wikipedia.org/wiki/Palette_(computing)">色盤</a>。記錄一張圖片有哪些顏色。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Color Grading</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<p>調整像素的數值。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/SBKdWGvtn7Y"></iframe>--></div>
+<p class="t">圖片的數學運算：Function</p>
+<p>新舊圖片，新舊像素值的對應關係，是函數。RGB分開處理，是三個函數。</p>
+<img src="ImageFunction1.png">
+<p>identical：45°斜線。保持不變。</p>
+<p>inverse：翻轉45°斜線，255-x，亮暗顛倒。傳統相機的負片，具備此特性。</p>
+<p><a href="http://en.wikipedia.org/wiki/Gamma_correction">gamma correction</a>：模擬人腦依據環境調整亮度。人腦會根據環境亮暗，自動將極亮變暗、極暗變亮。數位相機的硬體，內建此功能。</p>
+<p class="t">圖片的數學運算：Histogram</p>
+<p>RGB分開處理，得到RGB三個直方圖。一張圖片，像素值（亮度）僅256種，分別統計0到255的出現次數，得到直方圖。甚至再除以總次數，得到機率密度函數PDF。</p>
+<p>先前透過函數，訂立新舊亮度的對應關係：每種舊亮度，對應每種新亮度。現在透過直方圖，訂立新舊亮度的對應關係：舊直方圖，對應新直方圖。</p>
+<img src="ImageHistogram1.png">
+<p><a href="http://en.wikipedia.org/wiki/Histogram_equalization">histogram equalization</a>：調整直方圖間距。兩兩相鄰亮度，舊亮度的出現次數相差越多，新亮度相差越多，成正比。預先計算出現次數的前綴和（甚至再除以總次數，得到累積分布函數CDF），方便計算新亮度。實際應用：在亮者恆亮、暗者恆暗的前提下，讓亮暗層次更分明。</p>
+<p><a href="http://en.wikipedia.org/wiki/Histogram_matching">histogram matching</a>：以CDF來建立新舊亮度的對應關係。實際應用：一張圖片，求出CDF；自訂另一個CDF，以自由調整新亮度。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part08-recognition1.pdf">histogram comparison</a>：求出兩個直方圖的差距，以判斷圖片相似程度。方法很多。</p>
+<p class="t">Image Thresholding</p>
+<p><a href="http://en.wikipedia.org/wiki/Thresholding_(image_processing)">門檻化</a>。區分像素數值大小，依照大小分別處理。可以進一步製造<a href="http://en.wikipedia.org/wiki/Binary_image">黑白化（二值化）</a>、<a href="http://en.wikipedia.org/wiki/Monochrome_photography">單色化</a>等效果。</p>
+<img src="ImageThresholding1.png">
+<p><a href="http://docs.opencv.org/doc/tutorials/imgproc/threshold/threshold.html">binary thresholding</a>：自訂臨界值。大於臨界值、小於臨界值，實施不同處理。</p>
+<p><a href="http://en.wikipedia.org/wiki/Otsu's_method">Otsu's thresholding</a>：窮舉臨界值，找到最佳臨界值。大於臨界值為前景，小於臨界值為背景，求前景PDF、背景PDF，求前景變異數、背景變異數相加最小者。</p>
+<p class="t">Color Reduction（Color Quantization）</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_quantization">刪減</a>。減少顏色種類，讓圖片依然清楚。每個顏色重新設定顏色；把不同的顏色，重新設定成相同的顏色。</p>
+<p>令壓縮圖片的效果更好、傳遞圖片的速度更快。另外，當顏色種類很少，可塑造特殊風格，例如<a href="https://en.wikipedia.org/wiki/Posterization">色調分離</a>、<a href="https://en.wikipedia.org/wiki/Colour_banding">色帶</a>等效果。</p>
+<p>左圖是原圖，中圖是只有256種顏色的圖，右圖是選中的256種顏色。</p>
+<div class="i"><img src="lenna512.bmp" width="128" height="128"><img src="MedianCutAlgorithm1.bmp" width="128" height="128"><img src="MedianCutAlgorithm2.bmp" width="128" height="128"></div>
+<p><a href="http://en.wikipedia.org/wiki/K-means_clustering">k-means clustering</a>：要幾種顏色就分幾群。形成Voronoi Diagram，各群中心是新顏色。</p>
+<p><a href="http://en.wikipedia.org/wiki/Median_cut">median cut</a>：所有像素置於RGB三維空間。反覆分割空間，不斷取寬度（或體積）最大的區塊，從最寬的那一個維度、從中位數分割。如果原圖片要降低為256種顏色，就切出256個區塊。區塊內所有像素，新顏色一律是平均值。</p>
+<img src="MedianCutAlgorithm1.png">
+<img src="MedianCutAlgorithm2.png">
+<img src="MedianCutAlgorithm3.png">
+<img src="MedianCutAlgorithm4.png">
+<img src="MedianCutAlgorithm5.png">
+<p class="t">Color Dithering</p>
+<p><a href="http://en.wikipedia.org/wiki/Dither">顫化</a>。減少顏色種類，讓圖片觀感與原先相仿。每個像素依序重新設定顏色；每個像素的先後顏色誤差，分攤給鄰近的像素。</p>
+<p>dithering是<a href="http://zh.wikipedia.org/wiki/暺撘銵冽?">印刷</a>和<a href="http://zh.wikipedia.org/wiki/瘨脫憿舐內??">液晶顯示</a>的重要技術。報紙上的圖片就用了dithering，用少量的單調顏色，調合出原本顏色；在原本像素的周圍點上單調顏色，宏觀望去宛如原本顏色。</p>
+<p>左圖是原圖，中圖是先轉灰階再處理，右圖是RGB三個值分開處理。新顏色只有兩種，要嘛是255、要嘛是0。</p>
+<div class="i"><img src="Image1.png"><img src="ColorDithering1.png"><img src="ColorDithering2.png"></div>
+<p><a href="http://en.wikipedia.org/wiki/Floyd?teinberg_dithering">Floyd-Steinberg dithering</a>：先後誤差的7/16傳給右、3/16給左下、5/16給下、1/16給右下。所有像素依行列順序處理，具有遞推效果，一傳十十傳百。</p>
+<p class="t">Color Halftoning（Color Stippling）</p>
+<p><a href="https://en.wikipedia.org/wiki/Halftone">半色調化</a>。僅使用基本原色，讓圖片觀感與原先相仿。以墨水點的尺寸、間距、數量，取代像素值。</p>
+<img src="ImageHalftoning1.png">
+<p>AM halftoning：墨水點尺寸不同、間距相同。像素值越高越亮，墨水點越小越淡。</p>
+<p>FM halftoning：墨水點尺寸相同、間距不同。像素值越高越亮，墨水點越散越淡。</p>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/33091687"></iframe>--></div>
+<p class="t">Color Correction</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_correction">校正</a>。重新著色，呈現真實顏色，不受色彩模型影響。</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_calibration">校準</a>。重新著色，呈現真實顏色，不受攝影設備、顯示設備影響；同時求出設備的影響力。</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_balance">平衡</a>。著重於亮度，為了更加清晰。比方來說，室內用傳統燈泡，白紙會泛黃；室內用日光燈，白紙會泛藍。白紙理當是白色，以白紙為基準，重新調整圖片當中每一種顏色，移除燈光造成的影響，還原成理想顏色。亦稱「白平衡」。</p>
+<p><a href="http://en.wikipedia.org/wiki/Color_grading">調色（調光）</a>。著重於色調，為了改變風格。製片必備絕技，屬於美術設計師、調光師的專業。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HFnWZcX7s4Y"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/7O_NwH9k84k"></iframe>--></div>
+<p class="t">Color Harmonization</p>
+<p><a href="http://www.cs.tau.ac.il/~dcor/articles/2006/Color-Harmonization.pdf">調和</a>。重新著色，視覺上和諧。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/VcgEAUinjss"></iframe>--></div>
+<p class="t">Color to Grayscale</p>
+<p><a href="http://en.wikipedia.org/wiki/Grayscale">彩色轉灰階</a>。重新著成灰色，讓圖片依然清楚。</p>
+<img src="ImageGrayscale1.png">
+<p>簡易的方式是把每一種顏色的RGB值更改為平均亮度：floor((R+G+B)/3)。缺點是無法區分平均亮度相同的顏色。當人生是黑白的時候，可能會看到不一樣的景色。</p>
+<div class="i"><img src="ImageGrayscale2.png"> <img src="ImageGrayscale3.png"></div>
+<p>另外還有很多<a href="http://www.tannerhelland.com/3643/">簡易的方式</a>。至於<a href="http://www.cs.northwestern.edu/~ago820/color2gray/">高竿的方式</a>，是採用其他的色彩模型，例如將RGB轉換成<a href="http://zh.wikipedia.org/wiki/Lab?脣蔗蝛粹?">CIE L*a*b*</a>或者<a href="http://zh.wikipedia.org/wiki/HSL?SV?脣蔗蝛粹?">HSV</a>等等，根據人類擅於感受的亮度及彩度，決定灰色深淺。</p>
+<p class="t">Grayscale to Color（Colorization）</p>
+<p><a href="http://en.wikipedia.org/wiki/Colorization">灰階轉彩色</a>。重新著成彩色，讓圖片依然清楚。</p>
+<img src="ImageColorization1.png">
+<p><a href="http://www.cs.huji.ac.il/~yweiss/Colorization/">高竿的方法</a>請讀者自行參考。一些古老的電視劇、影劇作品，就是如此重新上色的。又例如醫學影像，利用超音波觀察腹中胎兒，只能得到密度資訊，不能得到色彩資訊。密度資訊頂多只能轉換成灰階圖片，所以我們看到的超音波影像大多是灰色的。我們可以利用灰階轉彩色的演算法，將圖片上色，以便清楚地看到胎兒，方便醫生診視。</p>
+<p>灰階轉彩色不是電腦專用的技術。在水墨畫當中，也有先上墨色、再上彩色的作畫技巧。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Filtering</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<p>調整像素的數值，依據鄰近像素的數值。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/OgUhtUd9nGc"></iframe>--></div>
+<p class="t">圖片的數學運算：2D Convolution</p>
+<p>一張圖片，可以表示成RGB三個陣列，三個陣列分開處理。教科書則是表示成RGB三個函數。</p>
+<img src="ImageArray1.png">
+<p>圖片具有地域性，鄰近像素關係匪淺。鄰近像素的平均值、相差值（梯度），各有功效。這些計算，可以統一成加權平均值，又可以統一成點積：對應項相乘，加總。</p>
+<img src="ImageArray2.png">
+<p>一種位移量、一次點積，得到一個新像素。窮舉各種位移量、一一點積，即摺積，得到新圖片。時間複雜度為O(XYMN)。</p>
+<p>【註：<a href="Sequence2.html">摺積</a>規定其中一條數列必須頭尾顛倒；方便起見，此處不顛倒圖片和濾波器。】</p>
+<img src="ImageArray3.png">
+<p>超過圖片邊界時，<a href="http://blog.csdn.net/qianqing13579/article/details/42323397">有許多種應對方式</a>，例如不計算、補零、複製邊界數值、線性內插。旁枝末節，不重要。</p>
+<img src="ImageArray4.png">
+<p>先算橫條，再垂直整合，一如<a href="MaximumSubarray.html">區域總和</a>、<a href="Sequence.html">區域最小值</a>的計算手法，時間複雜度降為O(XY(M+N))，但是需要大量額外空間。</p>
+<img src="ImageArray5.png">
+<p>空域循環摺積，就是頻域乘法。時間複雜度降為O(XYlogXY + MNlogMN)。然而濾波器通常很小，不必大費周章、弄巧成拙。</p>
+<img src="ImageArray6.png">
+<p>設計濾波器、套用濾波器，<a href="http://blog.csdn.net/zouxy09/article/details/49080029">便能製造各種圖片特效</a>。亦得在特定區域之內套用濾波器，而不是整張圖片都套用濾波器。</p>
+<img src="ImageArray7.png">
+<p>濾波器是線性的。倍率性：一個濾波器（的每個值）乘上倍率，等於新圖片（的每個像素）乘上倍率。加法性：兩個濾波器相加減，等於兩張新圖片相加減。想要揉合多張新圖片，可以預先揉合濾波器，降低計算量。</p>
+<p>新圖片像素數值必須介於0到255，須normalization。</p>
+<p class="t">Image Smoothing（Image Blurring）</p>
+<p><a href="http://en.wikipedia.org/wiki/Smoothing">平滑化</a>、<a href="http://en.wikipedia.org/wiki/Blur">霧化</a>。消滅邊緣。失焦模糊。可以進一步製造<a href="http://en.wikipedia.org/wiki/Motion_blur">動態模糊</a>、<a href="http://en.wikipedia.org/wiki/Noise_reduction">去噪</a>、<a href="http://en.wikipedia.org/wiki/Pixelation">抗鋸齒</a>、<a href="http://en.wikipedia.org/wiki/Pixelization">打馬賽克</a>等效果。</p>
+<p>人眼感知到的平滑，就是亮度暨彩度相差很少。相鄰像素取平均值，讓彼此數值更接近、更平滑。</p>
+<img src="ImageSmoothing1.png">
+<p>mean filter：平均值，矩陣所有數值設定為1/NM。</p>
+<p><a href="http://en.wikipedia.org/wiki/Gaussian_blur">Gaussian filter</a>：矩陣是一個二維常態分布。<a href="http://blog.ivank.net/fastest-gaussian-blur.html">有高速算法</a>。</p>
+<p><a href="http://people.csail.mit.edu/sparis/siggraph07_course/">bilateral filter</a>：當像素數值差距太大，就盡量不列入平均值計算，以保留形狀邊緣。不是摺積，無法直接轉至頻域計算，<a href="http://people.csail.mit.edu/fredo/Classes/Comp_Photo_ENS/slides/05_FastBila_and_appli.pdf">另有高速算法</a>。</p>
+<p><a href="http://en.wikipedia.org/wiki/Median_filter">median filter</a>：原本數值替換為鄰近數值們的中位數，可移除脈衝。不是摺積，無法直接轉至頻域計算，<a href="https://nomis80.org/ctmf.html">另有高速算法</a>。</p>
+<p class="t">Image Edge Detection</p>
+<p><a href="http://en.wikipedia.org/wiki/Edge_detection">邊緣偵測</a>。產生邊緣。得到形狀邊緣。可以進一步製造<a href="http://en.wikipedia.org/wiki/Edge_enhancement">邊緣強化（銳化）</a>、<a href="http://en.wikipedia.org/wiki/Image_embossing">鏤空</a>等效果。</p>
+<p>人眼感知到的邊緣，就是亮度暨彩度相差很多。相鄰像素取差值，差值較大的地方就是邊緣。</p>
+<img src="ImageSharpening1.png">
+<p><a href="http://en.wikipedia.org/wiki/Image_gradient">gradient filter</a>：X軸、Y軸分別一次偏微分。即是梯度。</p>
+<p><a href="http://en.wikipedia.org/wiki/Sobel_filter">Sobel filter</a>：gradient filter補強中央數值，讓邊緣更明顯。</p>
+<p><a href="http://en.wikipedia.org/wiki/Laplace_filter">Laplacian filter</a>：X軸、Y軸分別二次偏微分，然後相加。即是梯度的散度。</p>
+<p class="t">Image Template Matching</p>
+<p><a href="http://docs.opencv.org/2.4/doc/tutorials/imgproc/histograms/template_matching/template_matching.html">匹配</a>。給定圖片片段，找到正確位置。概念等同<a href="StringMatching.html">字串匹配</a>。</p>
+<img src="ImageMatching1.png">
+<p>完全相等：窮舉所有位移量；針對每一種位移量，對應位置判斷相等後求AND。缺點是像素數值不准有一丁點誤差。</p>
+<p><a href="http://en.wikipedia.org/wiki/Least_squares">平方誤差</a>最小：對應位置相減平方後求和。</p>
+<p><a href="http://en.wikipedia.org/wiki/Cross-correlation">相關係數</a>最大：對應位置相乘後求和（即摺積）。憑感覺瞎搞，但是算得快。圖片預先銳化、圖片預先保留高頻，結果較佳。</p>
+<p><a href="http://vision.cs.utexas.edu/378h-fall2015/slides/lecture4.pdf">Chamfer distance</a>最小：特色是比對邊緣，而且邊緣形狀不必完全相同。圖片與片段，預先求得邊緣、二值化（邊緣為1，非邊緣為0）。圖片求distance map。套用相關係數最大的演算法。</p>
+<p class="t">圖片的數學運算：Mathematical Morphology</p>
+<p>圖片視作三個函數，以<a href="Function2.html">數學形態學</a>調整函數形狀，例如dilation令亮處擴散黏結、erosion令暗處擴散黏結。亦可先求梯度再處理。</p>
+<div class="i"><img src="ImageMorphology1.png"><img src="ImageMorphology2.png"><img src="ImageMorphology3.png"><img src="ImageMorphology4.png"></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Warping（Under Construction!）</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<p>調整像素的位置。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Re_IiPmGjWg"></iframe>--></div>
+<p class="t">圖片的數學運算：Geometric Transformation</p>
+<p>訂立每個像素的新座標，或者只訂立每個像素的移動方向，然後移動像素。這麼做可以營造一些圖片特效。</p>
+<img src="ImageTransform1.png">
+<p>一一設定每個像素，實在太累人。我們可以直接運用優美的數學工具，運用<a href="http://en.wikipedia.org/wiki/Geometric_transformation">幾何變換</a>，一口氣移動所有像素。<a href="Point.html">計算幾何</a>與<a href="Matrix.html">線性代數</a>談過線性的幾何變換，例如平移、縮放、旋轉、鏡射。</p>
+<img src="ImageTransform2.png">
+<p>正向處理（直接法）：窮舉原圖片每個像素的座標，一一變換，得到新座標。新座標四捨五入，讓像素座標是整數。然而，有些地方密集重疊、有些地方稀疏留白，無法構成圖片。這種方式行不通。</p>
+<img src="ImageTransform3.png">
+<p>逆向處理（試誤法）：窮舉新圖片每個像素的座標，一一逆向變換，得到原座標。實施<a href="Interpolation.html">二維內插</a>，例如<a href="http://en.wikipedia.org/wiki/Nearest-neighbor_interpolation">近鄰內插（恰為四捨五入）</a>、<a href="http://en.wikipedia.org/wiki/Bilinear_interpolation">雙線性內插</a>、<a href="http://en.wikipedia.org/wiki/Sinc_interpolation">sinc內插</a>，求得理想的像素數值。</p>
+<img src="ImageTransform4.png">
+<img src="ImageTransform5.png">
+<p class="t">Image Scaling（Image Resizing）</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_scaling">縮放</a>。調整圖片尺寸。可以進一步製造<a href="http://research.microsoft.com/en-us/um/people/kopf/pixelart/">Depixelation</a>的效果。</p>
+<img src="ImageScaling1.png">
+<p>interpolation：選定特定的內插演算法，來融合或填補像素。</p>
+<p><a href="http://waifu2x.udp.jp/">convolutional neural network</a>：根據大量圖片的觀後感，來融合或填補像素。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Tumvkb-H9Dk"></iframe>--></div>
+<p class="t">Image Rotation</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_scaling">旋轉</a>。除了內插，亦得<a href="http://www.matrix67.com/blog/archives/5453">用shear達成圖片旋轉</a>，避免誤差。</p>
+<img src="ImageRotation1.png">
+<p class="t">圖片的數學運算：Weighted Average Coordinates</p>
+<p>移動像素亦可運用<a href="Interpolation.html">加權平均座標系統</a>。釘選幾個對應點，就能在原圖片與新圖片上面訂立座標系統，立即完成每個像素的座標對應關係。</p>
+<p>三角形內插：</p>
+<img src="Image1.png" id="Image1.png" style="display:none;">
+<img src="Image2.png" id="Image2.png" style="display:none;">
+<div class="i"><canvas id="ImageInterpolation1a"></canvas> <canvas id="ImageInterpolation1b"></canvas></div>
+<script>
+document.getElementById('Image1.png').addEventListener('load', ImageInterpolation1);
+
+function ImageInterpolation1() {
+	var canvas1 = document.getElementById('ImageInterpolation1a');
+	var ctx1    = canvas1.getContext('2d');
+	var canvas2 = document.getElementById('ImageInterpolation1b');
+	var ctx2    = canvas2.getContext('2d');
+
+	var draw = function(w,h) {
+		c2.a     = c2.imgdt.data;
+		ImageInterpolationAlgo(h, w, c1.a, c2.a, c1.point, c2.point);
+		ctx1.putImageData(c1.imgdt, 0, 0);
+		c1.drawpoint();
+		ctx2.putImageData(c2.imgdt, 0, 0);
+		c2.drawpoint();
+	};
+
+	var c1 = new ImageInterpolationInit(canvas1, ctx1, draw);
+	var c2 = new ImageInterpolationInit(canvas2, ctx2, draw);
+}
+
+function ImageInterpolationInit(canvas, ctx, draw) {
+	var img    = document.getElementById('Image1.png');
+	var w      = canvas.width  = img.naturalWidth;
+	var h      = canvas.height = img.naturalHeight;
+	ctx.drawImage(img, 0, 0);
+	var imgdt  = this.imgdt = ctx.getImageData(0, 0, w, h);
+	var a      = this.a     = imgdt.data;
+
+	ctx.font = "16pt Arial";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "rgb(0,127,0)";
+	ctx.fillText("Drag Point !", w/2, h/2);
+
+	// control points
+	var point = this.point = [{x:20,y:20},{x:100,y:120},{x:140,y:10}];
+	var hitpoint = -1;
+	var hit = function(p, mouse) {
+		return p.x - 7 <= mouse.x && p.x + 7 >= mouse.x
+			&& p.y - 7 <= mouse.y && p.y + 7 >= mouse.y;
+	};
+	var coordinate = function(x, y) {
+		var s = 2;
+		return {x: Math.round(x/s)*s, y: Math.round(y/s)*s};
+	};
+	var drawpoint = this.drawpoint = function() {
+		var n = point.length;
+		// line
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "brown"
+		for (var i=0; i<n; ++i) {
+			ctx.beginPath();
+			ctx.moveTo(point[i].x, point[i].y);
+			ctx.lineTo(point[(i+1)%n].x, point[(i+1)%n].y);
+			ctx.closePath();
+			ctx.stroke();
+		}
+		// point
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "brown";
+		for (var i=0; i<n; ++i) {
+			ctx.beginPath();
+			ctx.arc(point[i].x, point[i].y, 5, 0, 2 * Math.PI);
+			ctx.fill();
+			ctx.stroke();
+		}
+	};
+	drawpoint();
+
+	// layerX/layerY/keyboard focus
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+
+	// mouse control
+	canvas.onmousedown = function(e){
+		var mouse = coordinate(e.layerX, e.layerY);
+		hitpoint = -1;
+		for (var i=0; i<point.length; ++i)
+			if (hit(point[i], mouse))
+				hitpoint = i;
+	};
+
+	canvas.onmousemove = function(e){
+		if (hitpoint == -1) return;
+		point[hitpoint] = coordinate(e.layerX, e.layerY);
+		draw(w,h);
+	};
+
+	canvas.onmouseup = canvas.onmouseout = function(e){
+		hitpoint = -1;
+	};
+}
+
+function ImageInterpolationAlgo(X, Y, a, b, p1, p2) {
+	var idx     = function(x,y){return x*Y+y;};
+	var onboard = function(x,y){return x>=0 && x<X && y>=0 && y<Y;};
+
+	// barycentric interpolation
+	var dot = function(x1,y1,x2,y2) {return x1*x2+y1*y2;};
+	var forward = function(u,v,w,p) {
+		var x = u * p[0].x + v * p[1].x + w * p[2].x;
+		var y = u * p[0].y + v * p[1].y + w * p[2].y;
+		return {x: x, y: y};
+	};
+	var inverse = function(x,y,p) {
+		var x0 = p[1].x - p[0].x;   var x1 = p[2].x - p[0].x;   var x2 = x - p[0].x;
+		var y0 = p[1].y - p[0].y;   var y1 = p[2].y - p[0].y;   var y2 = y - p[0].y;
+		var d00 = dot(x0,y0,x0,y0);
+		var d01 = dot(x0,y0,x1,y1);
+		var d11 = dot(x1,y1,x1,y1);
+		var d20 = dot(x2,y2,x0,y0);
+		var d21 = dot(x2,y2,x1,y1);
+		var d = d00 * d11 - d01 * d01;
+		var v = (d11 * d20 - d01 * d21) / d;
+		var w = (d00 * d21 - d01 * d20) / d;
+		var u = 1 - v - w;
+		return {u: u, v: v, w: w};
+	};
+
+	// fill b
+	for (var x=0; x<X; ++x)
+		for (var y=0; y<Y; ++y) {
+			var c = inverse(y, x, p2);
+			var t = forward(c.u, c.v, c.w, p1);
+			var i = Math.round(t.y);
+			var j = Math.round(t.x);
+			if (onboard(i,j)) {
+				var bi = idx(x,y)*4;
+				var ai = idx(i,j)*4;
+				b[bi+0] = a[ai+0]; b[bi+1] = a[ai+1]; b[bi+2] = a[ai+2];
+				b[bi+3] = 255;
+			} else {
+				var bi = idx(x,y)*4;
+				b[bi+0] = b[bi+1] = b[bi+2] = b[bi+3] = 0;
+			}
+		}
+}
+</script>
+<p>四邊形內插：</p>
+<canvas id="ImageInterpolation2"></canvas>
+<script>
+document.getElementById('Image1.png').addEventListener('load', ImageInterpolation2);
+
+function ImageInterpolation2() {
+	var canvas = document.getElementById('ImageInterpolation2');
+	var ctx    = canvas.getContext('2d');
+	var img    = document.getElementById('Image1.png');
+	var w      = canvas.width  = img.naturalWidth;
+	var h      = canvas.height = img.naturalHeight;
+	ctx.drawImage(img, 0, 0);
+	var imgdt  = ctx.getImageData(0, 0, w, h);
+	var a      = new Uint8ClampedArray(imgdt.data);
+
+	ctx.font = "16pt Arial";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "rgb(0,127,0)";
+	ctx.fillText("Drag Corner !", w/2, h/2);
+
+	// control points
+	var point = [{x:0,y:0},{x:w,y:0},{x:w,y:h},{x:0,y:h}];
+	var hitpoint = -1;
+	var hit = function(p, mouse) {
+		return p.x - 7 <= mouse.x && p.x + 7 >= mouse.x
+			&& p.y - 7 <= mouse.y && p.y + 7 >= mouse.y;
+	};
+	var coordinate = function(x, y) {
+		var s = 2;
+		return {x: Math.round(x/s)*s, y: Math.round(y/s)*s};
+	};
+	var drawpoint = function() {
+		// line
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "brown"
+		for (var i=0; i<4; ++i) {
+			ctx.beginPath();
+			ctx.moveTo(point[i].x, point[i].y);
+			ctx.lineTo(point[(i+1)%4].x, point[(i+1)%4].y);
+			ctx.closePath();
+			ctx.stroke();
+		}
+		// point
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "brown";
+		for (var i=0; i<4; ++i) {
+			ctx.beginPath();
+			ctx.arc(point[i].x, point[i].y, 5, 0, 2 * Math.PI);
+			ctx.fill();
+			ctx.stroke();
+		}
+	};
+	drawpoint();
+
+	// layerX/layerY/keyboard focus
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+
+	// mouse control
+	canvas.onmousedown = function(e){
+		var mouse = coordinate(e.layerX, e.layerY);
+		hitpoint = -1;
+		for (var i=0; i<4; ++i)
+			if (hit(point[i], mouse))
+				hitpoint = i;
+	};
+
+	canvas.onmousemove = function(e){
+		if (hitpoint == -1) return;
+		point[hitpoint] = coordinate(e.layerX, e.layerY);
+		// draw
+		var b = imgdt.data;
+		ImageInterpolationAlgo2(h, w, a, b, point);	// draw b
+		ctx.putImageData(imgdt, 0, 0);				// draw b
+		drawpoint();
+	};
+
+	canvas.onmouseup = canvas.onmouseout = function(e){
+		hitpoint = -1;
+	};
+}
+
+function ImageInterpolationAlgo2(X, Y, a, b, p) {
+	var idx     = function(x,y){return x*Y+y;};
+	var onboard = function(x,y){return x>=0 && x<X && y>=0 && y<Y;};
+
+	// quadrilateral interpolation
+	var inverse = function(x,y) {
+		var a = [p[0].x, p[1].x-p[0].x, p[3].x-p[0].x, p[0].x-p[1].x+p[2].x-p[3].x];
+		var b = [p[0].y, p[1].y-p[0].y, p[3].y-p[0].y, p[0].y-p[1].y+p[2].y-p[3].y];
+		var aa = a[3]*b[2] - a[2]*b[3];
+		var bb = a[3]*b[0] - a[0]*b[3] + a[1]*b[2] - a[2]*b[1] + x*b[3] - y*a[3];
+		var cc = a[1]*b[0] - a[0]*b[1] + x*b[1] - y*a[1];
+		var det = Math.sqrt(Math.max(0, bb*bb - 4*aa*cc));
+		var t = (aa == 0) ? -cc/bb : (-bb+det)/(2*aa);
+		var s = (x-a[0]-a[2]*t)/(a[1]+a[3]*t);
+		return {x:s, y:t};
+	};
+
+	// fill b
+	for (var x=0; x<X; ++x)
+		for (var y=0; y<Y; ++y) {
+			var t = inverse(y,x);
+			var i = Math.round(t.y * X);
+			var j = Math.round(t.x * Y);
+			if (onboard(i,j)) {
+				var bi = idx(x,y)*4;
+				var ai = idx(i,j)*4;
+				b[bi+0] = a[ai+0]; b[bi+1] = a[ai+1]; b[bi+2] = a[ai+2];
+				b[bi+3] = 255;
+			} else {
+				var bi = idx(x,y)*4;
+				b[bi+0] = b[bi+1] = b[bi+2] = b[bi+3] = 0;
+			}
+		}
+}
+</script>
+<p class="t">Image Warping</p>
+<p><a href="http://en.wikipedia.org/wiki/Morphing">扭曲</a>。扭曲外形。可以進一步製造<a href="http://en.wikipedia.org/wiki/CAPTCHA">驗證</a>的效果。</p>
+<div class="i"><img src="ImageWarping1.png"> <canvas id="ImageWarping"></canvas></div>
+<script>
+document.getElementById('Image1.png').addEventListener('load', ImageWarping);
+
+function ImageWarping() {
+	var canvas = document.getElementById('ImageWarping');
+	var ctx    = canvas.getContext('2d');
+	var img    = document.getElementById('Image1.png');
+	var w      = canvas.width  = img.naturalWidth;
+	var h      = canvas.height = img.naturalHeight;
+	ctx.drawImage(img, 0, 0);
+	var imgdt  = ctx.getImageData(0, 0, w, h);
+	var a      = new Uint8ClampedArray(imgdt.data);
+
+	ctx.font = "16pt Arial";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "rgb(0,127,0)";
+	ctx.fillText("Drag Points !", w/2, h/2);
+
+	// control points
+	var n = 4;	// 4x4 points
+	var point = [
+		{x:0,y:0},{x:w,y:0},{x:w,y:h},{x:0,y:h},
+		{x:0,y:0},{x:w,y:0},{x:w,y:h},{x:0,y:h},
+		{x:0,y:0},{x:w,y:0},{x:w,y:h},{x:0,y:h},
+		{x:0,y:0},{x:w,y:0},{x:w,y:h},{x:0,y:h},
+	];
+	for (var i=0; i<n; ++i) for (var j=0; j<n; ++j) {
+		var k = i * n + j;
+		point[k].x = Math.floor(w / (n-1)) * i;
+		point[k].y = Math.floor(h / (n-1)) * j;
+	}
+	var hitpoint = -1;
+	var hit = function(p, mouse) {
+		return p.x - 7 <= mouse.x && p.x + 7 >= mouse.x
+			&& p.y - 7 <= mouse.y && p.y + 7 >= mouse.y;
+	};
+	var coordinate = function(x, y) {
+		var s = 2;
+		return {x: Math.round(x/s)*s, y: Math.round(y/s)*s};
+	};
+	var drawpoint = function() {
+		// line
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "rgba(198,0,0,0.5)";	// brown
+		for (var i=0; i<4; ++i) for (var j=0; j<3; ++j) {
+			ctx.beginPath();
+			ctx.moveTo(point[i*n+j].x, point[i*n+j].y);
+			ctx.lineTo(point[i*n+j+1].x, point[i*n+j+1].y);
+			ctx.closePath();
+			ctx.stroke();
+		}
+		for (var j=0; j<4; ++j) for (var i=0; i<3; ++i) {
+			ctx.beginPath();
+			ctx.moveTo(point[i*n+j].x, point[i*n+j].y);
+			ctx.lineTo(point[(i+1)*n+j].x, point[(i+1)*n+j].y);
+			ctx.closePath();
+			ctx.stroke();
+		}
+		// point
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = "rgba(0,0,0,0.5)";	// black
+		ctx.fillStyle = "rgba(198,0,0,0.3)";	// brown
+		for (var i=0; i<n*n; ++i) {
+			ctx.beginPath();
+			ctx.arc(point[i].x, point[i].y, 5, 0, 2 * Math.PI);
+			ctx.fill();
+			ctx.stroke();
+		}
+	};
+	drawpoint();
+
+	// layerX/layerY/keyboard focus
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+
+	// mouse control
+	canvas.onmousedown = function(e){
+		var mouse = coordinate(e.layerX, e.layerY);
+		hitpoint = -1;
+		for (var i=0; i<n*n; ++i)
+			if (hit(point[i], mouse))
+				hitpoint = i;
+	};
+
+	canvas.onmousemove = function(e){
+		if (hitpoint == -1) return;
+		point[hitpoint] = coordinate(e.layerX, e.layerY);
+		// draw
+		var b = imgdt.data;
+		ImageWarpingAlgo(h, w, a, b, point, n);	// draw b
+		ctx.putImageData(imgdt, 0, 0);			// draw b
+		drawpoint();
+	};
+
+	canvas.onmouseup = canvas.onmouseout = function(e){
+		hitpoint = -1;
+	};
+}
+
+function ImageWarpingAlgo(X, Y, a, b, p, n) {
+	var idx     = function(x,y){return x*Y+y;};
+	var onboard = function(x,y){return x>=0 && x<X && y>=0 && y<Y;};
+
+	// quadrilateral interpolation
+	var inverse = function(x,y,p) {
+		var a = [p[0].x, p[1].x-p[0].x, p[3].x-p[0].x, p[0].x-p[1].x+p[2].x-p[3].x];
+		var b = [p[0].y, p[1].y-p[0].y, p[3].y-p[0].y, p[0].y-p[1].y+p[2].y-p[3].y];
+		var aa = a[3]*b[2] - a[2]*b[3];
+		var bb = a[3]*b[0] - a[0]*b[3] + a[1]*b[2] - a[2]*b[1] + x*b[3] - y*a[3];
+		var cc = a[1]*b[0] - a[0]*b[1] + x*b[1] - y*a[1];
+		var det = Math.sqrt(Math.max(0, bb*bb - 4*aa*cc));
+		var t = (aa == 0) ? -cc/bb : (-bb+det)/(2*aa);
+		var s = (x-a[0]-a[2]*t)/(a[1]+a[3]*t);
+		return {x:s, y:t};
+	};
+
+	// point in mesh
+	var position = function(x,y) {
+		var o = {x:x, y:y};
+		var cross = function(o,a,b) {return (a.x-o.x)*(b.y-o.y)-(b.x-o.x)*(a.y-o.y);};
+		for (var i=0; i<n-1; ++i)
+			for (var j=0; j<n-1; ++j) {
+				var q = [p[i*n+j], p[(i+1)*n+j], p[(i+1)*n+(j+1)], p[i*n+(j+1)]];
+				if (cross(o,q[0],q[1]) < 0) continue;
+				if (cross(o,q[1],q[2]) < 0) continue;
+				if (cross(o,q[2],q[3]) < 0) continue;
+				if (cross(o,q[3],q[0]) < 0) continue;
+				return {q:q, x:i, y:j};
+			}
+		return {q:[p[0], p[0], p[0], p[0]], x:0, y:0};
+	}
+
+	// fill b
+	for (var x=0; x<X; ++x)
+		for (var y=0; y<Y; ++y) {
+			var pos = position(y,x);
+			var t = inverse(y,x,pos.q);
+			var i = Math.round(X/(n-1) * (pos.y + t.y));
+			var j = Math.round(Y/(n-1) * (pos.x + t.x));
+			if (onboard(i,j)) {
+				var bi = idx(x,y)*4;
+				var ai = idx(i,j)*4;
+				b[bi+0] = a[ai+0]; b[bi+1] = a[ai+1]; b[bi+2] = a[ai+2];
+				b[bi+3] = 255;
+			} else {
+				var bi = idx(x,y)*4;
+				b[bi+0] = b[bi+1] = b[bi+2] = b[bi+3] = 0;
+			}
+		}
+}
+</script>
+<p>function-based warping：制定一個函數，二維到二維，輸入是像素原始位置，輸出是像素移動目的地。</p>
+<p><a href="http://www.csie.ntu.edu.tw/~b97074/vfx_html/hw1.html">feature-based warping</a>：標記數條對應線段，以線段長度、點線距離，做為內插比重。特色是容易操作。</p>
+<p><a href="http://paulbourke.net/dataformats/meshwarp/">mesh warping</a>：手動或者<a href="http://research.microsoft.com/pubs/69442/imagevectorization_siggraph07.pdf">自動</a>建立網格，網格頂點是控制點。原圖片網格呈整齊等分，新圖片網格供用戶調整。隱藏原圖片暨網格，顯示新圖片暨網格。對應網格實施<a href="Coordinate.html">座標內插</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/7Eee6lp3JUo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UvGWuppY4XE"></iframe>--></div>
+<p class="t">Image Deformation</p>
+<p><a href="http://faculty.cs.tamu.edu/schaefer/research/mls.pdf">形變</a>。保持架構，扭曲外形。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/skBraQ8DZLc"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/FeDg11ta0ys"></iframe>--></div>
+<p class="t">Image Morphing</p>
+<p><a href="http://en.wikipedia.org/wiki/Morphing">變形</a>。從一個外形變化為另一個外形。可以進一步製造<a href="https://www.youtube.com/watch?v=aOo-bv2rAmY">美化</a>、變臉、<a href="http://en.wikipedia.org/wiki/Inbetweening">補幀</a>的效果。</p>
+<img src="ImageMorphing1.html">
+<p>標記數個對應點，符合五官特徵、四肢關節。</p>
+<img src="ImageMorphing2.html">
+<p>像素位置逐步變化，僅改變形狀。warping。</p>
+<img src="ImageMorphing3.html">
+<p>像素數值逐步變化，僅淡入淡出。cross dissolving。</p>
+<img src="ImageMorphing4.html">
+<p>像素位置、像素數值一齊逐步變化，達成變形的效果！morphing = warping + cross dissolving。</p>
+<img src="ImageMorphing5.html">
+<p>變形就是兩張圖做內插，像素位置、像素數值都要內插。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/F2AitTPI5U0?start=327"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/1R5f78GLIXU"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/7lwCiOb8GCU"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/5lugDrGlQTQ"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Editing（Under Construction!）</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/vfkjHnsAsvg"></iframe>--></div>
+<p class="t">Image Compositing</p>
+<p><a href="http://en.wikipedia.org/wiki/Compositing">合成</a>。兩張圖片相疊覆蓋，成為一張圖片。</p>
+<img src="ImageCompositing1.html">
+<p>copy-and-paste：直接覆蓋。建議先去背。弄得好是<a href="http://en.wikipedia.org/wiki/Scrapbooking">剪貼藝術</a>、<a href="http://en.wikipedia.org/wiki/Collage">拼貼藝術</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/YkZ5-BCZ6eo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/44674817"></iframe>--></div>
+<p class="t">Image Segmentation</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_segmentation">分割</a>。區隔景物，找到邊界。</p>
+<img src="ImageSegmentation1.html">
+<p>gradient：求梯度、訂立臨界值。</p>
+<p><a href="http://cmm.ensmp.fr/~beucher/wtshed.html">watershed transform</a>：區域極小值分別注水。相連水域，推定為相同景物。高速算法是四元樹，求每塊區域的平均值與變異數。分割過程中，當變異數太高則分割區域。分割結束後，當平均值相近則合併區域。<a href="http://devmag.org.za/2011/02/23/quadtrees-implementation/">程式碼</a>。</p>
+<p><a href="http://en.wikipedia.org/wiki/Mean_curvature_flow">curvature flow</a>：手動圈景物，手繪曲線沿曲率方向移動，不斷縮小範圍，遇到梯度較大處則停止。效果等同前者，特色是會動。<a href="http://vision.cs.utexas.edu/378h-fall2015/slides/lecture10.pdf">甚至考慮張力和拉力</a>，透過<a href="Optimization.html">regularization</a>併入最佳化對象，控制手繪曲線的大小和形狀。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part06-segmentation1.pdf">GrabCut</a>：手動圈景物，求<a href="Cut.html">最小割</a>。像素之間的權重：梯度絕對值倒數。源點（匯點）到像素的權重：前景（背景）像素理想值與實際值的差距的倒數。倒數通常改成高斯分布或者左右翻轉的sigmoid，以避免倒數趨近無限大。</p>
+<p>手動劃記：一、手動劃記前景與背景。前景劃記處求PDF，背景劃記處求PDF。二、圖片每個像素，區分前景與背景，根據PDF機率大小。然而前景與背景不一定連通。三、圖片每個像素，重新區分前景與背景，根據最短路徑長度。分別找到每個像素到前景劃記處、背景劃記處的最短路徑，點是像素，邊是八方向，邊的權重分別是前景PDF機率差、背景PDF機率差。前景與背景多半會連通。四、於邊界兩旁，分別擷取前景與背景的像素，做為新的劃記。反覆執行演算法，直到邊界收斂。</p>
+<p><a href="https://arxiv.org/abs/1511.07122">convolutional neural network</a>：捲積規則(f∗g)(n) = {f(x)g(y) : x+y=n}改成了x+sy=n，製造間隔阻斷連續，遏止overfitting。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/K2ZUTu_HCI4"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Ljc-2f-IP3E"></iframe>--></div>
+<p class="t">Image Blending</p>
+<p><a href="http://en.wikipedia.org/wiki/Compositing">合成</a>。兩張圖片相疊揉合，成為一張圖片。可以進一步製造<a href="http://www1.cs.columbia.edu/CAVE/projects/face_replace/">臉部剪接</a>的效果。</p>
+<p>compositing和blending都是合成，但是有點差別。compositing是聚合，拼湊在一起。blending是融合，摻雜在一起。運用blending得以製做自然美觀的compositing。</p>
+<img src="ImageBlending1.jpg" id="ImageBlending1.jpg" style="display: none;">
+<img src="ImageBlending2.jpg" id="ImageBlending2.jpg" style="display: none;">
+<canvas id="ImageBlending"></canvas>
+<script>
+document.getElementById('ImageBlending1.jpg').addEventListener('load', ImageBlending);
+
+function ImageBlending() {
+	var canvas = document.getElementById('ImageBlending');
+	var ctx    = canvas.getContext('2d');
+	// background
+	var img1   = document.getElementById('ImageBlending1.jpg');
+	var w1     = canvas.width  = img1.naturalWidth;
+	var h1     = canvas.height = img1.naturalHeight;
+	ctx.drawImage(img1, 0, 0);
+	var imgdt1 = ctx.getImageData(0, 0, w1, h1);
+	var a      = new Uint8ClampedArray(imgdt1.data);
+	// pattern
+	var img2   = document.getElementById('ImageBlending2.jpg');
+	var w2     = img2.naturalWidth;
+	var h2     = img2.naturalHeight;
+	var x      = w1/2 - w2/2;
+	var y      = h2/2;
+	ctx.drawImage(img2, x, y);
+	var imgdt2 = ctx.getImageData(x, y, w2, h2);
+
+	// index
+	function ɪ1(i, j, k) {
+		if (i < 0) i = 0; if (i >= w1) i = w1-1;
+		if (j < 0) j = 0; if (j >= h1) j = h1-1;
+		return (j * w1 + i) * 4 + k;
+	}
+	function ɪ2(i, j, k) {
+		if (i < 0) i = 0; if (i >= w2) i = w2-1;
+		if (j < 0) j = 0; if (j >= h2) j = h2-1;
+		return (j * w2 + i) * 4 + k;
+	}
+	function ɪ1s(i, j, k) {return ɪ1(i+x, j+y, k);}
+
+	// divergence
+	var div1   = new Int16Array(imgdt1.data);
+	var div2   = new Int16Array(imgdt2.data);
+	var div12  = new Int16Array(imgdt2.data);
+	divergence(imgdt1.data, div1, w1, h1, ɪ1);
+	divergence(imgdt2.data, div2, w2, h2, ɪ2);
+//	remix(div, div2, div12, w1, h1, w2, h2, x, y);
+
+	function divergence(a, b, w, h, ɪ) {
+		for (let j=0; j<h; ++j)
+			for (let i=0; i<w; ++i)
+				for (let k=0; k<3; ++k)
+					b[ɪ(i,j,k)] = a[ɪ(i-1,j,k)] + a[ɪ(i+1,j,k)]
+								+ a[ɪ(i,j-1,k)] + a[ɪ(i,j+1,k)]
+								- a[ɪ(i,j,k)] * 4;
+	}
+
+	function remix(a1, a2, b, w1, h1, w2, h2, x, y) {
+		for (let j=0; j<h2; ++j)
+			for (let i=0; i<w2; ++i)
+				for (let k=0; k<3; ++k) {
+					var n1 = Math.abs(a1[ɪ1s(i,j,k)]) * 0.3;
+					var n2 = Math.abs(a2[ɪ2(i,j,k)]);
+					b[ɪ2(i,j,k)] = (n1 > n2) ? a1[ɪ1s(i,j,k)] : a2[ɪ2(i,j,k)];
+				}
+	}
+
+	function poisson(a, b, w1, h1, w2, h2, x, y) {
+		for (let t=0; t<4; ++t)
+			for (let j=0; j<h2; ++j)
+				for (let i=0; i<w2; ++i)
+					for (let k=0; k<3; ++k)
+						a[ɪ1s(i,j,k)] = ( a[ɪ1s(i-1,j,k)] + a[ɪ1s(i+1,j,k)]
+										+ a[ɪ1s(i,j-1,k)] + a[ɪ1s(i,j+1,k)]
+										- b[ɪ2(i,j,k)] ) / 4;
+	}
+
+	ctx.font = "16pt Arial";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "rgb(0,31,0)";
+	ctx.fillText("Drag Eye !", w1/2, h1/2);
+
+	// animate
+	var id = 0;
+	canvas.tabIndex = 1;
+	canvas.onblur = function(){cancelAnimationFrame(id); id = 0;};
+	canvas.onfocus = function(){if(!id) id = requestAnimationFrame(draw, canvas);};
+
+	function draw() {
+		id = requestAnimationFrame(draw, canvas);
+		remix(div1, div2, div12, w1, h1, w2, h2, x, y);
+		imgdt1.data.set(a);
+		poisson(imgdt1.data, div12, w1, h1, w2, h2, x, y);
+		ctx.putImageData(imgdt1, 0, 0);
+	}
+
+	// mouse control
+	var drag = false;
+	var ox = 0, oy = 0;
+	canvas.style.position = "relative";
+	canvas.onmousedown = function(e){
+		drag = (e.layerX >= x && e.layerX < x + w2
+			 && e.layerY >= y && e.layerY < y + h2);
+		ox = e.layerX;
+		oy = e.layerY;
+	};
+
+	canvas.onmousemove = function(e){
+		if (!drag) return;
+		x += e.layerX - ox; ox = e.layerX;
+		y += e.layerY - oy; oy = e.layerY;
+		x = Math.max(x, 0);
+		x = Math.min(x, w1 - w2);
+		y = Math.max(y, 0);
+		y = Math.min(y, h1 - h2);
+	};
+
+	canvas.onmouseup = canvas.onmouseout = function(e){
+		drag = false;
+	};
+}
+</script>
+<p><a href="http://en.wikipedia.org/wiki/Alpha_compositing">alpha blending</a>：RGB加權平均。鬼影。</p>
+<p>pyramid blending：兩圖分別求Laplacian pyramid，每層分別拼接，最後疊合還原。</p>
+<p><a href="http://cs.brown.edu/courses/csci1950-g/results/proj2/edwallac/">Poisson blending</a>：新圖梯度，儘量等於底圖梯度（或者儘量等於兩圖梯度較大者）。新圖梯度與底圖梯度的平方誤差最小，就是梯度的散度相等，此即微分方程經典公式Poisson equation。<a href="http://www.cs.berkeley.edu/~demmel/cs267/lecture24/lecture24.html">化做線性方程組求解</a>，<a href="http://www.iro.umontreal.ca/~mignotte/IFT6150/Articles/FourierPoissonEditing.pdf">亦有頻域的高速算法（限矩形區域）</a>。</p>
+<p>左右兩式相減平方最小，就是左右兩式一次微分相等；縱向與橫向加總，就是左右兩式散度相等；梯度相減平方最小，就是左右兩式梯度的散度相等。</p>
+<textarea>
+https://github.com/ctralie/PoissonImageEditing/
+</textarea>
+<textarea>
+poisson_solver_function_neumann.m
+</textarea>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HBK_RK4vEeo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/v_1ypvS5M3A"></iframe>--></div>
+<p class="t">Image Matting</p>
+<p><a href="http://en.wikipedia.org/wiki/Mat_(picture_framing)">去背</a>。保留主角，去除背景。區隔景物，找到邊界。可以進一步製造<a href="http://grail.cs.washington.edu/projects/digital-matting/video-matting/">替換背景</a>的效果。</p>
+<p>segmentation與matting都是區隔景物，但是有點差別。segmentation著重大體，matting著重細部。</p>
+<p>有人認為blending與matting互為反運算。blending是疊合兩張圖片，matting是剝離兩張圖片。</p>
+<img src="ImageMatting1.html">
+<p>blue screen matting：主角背後放個藍幕或藍牆壁進行拍攝，圖片中的藍色就是背景。俗擱有力，又快又準。攝影棚必備道具。</p>
+<p>Bayesian matting：</p>
+<p>Poisson matting：求梯度。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/FX0efNBEdeQ"></iframe>--></div>
+<p class="t">Image Inpainting</p>
+<p><a href="http://en.wikipedia.org/wiki/Inpainting">修補</a>。填補缺漏像素。可以進一步製造擦拭邊緣的效果。</p>
+<div class="i"><img src="Image1.png"> <canvas id="ImageInpainting"></canvas></div>
+<script>
+document.getElementById('Image1.png').addEventListener('load', ImageInpainting);
+
+function ImageInpainting() {
+	var canvas = document.getElementById('ImageInpainting');
+	var ctx    = canvas.getContext('2d');
+	var img    = document.getElementById('Image1.png');
+	var w      = canvas.width  = img.naturalWidth;
+	var h      = canvas.height = img.naturalHeight;
+	ctx.drawImage(img, 0, 0);
+	var imgdt  = ctx.getImageData(0, 0, w, h);
+	var a      = imgdt.data;
+
+	ctx.font = "16pt Arial";
+	ctx.textBaseline = "top";
+	ctx.textAlign = "left";
+	ctx.fillStyle = "rgb(0,127,0)";
+	ctx.fillText("Erase Me !", 0, 0);
+
+	// layerX/layerY/keyboard focus
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+
+	// stroke style
+	ctx.lineWidth = 5;
+	ctx.lineJoin = 'round';
+	ctx.lineCap = 'round';
+	ctx.strokeStyle = 'black';
+
+	// mouse control
+	var mouse = {x: 0, y: 0};
+	canvas.addEventListener('mousemove', function(e) {
+		mouse.x = e.layerX;
+		mouse.y = e.layerY;
+	});
+	canvas.onmousedown = function(e) {
+		ctx.beginPath();
+		ctx.moveTo(mouse.x, mouse.y);
+		canvas.onmousemove = function() {
+			ctx.lineTo(mouse.x, mouse.y);
+			ctx.stroke();
+		};
+	};
+	canvas.onmouseup = function() {
+		canvas.onmousemove = function(e){return false;};
+		var b = ctx.getImageData(0, 0, w, h).data;
+		ImageInpaintingAlgo(h, w, a, b);	// draw a
+		ctx.putImageData(imgdt, 0, 0);		// draw a
+	};
+}
+
+function ImageInpaintingAlgo(X, Y, a, b) {
+	var idx     = function(x,y){return x*Y+y;};
+	var onboard = function(x,y){return x>=0 && x<X && y>=0 && y<Y;};
+	var painted = function(x,y){return onboard(x,y) && m[idx(x,y)] == 0;};
+
+	// extract mask
+	var m       = new Array(X*Y);
+	var d       = new Array(X*Y);
+	for (var k=0; k<X*Y; k++) {
+		m[k] = (b[k*4+0] == 0 && b[k*4+1] == 0 && b[k*4+2] == 0) ? 1 : 0;
+		d[k] = (m[k] == 1) ? X+Y : 0;
+	}
+
+	// label setting algorithm: weight
+	var dist = function(x,y) {
+		var min = X + Y;
+		for (var i=0; i<4; ++i) {
+			var dx = [0,1,0,-1,0];
+			var dy = [1,0,-1,0,1];
+			var x1 = x + dx[i];         var x2 = x + dx[i+1];
+			var y1 = y + dy[i];         var y2 = y + dy[i+1];
+			var o1 = painted(x1, y1);   var o2 = painted(x2, y2);  
+			var d1 = d[idx(x1,y1)];     var d2 = d[idx(x2,y2)];    
+			if (o1)       min = Math.min(min, d1 + 1);
+			if (o1 && o2) min = Math.min(min, (d1 + d2 + Math.sqrt(2-(d1-d2)*(d1-d2))) / 2);
+		}
+		return d[idx(x,y)] = Math.min(min, d[idx(x,y)]);
+	};
+
+	// inpaint a pixel
+	var inpaint = function(x,y) {
+		for (var c=0; c<3; ++c) {	// rgb channel
+			var s = 0, sx = 0, sy = 0, wsum = 0;
+			for (var i=0; i<8; ++i) {
+				var dx = [-1,-1,-1,0,0,1,1,1];
+				var dy = [-1,0,1,-1,1,-1,0,1];
+				var xx = x + dx[i];
+				var yy = y + dy[i];
+				if (!painted(xx, yy)) continue;
+				var nx = (painted(x+1,y) ? d[idx(x+1,y)] : d[idx(x,y)])
+				       - (painted(x-1,y) ? d[idx(x-1,y)] : d[idx(x,y)]);
+				var ny = (painted(x,y+1) ? d[idx(x,y+1)] : d[idx(x,y)])
+				       - (painted(x,y-1) ? d[idx(x,y-1)] : d[idx(x,y)]);
+				var gx = (painted(x+1,y) ? a[idx(x+1,y)*4+c] : a[idx(x,y)*4+c])
+				       - (painted(x-1,y) ? a[idx(x-1,y)*4+c] : a[idx(x,y)*4+c]);
+				var gy = (painted(x,y+1) ? a[idx(x,y+1)*4+c] : a[idx(x,y)*4+c])
+				       - (painted(x,y-1) ? a[idx(x,y-1)*4+c] : a[idx(x,y)*4+c]);
+				var norm = dx[i] * dx[i] + dy[i] * dy[i];
+				var w = Math.abs(dx[i] * nx + dy[i] * ny);
+				if (w <= 0.01) w = 0.000001;
+				w = w / Math.sqrt(norm) / norm / (1+Math.abs(d[idx(x,y)]-d[idx(xx,yy)]));
+				wsum += w;
+				s  += w * a[idx(xx,yy)*4+c];
+				sx += w * dx[i] * gx;
+				sy += w * dy[i] * gy;
+			}
+			// sum{ w*|dot(d,g)| } / wsum
+			// |dot(d,g)| loses +/- sign, thus do some magic.
+			a[idx(x,y)*4+c] = s/wsum - (sx+sy)/(Math.sqrt(sx*sx+sy*sy)+1-20);
+		}
+		a[idx(x,y)*4+3] = 255;
+	};
+
+	// label setting algorithm
+	var heap = new Array();
+	for (var x=0; x<X; ++x) for (var y=0; y<Y; ++y) if (m[idx(x,y)] == 1) {
+		for (var i=0; i<4; ++i)
+			if (painted(x + [0,1,0,-1][i], y + [1,0,-1,0][i])) {
+				heap.push({x: x, y: y, d: dist(x,y)});
+				break;
+			}
+	}
+
+	while (heap.length > 0) {
+		// pop shortest pixel
+		heap.sort(function(a,b){return b.d - a.d;});
+		var node = heap[heap.length - 1]; heap.pop();
+		var x = node.x, y = node.y;
+		if (m[idx(x,y)] == 0) continue;
+
+		inpaint(x, y);
+		m[idx(x,y)] = 0;
+
+		// push 4 neighbors
+		for (var i=0; i<4; ++i) {
+			var xx = x + [0,1,0,-1][i];
+			var yy = y + [1,0,-1,0][i];
+			if (onboard(xx,yy) && m[idx(xx,yy)] == 1)
+				heap.push({x: xx, y: yy, d: dist(xx,yy)});
+		}
+	}
+}
+</script>
+<p><a href="http://www.inf.ufrgs.br/~oliveira/pubs_files/inpainting.pdf">smoothing</a>：依照行列順序，逐一填補像素。取得已知的鄰近像素，求亮度平均值（平滑化），甚至採用其他的平滑化濾波器。缺點是平滑化所帶來的模糊化、邊緣偏移、誤差累進。</p>
+<p><a href="http://doi.org/10.1109/CVPR.2001.990497">fluid dynamics</a>：周界往內推進，逐一填補像素。周界像素視作粒子，沿著梯度的垂直方向移動（沿著邊緣移動），速度是二階微分。可表示成偏微分方程PDE。詳細內容是個謎！</p>
+<img src="ImageInpainting1.png">
+<p><a href="http://www.cs.rug.nl/~alext/PAPERS/JGT04/paper.pdf">fast marching</a>：周界往內推進，逐一填補像素。填補順序是自創的最短距離，填補數值是自創的加權平均值。<a href="http://research.microsoft.com/pubs/67276/criminisi_tip2004.pdf">缺點是邊緣破損</a>。</p>
+<p>填補順序。周界為起點，求周界到內部像素們的最短距離。<a href="Path.html">label setting algorithm</a>，像素視作節點。最短路徑分兩類：由正上/正下/正左/正右走來，距離加一；由上左/上右/下右/下左走來，距離如下圖。</p>
+<img src="ImageInpainting2.png">
+<p>填補數值。針對一個已知鄰點，其亮度加梯度（取出朝向填補點的分量，求其長度），是填補點理論上的亮度。針對所有已知鄰點，個別求出理論上的亮度，再求加權平均值，權重是<a href="http://www.360doc.com/content/12/1216/15/2036337_254369489.shtml">這三項相乘</a>：</p>
+<p>一、修補後的周界的法線（即最短距離的梯度），取出朝向像素的分量，求其長度。二、鄰點與填補點，二維直線距離的倒數。三、鄰點與填補點，前述最短距離的差的倒數。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/8LtcEMSsBLI"></iframe>--></div>
+<p class="t">Image Completion</p>
+<p><a href="http://en.wikipedia.org/wiki/Inpainting">補全</a>。填補大片缺漏像素，重塑景物。可以進一步製造<a href="http://graphics.stanford.edu/papers/texture_replace/">填充紋理</a>的效果。</p>
+<p><a href="http://graphics.cs.cmu.edu/projects/scene-completion/">data-driven</a>：從資料庫找到最相像的圖片，剪接上去。Image Retrieval檢索，Image Matching匹配，Image Blending合成。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/az1ck7EcOns"></iframe>--></div>
+<p class="t">Image Retargeting</p>
+<p>重新定位。縮小圖片長寬，裁剪多餘像素，但是保留景物原本形狀。</p>
+<img src="ImageRetargeting1.html">
+<p><a href="http://en.wikipedia.org/wiki/Seam_carving">seam carving</a>：屢次刪除不穿過邊緣的路徑，路徑以縱向或橫向跨越圖片，使得圖片長或寬屢次減一。使用動態規劃或大量隨機散步，找到一條梯度絕對值總和最小的路徑。梯度可換成Sobel、Canny。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/dgKjs8ZjQNg"></iframe>--></div>
+<p class="t">Image Recomposition（Image Reshuffling）</p>
+<p><a href="http://cybertron.cg.tu-berlin.de/pdci11/PatchMatch/">重新合成</a>。移動景物位置，無縫接軌。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Painting（Under Construction!）</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fu2fzx4w3mI"></iframe>--></div>
+<p class="t">Texture Generation</p>
+<p><a href="http://lodev.org/cgtutor/randomnoise.html">紋理生成</a>。製造紋理。</p>
+<p><a href="Signal.html">noise</a>：亂數產生紋理，內插產生綿延感。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/NkTIZ1GldgQ"></iframe>--></div>
+<p class="t">Texture Synthesis</p>
+<p><a href="http://en.wikipedia.org/wiki/Texture_synthesis">紋理生成</a>。延展紋理，由窄變廣。</p>
+<p><a href="http://iquilezles.org/www/articles/texturerepetition/texturerepetition.htm">Voronoi diagram</a>：素材隨機取出片段，隨機散佈，相鄰素材片段的中央地帶求加權平均。<a href="https://www.shadertoy.com/view/4tsGzf">程式範例</a>。</p>
+<p><a href="http://cs.brown.edu/courses/csci1290/asgn/proj4/">image quilting</a>：素材隨機取出方格，整齊拼接，部分交疊，交疊處誤差盡量小。誤差可定義為：所有對應像素誤差總和、最小割（平面圖最小割即最短路徑）。</p>
+<p><a href="http://www.cs.ubc.ca/~chyma/publications/de/2011_de_paper.pdf">discrete element textures</a>：</p>
+<p><a href="http://maverick.inria.fr/Publications/2006/BBTSM06/index.php">stroke pattern</a>：</p>
+<p class="t">Texture Transfer</p>
+<p><a href="http://web.engr.illinois.edu/~vrgsslv2/cs498dwh/proj2/">紋理轉印</a>。拼接紋理，構成圖形，宛如拓印。</p>
+<p><a href="http://cs.brown.edu/courses/csci1290/asgn/proj4/">image quilting</a>：紋理與新圖片交疊處的誤差（最小割），紋理與原圖片的匹配誤差，兩者加權平均值最小。</p>
+<p class="t">Image Abstraction</p>
+<p><a href="http://www.cs.rutgers.edu/~decarlo/abstract.html">抽象化</a>。保留圖片大致的輪廓、大致的色調。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/buKbpWsypTE"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/xxKyLXZfRnQ"></iframe>--></div>
+<p class="t">Image Stylization</p>
+<p><a href="http://mrl.nyu.edu/projects/npr/painterly/">風格化</a>。重新繪製圖片，呈現<a href="http://photofunia.com/">特殊風格</a>。已有<a href="http://www.springer.com/book/9781447145189">彙整書籍</a>、<a href="https://core.ac.uk/download/files/108/9550248.pdf">彙整文章</a>。</p>
+<canvas id="ImageStylization"></canvas>
+<script>
+document.getElementById('Image1.png').addEventListener('load', ImageStylization);
+
+function ImageStylization() {
+	var canvas = document.getElementById('ImageStylization');
+	var ctx    = canvas.getContext('2d');
+	var img    = document.getElementById('Image1.png');
+	var w      = canvas.width  = img.naturalWidth;
+	var h      = canvas.height = img.naturalHeight;
+	ctx.drawImage(img, 0, 0);
+	var imgdt  = ctx.getImageData(0, 0, w, h);
+	var a      = new Uint8ClampedArray(imgdt.data);
+
+	ctx.font = "26pt Arial";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.strokeStyle = "rgb(0,127,0)";
+	ctx.strokeText("Click Me !", w/2, h/2);
+
+	var id = 0, on = 0;
+	canvas.onclick = function(){
+		clearInterval(id);
+		if (on = !on)	id = setInterval(function(){ImageStylizationDraw(ctx, imgdt, w, h, a);}, 200);
+		else			ImageStylization();
+	}
+};
+
+function ImageStylizationDraw(ctx, imgdt, w, h, a) {
+	var b = imgdt.data;
+	b.set(a);
+
+	var strokegap = 3;
+	var strokelength = 3;
+	var strokewidth  = 3;
+
+	var idx = function(i,j){return (i * w + j) * 4;};
+	for (var i=0; i<h; i+=strokegap)
+		for (var j=0; j<w; j+=strokegap) {
+			var p1 = idx(i, j);
+			var ii = i, jj = j;
+			for (var k=0; k<strokelength; k++) {
+				var d = [[0,1],[1,0],[1,1]][Math.floor(Math.random() * 3)];
+				ii += d[0]; jj += d[1];
+				if (!(ii < h && jj < w)) break;
+				for (var l=0; l<strokewidth; l++) {
+					var p2 = idx(ii, jj+l);
+					b[p2+0] = a[p1+0];
+					b[p2+1] = a[p1+1];
+					b[p2+2] = a[p1+2];
+					b[p2+3] = a[p1+3];
+				}
+			}
+		}
+
+	ctx.putImageData(imgdt, 0, 0);
+}
+</script>
+<p><a href="http://www.cgl.uwaterloo.ca/lanortha/CourseProjects/Painterly/painterly.html">Hertzmann's Algorithm</a>：畫線。每個像素大致朝著相同方向移動一段距離，沿途不斷貼上。調整筆畫粗細、下筆間距，可以營造印象派畫風。亦得沿梯度的垂直方向移動，遇到邊緣就停住，讓邊緣明顯。畫筆與像素，顏色差異太大就停住。<a href="https://books.google.com.tw/books?id=YjXlTPFYGEYC&amp;pg=PA9">算法在此</a>。</p>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/175540110"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/6PlIpOUal1w"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/7HrxT5JpTW4"></iframe>--></div>
+<p class="t">Image Analogy</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_analogy">類比</a>。擷取兩圖之間的風格差異，套用至其他圖片。</p>
+<p><a href="http://www.wisdom.weizmann.ac.il/~vision/courses/2003_2/hertzmann01image.pdf">Hertzmann's Algorithm</a>：</p>
+<p><a href="https://arxiv.org/abs/1508.06576v1">convolutional neural network</a>：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/-R9bJGNHltQ"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Khuj4ASldmU"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Understanding（Under Construction!）</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<img src="ImageUnderstanding1.jpg">
+<p class="t">圖片的特殊武器：Pyramid</p>
+<p>人眼有著觀（失焦、視野廣）看（對焦、視野窄）的差別。由觀到看、由看到觀的過程當中，人腦似乎能夠快速擷取圖片特點。</p>
+<p>一種模擬的方式是：圖片分別套用各種寬度的mean filter。換句話說：圖片縮放成各種尺寸，套用相同寬度的mean filter。</p>
+<p><a href="https://en.wikipedia.org/wiki/Pyramid_(image_processing)">mean pyramid</a>：圖片長寬屢次縮小一半，得到許多張圖片，形成金字塔。縮小時，每四個像素合併成一個像素（田變口），取平均值。此步驟即mean filter，具有模糊化效果，彷彿人眼失焦。</p>
+<p><a href="https://en.wikipedia.org/wiki/Gaussian_pyramid">Gaussian pyramid</a>：縮小時改採Gaussian filter，消滅邊緣。</p>
+<p><a href="https://en.wikipedia.org/wiki/Laplacian_pyramid">Laplacian pyramid</a>：縮小時改採Laplacian filter，強調邊緣。</p>
+<p class="t">圖片的特殊武器：Blob</p>
+<p>針對人類視覺系統的特性，擷取圖片引人注目的地方。</p>
+<p><a href="http://www.cse.psu.edu/~rtc12/CSE486/lecture11_6pp.pdf">Laplacian of Gaussian filter (LoG filter)</a>：先做Gaussian filter，再做Laplacian filter。先去噪，再求邊緣，效果更佳。</p>
+<p><a href="http://www.cse.psu.edu/~rtc12/CSE486/lecture11_6pp.pdf">difference of Gaussian filter (DoG filter)</a>：LoG filter的高速近似算法。兩個Gaussian filter，平均值相同、變異數為0.3和1.0，相減之後恰好近似Laplacian filter。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part11-local-features1.pdf">Laplacian of Gaussians (LoG)</a>：圖片套用各種寬度（變異數）的LoG filter。針對一種寬度，找到區域極大值，推定為圖片重點，重點的半徑範圍是LoG filter的變異數。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part11-local-features1.pdf">difference of Gaussians (DoG)</a>：LoG的高速近似算法。改為套用各種寬度的DoG filter。換句話說，圖片縮放成各種尺寸，套用同樣寬度的DoG filter。換句話說，Gaussian pyramid，從中選擇尺寸足夠大的圖片來縮小（因為放大會失真），以得到各種尺寸的圖片；寬度最接近的兩兩圖片，直接相減。【尚待確認：直接相減】</p>
+<p class="t">圖片的特殊武器：橢圓形Blob</p>
+<p>引人注目的地方，莫名其妙是圓形。由於尺寸、形狀皆不夠精準，所以調整成橢圓形。不過還是很莫名其妙。</p>
+<p>automatic scale selection：調整blob尺寸。一、找到一個blob之後，微調blob尺寸。二、計算blob裡面（或者周圍）所有像素的梯度的長度的平均值。三、平均值依照blob尺寸排列，形成一串數列。四、區域極大值所在之處，表示梯度變化最大，推定為正確尺寸。當區域極大值不只一個，推定blob不存在。</p>
+<p>高速近似算法：一、各種寬度的blob，改成各種尺寸的圖片（實務：邊長屢乘0.7倍）。二、微調blob尺寸，改為尺寸相鄰的兩張圖片的線性內插（實務：微調範圍是該圖的0.7至1.4倍，自行設定間距）。三、統計blob內部的梯度平均值，改為擷取blob中心的DoG值。四、簡單一句話歸納：長、寬、縮放尺寸，在三維空間中求得DoG區域最小值。</p>
+<p>affine shape adaptation：調整blob形狀。取得blob內的像素，求得<a href="http://en.wikipedia.org/wiki/Structure_tensor">二次動差矩陣</a>總和，實施<a href="Matrix.html">特徵分解</a>，得到橢圓形，設為新blob。重複上述動作，直至blob形狀不變。</p>
+<p>另類觀點：取得blob內的像素。一個像素的X梯度、Y梯度，視作一個二維座標點；所有像素的X梯度、Y梯度，視作一群二維座標點。計算principal component analysis（不必預先減去平均值），得到橢圓形。</p>
+<pre>
+Ix(x,y) = I(x,y) - I(x-1,y) = x gradient at (x,y)
+Iy(x,y) = I(x,y) - I(x,y-1) = y gradient at (x,y)
+
+P = [ Ix(x,y) Ix(x,y+1) Ix(x,y+2) ... Ix(x+1,y) Ix(x+1,y+1) ... ]
+    [ Iy(x,y) Iy(x,y+1) Iy(x,y+2) ... Iy(x+1,y) Iy(x+1,y+1) ... ]
+
+PᵀP = [ ∑IxIx ∑IyIx ] = ∑C(x,y) 
+      [ ∑IxIy ∑IyIy ]
+
+C(x,y) = [ IxIx IyIx ] = second monent matrix = structure tensor
+         [ IxIy IyIy ]
+</pre>
+<p class="t">Image Feature Detection</p>
+<p><a href="http://en.wikipedia.org/wiki/Feature_detection_(computer_vision)">特徵偵測</a>。找到圖片所含有的特殊結構、邊邊角角。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part11-local-features1.pdf">Hessian keypoint detection</a>：偵測頂點、端點、臨界點。一、求每個像素的det(Hessian matrix)。二、由於綜合了X梯度與Y梯度，因此數值偏高者，多半為頂點、端點、臨界點。</p>
+<pre>
+I(x,y) = R/G/B pixel value at (x,y)
+Ix(x,y) = I(x,y) - I(x-1,y) = x gradient at (x,y)
+Iy(x,y) = I(x,y) - I(x,y-1) = y gradient at (x,y)
+Ixy(x,y) = Ix(x,y) - Ix(x,y-1)
+         = [I(x,y) - I(x-1,y)] - [I(x,y-1) - I(x-1,y-1)]
+         = y gradient of x gradient at (x,y)
+
+     ∂I          ∂²I    
+Ix = ――   Ixy = ―――――   H = [ Ixx Iyx ]   det(H) = Ixx Iyy - Ixy Iyx
+     ∂x         ∂x ∂y       [ Ixy Iyy ]          = Ixx Iyy - (Ixy)²
+</pre>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part11-local-features1.pdf">Harris corner detection</a>：偵測角。一、擷取一塊區域，求梯度。二、套用窗函數Gaussian window，專注於區域中心附近的梯度。三、求得二次動差矩陣總和，實施特徵分解，以兩個特徵值的絕對值大小，判斷該區域是否有角。兩值都足夠大，就表示梯度們有兩個主要方向，就表示有兩條較直的邊緣，就表示有角。四、高速算法是改用det和trace來判斷。五、為何不採用independent component analysis，而是用principal component analysis？我也不知道。</p>
+<p><a href="http://www.cse.iitd.ernet.in/~pkalra/csl783/canny.pdf">Canny edge detection</a>：偵測邊緣。一、平滑兼去噪：Gaussian filter。二、求邊緣：求得梯度長度、梯度方向。三、找到最明顯的邊緣：若梯度長度為區域極大值，則保留，否則設為零。區域極大值是依照梯度方向取得前後兩個像素，僅三個像素比較梯度長度。四、清除不明顯的邊緣：設定門檻，梯度長度太短者設為零。五、銜接邊緣。</p>
+<p><a href="http://en.wikipedia.org/wiki/Hough_transform">Hough line transform</a>：偵測直線，甚至偵測線段。一、求邊緣：求得梯度長度，設定門檻。二、針對一個像素(x,y)，窮舉穿過此像素的直線們，求得原點在直線上的投影點，再換成極座標表示法(r,θ)，一條直線對應一個點，直線們對應一條曲線r = xcosθ + ysinθ。一個像素得到一條曲線。三、圖片每個像素皆換成曲線。曲線們的交點，即是穿過大量像素的直線！四、建立細膩方格紙（離散化），曲線穿過方格，則投票加一，得票多的方格當作交點。五、轉換過程是三步驟：對偶、轉成極座標、投票。</p>
+<p><a href="https://www.cis.rit.edu/class/simg782/lectures/lecture_10/lec782_05_10.pdf">Hough cycle transform</a>：偵測圓。窮舉各種半徑。針對一個像素(x,y)，窮舉穿過此像素的所有圓；圓穿過像素，則投票加一，得票多的像素就是圓心。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/GaE4QX7Bq74"></iframe>--></div>
+<p class="e">UVa 12599</p>
+<p class="t">Image Feature Detection再進化</p>
+<p>例如corner，只有位移不變、旋轉不變。現在還要縮放不變。方法是把corner補強為橢圓形blob。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part12-local-features2.pdf">Harris affine region detector</a>：圖片縮放成各種尺寸，每張圖都找corner。每一個corner，以自己為中心，嘗試找橢圓形blob。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part12-local-features2.pdf">Hessian affine region detector</a>：找corner改為找keypoint，其餘相同。</p>
+<p><a href="http://www.vlfeat.org/overview/mser.html">maximally stable extremal regions</a>：</p>
+<p><a href="https://en.wikipedia.org/wiki/Kadir?rady_saliency_detector">Kadir-Brady saliency detector</a>：</p>
+<p class="t">Image Feature Description</p>
+<p><a href="http://en.wikipedia.org/wiki/Feature_detection_(computer_vision)">特徵描述</a>。將圖片獨特之處寫成數值，以供辨識比對。</p>
+<p><a href="http://crcv.ucf.edu/courses/CAP5415/Fall2012/Lecture-6a-Hog.pdf">histograms of oriented gradients (HOG)</a>：一個像素進行投票，梯度長度是持票數，梯度角度（無視正反方向，僅0°到180°）決定投票箱編號。180°等分成9個箱子。一個像素投票給最鄰近的兩個箱子，與箱子中心的距離（角度差）做為投票比例。</p>
+<p>圖片分解成大量16×16區域，交疊一半。一個區域256個像素實施投票，得到9個數字，RGB分開就是9×3個數字。一個區域的數字，依序串成一串，當作特徵描述。</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part12-local-features2.pdf">scale-invariant feature transform (SIFT)</a>：一個像素進行投票，梯度長度是持票數，梯度角度決定投票箱編號。360°等分成8個箱子。一個像素投票給一個箱子。</p>
+<p>實施Harris affine region detector，得到大量區域。針對一個區域，切成4×4宮格，一個宮格所有像素實施投票，得到8個數字，所有宮格就是4×4×8=128個數字，RGB分開就是128×3個數字。一個區域的數字，依序串成一串，當作特徵描述。</p>
+<p>speeded up robust features (SURF)：SIFT的高速算法。</p>
+<pre>
+BRIEF – Binary Robust Independent Elementary Features
+BRISK – Binary Robust Invariant Scalable Keypoints
+ORB   – Oriented FAST and Rotated BRIEF
+FREAK – Fast Retina Keypoint
+</pre>
+<p class="t">Image Feature Matching</p>
+<p>特徵匹配。兩張圖片，找到引人注目的地方，找到對應。</p>
+<pre>
+KNN Match
+Radius Match
+Flann Based Matcher
+RANSAC
+</pre>
+<p class="t">Image Object Detection</p>
+<p>物體偵測。判斷圖片內容是否為預設物體。</p>
+<p><a href="http://vision.cs.utexas.edu/378h-fall2015/slides/lecture20.pdf">Viola-Jones framework</a>：最初用來偵測人臉。一、已知是何物的圖片，窮舉位置、範圍、窗函數（仿照Harr小波，此處使用四種），一種情況當做一個特徵，得到大量特徵。二、因此圖片必須尺寸一致、正面照、無留白，如此位置和範圍才對的上。三、一個特徵，求區域和，得到一個分數，當作特徵描述。區域和的高速算法是前綴和相減。四、實施classification，取得關鍵特徵，捨棄無效特徵。五、不知是何物的圖片，窮舉位置、區域，全部特徵都通過檢驗才視為正確。</p>
+<p><a href="http://vision.ucsd.edu/~pdollar/files/papers/DollarBMVC09ChnFtrs.pdf">integral channel features (ChnFtrs)</a>：Viola-Jones framework豪華版，最初用來偵測行人。一、像素數值，除了灰階值以外，還可以是梯度方向的投票數（仿照HOG，此處使用六個箱子）、梯度長度、LUV值。二、窗函數，除了原本四種以外，還可以是簡單的矩形窗、自訂的零散的區域。三、區域和，還可以是histogram。</p>
+<p class="t">Image Object Recognition</p>
+<p><a href="http://en.wikipedia.org/wiki/Object_recognition">物體辨識</a>。判斷圖片內容是哪種物體。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/E4CqsYEKyBs"></iframe>--></div>
+<p class="t">Image Saliency Detection</p>
+<p>重點偵測。針對人類視覺系統的特性，找到圖片引人注目的地方。引人注目的地方，不一定是與眾不同的地方。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/zeFCYvwbIGU"></iframe>--></div>
+<p class="t">Image Edge Grouping</p>
+<p>邊緣整合。針對人類視覺系統的特性，將圖片邊緣銜接成區域。</p>
+<a href="http://tw.weibo.com/linchain/3867316389648166"><img src="../../i.imgur.com/pQQ068b.jpg" height="640"></a>
+<p class="t">Image Texture Description</p>
+<p><a href="http://vision.cs.utexas.edu/378h-fall2015/slides/lecture5.pdf">紋理描述</a>。將紋理獨特之處寫成數值，以供辨識比對。</p>
+<p><a href="http://www.ee.oulu.fi/mvg/files/pdf/pdf_6.pdf">local binary pattern</a>：八個相鄰像素值，分別減去中央像素值，取其正負號，變成8-bit二進位數值。旋轉視為相同，剩下36種數值。圖片所有像素都實施此計算，統計每種數值的數量。</p>
+<p class="t">Image Shape Description</p>
+<p><a href="https://www.cs.princeton.edu/courses/archive/fall03/cs597D/lectures/descriptors2.pdf">形狀描述</a>。將形狀獨特之處寫成數值，以供辨識比對。平移旋轉後，數值需相同。</p>
+<p>principal component analysis：憑感覺亂搞。座標軸不實用，中心則可用。</p>
+<p>shape histogram：選定中心，同心圓、放射線。</p>
+<p>spherical harmonics decomposition：選定中心，分解成<a href="http://en.wikipedia.org/wiki/Spherical_harmonics">球諧函數</a>。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Reasoning（Under Construction!）</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UqHi83Xs2-g"></iframe>--></div>
+<p class="t">Image Categorization</p>
+<p><a href="https://en.wikipedia.org/wiki/Object_categorization_from_image_search">歸類</a>。解讀圖片內容，將大量圖片分門別類。</p>
+<p>bag-of-words model：列舉世上各種物品，編纂百科全書。一張圖片，從中找到每種物品的出現次數（或者相似程度），得到一個直方圖。所有直方圖實施<a href="Classification.html">clustering</a>建立分類；分群時，以histogram comparison得到兩兩直方圖距離。</p>
+<p>part-based model：</p>
+<p>GIST descriptor：</p>
+<p><a href="http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part16-categorization4.pdf">convolutional neural network</a>：專門用來分類圖片的數學模型。手動分類大量圖片，灌入模型，進行訓練。之後就能找到某圖片的類別，也能找到某類別的圖片。</p>
+<p class="t">Image Retrieval</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_retrieval">檢索</a>。從大量圖片當中找到想要的圖片。可以進一步製造<a href="https://www.google.com.tw/search?q=video+summarization">歸納</a>的效果。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/PY__Fo4o67I"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/k9v48TYJt_g"></iframe>--></div>
+<p class="t">Image Parsing</p>
+<p><a href="http://visualgenome.org/">剖析</a>。建立圖片當中每個物品的從屬關係。</p>
+<p><a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.34.8078">binary partition tree</a>：把一張圖片裡的物件依照區域分類，儲存於二元樹之中。</p>
+<p class="t">Image to Text（Image Caption）</p>
+<p><a href="http://cs.stanford.edu/people/karpathy/densecap/">圖片轉文字</a>。可以進一步製造<a href="http://visionandlanguage.net/VIST/">看圖說故事</a>的效果。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/e-WB4lfg30M"></iframe>--></div>
+<p class="t">Text to Image</p>
+<p>文字轉圖片。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/rAbhypxs1qQ"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Video Tracking（Under Construction!）</p>
+</div><div class="c">
+<p class="t">概論</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/9MeaaCwBW28"></iframe>--></div>
+<p class="t">圖片的數學運算：Registration</p>
+<p>物體不斷移動，物體於每張圖片的位置、形狀都略有差異。我們可以透過前面章節的feature detection、feature description，擷取物體的大致範圍，但是如何精準得到物體移動軌跡呢？</p>
+<p>想像像素們一齊移動，欲求軌跡。像素們一齊實施函數變換，欲求函數。此問題即是<a href="Representation.html">registration</a>，每個點（像素）另外附帶數值（像素值）；點的位置要盡量對齊，點的數值也要盡量相同。</p>
+<img src="ImageRegistration1.html">
+<p><a href="http://en.wikipedia.org/wiki/Kanade?ucas?omasi_feature_tracker">Kanade-Lucas-Tomasi algorithm</a>：一、假設只有translation。二、令兩張圖的平方誤差最小。三、泰勒展開式，以零階與一階導數，近似原式。四、實施gradient descent或者Euler extrapolation。</p>
+<p class="t">圖片的特殊武器：Optical Flow</p>
+<p>Kanade-Lucas-Tomasi algorithm的高速近似算法。一、增加了時間維度。二、假設像素們位移之後完全相符，原式與零階導數完全相等。兩者相消後，得到「泰勒展開式一階導數等於零」的結論，得到一道簡潔的線性方程式。</p>
+<p>一個像素構成一道線性方程式，所有像素構成一個線性方程組（矩陣恰是二次動差矩陣總和）。求解，即得位移量。</p>
+<p>然而，正常情況下，像素們位移之後不可能完全相符。前述假設，邏輯錯誤，最後得到歪解。憑感覺瞎搞，但是算得快。</p>
+<img src="ImageOpticalFlow1.html">
+<p>「泰勒展開式一階導數等於零」，整個式子除以時間，就得到像素速度與亮度的關係式。計算學家取了一個文雅的名稱叫做「光流」。以光流的角度，重新解釋整件事：</p>
+<p>假定像素亮度不變、位置會變；欲求像素的移動速度，移動速度表示成向量。三個維度：長、寬、時間。像素位置改變，泰勒展開式取到一階導數，原式與零階導數相消：梯度在「像素的移動距離向量」上的點積（投影）等於零。整個式子除以一單位時間：梯度在「像素的移動速度向量」上的點積（投影）等於零。此投影量，理想狀態是零，但是通常不是零。我們希望投影量越小越好。</p>
+<img src="ImageOpticalFlow2.html">
+<p><a href="https://en.wikipedia.org/wiki/Lucas?anade_method">Lucas-Kanade algorithm</a>：「投影量」越小越好。一、因為是歪解，所以只好用遞推法趨近正解。二、遞推法，以當前移動速度來移動像素，再求得新的移動速度，直到收斂。三、縮放法，Gaussian pyramid，從最小的圖片（最大的範圍）開始實施，逐步縮小範圍。四、translation可以推廣成affine transform。請參考<a href="http://www.vision.rwth-aachen.de/media/course/SS/2016/computer-vision-2/cv2_16_part02_template-tracking.pdf">這篇講義</a>。</p>
+<p><a href="https://cvg.ethz.ch/teaching/compvis/slides/cursusmotext-eth-cs-public-2015.pdf">Horn-Schunck algorithm</a>：「投影量」與「速度向量的長度」越小越好。scalarization。</p>
+<p><a href="http://lear.inrialpes.fr/src/epicflow/">EpicFlow</a>：「投影量」與「速度向量的長度」與「邊緣匹配的差異」越小越好。scalarization。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/QX5TlIHXhd0"></iframe>--></div>
+<p class="t">Video Stabilization</p>
+<p>安定。攝影過程中相機震動搖晃，相機位置不斷改變。攝影之後令影片擺正對齊。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/BgAdeuxkUyY"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/NLHGjyuSVbU"></iframe>--></div>
+<p class="t">Image Template Tracking</p>
+<p><a href="http://visp-doc.inria.fr/doxygen/visp-daily/tutorial-tracking-tt.html">範本追蹤</a>。給定圖片片段，找到移動軌跡。</p>
+<p><a href="https://en.wikipedia.org/wiki/Lucas?anade_method">Lucas-Kanade algorithm</a>：
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/hniUcaUSVBM"></iframe>--></div>
+<p class="t">Image Feature Tracking</p>
+<p>特徵追蹤。給定圖片特徵，找到移動軌跡。</p>
+<p><a href="http://en.wikipedia.org/wiki/Kanade?ucas?omasi_feature_tracker">Kanade-Lucas-Tomasi algorithm</a>：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/65hcfbo0mZU"></iframe>--></div>
+<p class="t">Video Object Tracking（Video Object Matching）</p>
+<p>物體追蹤。指定圖片當中物體，找到移動軌跡。可以進一步達到<a href="http://www.cse.psu.edu/~rtc12/CSE598C/">複數物體追蹤</a>、<a href="http://en.wikipedia.org/wiki/Crowd_counting">群眾計數</a>的效果。</p>
+<p>dense tracking：warping + template matching + template tracking。</p>
+<p>sparse tracking：feature detection + feature matching + feature tracking。</p>
+<p>online optimization：以histogram或SIFT的相似程度做為函數，實施mean shift或particle filter。</p>
+<p>convolutional neural network：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/O1FZyWz_yj4"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/WZmSMkK9VuA"></iframe>--></div>
+<p class='t'>Video Magnification</p>
+<p><a href="http://people.csail.mit.edu/mrub/vidmag/">放大</a>。以高速、高解析度的攝影機進行拍攝，觀察物體極短時間、極小範圍的微小變化。<a href="http://lambda.qrilab.com/site/">應用範圍很廣</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/MYp298fhlzk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/e9ASH8IBJ2U"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/FKXOucXB4a8"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Image Coding（Under Construction!）</p>
+</div><div class="c">
+<p class="t">簡介</p>
+<p>像素數值，視作純粹的數字、訊號、碼。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/1X6kZdVBLkE"></iframe>--></div>
+<p class="t">圖片的數學運算：Vector與Linear Transformation</p>
+<p>一張圖片，可以表示成RGB三條向量。</p>
+<img src="ImageVector1.png">
+<p>像素的運算，想成是函數。若是線性變換，可以寫成矩陣。</p>
+<img src="ImageVector2.png">
+<p>線性變換有許多優美的性質。例如矩陣加減，等價於新圖片加減。例如一連串線性變換，可以簡化成一次線性變換；多個矩陣預先相乘（複合），簡化成一個矩陣。</p>
+<p class="t">Image Representation</p>
+<p>表示法。以簡略數據，紀錄圖片，用於特徵描述、辨識。</p>
+<p><a href="http://web.stanford.edu/class/ee368/handouts.html">eigenimage</a>：圖片表示成向量。兩兩點積，求相關矩陣（實數對稱矩陣），得到特徵值（實數）、特徵基底（正規正交矩陣）。</p>
+<p><a href="https://d396qusza40orc.cloudfront.net/digital/lecture_slides/slide12.pdf">sparse coding</a>：圖片表示成向量。求一套基底，其線性組合涵蓋所有向量（圖片）。處理一張圖片：解Ax = b，A的一個直條是一張樣式圖片，x是加權平均值，b是一張完整圖片，請最小化x的1-norm。處理多張圖片：加總起來，或者把向量推廣成矩陣。</p>
+<p class="t">圖片的數學運算：Fourier Transform</p>
+<p>聲音處理是一維訊號，影像處理是二維訊號，道理相通。</p>
+<p>圖片亦有spatial domain與frequency domain的概念。實施正向的二維<a href="Wave.html">Fourier transform</a>，空域轉頻域。實施逆向的二維Fourier transform，頻域轉空域。時間複雜度為O(XYlogXY)。</p>
+<p>空域當中，平均值具備平滑效果，聲音處理得齆聲，影像處理得霧化；差分具備差異效果，聲音處理得尖聲，影像處理得邊緣。</p>
+<p>頻域當中，低頻數值具備主體，聲音處理得母音，影像處理得形體；高頻數值具備細節，聲音處理得爆音，影像處理得特徵。</p>
+<p>聲音處理，頻域符合人類感知；影像處理，空域符合人類感知。因此影像處理不適合採用頻域。早期的影像處理教科書，是訊號學者主導，所以才會非常強調頻域。</p>
+<p>如果不關心圖片內涵，只想把圖片當作訊號來處理，那麼頻域就可發揮功效。</p>
+<p class="t">Image Noise</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_noise">雜訊</a>。像素值異動、有誤差，不是原始數值。簡單起見，習慣假設：每個像素獨立產生雜訊，不會互相影響。</p>
+<p>不同的雜訊，有不同的補救方式。兵來將擋、水來土掩。</p>
+<p><a href="http://en.wikipedia.org/wiki/Salt-and-pepper_noise">salt-and-pepper noise</a>：各個像素以固定機率丟失。要嘛正常，要嘛變成0或255。數位傳輸經常出現。破法是median filter。</p>
+<p><a href="http://en.wikipedia.org/wiki/Gaussian_noise">Gaussian noise</a>：相素值添加誤差，誤差呈Gaussian distribution，簡稱Gaussian error。類比傳輸經常出現。破法是mean filter。</p>
+<p>clipped noise：感光設備收集過多亮度，數字爆表，僅得255。好比電玩遊戲傷害上限9999。亮處攝影經常出現。無法破解。</p>
+<p><a href="http://en.wikipedia.org/wiki/Shot_noise">shot noise</a>：感光設備偶然加收一些亮度。好比公車正要離站，剛好有人陸續趕上車，公車無法立即關門、準時行駛。即是Poisson error。暗處攝影經常出現。破法是mean filter。</p>
+<p><a href="http://en.wikipedia.org/wiki/Quantization_(signal_processing)">quantization noise</a>：像素值捨去小數變成整數，導致誤差。我們合理假設，小數部分任何可能性一律均等，呈uniform distribution。捨去小數，即是減去一個隨機數字，即是添加誤差，即是uniform error。數位設備必然出現。不必破解。</p>
+<p class="t">Image Denoising</p>
+<p>去雜訊、去噪。</p>
+<p><a href="https://en.wikipedia.org/wiki/Deconvolution">Wiener deconvolution</a>：</p>
+<p><a href="http://www.isid.ac.in/~deepayan/SC2010/project-sub/RLA/report.pdf">Richardson-Lucy deconvolution</a>：假設位移誤差是Gaussian noise，亮度誤差是Poisson noise。</p>
+<p><a href="http://www.cs.utah.edu/~manasi/coursework/cs7960/p2/project2.html">anisotropic diffusion</a>：</p>
+<p class="t">圖片的數學運算：Wavelet</p>
+<p>http://www.jjj.de/fxt/fxtbook.pdf</p>
+<p><a href="http://mplab.ucsd.edu/tutorials/gabor.pdf">Gabor filter</a>：</p>
+<p class="t">Image Compression</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_compression">壓縮</a>。主要用途是<a href="http://en.wikipedia.org/wiki/Image_file_formats">圖片檔案格式</a>。目標是減少檔案容量、避免畫面<a href="https://en.wikipedia.org/wiki/Compression_artifact">失真</a>。</p>
+<p><a href="http://en.wikipedia.org/wiki/BMP">BMP</a>：無壓縮。添加表頭。</p>
+<p><a href="http://en.wikipedia.org/wiki/JPEG">JPEG</a>：失真壓縮。8x8、RGB2YUV、DCT（KLT if 1-markovian）、quantization、zig-zag、Huffman。</p>
+<p><a href="http://en.wikipedia.org/wiki/JPEG_2000">JPEG 2000</a>：失真壓縮。發展當中。</p>
+<p><a href="http://en.wikipedia.org/wiki/PNG">PNG</a>：無失真壓縮。delta filtering = finite difference、DEFLATE = LZ77 + Huffman、CRC。</p>
+<p><a href="http://en.wikipedia.org/wiki/GIF">GIF</a>：無失真壓縮，只有256色，已退流行。LZW。</p>
+<p><a href="http://en.wikipedia.org/wiki/DjVu">DjVu</a>：失真壓縮，專門處理文件。黃鐘毀棄，瓦釜雷鳴，故不流行。分三層：前景、背景、文字。前景、背景，IW44。文字視作黑白圖片，JB2。</p>
+<p class="t">Video Compression</p>
+<p><a href="http://en.wikipedia.org/wiki/Image_compression">壓縮</a>。影像壓縮標準的兩大陣營是國際標準HEVC、谷歌VP9。主要用途是<a href="https://en.wikipedia.org/wiki/Video_file_format">影片檔案格式</a>。可以進一步製造<a href="http://en.wikipedia.org/wiki/Streaming_media">串流</a>、<a href="https://en.wikipedia.org/wiki/Digital_Video_Broadcasting">廣播</a>的功能。</p>
+<p><a href="https://www.zhihu.com/question/22567173">MPEG</a>：繼承JPEG。在前後幀找到相似區塊，增進壓縮效果。區分IPB三種幀。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/2cbXxyr0DCY"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/riJ0eHTCeig"></iframe>--></div>
+<p class="t">Image Transmission</p>
+<p>傳輸。傳送圖片資訊，儘量不失真。</p>
+<p>progressive transmission：設定成不同解析度，分別傳輸。</p>
+<p class="t">Image Watermarking（Image Steganography）</p>
+<p><a href="http://en.wikipedia.org/wiki/Digital_watermarking">浮水印</a>。訊息隱藏至圖片當中，無法察覺差異。用來判斷圖片是否被私下改造。</p>
+<p class="t">Image Acquisition</p>
+<p><a href="http://en.wikipedia.org/wiki/Digital_imaging">擷取</a>。運用各種器材，獲得資訊，將資訊轉換成像素數值。諸如數位相機、監視器、掃描器、顯微鏡、太空望遠鏡、聲納、超音波攝影、核磁共振攝影等等。詳情請洽電機系。</p>
+<p>注意到資訊不一定要是光線的頻率、光線的強度，也可以是物質密度、聲音頻率等其他東西。</p>
+<p>http://en.wikipedia.org/wiki/Coherent_diffraction_imaging</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/zLSscxcqOLA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UDbTojiW0lQ"></iframe>--></div>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Image.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:31:44 GMT -->
+</html>

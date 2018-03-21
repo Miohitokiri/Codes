@@ -1,0 +1,1582 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Matrix.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:28 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Matrix</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Matrix</p>
+</div><div class="c">
+<p class="t">Matrix</p>
+<p>「矩陣」。大家應該學過吧？</p>
+<pre>
+[ 1 2 -5 ]
+[ 2 4  6 ]
+[ 3 1  7 ]
+
+其中
+A<sub>1,1</sub> = 1    A<sub>1,2</sub> = 2   A<sub>1,3</sub> = -5
+A<sub>2,1</sub> = 2    A<sub>2,2</sub> = 4   A<sub>2,3</sub> = 6
+A<sub>3,1</sub> = 3    A<sub>3,2</sub> = 1   A<sub>3,3</sub> = 7
+</pre>
+<p>一個矩陣由許多個數字構成，排列整齊，呈現矩形。我們習慣把數字改稱為「元素element」。</p>
+<p>水平一整條元素叫做row，垂直一整條元素叫做column。元素的編號，先編row，次編column。</p>
+<p class="t">Matrix資料結構</p>
+<p>第一種方式，用一個二維陣列當作矩陣。如果你喜歡的話，也可以用一維陣列當作矩陣，然後自己算索引值。</p>
+<textarea>
+float matrix[10][10];
+</textarea>
+<textarea>
+struct Matrix
+{
+	int r, c;			// 矩陣大小
+	float a[10][10];	// 矩陣元素
+
+	// 初始化
+	Matrix(int r, int c): r(r), c(c)
+	{
+		memset(a, 0, sizeof(a));
+	}
+
+	// 覆寫()，方便存取矩陣元素。
+	int& operator()(int i, int j) {return a[i][j];}
+};
+
+void create_matrix()
+{
+	Matrix M(2, 1);	// 建立一個2×1的矩陣
+	M(0,0) = 0;
+	M(0,1) = 1;
+}
+</textarea>
+<p>另一種方式，把矩陣元素一個一個列出來。如果矩陣元素為零則不列出來。就這麼簡單。</p>
+<textarea>
+struct Element {int row, column; float value;};
+vector<Element> matrix;
+</textarea>
+<p class="e">UVa 10855 11360 11149</p>
+<p class="t">Linear Transformation</p>
+<p>好久好久以前，矩陣是用來存放大量數字的。然而自從線性代數開始流行之後，矩陣的地位完全改變了──矩陣其實是函數。</p>
+<p>一個函數，僅由變數的加減、變數的倍率所組成，稱作「線性變換」。</p>
+<p>【註：照理應該稱作「線性函數」，不過這個詞彙已經被古人當作是「函數圖形是直線的函數」，只好另起一名。】</p>
+<pre>
+是線性變換的例子：
+f(x,y,z) = 1 x + 2 y - 5 z
+f(x,y,z) = 1 x + (2 y - 5 z) * 2   乘開就是了
+
+不是線性變換的例子：
+f(x,y) = xy      不包含變數乘法
+f(x) = x²        不包含變數乘法
+f(x,y) = x / y   不包含變數除法
+f(x) = sqrt(x)   不包含變數的其他運算
+f(x) = x + 2     不包含常數項
+
+可以套用線性變換作為模型的例子：
+f(x) = 1 x + 2 x² - 5 x³   把 x² 與 x³ 重新看作是變數 y 和 z
+f(x) = x + 2               2 後面乘上一個變數 y，讓 y 永遠是 1
+</pre>
+<p>人類習慣將線性變換呈現為矩陣的模樣。</p>
+<pre>
+f(x,y,z) = 1 x + 2 y - 5 z
+
+                      [ x ]
+f(x,y,z) = [ 1 2 -5 ] [ y ]
+                      [ z ]
+
+通常會把各個變數改名成 x₁ x₂ x₃ ...
+所有輸入變數拼在一起，成為一個向量 x
+輸出變數叫做 y
+
+                      [ x₁ ]
+    y    = [ 1 2 -5 ] [ x₂ ]
+                      [ x₃ ]
+
+    y    =     A        x
+    y    =     f      ( x  )
+</pre>
+<p>一般提到函數，輸入可以是多重變數，但是輸出一定是單一變數。一旦有了矩陣相助，輸入與輸出都可以是多重變數。</p>
+<pre>
+[ y₁ ]   [ 1 2 -5 ] [ x₁ ]
+[ y₂ ] = [ 2 4  6 ] [ x₂ ]
+[ y₃ ]   [ 3 1  7 ] [ x₃ ]
+
+  y    =     A        x
+  y    =     f      ( x  )
+</pre>
+<p>約定俗成，我們會把x與y排列成向量，而非矩陣。如此一來，只要知道了線性變換的矩陣，就能完全確定函數的變數有多少個、完全確定函數是什麼。</p>
+<pre>
+輸出變數、輸入變數排列成矩陣：
+[ y₁ y₃ ]   [ 1 2 -5 ] [ x₁ x₄ ]
+[ y₂ y₄ ] = [ 2 4  6 ] [ x₂ x₅ ]
+                       [ x₃ x₆ ]
+
+    y     =     A          x
+    y     =     f      (   x   )
+
+輸出變數、輸入變數排列成向量：
+[ y₁ ]   [ 1 2 -5 ] [ x₁ ]
+[ y₂ ] = [ 2 4  6 ] [ x₂ ]
+                    [ x₃ ]
+
+  y    =     A        x
+  y    =     f      ( x  )
+</pre>
+<p>一個矩陣就代表一個函數、一個線性變換。</p>
+<pre>
+A x ⇔ f(x)
+
+A ⇔ f   省略x的部分
+</pre>
+<p class="t">Linear Transformation的排版方式</p>
+<p>線性變換的排版方式，源自於線性方程組的排版方式。</p>
+<p>遙想當年，古人為了節省紙張空間，嘗試用矩陣表示線性方程組，並且抽出變數排成直的。</p>
+<pre>
+{ 1 x + 2 y - 5 z = 5        [ 1 2 -5 ] [ x ]   [ 5 ]
+{ 2 x + 4 y - 6 z = 1  ===>  [ 2 4  6 ] [ y ] = [ 1 ]
+{ 3 x + 1 y - 7 z = 4        [ 3 1  7 ] [ z ]   [ 4 ]
+</pre>
+<p>於是線性變換的排版方式，就模仿了這個排版方式。</p>
+<p>因為這個排版方式，讓高斯消去法，變成橫的相消。</p>
+<p>因為這個排版方式，讓向量變成直的。</p>
+<p>因為這個排版方式，讓線性變換，變成橫的配直的。</p>
+<p>因為這個排版方式，讓矩陣乘法，變成橫的配直的。</p>
+<p>因為這個排版方式，連續的線性變換，是從式子的右端到左端。</p>
+<p>因為這個排版方式，有些線性代數課本劈頭就介紹線性方程組，講解一堆解方程式的技巧。然而線性方程組跟線性變換其實是兩碼子事，不適合參雜在一起。</p>
+<p class="t">Matrix Operation</p>
+<p>矩陣運算本質上是函數運算，又額外增加了許多細項。</p>
+<pre>
+求值　　evaluation
+求解　　resolution　（除法division）
+加法　　addition
+減法　　subtraction
+倍率　　scaling
+複合  　composition　（乘法multiplication）
+分解  　decomposition
+疊代  　iteration　　（次方exponentiation）
+反函數　inverse
+轉置　　transpose
+秩　　　rank
+行列式　determinant
+跡　　　trace
+積和式　permanent
+微分　　differentiation
+範數　　norm
+梯度　　gradient
+</pre>
+</pre>
+<p class="t">求值</p>
+<pre>
+A x ⇔ f(x)
+</pre>
+<textarea>
+typedef vector<float> Vector;
+
+// O(N^2)
+Matrix operator*(Matrix A, Vector x)
+{
+	Vector y(x.size(), 0);
+	for (int i=0; i<A.r; ++i)
+		for (int j=0; j<A.c; ++j)
+			y(i) += A(i,j) * x[j];
+	return y;
+}
+</textarea>
+<p class="t">求解（除法）</p>
+<pre>
+    y = A x   ⇔       y  = f(x)
+A⁻¹ y =   x   ⇔   f⁻¹(y) =   x
+</pre>
+<p>求值的反運算。求解偶爾被稱為除法，例如數學軟體matlab。</p>
+<p>演算法是「<a href="LinearEquation.html">高斯消去法</a>」，時間複雜度是O(N^3)。</p>
+<p>或者，先以「<a href="LinearEquation.html">高斯喬登消去法</a>」求反矩陣，再以反矩陣進行求值。時間複雜度也是O(N^3)，但是步驟數量較多。</p>
+<p class="t">加法、減法</p>
+<pre>
+A x + B x ⇔ f(x) + g(x)
+(A + B) x ⇔ (f + g)(x)
+
+A + B ⇔ f + g   省略x的部分
+</pre>
+<p>兩個函數相加。兩個矩陣的對應位置相加。矩陣必須一樣大。</p>
+<textarea>
+// O(N^2)
+Matrix operator+(Matrix A, Matrix B)
+{
+	Matrix M(A.r, A.c);
+	for (int i=0; i<A.r; ++i)
+		for (int j=0; j<A.c; ++j)
+			M(i,j) = A(i,j) + B(i,j);
+	return M;
+}
+</textarea>
+<p class="t">倍率</p>
+<pre>
+k ⋅ (A x) ⇔ k ⋅ f(x)
+(k ⋅ A) x ⇔ (k ⋅ f)(x)
+
+k ⋅ A ⇔ k ⋅ f   省略x的部分
+</pre>
+<p>函數乘上一個常數。矩陣的每個數字一齊乘上相同倍率。</p>
+<textarea>
+// O(N^2)
+Matrix operator*(Matrix A, int n)
+{
+	Matrix M(A.r, A.c);
+	for (int i=0; i<A.r; ++i)
+		for (int j=0; j<A.c; ++j)
+			M(i,j) = A(i,j) * n;
+	return M;
+}
+</textarea>
+<p class="t">複合（乘法）</p>
+<pre>
+A (B x) ⇔ f(g(x))
+(A B) x ⇔ (f ∘ g)(x)
+
+A B ⇔ f ∘ g   省略x的部分
+</pre>
+<p>複合的計算過程相當繁雜：第一個矩陣取水平一整條、第二個矩陣取垂直一整條，求「<a href="Point.html">點積</a>」，得到一個元素；取盡各種可能性，得到整個矩陣。</p>
+<p>複合通常被稱做乘法。啊就古人取名的時候沒想清楚，成為歷史共業。</p>
+<p>那麼有沒有真正的乘法呢？由於線性變換不包括變數的乘除，所以不能有矩陣乘法、矩陣除法。硬是要定義乘法的話，矩陣乘法必須跟多項式乘法有著相同的結果才行。</p>
+<textarea>
+// O(N^3)
+Matrix operator*(Matrix A, Matrix B)
+{
+	Matrix M(A.r, B.c);
+	for (int i=0; i<A.r; ++i)
+		for (int j=0; j<B.c; ++j)
+			for (int k=0; k<A.c; ++k)
+				M(i,j) += A(i,k) * B(k,j);
+	return M;
+}
+</textarea>
+<p class="t">複合（乘法）（Strassen's Algorithm）</p>
+<p><a href="http://en.wikipedia.org/wiki/Strassen_algorithm">http://en.wikipedia.org/wiki/Strassen_algorithm</a></p>
+<p>首先把兩個矩陣相乘，改成兩個一樣大的方陣相乘。把矩陣改成稍大的方陣，長寬是2的次方，多出來的元素全部補零。</p>
+<p>原理是Divide and Conquer，欲相乘的兩個方陣，各自切割成四塊小方陣，然後利用小方陣的乘積，兜出大方陣的乘積。</p>
+<p>僅是單純的拆成小方陣相乘，仍然需要8次乘法，以及4次加法，把遞迴公式列出來後，運用Master Theorem，可以求出時間複雜度為O(N^3)。根據遞迴公式，要讓時間複雜度變小，主要取決於乘法的次數，至於加法的次數不是主要影響因素。</p>
+<p>經過一些詭異的調整方法，使用7次乘法，做些加加減減，就兜出了大方陣的乘積。時間複雜度變為O(N^log<sub>2</sub>7)，實際取log一下，約為O(N^2.81)。</p>
+<p class="t">複合（乘法）（Virginia-Vassilevska-Williams Algorithm）</p>
+<p><a href="http://www.cs.berkeley.edu/~virgi/matrixmult.pdf">http://www.cs.berkeley.edu/~virgi/matrixmult.pdf</a></p>
+<p>當今世上最快的矩陣相乘演算法，時間複雜度為O(N^2.3727)。方法相當複雜，我不懂。</p>
+<p>矩陣相乘的速度究竟可以到達多快？這是一個open problem，目前還沒有人知道答案的問題。</p>
+<p>兩個方陣一共有2*N^2個元素，光是讀取資料，這些元素不得不處理一次，因此時間複雜度的下界顯然是Ω(N^2)。據我所知，目前尚未有人找出更高的下界。</p>
+<p>至於上界就是剛剛提到的O(N^2.3727)。</p>
+<p class="t">分解</p>
+<pre>
+C x         ⇔ h(x)
+C x = A B x ⇔ h(x) = (f ∘ g)(x)
+
+C = A B ⇔ h = f ∘ g   省略x的部分
+</pre>
+<p>複合的反向操作。複合：很多個矩陣連乘，併成一個矩陣。分解：一個矩陣，拆成很多個矩陣連乘。</p>
+<p>經典的矩陣分解，諸如QR分解、LU分解、特徵分解、奇異值分解、極分解等等。</p>
+<p class="t">疊代（次方）</p>
+<pre>
+Aⁿ x ⇔ f(f(f(f(f(f(f(f(x))))))))
+        \__________  __________/
+                   \/
+                   n次
+
+Aⁿ ⇔ f∘f∘f∘f∘f∘f∘f∘f   省略x的部分
+      \_____  _____/
+            \/
+            n次
+</pre>
+<p>Divide and Conquer。如同整數次方的演算法。</p>
+<textarea>
+Matrix identity(int r, int c)
+{
+	Matrix M(r, c);
+	for (int i=0; i<A.r; ++i) M(i,i) = 1;
+	return M;
+}
+
+// O(N^3 * logE) 遞迴版本
+Matrix operator^(Matrix A, int n)
+{
+	if (n == 0) return identity(A.r, A.c);
+	if (n == 1) return A;
+	Matrix M = A ^ (n >> 1);
+	if (n & 1) return M * M * A;
+	else return M * M;
+}
+
+// O(N^3 * logE) 迴圈版本
+Matrix operator^(Matrix A, int n)
+{
+	Matrix M = identity(A.r, A.c);
+	if (n == 0) return M;
+	if (n == 1) return A;
+	for (; n; n >>= 1, A = A * A)
+		if (n & 1)
+			M = M * A;
+	return M;
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Basis</p>
+</div><div class="c">
+<p class="t">Linear Transformation的第一種觀點</p>
+<p>數學家發明了兩種看待線性變換的觀點：一種是矩陣切成直條、另一種是矩陣切成橫條。先談直條吧！</p>
+<pre>
+[ y₁ ]   [ 1 2 -5 ] [ x₁ ]
+[ y₂ ] = [ 2 4  6 ] [ x₂ ]
+[ y₃ ]   [ 3 1  7 ] [ x₃ ]
+
+         [ 1 ]          [ 2 ]          [ -5 ]
+       = [ 2 ] ⋅ x₁  +  [ 4 ] ⋅ x₂  +  [  6 ] ⋅ x₃
+         [ 3 ]          [ 1 ]          [  7 ]
+</pre>
+<p>外觀看起來，彷彿是向量乘上倍率、再相加。我想大家已經相當熟悉向量的作圖方式了。</p>
+<img src="Basis1.png">
+<p>以這些向量當作座標軸，畫出座標格線。「向量乘上倍率、再相加」就變成了數格子。</p>
+<p>線性變換可以看成：給定座標軸、座標值，然後求向量。座標軸是矩陣裡面的各個向量，座標值是輸入向量。</p>
+<img src="Basis2.png">
+<p>有時候座標軸剛好是零向量、共線、共面、共空間、……，無法畫出座標格線。儘管如此，線性變換仍然可以朦朧地看成：給定座標軸、座標值，然後求向量。</p>
+<img src="Basis3.png">
+<p>這樣的座標軸，稱做「基底basis」。</p>
+<p class="t">Inverse</p>
+<p>「反函數」。一般是入境隨俗翻譯為「反矩陣」。求反矩陣的演算法，請參考「<a href="LinearEquation.html">高斯消去法</a>」。</p>
+<pre>
+[ 1 2 -5 ]   inverse   [  22/80 -19/80  32/80 ]
+[ 2 4  6 ]  -------->  [   4/80  22/80 -16/80 ]
+[ 3 1  7 ]  <--------  [ -10/80   5/80      0 ] 
+             inverse
+    A                             A⁻¹
+</pre>
+<p>採用第一種觀點，反矩陣可以看成是：以原本矩陣的直條當作座標軸，給定座標軸、向量，然後求座標值。</p>
+<pre>
+y = A⁻¹ x
+</pre>
+<img src="Basis4.png">
+<p class="t">Inverse的存在條件</p>
+<p>原函數擁有反函數的條件是一對一函數：</p>
+<p>一、輸入與輸出一樣多。</p>
+<p>二、不同輸入得到不同輸出。</p>
+<p>原函數是如此，反函數亦是如此。</p>
+<img src="Basis5.png">
+<p>原矩陣擁有反矩陣的條件也是一對一函數：</p>
+<p>一、輸入變數與輸出變數一樣多。矩陣是方陣。</p>
+<p>二、座標軸沒有零向量、共線、共面、共空間、……，得以順利畫出座標格線，讓不同座標值得到不同向量。</p>
+<p>簡單來說：一個座標軸產生一個維度，必須剛好產生所有維度。</p>
+<p>原矩陣是如此，反矩陣亦是如此。</p>
+<img src="Basis6.png">
+<p class="t">Linear Transformation的第二種觀點</p>
+<pre>
+[ y₁ ]   [ 1 2 -5 ] [ x₁ ]
+[ y₂ ] = [ 2 4  6 ] [ x₂ ]
+[ y₃ ]   [ 3 1  7 ] [ x₃ ]
+
+         [ (1 2 -5) ∙ (x₁ x₂ x₃) ]
+       = [ (2 4  6) ∙ (x₁ x₂ x₃) ]
+         [ (3 1  7) ∙ (x₁ x₂ x₃) ]
+</pre>
+<p>線性變換也可以看成：以橫條當作座標軸，然後求出輸入向量與各座標軸的「<a href="Point.html">點積</a>」。換句話說，就是輸入向量在各座標軸上面的投影量、另乘上座標軸長度。</p>
+<p>因為已經規定直條是座標軸，所以橫條當作座標軸挺彆扭。數學家就想到，把矩陣翻轉一下、繼續討論。</p>
+<p class="t">Transpose</p>
+<p>「轉置矩陣」。以左上右下對角線為對稱軸，所有矩陣元素對稱地調換位置。也可以想成是橫的變直的。也可以想成是直的變橫的。</p>
+<pre>
+[ 1 2 -5 ]   transpose   [  1 2 3 ]
+[ 2 4  6 ]  ---------->  [  2 4 1 ]
+[ 3 1  7 ]  <----------  [ -5 6 7 ]
+             transpose
+    A                        Aᵀ
+</pre>
+<pre>
+[ 1 2 3 ]   transpose   [ 1 0 9 5 ]
+[ 0 0 7 ]  ---------->  [ 2 0 8 4 ]
+[ 9 8 7 ]  <----------  [ 3 7 7 6 ]
+[ 5 4 6 ]   transpose
+
+    A                        Aᵀ
+</pre>
+<p>採用第二種觀點，轉置矩陣可以看成：以原本矩陣的直條當作座標軸，將輸入向量分別投影到各座標軸，求投影量（另乘上座標軸長度）。</p>
+<pre>
+y = Aᵀ x
+</pre>
+<img src="Basis7.png">
+<p class="e">UVa 10895 11349</p>
+<p class="t">Inverse與Transpose的差別</p>
+<p>轉置矩陣跟反矩陣有些相似，主要有三個地方不同：</p>
+<p>一、轉置矩陣是垂直投影；反矩陣是沿著座標軸平行投影。</p>
+<p>二、轉置矩陣的輸出，受到座標軸的單位長度影響，單位長度越長則輸出數值越大；反矩陣剛好顛倒，是越小。</p>
+<p>三、轉置矩陣可以是一對一函數，也可以是收束的函數；反矩陣只能是一對一函數。</p>
+<p>當轉置矩陣和反矩陣一樣的時候，座標軸必須互相垂直、座標軸的單位長度都是一、矩陣是方陣，就是所謂的（實數版本）正規正交矩陣orthonormal matrix、（複數版本）么正矩陣unitary matrix。此時轉置矩陣和反矩陣都是垂直投影、都是在求座標值。</p>
+<img src="Basis8.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Transformation</p>
+</div><div class="c">
+<p class="t">Transformation</p>
+<p>先前在計算幾何領域，已經詳細介紹過「<a href="Point.html">Transformation</a>」。本篇文章從線性變換的角度，再度介紹一次。順便藉此機會，讓讀者更加瞭解線性變換的功效。</p>
+<p>這些二維平面上的動作，其實都是線性變換，每種動作都有對應的矩陣。想要實施動作，那就乘上矩陣（函數的求值）。想要還原動作，那就乘上反矩陣（反函數）。想要實施一連串的動作，那就乘上一連串的矩陣。</p>
+<pre>
+new        step 3             step 2  step 1  original
+coordinate rotate             scale   shear   coordinate
+[ x' ]  =  [ cos45° -sin45° ] [ 2 0 ] [ 1 1 ] [ x ]
+[ y' ]     [ sin45°  cos45° ] [ 0 3 ] [ 0 1 ] [ y ]
+</pre>
+<p>甚至可以預先把一連串的矩陣相乘起來（函數的複合），變成一個矩陣，一個矩陣就能代表一連串的動作，相當方便！</p>
+<pre>
+new        step 1 & 2 & 3              original
+coordinate shear, scale, rotate        coordinate
+[ x' ]  =  [ 2cos45° 2cos45°-3sin45° ] [ x ]
+[ y' ]     [ 2sin45° 2sin45°+3cos45° ] [ y ]
+</pre>
+<p class="t">以座標軸的觀點來思考</p>
+<p>線性變換常常用座標軸的觀點來思考。以座標軸為主角，縮放、旋轉、投影這些動作其實都是在改動座標軸。</p>
+<p>先從最基礎的紋風不動開始介紹起吧！以原點為中心，座標軸方向設定為X軸正向和Y軸正向，座標軸長度是1。</p>
+<pre>
+[ 1 0 ]
+[ 0 1 ]
+</pre>
+<img src="2DTransformationMatrix1.png">
+<p class="t">Scale</p>
+<p>「縮放」，以原點為中心，縮放座標軸。X軸、Y軸可以分別縮放不同倍率。</p>
+<pre>
+[ sx   0 ]
+[  0  sy ]
+</pre>
+<img src="2DTransformationMatrix2.png">
+<p class="t">Shear（Skew）</p>
+<p>「歪斜」，以原點為中心，改變其中一個座標軸。</p>
+<pre>
+[  1 0 ] upward / downward
+[ ty 1 ]
+
+[ 1 tx ] rightward / leftward
+[ 0  1 ]
+</pre>
+<img src="2DTransformationMatrix3.png">
+<p>另一種方式是設定歪斜角度。</p>
+<pre>
+[    1 0 ] upward / downward
+[ tanθ 1 ]
+
+[ 1 tanθ ] rightward / leftward
+[ 0    1 ]
+</pre>
+<img src="2DTransformationMatrix4.png">
+<p class="t">Rotate</p>
+<p>「旋轉」，以原點為中心，旋轉座標軸。</p>
+<pre>
+[ cosθ -sinθ ]
+[ sinθ  cosθ ]
+</pre>
+<img src="2DTransformationMatrix5.png">
+<p class="t">Project</p>
+<p>「投影」，一個座標軸當作投影線，另一個座標軸變成零向量。</p>
+<pre>
+[ 1 0 ]
+[ 0 0 ]
+</pre>
+<img src="2DTransformationMatrix6.png">
+<p class="t">Reflect</p>
+<p>「鏡射」，一個座標軸當作對稱線，另一個座標軸顛倒方向。</p>
+<pre>
+[ 1  0 ]
+[ 0 -1 ]
+</pre>
+<img src="2DTransformationMatrix7.png">
+<p class="t">Translate</p>
+<p>「位移」不是線性變換！不過「位移」可以套用線性變換：座標增加一個維度，數值固定為1；矩陣增加一個維度，將位移量填在新維度。</p>
+<p>用幾何的角度解釋，就是把二維位移變成三維歪斜：將原本的xy平面固定放在z=1的高度，沿著平面滑動。</p>
+<pre>
+[ x' ]   [ 1 0 tx ] [ x ]
+[ y' ] = [ 0 1 ty ] [ y ]
+[ 1  ]   [ 0 0 1  ] [ 1 ]
+</pre>
+<img src="2DTransformationMatrix8.png">
+<p>前面介紹的矩陣，通通跟著改成三維，如此一來位移矩陣就能和其他矩陣相乘了。增加一個維度，以便讓位移融入大團體──這個手法稱作「齊次座標Homogeneous Coordinates」。</p>
+<p>線性變換、位移，合稱「仿射變換Affine Transformation」。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Unitary Matrix</p>
+</div><div class="c">
+<p class="t">Indentity Matrix</p>
+<p>「單位矩陣」。第一座標軸的第一個值是1，其餘是0；第二座標軸的第二個值是1，其餘是0；以此類推。它是標準的座標軸。</p>
+<img src="UnitaryBasis1.png">
+<p>所有向量經過單位矩陣變換之後，紋風不動，完全不變。（identity是指相同個體。）</p>
+<p>逆向變換（反矩陣）顯然還是單位矩陣，不必另外計算。</p>
+<img src="UnitaryBasis2.png">
+<p class="t">Orthonormal Matrix / Unitary Matrix</p>
+<p>「正規正交矩陣」是實數版本。「么正矩陣」是複數版本。</p>
+<p>座標軸長度皆為1、互相垂直。（ortho-是指垂直，normal是指一單位量，unitary是指基本單元。）</p>
+<p>想要判斷一個矩陣是不是正規正交矩陣、么正矩陣，可以利用點積：長度為1，自己與自己的點積為1；互相垂直，點積為0。</p>
+<img src="UnitaryBasis3.png">
+<p>所有向量們經過正規正交矩陣、么正矩陣變換之後，長度不變、夾角不變。即是形狀不變。相當好用！</p>
+<p>逆向變換（反矩陣）恰好是轉置，不必另外以高斯消去法計算。</p>
+<img src="UnitaryBasis4.png">
+<p>舉例來說，單位矩陣、旋轉矩陣、鏡射矩陣是正規正交矩陣，縮放矩陣、歪斜矩陣、投影矩陣不是正規正交矩陣（除非恰好等於單位矩陣）。</p>
+<p>正規正交矩陣的功效是旋轉暨鏡射。</p>
+<p class="t">Rank</p>
+<p>座標軸所構成的超平行體的維度。消除導致零向量、共線、共面、共空間、……的座標軸，剩下的座標軸數量就是維度。</p>
+<img src="UnitaryBasis5.png">
+<p>嘗試將各個座標軸乘上倍率、互相加減抵消，就能消除多餘的座標軸了。通常會有許多種消除方式。</p>
+<img src="UnitaryBasis6.png">
+<p class="t">Rank相關定理</p>
+<p>rank(AB) ≤ min(rank(A), rank(B))。矩陣複合，消失的維度回不來了。</p>
+<p>rank(A⁻¹) = N。反矩陣的條件就是座標軸必須剛好產生所有維度，維度顯然是N。前提是有反矩陣。</p>
+<p>rank(Aᵀ) = rank(A)。矩陣轉置，維度一樣。</p>
+<p class="t">Determinant</p>
+<p>座標軸所構成的超平行體的容積。一維是長度、二維是平行四邊形的面積、三維是平行六面體的體積。</p>
+<img src="UnitaryBasis7.png">
+<p>一、消滅分量，令座標軸互相垂直，此時所有座標軸的長度相乘，就是容積。簡單來說，這就是中學數學「底乘以高」的概念。</p>
+<img src="UnitaryBasis8.png">
+<p>二、座標軸所構成的維度、即超平行體的維度，必須跟空間維度一致，否則容積被定義為0。這跟反矩陣的條件是一樣的。</p>
+<p>當座標軸有零向量、共線、共面、共空間、……，容積是0。當座標軸數量大於或小於空間維度，容積是0。只有N×N方陣、且rank為N，才有討論意義。</p>
+<p>因此inverse、rank、determinant總是被相提並論：有反矩陣，維度是N，容積不是0；無反矩陣，維度小於N，容積是0。</p>
+<p>三、容積有正負號。當其中一個座標軸顛倒方向，容積將變號。當其中兩個座標軸交換次序，容積將變號。</p>
+<img src="UnitaryBasis9.png">
+<p>舉例來說，單位矩陣的容積是1。正規正交矩陣、么正矩陣可能是1、可能是-1。旋轉矩陣是1。鏡射矩陣是-1。縮放矩陣、歪斜矩陣是左上右下對角線元素的乘積。投影矩陣是0。</p>
+<p class="t">Determinant相關定理</p>
+<p>det(AB) = det(A) det(B)。矩陣複合，容積相乘。</p>
+<p>det(A⁻¹) = 1/det(A)。反矩陣的容積是倒數。如果有反矩陣的話。</p>
+<p>det(Aᵀ) = det(A)。矩陣轉置之後，容積不變！幾何意義：依序取出每個向量的X座標組成一個新向量、依序取出每個向量的Y座標組成一個新向量、……，所形成的容積仍然相同！我想不出直觀的證明方式，也想不出如何應用。</p>
+<p class="t">求得Rank和Determinant</p>
+<p>消滅分量，令座標軸互相垂直，以求得容積與維度。例如稍後提到的「QR分解」可以求得容積與維度。</p>
+<p>另外，轉置矩陣的容積與維度不變，於是原本矩陣的橫條，亦得視作座標軸。這使得「<a href="LinearEquation.html">高斯消去法</a>」也可以求得容積與維度。</p>
+<p>另外，由於高斯消去法的關係，容積、維度、反矩陣經常被聯繫到線性方程組的唯一解、多解、無解判定。</p>
+<p class="e">Timus 1041</p>
+<p class="t">QR Decomposition</p>
+<p>把一個矩陣的座標軸扳成互相垂直的單位向量，讓座標軸長得正、長得帥。</p>
+<p>把一個矩陣A分解成矩陣Q與矩陣R的乘積，A = QR。Q是互相垂直的單位向量（么正矩陣），R是扳動量（上三角矩陣）。</p>
+<p class="t">演算法（Gram-Schmidt Orthonormalization）</p>
+<p><a href="https://en.wikipedia.org/wiki/Gram?chmidt_process">https://en.wikipedia.org/wiki/Gram–Schmidt_process</a></p>
+<pre>
+一、從中隨便挑出一個向量（通常是第一個，以便讓R成為上三角矩陣），
+　　作為第一座標軸，向量長度調整成1。
+二、所有剩餘向量們，各自減掉在第一座標軸上的分量，徹底消滅該維度。
+　　所有剩餘向量們，現在顯然都垂直於第一座標軸。
+三、所有剩餘向量們，遞迴處理下去。
+</pre>
+<p>藉由投影、相減、縮放，逐步調整矩陣A的每個向量，直到變成正規正交矩陣Q。</p>
+<p>時間複雜度O(N^3)。</p>
+<p class="t">演算法（Householder Triangularization）</p>
+<p><a href="http://faculty.ucmerced.edu/mhyang/course/eecs275/lectures/lecture12.pdf">http://faculty.ucmerced.edu/mhyang/course/eecs275/lectures/lecture12.pdf</a></p>
+<p>鏡射矩陣有一個特殊用處，把一個向量鏡射到標準座標軸上（鏡子位於角平分線），讓該向量變成只有一個元素有值（其值是向量長度），其餘元素都是零。</p>
+<p>不斷套用鏡射矩陣，逐步調整矩陣A的每個向量，直到變成上三角矩陣R。優點是向量的長度變化比較少、誤差比較小。</p>
+<p>時間複雜度O(N^3)。</p>
+<p class="t">演算法（Givens Triangularization）</p>
+<p><a href="http://www.cs.nthu.edu.tw/~cherung/teaching/2011anm/note07.pdf">http://www.cs.nthu.edu.tw/~cherung/teaching/2011anm/note07.pdf</a></p>
+<p>Givens旋轉：在標準座標軸當中，選擇其中兩個軸，在其平面上旋轉。</p>
+<p>不斷套用Givens旋轉矩陣，逐步調整矩陣A的每個向量，直到變成上三角矩陣R。優點是容易設計平行演算法。</p>
+<p>時間複雜度O(N^3)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Eigenbasis (I)</p>
+</div><div class="c">
+<p class="t">Function</p>
+<p>本站文件「<a href="Function2.html">Function</a>」，介紹了「輸入有很多個變數，輸出只有一個變數」的函數，也畫出了函數圖形。</p>
+<img src="NumericFunction3.png">
+<p>此處要介紹「輸入有很多個變數，輸出有很多個變數」的函數，並且畫出函數圖形。</p>
+<p>此處以ℝ² ⇨ ℝ²函數為例，輸入是兩個變數、輸出是兩個變數的函數，可以畫在二維平面上。因為繪圖結果往往是一片滿，看不出任何意義，所以把輸入改成等距取樣、保持間隔。</p>
+<img src="Eigenbasis1.png">
+<p class="t">Linear Transformation</p>
+<p>線性變換是一種特別的函數，函數圖形有著一種難以言喻的整齊。有時是一致朝外，有時是一致螺旋。</p>
+<img src="Eigenbasis2.png">
+<p>這樣的函數圖形，可以用來解釋真實世界的物理現象！例如磁場、氣旋等等。甚至數學家還把輸入輸出推廣到複數，發明「複變函數」的學問，發掘更多樣化的函數圖形──不過這是後話了。先讓我們專注於線性變換吧！</p>
+<p class="t">Linear Transformation的本質：朝著目標向前進</p>
+<p>整齊的原因是什麼呢？數學家已經初步解決了這個問題！</p>
+<p>數學家猜測，所謂的整齊，也許是指：「大家有著共識，方向一致。」再進一步猜測：「這當中有沒有堪稱表率，讓大家群起效尤的輸入輸出呢？是不是有人一路以來始終如一，堅持走在正確的道路上？」於是數學家嘗試尋找：「有哪些輸入向量，經過線性變換之後，方向保持不變。」</p>
+<img src="Eigenbasis3.png">
+<p class="t">Eigenvector與Eigenvalue</p>
+<p>數學家嘗試解A x = λ x這道式子。A是線性變換；x是向量，方向保持不變，稱作「特徵向量eigenvector」；λ是縮放倍率，稱作「特徵值eigenvalue」。</p>
+<p>A x = λ x，移項得A x - λ x = 0，合併得(A - λI) x = 0。</p>
+<p>如果是唯一解，得到x是零向量。缺乏討論意義。</p>
+<p>如果要有其他解，那麼令det(A - λI) = 0。把det(A - λI)展開，形成λ的多項式，稱作「特徵多項式characteristic polynomial」。特徵多項式求根，即得λ。</p>
+<p>求得eigenvalue，代入到(A - λI) x = 0，求得eigenvector。</p>
+<pre>
+A = [ 1 -1 ]   A - λI = [ (1-λ)  -1   ]      det(A - λI) = 0
+    [ 2  4 ]            [   2   (4-λ) ]   => (1-λ)(4-λ) + 2 = 0
+                                          => λλ - 5λ + 6 = 0
+                                          => λ = 2 or 3
+
+when eigenvalue λ = 2        |   when eigenvalue λ = 3        
+                             |                                
+    (A - λI)      x  =  0    |       (A - λI)      x  =  0    
+                             |                                
+[ (1-2)  -1   ] [x₁] = [0]   |   [ (1-3)  -1   ] [x₁] = [0]   
+[   2   (4-2) ] [x₂]   [0]   |   [   2   (4-3) ] [x₂]   [0]   
+                             |                                
+get { x₁ = 1k                |   get { x₁ = -1k               
+    { x₂ = 1k                |       { x₂ =  2k               
+                             |                                
+then eigenvector x = [-1]    |   then eigenvector x = [-1]    
+                     [ 1]    |                        [ 2]    
+</pre>
+<p>eigenvector的任何一種倍率也都是eigenvector。大家習慣取長度為1的eigenvector當作代表，方向則是隨意。</p>
+<p>如果有許多個eigenvector擁有相同的eigenvalue，那麼這些eigenvector構成的平面、空間、……當中的任何一個向量都是eigenvector。大家習慣取互相垂直的eigenvector當作代表，方向則是隨意。</p>
+<img src="Eigenbasis4.png">
+<p>eigenvector的推導過程冗長複雜，不太討喜。然而數學家尚未想到其他導致整齊的原因，也說不定沒有其他原因了。因此大家很重視eigenvector，所有線性代數的課本都會仔細介紹eigenvector。</p>
+<p class="t">特殊現象</p>
+<p>一、eigenvector不存在。</p>
+<p>例如歪斜矩陣，eigenvector不足N個。</p>
+<img src="Eigenbasis5.png">
+<p>二、eigenvalue必是N個。</p>
+<p>數學家藉由determinant與characteristic polynomial來定義eigenvalue。N次多項式必有N個根，必得N個eigenvalue。這個定義方式，有時候產生了多餘的eigenvalue。</p>
+<p>例如歪斜矩陣，eigenvector不足N個，eigenvalue卻是N個。</p>
+<img src="Eigenbasis5.png">
+<p>三、eigenvector存在，但是是複數。</p>
+<p>根據定義，數學家硬是算出複數的eigenvalue，進一步得到複數的eigenvector。</p>
+<p>例如旋轉矩陣，eigenvector確實存在，即便沒有任何縮放、即便無法作圖。</p>
+<img src="Eigenbasis6.png">
+<p class="t">特徵向量演算法（Characteristic Polynomial）</p>
+<p>多項式求根。請參考「<a href="RootFinding.html">Root Finding</a>」。</p>
+<p>然而無法克服：一、根的範圍完全不明；二、根可能是複數。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Eigenbasis (II)</p>
+</div><div class="c">
+<p class="t">Linear Transformation的本質：縮放與旋轉</p>
+<p>首先討論eigenvalue為實數。</p>
+<p>當輸入向量等於eigenvector的方向，那麼輸出向量就是輸入向量乘上eigenvalue，方向保持不變。</p>
+<p>當輸入向量不是eigenvector的方向，此時可以運用分量的概念：Ax = A(x₁+x₂) = Ax₁ + Ax₂。輸入向量，求出在eigenvector上面的分量，各個分量各自按照eigenvalue縮放，再合而為一，得到輸出向量。</p>
+<p>最後得到非常重要的結論：線性變換的本質，是在特徵向量上面，根據特徵值來縮放！</p>
+<img src="Eigenbasis7.png">
+<p>接著討論eigenvalue為虛數。</p>
+<p>老實說，我不懂，就略過吧。一般大家認為其效果是旋轉。</p>
+<img src="Eigenbasis8.png">
+<p class="t">矩陣次方</p>
+<p>實施線性變換，eigenvalue為實數，效果是縮放。eigenvalue為虛數，效果是旋轉。eigenvalue為零，效果是消滅分量。eigenvalue為負數，效果是翻轉分量。</p>
+<img src="Eigenbasis9.png">
+<p>反覆實施線性變換，eigenvalue絕對值小於一的方向趨近零，eigenvalue絕對值等於一的方向保持不動，eigenvalue絕對值大於一的方向趨近無限大。絕對值越小就縮短越快，絕對值越大就伸長越快，輸入向量將漸漸偏向絕對值最大的方向。</p>
+<p>eigenvalue是負數，將不斷來回翻轉、來回跳躍，但是整體趨勢仍與正數相同。</p>
+<img src="Eigenbasis10.png">
+<p>反覆實施線性變換，有時收斂至某處，有時發散至正負無限大、有時不斷繞圈，端看起點在哪裡。</p>
+<pre>
+A = [ a  b ]   p₀ = [ x₁ ]   p₁ = [ y₁ ]
+    [ c  d ]        [ x₂ ]        [ y₂ ]
+
+eigenvalues of A = {λ₁, λ₂}
+let |λ₁| ≥ |λ₂|
+
+考慮A p₀ = p₁的過程，觀察特徵向量的影響力。
+
+解  [  1  1 ] [ m₁ ] = [ x₁ ] = [ x₁        ]     --> p₀
+    [ λ₁ λ₂ ] [ m₂ ]   [ y₁ ]   [ ax₁ + bx₂ ]     --> A p₀ = p₁
+    x₁ 分別在兩個特徵向量的分量，座標是 m₁ m₂。
+
+解  [  1  1 ] [ n₁ ] = [ x₂ ] = [ x₂        ]     --> p₀
+    [ λ₁ λ₂ ] [ n₂ ]   [ y₂ ]   [ cx₁ + dx₂ ]     --> A p₀ = p₁
+    x₂ 分別在兩個特徵向量的分量，座標是 n₁ n₂。
+
+因為最後一定是朝向eigenvalue絕對值最大的eigenvector方向，
+所以要判斷 x₁ 最終朝向哪個方向，只需看 m₁ 的正負號。
+所以要判斷 x₂ 最終朝向哪個方向，只需看 n₁ 的正負號。
+</pre>
+<p class="e">UVa 720</p>
+<p class="t">Trace-Determinant Diagram</p>
+<p>以trace和determinant判斷流向。</p>
+<p class="t">特徵向量演算法（Power Iteration）</p>
+<p>只能求出絕對值最大的eigenvalue及其eigenvector。</p>
+<p>然而無法克服：一、根的範圍完全不明；二、根可能是複數。</p>
+<p>遞推法。反覆實施線性變換，只要實施足夠次數（矩陣次方，次方值足夠大），就會朝向eigenvalue的絕對值最大的eigenvector的方向。</p>
+<p>反覆實施線性變換，向量可能越來越長、越來越短，超出浮點數範圍。解法是每一步驟都將向量長度縮放為1。</p>
+<p>時間複雜度O(N^2 * K)，N是矩陣大小，K是疊代次數。</p>
+<p>收斂速度，跟最大、次大特徵值的絕對值的比值|λ₁|/|λ₂|有關。比值越大，收斂速度越快。</p>
+<p>很幸運的，我們可以調整特徵值。當矩陣的對角線加上同一個值，則特徵值們恰好都加上同一個值。(A + aI)x = Ax + ax = λx + ax = (λ + a)x。</p>
+<p>我們可以調整特徵值，藉以提高比值，增加收斂速度，減少疊代次數。</p>
+<p class="t">特徵向量演算法（Inverse Iteration）</p>
+<p>以Power Iteration找出所有的eigenvalue及其eigenvector。</p>
+<p>然而無法克服：一、根的範圍完全不明；二、根可能是複數。</p>
+<p>時間複雜度是N次Power Iteration的時間。</p>
+<pre>
+eigenvalues of A: λ₁, λ₂, λ₃, ...
+let |λ₁| ≥ |λ₂| ≥ |λ₃| ≥ ...
+
+let B = (A - αI)⁻¹
+eigenvalue of B: 1/(λ₁-α) , 1/(λ₂-α) , 1/(λ₃-α) ...
+
+α猜得準，會讓1/(λ-α)變很大，成為B的λ₁。
+此時套用Power Iteration即可得到1/(λ-α)。
+
+x<sub>k+1</sub> = B x<sub>k</sub> = (A - αI)⁻¹ x<sub>k</sub>
+此處化作 (A - αI) x<sub>k+1</sub> = x<sub>k</sub>
+即可採用 LU Decomposition。
+疊代一次的時間複雜度從O(N^3)降為O(N^2)。
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Eigenbasis (III)</p>
+</div><div class="c">
+<p class="t">Eigendecomposition<br>（Spectral Decomposition）（Diagonalization）</p>
+<p>線性變換的本質，拆成三個步驟，嘗試改成矩陣：</p>
+<pre>一、「輸入向量，求出在eigenvector上面的分量」：套用反矩陣，座標軸是特徵向量。
+二、「各個分量各自按照eigenvalue縮放」：套用縮放矩陣，縮放比例是特徵值。
+三、「各個分量合而為一，得到輸出向量」：套用矩陣，座標軸是特徵向量。
+</pre>
+<pre>
+[ 1 2 5 ]   eigendecomposition   [ X X X ] [ X 0 0 ] [ X X X ]
+[ 2 4 6 ]  ------------------->  [ X X X ] [ 0 X 0 ] [ X X X ]
+[ 3 1 7 ]                        [ X X X ] [ 0 0 X ] [ X X X ]
+    A                                E         D         E⁻¹
+</pre>
+<p>寫成數學式子就是A = EDE⁻¹。E是特徵向量（必須有反矩陣）（可逆矩陣），D是特徵值（縮放矩陣）（對角線矩陣）。</p>
+<p>這稱作「特徵分解」或「頻譜分解」或「對角化」。</p>
+<p class="t">Eigendecomposition的存在條件</p>
+<p>第一步驟使用了反矩陣。也就是說，特徵向量構成的矩陣，必須擁有反矩陣。至於反矩陣的存在條件，請參考前面章節。另外再介紹兩個形容詞：</p>
+<pre>
+invertable：可逆。原矩陣有反矩陣。
+diagonalizable：可對角化。可特徵分解。原矩陣可找到一組特徵向量有反矩陣。
+</pre>
+<p>舉例來說，單位矩陣、旋轉矩陣、鏡射矩陣、縮放矩陣、投影矩陣可以特徵分解，歪斜矩陣不可以特徵分解。</p>
+<p class="t">矩陣次方</p>
+<p>同樣的矩陣，同樣的特徵向量，不必反覆套用反矩陣、矩陣，只要連乘特徵值即可。</p>
+<pre>
+A  = EDE⁻¹
+A² = EDE⁻¹EDE⁻¹ = ED²E⁻¹
+A³ = EDE⁻¹EDE⁻¹EDE⁻¹ = ED³E⁻¹
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Eigenbasis (IV)（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Change of Basis</p>
+<p>A = MSM⁻¹。M是任意矩陣（可逆矩陣），S是某個矩陣（相似矩陣）。</p>
+<p>建立一組座標軸，然後把原本矩陣放到這個座標軸上面來看。</p>
+<p>相似矩陣是功能完全一樣的矩陣，僅僅座標軸不同。</p>
+<p class="t">Hessenberg Decomposition與Schur Decomposition</p>
+<p>A = QHQ⁻¹。H是上三角暨次對角線矩陣，Q是么正矩陣。</p>
+<p>A = QUQ⁻¹。U是上三角矩陣，Q是么正矩陣。</p>
+<p>這兩個分解，是用來設計演算法、求得特徵值、完成特徵分解。對數學家來說是雞肋，但是對計算學家來說卻是好工具。</p>
+<p class="t">特徵向量演算法（QR Iteration）</p>
+<p>原本矩陣，透過變換基底的技巧，逐漸變成上三角矩陣。原本矩陣的特徵值就是上三角矩陣的特徵值，而上三角矩陣的對角線正是特徵值。</p>
+<pre>
+try to converge to upper-triangle matrix.
+but usually fails.
+
+when A is real symmetric matrix (which has orthonormal eigenbasis).
+QR iteration will try to converge to diagonal matrix.
+fortunately Q is eigenbasis.
+</pre>
+<pre>
+Ak = Qk Rk
+Ak+1 = Rk Qk    = Qk⁻¹ Ak Qk = Qkᵀ Ak Qk
+                  ^^^^^^^^^^^
+                  change of basis
+
+Ak and Ak+1 are similar (change of basis).
+Their eigenvalues are same.
+
+per iteration O(n^3), total O(k * n^3).
+</pre>
+<p class="t">特徵向量演算法（Hessenberg QR Iteration）</p>
+<p><a href="http://persson.berkeley.edu/18.335/lec14handout6pp.pdf">http://persson.berkeley.edu/18.335/lec14handout6pp.pdf</a></p>
+<p>預先將矩陣轉化成Hessenberg Matrix，再實施QR Iteration，比較容易收斂成上三角矩陣。</p>
+<pre>
+1. [Hessenberg Decomposition]
+   run n-1 times Household transformation
+   and get Hessenberg matrix.
+   per iteration O(n^2), total O(n^3).
+
+   (Household transformation:
+    use reflection matrix as new basis)
+
+2. [QR Iteration]
+   use Hessenberg matrix run QR iteration
+   and get upper-triangular matrix.
+   per iteration O(n^2), total O(k* n^2).
+
+   (during iterations, always keeps Hessenberg matrix.)
+   (upper-triangular * hessenberg = hessenberg)
+   (hessenberg * upper-triangular = hessenberg)
+</pre>
+<textarea>
+http://www.prefield.com/algorithm/math/eigensystem.html
+</textarea>
+<p class="t">特徵向量演算法（Jacobi Iteration）</p>
+<p>http://en.wikipedia.org/wiki/Jacobi_eigenvalue_algorithm</p>
+<p class="t">特徵向量演算法（Arnoldi Iteration）</p>
+<pre>
+for matrix: Arnoldi iteration
+for symmetric matrix: Lanczos iteration
+
+http://www.math.uzh.ch/?file&key1=22557
+</pre>
+<pre>
+Av = λv
+Eigenvalues: λ1 λ2 ... λn
+
+Cayley-Hamilton theorem
+(A – λ1I) (A – λ2I) ... (A – λnI) = 0 
+ Σ ci Ai = 0   for some ci
+0~n
+A⁻¹ =  Σ (–ci/c0) Ai–1
+      1~n
+
+Krylov subspace:
+Ax = b  ===>  x = A⁻¹ b
+x = span(b  Ab  A2b ... An-1b) = K(A, b)
+</pre>
+<p class="t">特徵向量演算法（Rayleigh-Ritz Method）</p>
+<p><a href="https://en.wikipedia.org/wiki/Rayleigh?itz_method">https://en.wikipedia.org/wiki/Rayleigh–Ritz_method</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Eigenbasis (V)（Under Construction!）</p>
+</div><div class="c">
+<p class="t">幾何意義</p>
+<p>鏡射矩陣相乘變角度相加。</p>
+<p class="t">Singular Value Decomposition（SVD）</p>
+<pre>
+if matrix cannot eigendecomposition, we use SVD to get real eigenbasis.
+for example: non-symmetric real matrix (complex eigenbasis)
+for example: non-square matrix
+
+AAᵀ is symmetric matrix, which eigenbasis is orthonormal/unitary basis
+AᵀA is symmetric matrix, which eigenbasis is orthonormal/unitary basis
+
+basis no1 is orthonormal/unitary matrix. (dimension reduction)
+basis no2 is orthonormal/unitary matrix. (dimension extension)
+change to diagonal matrix: square root of eigenvalues, called singular values.
+</pre>
+<pre>
+         T
+A = U Σ V 
+
+ T       T T      T       T     T
+A A = V Σ U  U Σ V = V ( Σ Σ ) V
+
+   T       T    T T         T   T
+A A = U Σ V  V Σ U = U ( Σ Σ ) U
+
+                                      T         T
+get V and U by eigendecomposition of A A and A A  
+             T            T  
+Σ = sqrt( Σ Σ ) = sqrt ( Σ Σ )
+</pre>
+<p>快速演算法，不必計算AᵀA和AAᵀ。</p>
+<p>http://www.cs.utexas.edu/users/inderjit/public_papers/HLA_SVD.pdf</p>
+<textarea>
+http://www.public.iastate.edu/~dicook/JSS/paper/code/svd.c
+</textarea>
+<textarea>
+http://pages.cs.wisc.edu/~sifakis/project_pages/svd.html
+</textarea>
+<p class="t">Jordan Decomposition</p>
+<p>http://math.stackexchange.com/questions/193460/</p>
+<p>線性代數的本質：縮放與座標軸對調。</p>
+<p>ring。</p>
+<p class="e">UVa 10753<p>
+<p class="t">Eigenvector與Eigenvalue的相關定理</p>
+<p>eigenvalue的乘積是determinant。</p>
+<p>eigenvalue皆不為零則有inverse。</p>
+<p>eigen(QA) ≠ eigen(A)。任意矩陣經過么正矩陣轉換，特徵向量和特徵值都會改變。除非遇到特例。</p>
+<p>eigen(AB) ≠ eigen(A) eigen(B)。矩陣複合，那就改變更多。除非遇到特例。</p>
+<p>eigenvector(A²) = eigenvector(A)。連續變換兩次，特徵向量一樣，特徵值連乘兩次。</p>
+<p>eigenvector(A⁻¹) = eigenvector(A)。反矩陣，伸與縮顛倒，特徵向量一樣，特徵值變倒數。</p>
+<p>eigenvalue(Aᵀ) = eigenvalue(A)。轉置矩陣，特徵向量改變，但是特徵值一樣。我想不出直觀的解釋方式。大家都是間接透過determinant來證明。</p>
+<p class="t">特殊矩陣</p>
+<p>（複數版本）么正矩陣unitary matrix：特徵向量形成么正矩陣，特徵值的絕對值都是1。</p>
+<p>（實數版本）正規正交矩陣orthonormal matrix：特徵向量形成正規正交矩陣，特徵值的絕對值都是1。注意到特徵值可為複數，例如旋轉矩陣。</p>
+<pre>
+unitary matrix A : A* = A⁻¹
+orthonormal matrix A: Aᵀ = A⁻¹
+</pre>
+<p>（複數版本）共軛對稱矩陣Hermitian matrix：特徵向量形成么正矩陣，特徵值都是實數。</p>
+<p>（實數版本）對稱矩陣symmetric matrix：特徵向量形成正規正交矩陣，特徵值都是實數。</p>
+<pre>
+Hermitian matrix A : A* = A
+symmetric matrix A : Aᵀ = A
+</pre>
+<p>（複數版本）反共軛對稱矩陣skew-Hermitian matrix：特徵向量形成么正矩陣，特徵值都是虛數。</p>
+<p>（實數版本）反對稱矩陣skew-symmetric matrix：特徵向量形成正規正交矩陣，特徵值都是虛數。</p>
+<pre>
+skew-Hermitian matrix A : A* = -A
+skew-symmetric matrix A : Aᵀ = -A
+</pre>
+<p>正規矩陣normal matrix：特徵向量形成么正矩陣。</p>
+<pre>
+normal matrix A : A* A = A A*
+</pre>
+<p>正半定矩陣positive-semidefinite matrix：特徵值都是正數或零。</p>
+<p>正定矩陣positive-definite matrix：特徵值都是正數。</p>
+<pre>
+positive-semidefinite matrix A : A = M* M
+    positive-definite matrix A : A = M* M and M⁻¹ exists
+</pre>
+<pre>
+positive-semidefinite matrix A : x*Ax ≥ 0
+    positive-definite matrix A : x*Ax > 0 when x ≠ 0
+</pre>
+<p>可交換矩陣commuting matrices：特徵向量相同。</p>
+<pre>
+commuting matrices A and B : AB = BA
+</pre>
+<p>相似矩陣similar matrices：特徵值相同。這是單向推論。例外是單位矩陣和歪斜矩陣，特徵值都是兩個1，但是不相似。</p>
+<pre>
+similar matrices A and B : A = M⁻¹ B M
+</pre>
+<p>對角線矩陣diagonal matrix：特徵向量即是矩陣本身，特徵值即是對角線。這是單向推論。</p>
+<pre>
+diagonal matrix A : A<sub>i,j</sub> = 0 when i ≠ j
+</pre>
+<p>三角矩陣triangular matrix：特徵值即是對角線。這是單向推論。</p>
+<pre>
+upper triangular matrix A : A<sub>i,j</sub> = 0 when i > j
+lower triangular matrix A : A<sub>i,j</sub> = 0 when i < j
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Transformation（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Transformation</p>
+<p>先前介紹一個向量的變換，現在介紹多個向量的變換。</p>
+<p>本篇文章從線性變換的角度，簡單介紹一次。順便藉此機會，讓讀者更加瞭解特徵基底的功效。之後於「<a href="Representation.html">Representation</a>」章節將詳細介紹。</p>
+<p class="t">Principal Component Analysis</p>
+<p class="t">Independent Component Analysis</p>
+<p class="t">Principal Component Pursuit</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Positive-definite Matrix（Under Construction!）</p>
+</div><div class="c">
+<p class="t">微分</p>
+<p>矩陣是函數，當然也有微分運算。</p>
+<p>一個線性函數，對各個變數微分。得到多個導數。</p>
+<pre>
+                           ∂f         ∂f         ∂f     
+f = (x₀ + x₁ + x₂)         ――― = 1    ――― = 1    ――― = 1
+                           ∂x₀        ∂x₁        ∂x₂    
+
+                           ∂f         ∂f         ∂f      
+f = (c₀x₀ + c₁x₁ + c₂x₂)   ――― = c₀   ――― = c₁   ――― = c₂
+                           ∂x₀        ∂x₁        ∂x₂     
+</pre>
+<p>一個線性函數，對一整個向量微分。將導數們從上到下依序拼成一個向量。</p>
+<pre>
+                                [ x₀ ]
+ f = (c₀x₀ + c₁x₁ + c₂x₂)   x = [ x₁ ]
+                                [ x₂ ]
+∂f   [ ∂f/∂x₀ ]   [ c₀ ]
+―― = [ ∂f/∂x₁ ] = [ c₁ ]
+∂x   [ ∂f/∂x₂ ]   [ c₂ ]
+</pre>
+<pre>
+∂   T                                        d        
+―― y x = y                             --->  ―― xy = y
+∂x                                           dx       
+
+∂   T                                        d        
+―― x y = y                             --->  ―― yx = y
+∂x                                           dx       
+
+∂   T                                        d   2     
+―― x x = 2x                            --->  ―― x  = 2x
+∂x                                           dx        
+                      when A is
+∂   T            T    symmetric              d    2      
+―― x A x = (A + A ) x ========= 2Ax    --->  ―― ax  = 2ax
+∂x                                           dx          
+</pre>
+<p>多個線性函數，依序拼成一個向量，對整個向量微分。將導數們從左到右依序拼成一個矩陣。此即矩陣微分。</p>
+<pre>
+     [ f₀ ]   [ a₀x₀ + a₁x₁ + a₂x₂ ]   [ a₀ a₁ a₂ ]       
+     [ f₁ ]   [ b₀x₀ + b₁x₁ + b₂x₂ ]   [ b₀ b₁ b₂ ] [ x₀ ]
+ F = [ f₂ ] = [ c₀x₀ + c₁x₁ + c₂x₂ ] = [ c₀ c₁ c₂ ] [ x₁ ]
+     [ f₃ ]   [ d₀x₀ + d₁x₁ + d₂x₂ ]   [ d₀ d₁ d₂ ] [ x₂ ]
+     [ f₄ ]   [ e₀x₀ + e₁x₁ + e₂x₂ ]   [ e₀ e₁ e₂ ]       
+                                            A         x   
+
+∂F     ∂f₀ ∂f₁ ∂f₂ ∂f₃ ∂f₄     [ a₀ b₀ c₀ d₀ e₀ ]       
+―― = [ ――― ――― ――― ――― ――― ] = [ a₁ b₁ c₁ d₁ e₁ ] = J(F)
+∂x     ∂x  ∂x  ∂x  ∂x  ∂x      [ a₂ b₂ c₂ d₂ e₂ ]       
+            ∂/∂x A x                   Aᵀ               
+</pre>
+<pre>
+∂         T                                  d        
+―― A x = A                             --->  ―― ax = a
+∂x                                           dx       
+
+∂   T                                        d        
+―― A x = A                             --->  ―― ax = a
+∂x                                           dx       
+
+∂               T                            d              
+―― (A x + b) = A                       --->  ―― (ax + b) = a
+∂x                                           dx             
+
+∂   T      ∂    T         T  T   T           d          
+―― y A x = ―― (y A) x = (y A) = A y    --->  ―― axy = ay
+∂x         ∂x                                dx         
+</pre>
+<p>該矩陣是「多函數的一階導數矩陣Jacobian Matrix」。但是數學家卻定義成此矩陣的轉置，應該是古人沒想清楚？</p>
+<p class="t">範數（長度）</p>
+<p>定義長度的平方。向量所有元素的平方總和，等於向量點積。</p>
+<p>定義微分連鎖律。因為矩陣複合是從右到左，所以連鎖律設定成從右到左。</p>
+<pre>
+定義長度的平方
+
+     T      def₁: squared norm     2
+(A x) (A x) ================== ‖Ax‖ 
+
+定義連鎖律
+
+∂      2 def₂: chain rule ∂     ∂       2    T            T   
+―― ‖Ax‖  ================ ―― Ax ――― (Ax) = (A )(2Ax) = 2 A A x
+∂x                        ∂x    ∂Ax                           
+
+這兩個定義的合理性，可由嚴謹的推導過程證明：
+                                            T
+∂       T        ∂   T T      ∂   T  T     A A 必定對稱    T   
+―― (A x) (A x) = ―― x A A x = ―― x (A A) x ============ 2 A A x
+∂x               ∂x           ∂x                               
+
+當A退化為I，依然合理：
+
+∂   T    ∂     2  
+―― x x = ―― ‖x‖ = 2x
+∂x       ∂x       
+
+∂   T    ∂      T       ∂      2     T
+―― x x = ―― (Ix) (Ix) = ―― ‖Ix‖ = 2 I I x = 2x
+∂x       ∂x             ∂x
+</pre>
+<p class="t">範例：Norm Optimization</p>
+<pre>
+                 2
+minimize ‖Ax - b‖
+
+∂          2
+―― ‖Ax - b‖ = 0                     「一次微分等於零」的地方是極值、鞍點
+∂x                                   二次函數、開口向上，必是最小值
+  ∂
+[ ―― (Ax - b) ] [ 2(Ax - b) ] = 0   微分連鎖律
+  ∂x
+ T
+A  [ 2(Ax - b) ] = 0                微分
+
+ T       T
+A A x = A b                         同除以2、展開、移項
+
+      T -1 T
+x = (A A) A b                       Normal Equation
+</pre>
+<p>主要用途是解線性方程組Ax = b、線性迴歸。</p>
+<p class="t">範例：Norm Optimization</p>
+<pre>
+             2               2
+minimize ‖Ax‖  subject to ‖x‖ = 1
+
+             2         2
+minimize ‖Ax‖  - λ (‖x‖ - 1)     Lagrange's multiplier
+
+∂        2         2
+―― [ ‖Ax‖  - λ (‖x‖ - 1) ] = 0   「一次微分等於零」的地方是極值、鞍點
+∂x
+
+   T
+2 A A x - 2 λ x = 0              展開
+
+ T                                       T
+A A x = λ x                      正解是 A A 最小的特徵值
+</pre>
+<p>以上結論是針對求最小值。亦可改成求最大值，結果類似。</p>
+<p>主要用途是解線性方程組Ax = 0、直線擬合。</p>
+<p class="t">梯度</p>
+<p>函數的梯度（一次微分）：函數對向量微分，得到向量。</p>
+<p>函數的梯度的梯度（二次微分）：再次對向量微分，得到矩陣。</p>
+<pre>
+     ∂f   [ ∂f/∂x₀ ]
+∇f = ―― = [ ∂f/∂x₁ ]
+     ∂x   [ ∂f/∂x₂ ]
+
+ 2    ∂∇f     ∂(∂f/∂x₀)  ∂(∂f/∂x₁)  ∂(∂f/∂x₂)  
+∇ f = ――― = [ ―――――――――  ―――――――――  ――――――――― ]
+       ∂x         ∂x         ∂x         ∂x     
+
+            [ ∂²f/∂x₀∂x₀ ∂²f/∂x₁∂x₀ ∂²f/∂x₂∂x₀ ]
+          = [ ∂²f/∂x₀∂x₁ ∂²f/∂x₁∂x₁ ∂²f/∂x₂∂x₁ ]
+            [ ∂²f/∂x₀∂x₂ ∂²f/∂x₁∂x₂ ∂²f/∂x₂∂x₂ ]
+
+          = H(f) = J(∇f)
+</pre>
+<p>該矩陣是「單函數的二階導數矩陣Hessian matrix」。</p>
+<p>該矩陣恰巧是「多函數的一階導數矩陣Jacobian Matrix」代入「函數的梯度」，然而這個觀點似乎沒有什麼用處。</p>
+<p class="t">範例：Newton Method</p>
+<p>詳情請參考「<a href="RootFinding.html">Newton Method</a>」、「<a href="Optimization.html">Newton Method</a>」。</p>
+<pre>
+牛頓法求根：從座標(x, f(x))的地方畫切線，與座標軸相交之處，做為下一個x。
+
+∇f(x) (x - x<sub>next</sub>) = f(x)
+
+牛頓法多函數求根：多個函數形成一個向量。所有函數一齊實施牛頓法求根。
+             
+Jᵀ(f(x)) (x - x<sub>next</sub>) = f(x)
+
+牛頓法求極值：極值（與鞍點）出現在一次微分等於零的地方。
+　　　　　　　預先微分，再套用牛頓法多函數求根。
+
+Hᵀ(f(x)) (x - x<sub>next</sub>) = ∇f(x)
+
+牛頓法多函數求極值：像這種要求，我這輩子沒見過。
+</pre>
+<pre>
+Taylor Expansion:
+                    1               1          2
+f(x + Δx) = f(x) +  ―― f'(x) Δx  +  —— f"(x) Δx  + ...
+                    1!              2!
+
+                    1               1
+f(x + Δx) = f(x) +  ——   Jᵀ  Δx  +  —— Δxᵀ Hᵀ Δx + ...
+                    1!              2!
+  n
+Δx projects onto basis, which is function gradient.
+textbook use different definition. textbook use transpose.
+</pre>
+<p>我的Jacobian Matrix有別於數學家的版本，因此我的牛頓法、泰勒展開式也有別於數學家的版本。我不知道我的版本是否合理。也許泰勒展開式應該解讀成投影？</p>
+<p class="t">Positive-definite Matrix / Positive-semidefinite Matrix</p>
+<p>「二次型」。x*Ax。</p>
+<p>「正定矩陣」。x*Ax > 0，不討論x是零向量。</p>
+<p>「正半定矩陣」。x*Ax ≥ 0，不討論x是零向量。</p>
+<p>這是仿照多項式函數ax² > 0的概念，幾何意義是位於X軸上方、開口朝上的拋物線。</p>
+<p>函數推廣到矩陣，輸入變數、輸出變數可以有很多個。例如兩個變數的時候，就是仿照多項式函數ax² + by² > 0的概念，幾何意義是橢圓。讀者吃飽太閒可以複習一下高中數學的圓錐曲線，橢圓（係數為正數、多項式大於零）是其中一種可能性。</p>
+<p>二次多項式推廣到二次型之後，迸出了「對稱」的概念。對稱矩陣，幾何意義是對稱，例如橢圓。非對稱矩陣，幾何意義是不對稱，例如蛋。簡單起見，教科書通常只討論實數對稱正定方陣，書上只畫了橢圓，沒有蛋。</p>
+<p>矩陣是線性函數，正定矩陣是線性函數暨凸函數！因此正定矩陣得以設計較快的「<a href="Optimization.html">Optimization</a>」演算法。</p>
+<p class="t">A-orthogonal</p>
+<p>「矩陣正交」。y*Ax = 0。x*Ay = 0。其中一個成立，另一個就成立。</p>
+<p>Ax與y互相垂直；x經過A轉換之後，與y互相垂直。</p>
+<p>知名範例是切線速度與加速度互相垂直，一次微分與二次微分互相垂直。</p>
+<p>定義y與Ax的內積空間，A必須是對稱正定矩陣。內積空間開根號可以定義距離。</p>
+<p>【待補文字】</p>
+<p class="t">範例：凸函數最佳化</p>
+<pre>
+A is symmetric and positive-definite
+          T
+minimize x A x
+              2
+subject to ‖x‖ = 1
+</pre>
+<pre>
+          T             2
+minimize x A x - λ ( ‖x‖ - 1 )     Lagrange multiplier
+
+∂     T             2
+―― [ x A x - λ ( ‖x‖ - 1 ) ] = 0   「一次微分等於零」的地方是極值、鞍點
+∂x                                  二次型，必為極值
+
+2 A x - 2 λ x = 0                  展開
+
+A x = λ x                          移項，形成特徵向量的格式
+</pre>
+<p>答案是最小的特徵值的特徵向量！</p>
+<p>值得一提的是，x*Ax = proj_x Ax。當x是A的特徵向量，則x*Ax就是特徵值。</p>
+<p>矩陣是線性函數，其特色是特徵向量不變。對稱正定矩陣是線性函數暨對稱凸函數，其特色是最大值、最小值位於最大的、最小的特徵向量。</p>
+<pre>
+http://freemind.pluskid.org/machine-learning/projected-gradient-method-and-lasso/
+http://www.stats.ox.ac.uk/~lienart/blog_opti_pgd.html
+n->n函數最佳化，其實就是求特徵值？這是power iteration？
+</pre>
+<p class="t">範例：Norm Optimization</p>
+<pre>
+given X and Y. find A.
+          T
+maximize Y A X
+            T
+subject to A A = I   (A is othronormal)
+</pre>
+<pre>
+             T            T           T         T
+minimize tr(Y AX) = tr(AXY ) = tr(AUΣV ) = tr(ΣV AU)
+
+   T
+(XY is covariance matrix between dimensions)
+
+                         T
+A V U is othronormal => V AU is othronormal
+
+ T
+V AU = I  (diagonal elements are all +1)
+       T
+A = V U
+</pre>
+<pre>
+   2      T
+‖A‖ = tr(A A)
+
+tr(AB) = tr(BA)
+</pre>
+<p class="t">範例：Norm Optimization</p>
+<pre>
+given X and Y. find A.
+          T
+maximize Y A X
+            T
+subject to A A = I   (A is othronormal)
+</pre>
+<pre>
+max tr( Q D )
+
+令 Q = I 以得到最大值
+</pre>
+<p>2-norm best projection -> 1-norm best eigenvalue。</p>
+<pre>
+PCA  min Frobenius norm >>> min sqrt( trace(At A) )
+     min 2-norm of sigular values
+PCS  min nuclear norm >>> min trace( sqrt(At A) )
+     min 1-norm of singular values
+</pre>
+<p class="t">Polar Decomposition</p>
+<p>把一個矩陣A分解成矩陣U與矩陣P的乘積，A = UP。U是互相垂直的單位向量（么正矩陣）。P是非負的縮放倍率（正半定矩陣）。</p>
+<p>U是旋轉暨鏡射，P是縮放。P設定為正半定矩陣，是為了把鏡射（縮放倍率為負值）的部分，硬是移動到U。</p>
+<p>【待補文字】</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Matrix Polynomial（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Cayley-Hamilton Theorem</p>
+<p>特徵值，就是根！</p>
+<p class="t">Minimal Polynomial</p>
+<p>「最小多項式」。</p>
+<p class="t">Companion Matrix</p>
+<p>「共伴矩陣」。</p>
+<pre>
+basis is Krylov matrix.
+change to companion matrix.
+</pre>
+<pre>
+http://homepages.laas.fr/henrion/aime@cz11/kukelova.pdf
+
+多項式的根 ---> companion matrix 的特徵值
+遞迴多項式 ---> companion matrix 的次方
+遞迴多項式的公式解 ---> eigendecomposition
+</pre>
+<p class="t">Nilpotent Matrix</p>
+<p>「冪零矩陣」。A^k = 0。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Recurrence</p>
+</div><div class="c">
+<p class="t">Recursive Function</p>
+<p>遞迴函數就是同一個函數複合好幾次！</p>
+<pre>
+A recursive function f:
+f(0) = 5
+f(x) = 2 * f(x-1) + 1
+
+Let g(y) = 2 * y + 1
+f(0) = 5
+f(1) = g(5)
+f(2) = g(g(5))
+f(3) = g(g(g(5)))
+</pre>
+<p class="t">Linear Recurrence</p>
+<p>線性遞迴函數就是同一個線性函數複合好幾次。</p>
+<pre>
+{ f(n) = a1 * f(n-1) + a2 * f(n-2) + ... + ak * f(n-k)   when n > k
+{ f(k) = ck
+{   :     :
+{ f(2) = c2
+{ f(1) = c1
+</pre>
+<p>著名的例子是Fibonacci Sequence：僅兩項，係數皆是1。</p>
+<pre>
+{ f(n) = f(n-1) + f(n-2)   when n = 3, 4, 5, .....
+{ f(2) = 1
+{ f(1) = 1
+</pre>
+<pre>
+{ f(1) = 1
+{ f(2) = 1
+{ f(3) = f(2) + f(1)
+{ f(4) = f(3) + f(2)
+{ f(5) = f(4) + f(3)
+{   :      :      :
+</pre>
+<p>【註：recursion和recurrence，中文都翻譯為「遞迴」，然而兩者意義大不相同，讀者切莫混淆。】</p>
+<p class="t">演算法（Dynamic Programming）</p>
+<p>由小到大一項一項慢慢算。採用「<a href="DynamicProgramming.html">動態規劃</a>」，有許多種實作方式。時間複雜度為O(N + (N-K) * K)，可以簡單寫成O(NK)。</p>
+<textarea>
+int f[10+1];
+ 
+void Fibonacci_sequence()
+{
+	f[1] = 1;
+	f[2] = 1;
+	for (int i=3; i<=10; i++)
+		f[i] = f[i-1] + f[i-2];
+}
+</textarea>
+<p class="t">演算法（Companion Matrix）</p>
+<p>線性函數（線性變換）可以表示成矩陣。線性遞迴函數也可以表示成矩陣，該矩陣稱為Companion Matrix。莫名奇妙的稱呼。</p>
+<pre>
+1.
+線性遞迴函數，由大到小的風格:
+{ f(n) = c * f(n-1) + b * f(n-2) + a * f(n-3)
+{ f(3) = 2
+{ f(2) = 1
+{ f(1) = 0
+
+由小到大的風格：
+{ f(1) = 0
+{ f(2) = 1
+{ f(3) = 2
+{ a * f(n) + b * f(n+1) + c * f(n+2) = f(n+3)
+
+2.
+構造一個A矩陣來表示線性遞迴函數。
+構造F1、F2、...、Fn來表示函數輸入。
+F1經過A函數，就變成F2。
+
+     [ f(1) ]   [ 0 ]        [ f(n)   ]       [ 0 1 0 ]
+F1 = [ f(2) ] = [ 1 ]   Fn = [ f(n+1) ]   A = [ 0 0 1 ]
+     [ f(3) ]   [ 2 ] ,      [ f(n+2) ] ,     [ a b c ]
+
+         [ 0 1 0 ]   [ f(1) ]
+A * F1 = [ 0 0 1 ] * [ f(2) ]
+         [ a b c ]   [ f(3) ]
+
+         [   0    + 1*f(2) +   0    ]   [ f(2) ]
+       = [   0    +   0    + 1*f(3) ] = [ f(3) ] = F2
+         [ a*f(1) + b*f(2) + c*f(3) ]   [ f(4) ]
+
+重點在於最後一橫列。其他只是簡單位移。
+A就是Companion Matrix。
+
+3.
+F2 = A * F1       = A^1 * F1
+F3 = A * F2       = A^2 * F1
+ ⋮     ⋮                ⋮
+Fn = A * Fn-1     = A^(n-1) * F1
+
+4.
+         [ f(f-2) ]
+Fn-3+1 = [ f(f-1) ]     = A^(n-3) * F1
+         [ f(n)   ]
+           ^^^^ here is f(n)!
+</pre>
+<p>遞迴函數，即是同一個函數複合許多次。線性遞迴函數，即是同一個線性函數（線性變換）複合許多次──也就是矩陣次方。而矩陣次方有著效率不錯的Divide and Conquer演算法。</p>
+<p>求得線性遞迴函數的第N項，僅需O(log(N-K))次矩陣乘法。K是線性遞迴函數的階數，也是Companion Matrix的大小。</p>
+<p>時間複雜度O(K^3 * log(N-K) + K^2)，可以簡單寫成O(K^3 * logN)。此處假設矩陣相乘是O(K^3)。</p>
+<textarea t="計算Fibonacci數列的第N項">
+void Fibonacci_sequence(int n)
+{
+	if (n <= 0) return;
+
+	// 建立F1向量
+	// f(1) = f(2) = 1
+	Matrix F1(2, 1);
+	F1[0][0] = 0, F1[0][1] = 1;
+
+	if (n <= 2)
+	{
+		cout << F1[0][n];	// F1向量已經有第N項
+		return;
+	}
+
+	// 建立Companion Matrix
+	// 1 * f(n) + 1 * f(n+1) = f(n+2)
+	Matrix A(2, 2);
+	A[0][0] = 0; A[0][1] = 1;
+	A[1][0] = 1; A[1][1] = 1;
+
+	// 計算Fn向量
+	Matrix Fn(2, 1);
+	Fn = (A ^ (n-1)) * F1;	// 欲求出第N項的值
+	cout << Fn[0][0];		// 印出第N項的值
+
+	// 只算到Fn-k+1其實就行了，k等於2。
+	Matrix Fx(2, 1);
+	Fx = (A ^ (n-2)) * F1;	// 欲求出第N項的值
+	cout << Fx[0][1];		// 印出第N項的值
+}
+</textarea>
+<p class="t">演算法（Polynomial Multiplication and Modulo）</p>
+<p>2015年由競賽選手台灣大學李瑞珉《<a href="https://zsinf.org/HSLR/">High Speed Linear Recursion</a>》提出。我不清楚是否已有學術論文。</p>
+<pre>
+[shift]   Fn = w1 Fn-1 + ... + wk Fn-k
+             = (w1 w1 Fn-2 + ... + w1 wk Fn-k-1) + ... + wk Fn-k
+             = v2 Fn-2 + ... + vk-1 Fn-k-1
+
+　RHS第一項再展開，然後同類項的係數相加。
+　特色是，我們可以持續位移到我們喜歡的那k項(連續的)！
+　位移的時間複雜度O(k)，移到我們喜歡的那k項是 O(nk)。
+　（但是以下不會用到。）
+
+[expand]   Fn = w1 Fn-1 + ... + wk Fn-k
+              = (w1 w1 Fn-2   + ... + w1 wk Fk-2  ) + ...... +
+                (wk w1 Fn-k-1 + ... + wk wk Fn-k-k)
+              = v2 Fn-2 + ............ + v2k Fn-2k
+
+　RHS每個項各自再展開，然後同類項的係數相加。
+　直接窮舉，時間複雜度 O(k^2)。
+
+　其實這就是多項式直式乘法(摺積)，摺積有O(klogk)算法。
+　（如果用快速數論轉換去算摺積，如何保證w1...wk不會爆表呢？）
+　（所以只好請出中國餘數定理）
+
+[expand]   Fn = w1 Fn-x-1   + ... + wk  Fn-x-k
+              = v2 Fn-x-y-2 + ... + v2k Fn-x-y-2k   第二次展開，也可以用別的
+              = uk Fn-y-k-1 + ... + u2k Fn-x-y-2k   縮成剛好k項
+
+　因為有了[shift]的概念，所以我們取的那k項
+　沒必要是 Fn-1 　... Fn-k
+　也可以是 Fn-x-1 ... Fn-x-k
+　最後再用 k-1次 [shrink] 縮成剛好k項
+
+[shrink]   Fn = v1 Fn-1 + v2 Fn-2 + ... + vk Fn-k + ... + vK Fn-K
+              =           u2 Fn-2 + ... + uk Fn-k + ... + uK Fn-K
+
+　項數大於k的時候，RHS第一項再展開，可以縮減一項。
+　縮一項的複雜度 O(k)。
+　縮到剩下k項的時間複雜度是 O(k(K-k))。
+　
+　其實這就是多項式長除法（減法變加法。除數乘上一個負號）
+　最後要取餘數。
+　既然已經採取快速數論轉換，那就是要取模了。
+　取模的多項式餘數，有O(klogk)算法。
+
+令那k項是 Fn/2-1 ... Fn/2-k，總是取一半的位置。
+如此一來，仿照整數次方（Exp）或餘數次方（ModExp）的演算法。
+利用 [expand] [shrink] ，分割 logn 次。
+     O(klogk) O(klogk)
+求第n項只需要 O(klogk logn) 時間。
+</pre>
+<p class="t">總結</p>
+<p>K階的線性遞迴函數，計算第N項：</p>
+<p>一、Dynamic Programming。逐步計算第一項到第N項，答案儲存於表格。時間複雜度為O(NK)。</p>
+<p>二、Companion Matrix的次方。直接算第N項。時間複雜度為O(K^3 * logN)；假設矩陣相乘是O(K^3)。</p>
+<p>三、多項式乘法、多項式餘數。直接算第N項。時間複雜度為O(K^2 * logN)，可以加速為O(KlogK * logN)。</p>
+<p>當K是常數，一變成O(N)，二和三變成O(logN)。</p>
+<p>四、Generating Function。找到一般式，直接算第N項。詳情請查閱離散數學書籍。</p>
+<p class="e">UVa 10229 10518 10655 10743 10754 10870 12653</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Algebra</p>
+</div><div class="c">
+<p class="t">Linear Algebra</p>
+<p>數學家重視性質，以函數的加法性、函數的倍率性來定義「線性變換」。</p>
+<p>計算學家重視數值，本站以變數的加減、變數的倍率的角度來介紹「線性變換」。</p>
+<p>儘管本站的介紹方式比較直覺，卻是非常偏頗的介紹方式。為了端正視聽，以下簡述數學家的介紹方式。完全是另外一種世界觀。</p>
+<p class="t">Vector Space</p>
+<p>「向量空間」由一個集合、兩個運算組成。兩個運算分別是加法運算、倍率運算。</p>
+<p>集合，可以設定成實數、整數、餘數、多項式、向量、函數、……。</p>
+<p>加法運算、倍率運算，泛指一切適當的運算。例如在實數當中，可以設定成實數加法與實數倍率，也可以設定成實數乘法與實數次方。設定方式通常不只一種。</p>
+<p>為了釐清加法運算與倍率運算的責任，數學家做了詳細規定：</p>
+<pre>
+向量空間之加法運算的規定
+1. Associativity 加法結合律
+   u + (v + w) = (u + v) + w
+2. Commutativity 加法交換律
+   u + v = v + u
+3. Identity element 加法單位元素
+   v + 0 = v
+4. Inverse element 加法反元素（負數與減法）
+   v + (−v) = 0
+
+向量空間之倍率運算的規定
+5. Associativity 倍率結合律
+   a ⋅ (b ⋅ v) = (a ⋅ b) ⋅ v
+6. Distributivity of vector sum 倍率分配律，針對向量部分
+   a ⋅ (u + v) = (a ⋅ u) + (a ⋅ v)
+7. Distributivity of scalar sum 倍率分配律，針對倍率部分
+   (a + b) ⋅ v = (a ⋅ v) + (b ⋅ v)
+8. Identity element 倍率單位元素
+   1 ⋅ v = v
+</pre>
+<p>符號uvw0，代表數值，向量空間的集合的元素；符號ab1，代表倍率，體的集合的元素；符號01，泛指符合規定的元素，而且至少要有一個、必須存在。集合當中所有元素的所有配對方式，必須符合所有規定。</p>
+<p>倍率運算的倍率，通常設定成「體field」。體由一個集合、兩個運算組成。兩個運算分別是加法運算、乘法運算。數學家也做了詳細規定，不過此處省略。</p>
+<p>例如集合設定成多項式，加法運算設定成多項式加法，倍率運算設定成多項式倍率；倍率的集合設定成實數，倍率的加法運算設定成實數加法，倍率的乘法運算設定成實數乘法；0是零多項式，1是實數1。</p>
+<p>順帶一提，此例的0與1剛好是單一元素，而且非常直覺；但是當集合設定成其他特殊的集合，0與1就可能有多種元素。</p>
+<p>向量空間的重點在於加法運算與倍率運算，真要取名的話也該叫做「加倍空間」。不過由於加法、倍率很容易聯想到向量，所以才取名「向量空間」。</p>
+<p class="t">Vector Space實際範例</p>
+<p>舉一個比較複雜的例子。</p>
+<pre>
+向量空間                  倍率運算的倍率，通常是體
+集合　　 --> 餘數 mod 7   集合　　 --> 整數　　（可以推廣至餘數 mod ɸ(7)）
+加法運算 --> 餘數乘法     加法運算 --> 整數加法
+倍率運算 --> 餘數次方     乘法運算 --> 整數乘法
+
+向量空間之加法運算的規定         (u = 2, v = 3, w = 4, a = 5, b = 6)
+1. u + (v + w) = (u + v) + w  |  2 × (3 × 4) ≡ (2 × 3) × 4
+2. u + v = v + u              |  2 × 3 ≡ 3 × 2
+3. v + 0 = v                  |  3 × 1 ≡ 3           符號0設定成餘數1
+4. v + (-v) = 0               |  3 × <u>3</u> ≡ 3 × 5 ≡ 1   倒數
+
+向量空間之倍率運算的規定
+5. a(bv) = (ab)v              |  (2 ^ 6) ^ 5 ≡ 2 ^ (5 × 6)
+6. a(u + v) = au + av         |  (2 × 3) ^ 5 ≡ (2 ^ 5) × (3 ^ 5)
+7. (a + b)v = av + bv         |  3 ^ (5 + 6) ≡ (3 ^ 5) × (3 ^ 6)
+8. 1v = v                     |  3 ^ 1 ≡ 3           符號1設定成整數1
+</pre>
+<p class="t">Inner Product Space</p>
+<p>「內積空間」由一個集合以及三個運算組成。三個運算分別是加法運算、倍率運算、內積運算。</p>
+<p>內積運算，泛指一切適當的運算。例如集合設定成向量、加法運算設定成向量加法、倍率運算設定成向量倍率，那麼內積運算可以設定成向量點積（dot product）。</p>
+<p>為了釐清內積運算的責任，數學家做了詳細規定：</p>
+<pre>
+內積空間之內積運算的規定
+9.  Linearity: Additivity 加法性（加法分配律）
+    (u + v) ∙ w = (u ∙ w) + (v ∙ w)
+10. Linearity: Homogeneity of degree 1 倍率性（倍率結合律）
+    (au) ∙ w = a(u ∙ w)
+11. Commutativity 內積交換律
+    u ∙ v = v ∙ u
+12. Positive-definiteness 正定
+    u ∙ u ≥ 0
+    u ∙ u = 0 iff u = 0 (orthogonality)
+</pre>
+<p>內積空間真要取名的話也該叫做「加倍內空間」，不過這名稱有點拗口。<p>
+<p>內積空間是向量空間的延伸版本。數學家之所以發明內積空間，是因為有了內積運算之後，可以引入長度和角度的概念。</p>
+<p>「norm範數」泛指一切「與自身內積、再開根號」的情況。如果集合設定成向量，內積運算設定成向量點積，那麼範數是指向量長度。</p>
+<p>「orthogonality正交」泛指一切「內積等於零」的情況。如果採用方才的設定，那麼正交是指垂直。</p>
+<p class="t">Basis / Coordinate</p>
+<p>向量空間當中，可以選定一組適當座標軸（基底）：座標軸互相「線性獨立linear independent」、座標軸數量（維度）足以生成所有元素。符合條件的座標軸有無限多組。</p>
+<p>選定一組適當座標軸之後，座標軸各自利用倍率運算進行縮放，然後利用加法運算進行合成，就可以得到向量空間當中每一個元素。得到一個數值的過程稱作「線性組合linear combination」，得到所有數值的過程稱作「生成span」。</p>
+<p>反過來說，選定一組適當座標軸之後，向量空間當中的每一個元素，可以利用分量的概念，分散到每個座標軸上，得到一個座標。每一個元素各自擁有獨一無二的座標。</p>
+<p class="t">Linearity</p>
+<pre>
+函數的加法性 additive function:
+y1 = f(x1)
+y2 = f(x2)              additive
+y1 + y2 = f(x1) + f(x2) ======== f(x1 + x2)
+
+y1 = A x1
+y2 = A x2             additive
+y1 + y2 = A x1 + A x2 ======== A (x1 + x2)
+</pre>
+<pre>
+函數的倍率性 homogeneous function of degree 1:
+y = f(x)         homogeneous
+y ⋅ k = f(x) ⋅ k =========== f(x ⋅ k)
+
+y = A x           homogeneous
+y ⋅ k = (A x) ⋅ k =========== A ⋅ (x ⋅ k)
+</pre>
+<p>加法性：先相加再變換，等於先變換再相加。</p>
+<p>倍率性：先乘上倍率再變換，等於先變換再乘上倍率。</p>
+<p>兩者合稱「線性」。</p>
+<p class="t">Linear Transformation</p>
+<p>線性變換是一個函數，輸入輸出不限（此處是向量空間），函數必須具備線性，也就是加法性、倍率性。</p>
+<p>先前是以變數的加法、變數的倍率來組成線性變換，其實這只是一個直覺的特例。實數相加是一個線性變換，實數乘上倍率是一個線性變換。兩者亂組一通仍是線性變換（多個線性變換複合之後還是線性變換）。</p>
+<p>事實上，還有其他的線性變換，無法用變數的加法、變數的倍率表示，例如函數微分、函數積分。</p>
+<p class="t">Matrix</p>
+<pre>
+linear transformation t: V -> W
+v ∈ V   basis of V: {v1, v2, ..., vN}   coordinate of v: {x1, x2, ..., xN}
+w ∈ W   basis of W: {w1, w2, ..., wN}   coordinate of w: {y1, y2, ..., yN}
+
+linear combination:
+x1v1 + x2v2 + ... + xNvN
+
+linear transformation:
+w = t(v)
+  = t(x1v1 + x2v2 + ... + xNvN)
+  = x1 t(v1) + x2 t(v2) + ... + xN t(vN)      "linearity"
+  = x1 w1    + x2 w2    + ... + xN wN
+
+matrix representation of linear transformation: y = M x
+[ | ]   [   |     |     |         |  ] [ | ]   [  |  |  |      | ] [ | ]
+[ y ] = [ t(v1) t(v2) t(v3) ... t(vN)] [ x ] = [ w1 w2 w3 ... wN ] [ x ]
+[ | ]   [   |     |     |         |  ] [ | ]   [  |  |  |      | ] [ | ]
+</pre>
+<p>線性變換，是座標軸的線性組合、再實施變換；由於加法性、倍率性，又恰好是座標軸實施變換、再線性組合。</p>
+<p>也就是說，線性變換是座標不變、座標軸改變。這件事可以寫成矩陣乘法的格式。</p>
+<p>當輸入部分的座標軸V，設定為標準座標軸，那麼矩陣M就是先前談的線性變換矩陣，輸出部分的座標軸W就是先前談的座標軸。先前談的只是一個直覺的特例。事實上，輸入輸出各自擁有座標軸，座標軸有無限多種選擇，隨便一種都行。</p>
+<p class="t">Change of Basis</p>
+<p>更換輸入部分的座標軸V。就這樣而已。</p>
+<p>輸出部分的座標軸W，就是先前談的相似矩陣。輸入部分的座標軸V，就是先前談的座標軸，可以採用特徵基底、也可以採用任意基底。</p>
+<p class="t">抽象化</p>
+<p>汽車、貨車、公車、聯結車，泛稱為「車」。由實際名稱變成泛稱的這個過程，叫做抽象化。</p>
+<p>數學家非常喜歡抽象化。上述名詞，諸如加法運算、倍率運算、向量空間、線性變換、正交，都是泛稱，都是經過抽象化的名稱。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Matrix.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:58 GMT -->
+</html>

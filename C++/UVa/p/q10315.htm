@@ -1,0 +1,74 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10315: Poker Hands</h1>        
+<p align="left">一副撲克牌有52張牌，每張牌有花色（Clubs, 
+Diamonds, Hearts, Spades，分別以C，D，H，S來代表）及點數（2,3,4,5,6,7,8,9,10, 
+jack, queen, king, ace，分別以2,3,4,5,6,7,8,9,T,J,Q,K,A來代表）。為了比出大小的緣故，我們定義2最小，A最大（花色則沒有大小關係）。</p>
+<p align="left">有一種常見的撲克牌遊戲叫&quot;梭哈&quot;（就是你在電影<b>賭神</b>中常見的那種遊戲），2個人各發給5張牌，並且依照以下的規則由高到低來分出勝負。</p>
+<ul>
+  <li>
+    <p align="left"><b>Straight flush: </b>（中文翻譯：同花順）5張牌同一花色（flush），並且形成一個順子（straight）。若2個人都是同花順，則依點數最大的那張牌分勝負。例如：(8H 
+    9H TH JH QH) &gt; (2D 3D 4D 5D 6D)</li>
+  <li>
+    <p align="left"><b>Four of a kind:</b>（中文翻譯：4條或鐵枝）4張牌同一個點數。若2個人都是four 
+    of a kind，則依那四張牌的點數分高低。例如：(8H 8D 8C 8S 9D) 
+    &gt; (5H 5C 5D 5S AS)</li>
+  <li>
+    <p align="left"><b>Full House:</b>（中文翻譯：葫蘆）3張同一點數，另2張同一點數。若2個人都是full 
+    house，則依那3張牌的點數分高低。例如：(8H 8D 8C 7S 7D) &gt; 
+    (5H 5C 5D AD AS)</li>
+  <li>
+    <p align="left"><b>Flush:</b>（中文翻譯：同花）5張牌同一花色。若2個人都是同花，則依點數由大到小分勝負。例如：(6H 
+    9H TH JH QH) &gt; (2D 3D 4D JD QD)</li>
+  <li>
+    <p align="left"><b>Straight:</b>（中文翻譯：順子）5張牌的點數為連續的。請注意：點數T 
+    J Q K A是順子，而A 2 3 4 5並非順子。若2個人都是順子，則依點數最大的那張牌分勝負。例如：(8H 
+    9H TH JH QD) &gt; (2D 3D 4D 5D 6S)</li>
+  <li>
+    <p align="left"><b>Three of a kind:</b>（中文翻譯：3條）3張牌同一個點數，另2張牌不同點數。若2個人都是three 
+    of a kind，則依那3張牌的點數分高低。例如：(8H 8D 8C AH 9D) 
+    &gt; (5H 5C 5D 2S AS)</li>
+  <li>
+    <p align="left"><b>Two pairs:</b>（中文翻譯：2對）有2組2張牌同一個點數，另1張牌不同點數。若2個人都是two 
+    pairs，則依2組那對子的大小分高低，若仍相同，則以剩下的那張牌分高低。例如：(8H 
+    8D 5C 5H 9D) &gt; (8S 8C 5D 5S 3S)</li>
+  <li>
+    <p align="left"><b>One pair:</b>（中文翻譯：1對）有2張牌同一個點數，另3張牌皆不同點數。若2個人都是one 
+    pair，則依對子的大小分高低，若仍相同，則以剩下的那3張牌分高低。例如：(8H 
+    8D KC 5H 2D) &gt; (8S 8C KD 4S 3S)</li>
+  <li>
+    <p align="left"><b>High Card:</b>（中文翻譯：不知道，就是最爛的就是了）沒有以上任何情況就屬於high 
+    card。若2個人都是high card，則依5張牌的點數大小依次分高低。例如：(AH 
+    9D 7C 3H 2D) &gt; (AS 9C 6D 4S 2S)</li>
+</ul>
+<p align="left">你的任務就是比較2個人手上的牌，判斷是誰贏，或平手。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">每組測試資料一列，有10張牌。前5張屬於玩家Black，後5張屬於玩家White。請參考Sample 
+Input。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對每組測試資料輸出下列其中之一：<br>
+Black win.&nbsp;<br>
+White win.<br>
+Tie.</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample          
+input</b></span></p>                    
+<pre>2H 3D 5S 9C KD 2C 3H 4S 8C AH
+2H 4S 4C 2D 4H 2S 8S AS QS 3S
+2H 3D 5S 9C KD 2C 3H 4S 8C KH
+2H 3D 5S 9C KD 2D 3H 5C 9S KH</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                      
+Output</b></span></p>                     
+<pre>White wins.
+Black wins.
+Black wins.
+Tie.</pre>
+                   
+</body>                   
+                   
+</html>                   

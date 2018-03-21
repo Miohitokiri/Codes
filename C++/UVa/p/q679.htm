@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q679: Dropping Balls</h1>            
+<p>有K個球從一完整二元樹（fully binary tree, FBT）的樹根（root）一個一個往下掉。當這個球遇到非終端節點時，可能往左子樹跑，也可能往右子樹跑，如此直到這顆球到達終端節點（也就是樹葉）為止。至於在非終端節點時球該往左或往右的決定乃是由2個值  
+true, false 來控制的。如果這非終端節點的現在的值為 false，則球來的時候會往左子樹走，但是這個值會變為  
+true。如果這非終端節點的現在的值為 true，則球來的時候會往右子樹走，但是這個值會變為  
+false。請注意：一開始時所有非終端節點的值均為 false。另外，在完整二元樹中所有的節點被依序編號，從上（深度  
+= 1）到下，由左到右。請參考下圖。</p>    
+<p align="center"><img border="0" src="p679.gif" width="516" height="207"></p>    
+<p align="left">舉例來說，上面的圖為深度為4的完整二元樹。第一顆球往下掉會經過節點1、2、4最後落在節點8中。第二顆球往下掉則會經過節點1、3、6最後落在節點12中。第三顆球往下掉會經過節點1、2、5最後落在節點10中。</p>    
+<p align="left">給你完整二元樹的深度D以及落下的第I個球，請你寫一個程式算出第I個球落在終端節點的編號。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                   
+<p>輸入的第一列有一個整數，代表以下有幾組測試資料。</p>              
+<p>每組測試資料一列有2個整數D,I（2 &lt;= D &lt;= 20, 1 &lt;= I 
+&lt;= 524288）。你可以假設I不會超過終端節點的數目。</p>              
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                               
+<p>對每組測試資料輸出一列，第I個球落在終端節點的編號。</p>            
+<table border="1" width="100%" cellpadding="5">               
+  <tr>               
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                           
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                          
+  </tr>                          
+  <tr>                          
+    <td width="50%">              
+      <pre>5
+4 2
+3 4
+10 1
+2 2
+8 128</pre>
+    </td>                        
+    <td width="50%">                  
+      <pre>12
+7
+512
+3
+255</pre>
+    </td>                       
+  </tr>                       
+</table>                       
+                                                         
+</body>                                                         
+                                                         
+</html>                                                         

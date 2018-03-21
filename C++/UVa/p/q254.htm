@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q254: Towers of Hanoi</h1>           
+<p>在1883年，Edouard Lucas發明了一種很流行的遊戲─漢諾塔(the Tower of Hanoi)。直到今天很多電腦科學的教科書仍用他來展示如何寫一個遞迴（recursion）的程式。現在就讓我們來說明一下其規則：</p>  
+<ul>
+  <li>有三根柱子：A、B、C</li>
+  <li>有n個盤子，每個盤子大小均不相同，由小到大編號1到n。</li>
+  <li>一開始時，所有的盤子都疊在A柱子中，並且由上到下盤子是由小到大排列。</li>
+  <li>遊戲的目的是把所有的盤子從A柱子搬到另一根柱子柱子（B或C）。</li>
+  <li>一次僅能搬動一個盤子。可以搬到空的柱子或是搬到一根柱子而其最上方的盤子比要搬移的盤子大。</li>
+</ul>
+<p>要瞭解漢諾塔如何運作最好的方法就是寫一個程式去模擬，在螢幕上展示盤子搬移的過程。然而現在並沒有要求你這樣做，你的任務是給你盤子的數目n，以及總共搬移的次數m，依照下述的演算法，請你有效率的算出搬移後A、B、C各柱子上盤子的數目。</p>
+<p>演算法：</p>
+<p>大家都知道，並且也相當容易證明：要搬移n個盤子從一根柱子到另一根柱子需要的次數為2<sup>n</sup>-1。有一個簡單的演算法讓我們可以達成這件事：對奇數次的搬移，搬動最小的盤子（編號1號）從一根柱子到下一根柱子（按ABCABC的順序）。對偶數次的搬移，最唯一可行的搬動（不能動到1號的盤子）。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，含有2個整數n,m。n（1 &lt;= n &lt;= 100）代表盤子的數目。m（0  
+&lt;= m &lt;= 2<sup>n</sup>-1）代表要搬移的次數。n=0 m=0代表輸入結束。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出搬移後A、B、C各柱子上盤子的數目。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>3 1
+4 1
+3 7
+4 15
+3 5
+64 2
+8 45
+100 12345678901234567890
+100 1267650600228229401496703205373
+0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>2 1 0
+3 1 0
+0 3 0
+0 0 4
+1 1 1
+62 1 1
+4 2 2
+60 18 22
+1 1 98</pre>
+                            
+</body>                            
+                            
+</html>                            

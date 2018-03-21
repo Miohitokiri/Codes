@@ -1,0 +1,76 @@
+<html>
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q451: Poker Solitaire Evaluator</h1>        
+<p align="left">一張撲克牌有花色（Clubs, Diamonds, Hearts, Spades，分別以C，D，H，S來代表）及點數（2,3,4,5,6,7,8,9,10,    
+jack, queen, king, ace，分別以2,3,4,5,6,7,8,9,X,J,Q,K,A來代表）。有一種常見的撲克牌遊戲叫&quot;梭哈&quot;（就是你在電影<b>賭神</b>中常見的那種遊戲），每個人手上有5張牌，並且依照以下的規則給予每手牌1-9的整數值。注意：每手牌只能有一個值（高的那一個），例如：Four    
+of a kind就不能算為two pairs 或 three of a kind.</p>   
+<ol>   
+  <li>   
+    <p align="left"><b>Nothing:</b>（中文翻譯：不知道，就是最爛的就是了）沒有以下任何情況就屬於nothing。例如：AH    
+    9D 7C 3H 2D</li>   
+  <li>   
+    <p align="left"><b>One pair:</b>（中文翻譯：1對）有2張牌同一個點數，另3張牌皆不同點數。例如：8H    
+    8D KC 5H 2D</li>   
+  <li>   
+    <p align="left"><b>Two pairs:</b>（中文翻譯：2對）有2組2張牌同一個點數，另1張牌不同點數。例如：8H    
+    8D 5C 5H 9D</li>   
+  <li>   
+    <p align="left"><b>Three of a kind:</b>（中文翻譯：3條）3張牌同一個點數，另2張牌不同點數。例如：8H    
+    8D 8C AH 9D</li>   
+  <li>   
+    <p align="left"><b>Straight:</b>（中文翻譯：順子）5張牌的點數為連續的並且可以A連接2成一圈。（所以：點數T    
+    J Q K A是順子，A 2 3 4 5是順子，Q K A 2 3也是順子）例如：8H    
+    9H TH JH QD</li>   
+  <li>   
+    <p align="left"><b>Flush:</b>（中文翻譯：同花）5張牌同一花色。例如：6H    
+    9H TH JH QH</li>   
+  <li>   
+    <p align="left"><b>Full House:</b>（中文翻譯：葫蘆）3張同一點數，另2張同一點數。例如：8H    
+    8D 8C 7S 7D</li>   
+  <li>   
+    <p align="left"><b>Four of a kind:</b>（中文翻譯：4條或鐵枝）4張牌同一個點數。例如：8H    
+    8D 8C 8S 9D</li>   
+  <li>   
+    <p align="left"><b>Straight flush: </b>（中文翻譯：同花順）5張牌同一花色，並且形成一個順子。例如：8H    
+    9H TH JH QH</li>   
+</ol>   
+<p align="left">給你25張牌排成5*5的樣子。你的任務就是算出5列（橫的）及5欄（直的）這10手牌所形成的統計結果。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>             
+<p align="left">輸入的第一列有一個整數代表以下有幾組測試資料，接下來空一列。</p>             
+<p align="left">每組測試資料5列，各有5張牌。測試資料間亦空有一列。請參考Sample    
+Input。</p>             
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>             
+<p align="left">對每組測試資料輸出5列（橫的）及5欄（直的）這10手牌所形成的統計結果。以第一組測試資料為例：5列分別Straight    
+Flush(9), Straight(5), Pair(2), Flush(6), Three of a Kind(4)。5欄分別為    
+Four of A Kind(8), Full House(7), Two Pair(3), Nothing(1), Two    
+Pair(3)。所以輸出是1, 1, 2, 1, 1, 1, 1, 1, 1。請參考Sample Output。</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample             
+input</b></span></p>                       
+<pre>2
+
+AS 2S 3S 4S 5S
+AC 2H 3H 5C 4C
+AH 2D KC KH 5D
+AD 3D KD 9D 8D
+XH 3C XC XS 8C
+
+AS 2S 3S 4S 6S
+AC 2H 3H 5C 4C
+AH 2D KC KH 5D
+AD 3D KD 9D 8D
+XH 3C XC XS 8C</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                         
+Output</b></span></p>                        
+<pre>1, 1, 2, 1, 1, 1, 1, 1, 1
+
+1, 2, 1, 1, 1, 2, 1, 1, 0</pre>   
+                      
+</body>                      
+                      
+</html>                      

@@ -1,0 +1,296 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Model.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:31:44 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Model</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Model</p>
+</div><div class="c">
+<p class="t">Model（Shape）（Surface）</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/m95ePLIS9uU"></iframe>--></div>
+<p>模型。物體的造型。</p>
+<p class="t">Scanning</p>
+<p>掃描。實體變模型。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/BEhDDXLr8E0?end=18"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UyD-Jg6sgOI"></iframe>--></div>
+<p class="t">Modeling</p>
+<p>產生模型。有兩種方式：</p>
+<p>一、使用硬體，操作相機、光達，擷取真實世界的物體形狀。知名硬體如Kinect。</p>
+<p>二、使用軟體，操作滑鼠、繪圖板，創作自己心儀的物體形狀。知名軟體如SketchUp、AutoDesk系列作。</p>
+<p>網路上已經有許多現成的<a href="https://grabcad.com/library">模型資料庫</a>，大家可以使用他人製作的模型，不必自己親手設計模型。</p>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/55756043"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/iYaD_me4MHQ"></iframe>--></div>
+<p class="t">Printing</p>
+<p>列印。模型變實體。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/mPh5FrKFzI4"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/e0rYO5YI7kA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ysCaqh38JVQ"></iframe>--></div>
+<p class="t">Rendering</p>
+<p>渲染。顯示模型。有兩種方式：</p>
+<p>一、顯示於二維平面，例如液晶螢幕、投影幕。</p>
+<p>二、顯示於三維空間，科學家正在研究當中。</p>
+<p>屬於<a href="Graphics.html">Graphics</a>領域，容後介紹。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/T5seU-5U0ms"></iframe>--></div>
+<p class="t">Animation</p>
+<p>動畫。操控並且顯示模型。</p>
+<p>屬於<a href="Animation.html">Animation</a>領域，容後介紹。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/zA_19bHxEYg"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ac4qV2uIF3Q"></iframe>--></div>
+<p class="t">使用C/C++處理模型</p>
+<p>C與C++本身沒有處理模型的函式庫。大家傾向直接使用現成的函式庫，例如<a href="http://libigl.github.io/libigl/">libigl</a>、<a href="http://www.openmesh.org/">OpenMesh</a>、<a href="http://www.cgal.org/">CGAL</a>。</p>
+<p class="t">使用現成軟體處理模型</p>
+<p><a href="http://zh.wikipedia.org/wiki/SketchUp">SketchUp</a>、<a href="http://zh.wikipedia.org/wiki/AutoCAD">AutoCAD</a>、<a href="http://zh.wikipedia.org/wiki/Rhinoceros_3D">Rhinoceros 3D</a>。</p>
+<p class="t">課程資料</p>
+<pre>
+https://www.coursera.org/learn/interactive-computer-graphics
+http://www.hao-li.com/cs599-ss2015/
+http://kevinkaixu.net/
+http://www.geometrysummit.org/summerschool/presentations.html
+http://homes.cs.washington.edu/~seitz/talks/3Dhistory.pdf
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Model Data Structure</p>
+</div><div class="c">
+<p class="t">Point Cloud（Surfel）</p>
+<img src="ModelDataStructure1.png">
+<p>「點雲」。大量的點座標，皆位於物體表面。</p>
+<p>點雲是以儀器掃瞄物體所得到的原始資料，儀器是相機、雷射、聲納等等。根據儀器的功能，點座標還可以附加其他資訊，比如顏色、法向量。</p>
+<textarea>
+struct Point {float x, y, z;} p[10000];
+</textarea>
+<p>大家習慣將點雲轉換成其他資料結構，減少資料量，減少處理時間。</p>
+<style>canvas {border: 1px solid black;}</style>
+<canvas id="PointCloud" width="200" height="200"></canvas>
+<script src="bunny.js"></script>
+<script>
+var PointCloud = function(){
+var canvas = document.getElementById("PointCloud");
+var ctx = canvas.getContext("2d");
+ctx.fillStyle = 'rgb(0,0,0)';
+ctx.strokeStyle = 'rgb(0,0,0)';
+ctx.lineWidth = 0.5;
+
+var id;
+canvas.tabIndex = 1;
+canvas.style.position = "relative";
+canvas.onmouseover = canvas.focus;
+canvas.onmouseout = canvas.blur;
+canvas.onmousemove = onMouseMove;
+canvas.onblur = function(){cancelAnimationFrame(id); id = 0;};
+canvas.onfocus = function(){if(!id)id = requestAnimationFrame(update, canvas);};
+function update() {id = requestAnimationFrame(update,canvas); draw();}
+
+var angle_x = 0;
+var angle_y = 0;
+function onMouseMove(event) {
+	var x = event.layerX;
+	var y = event.layerY;
+	if (x>0 && x<canvas.width && y>0 && y<canvas.height) {
+		angle_x = (x-canvas.width/2)/(canvas.width/2);
+		angle_y = (y-canvas.height/2)/(canvas.height/2);
+	}
+}
+
+var screen_center = [canvas.width/2, canvas.height/2, 0];
+var focal_length = 950;
+var distance = 1000;
+var model = new bunny();
+var scalar = 1000;
+buildmodel(model, scalar);
+draw();
+
+function draw() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	var c = Math.cos(angle_x);
+	var s = Math.sin(angle_x);
+	var rx = [c,0,-s,0,1,0,s,0,c];
+	var c = Math.cos(-angle_y);
+	var s = Math.sin(-angle_y);
+	var ry = [1,0,0,0,c,s,0,-s,c];
+
+	for (let i=0; i<model.points.length; i++) {
+		var p = mul(ry, mul(rx, model.points[i]));
+		translate(p, [0,0,distance]);
+		project(p, focal_length);
+		translate(p, screen_center);
+		ctx.fillRect(p[0],p[1],2,2);
+	}
+}
+
+function translate(p, v) {
+	p[0] += v[0];
+	p[1] += v[1];
+	p[2] += v[2];
+}
+
+function scale(p, v) {
+	p[0] *= v[0];
+	p[1] *= v[1];
+	p[2] *= v[2];
+}
+
+function mul(m, p) {
+	var q = new Array();
+	q[0] = m[0] * p[0] + m[1] * p[1] + m[2] * p[2];
+	q[1] = m[3] * p[0] + m[4] * p[1] + m[5] * p[2];
+	q[2] = m[6] * p[0] + m[7] * p[1] + m[8] * p[2];
+	return q;
+}
+
+function project(p, focal_length) {
+	p[0] = p[0] * focal_length / p[2];
+	p[1] = p[1] * focal_length / p[2];
+	p[2] = focal_length;
+}
+
+function buildmodel(model, scalar) {
+	center = [0, 0, 0];
+	for (var i=0; i<model.points.length; i++) {
+		center[0] += model.points[i][0];
+		center[1] += model.points[i][1];
+		center[2] += model.points[i][2];
+	}
+	center[0] = -(center[0] / model.points.length);
+	center[1] = -(center[1] / model.points.length);
+	center[2] = -(center[2] / model.points.length);
+	for (var i=0; i<model.points.length; i++) {
+		translate(model.points[i], center);
+		scale(model.points[i], [scalar,scalar,scalar]);
+
+		model.points[i][1] = -model.points[i][1];
+		model.points[i][2] = -model.points[i][2];
+	}
+}
+}();
+</script>
+<p class="t">Mesh</p>
+<img src="ModelDataStructure2.png">
+<p>「網格」。大量的平坦多邊形。通常是三角形或四邊形。</p>
+<p>一個三角形有三個頂點座標。三角形的頂點順序，決定了三角形的正面：正視三角形的正面，我們習慣讓三角形頂點呈逆時針順序。依照頂點順序計算<a href="Point.html">叉積</a>，得到三角形的正面的法向量。這是大家約定俗成、心照不宣的規矩。</p>
+<p>資料結構鮮用一維陣列，而常用兩個一維陣列：一個陣列記錄每個點的座標、另一個陣列記錄每個三角形的三個點的編號。由於三角形經常共用頂點，因此兩層式的資料結構，得以節省記憶體空間。</p>
+<textarea>
+struct Point {float x, y, z;} p[10];
+struct Triangle {int p1, p2, p3;} t[20];
+//struct Triangle {Point* p1, *p2, *p3;} t[20];
+</textarea>
+<p>大家習慣使用網格。優點是計算方便，只有點與邊。缺點是失真，稜稜角角。</p>
+<p class="t">Parametric Surface</p>
+<img src="ModelDataStructure3.png">
+<p>「參數表面」和「網格」概念相仿，連續與離散的差別而已。</p>
+<p>「參數表面」。大量的曲面。通常是<a href="Curve.html">Bézier surface</a>或<a href="Curve.html">NURBS surface</a>。</p>
+<textarea>
+struct Point {float x, y, z;} p[10];
+struct Bezier {Point* p[4][4];} b[20];
+</textarea>
+<p class="t">Voxel</p>
+<img src="ModelDataStructure4.png">
+<p>「體素」。整數格點有著數值。通常是Boolean或實數。</p>
+<p>訂立臨界值，等於此臨界值的地點，當作表面。調整臨界值，以擴張或收縮表面。</p>
+<p>資料結構鮮用三維陣列，而常用<a href="Region.html">八元樹</a>。有人把體素的八元樹稱作sparse voxel octree。</p>
+<textarea>
+float intensity[10][10][10];
+float boundary = 30f;
+</textarea>
+<p>體素和像素概念相同，差別僅在於：像素數值通常是RGB顏色、體素數值通常是物質密度。</p>
+<p>建立體素，通常是以超音波、核磁共振等儀器，掃描真實物體，取得各種直線軌道的數值；然後實施演算法，估計每一個體素的數值。請參考<a href="Camera.html">image reconstruction</a>。</p>
+<p>亦可手動設定體素數值，打造心儀模型。例如<a href="https://ephtracy.github.io/">MagicaVoxel</a>。</p>
+<p>亦可運用特殊亂數，決定每一個體素的數值，打造特殊模型。例如三維版本的<a href="Signal.html">Perlin noise</a>，可以打造雲霧。請參考<a href="http://magnuswrenninge.com/content/pubs/ProductionVolumeRenderingFundamentals2011.pdf">這份講義</a>。</p>
+<p class="t">Isosurface（Implicit Surface）</p>
+<img src="ModelDataStructure5.png">
+<p>「等值表面」和「體素」概念相仿，連續與離散的差別而已。</p>
+<p>「等值表面」。處處皆有數值。通常是實數。</p>
+<p>以一個連續函數，決定每一個地點的數值。訂立臨界值，等於此臨界值的地點，當作表面。調整臨界值，以擴張或收縮表面。甚至累加多個函數，得到特殊的表面形狀。</p>
+<textarea>
+float intensity(float x, float y, float z)
+{
+	return pow(x, 2.) + pow(y, 2.) + pow(z, 2.);
+}
+
+float boundary = 30f;
+</textarea>
+<p>知名範例是blobby surface：運用「球體」的數學函數，打造球體模型；改用「淡出的球體」的數學函數，例如三維常態分布，打造球體模型；令多個三維常態分布相加，打造宛如肥皂泡的模型。</p>
+<p>以連續函數建立模型，優點是100%精確，無論如何縮放，細節依舊清晰，沒有任何偏差。</p>
+<p>順帶一提，等值曲面有一個特例是distance field，能產生模型的聯集、交集、補集。請參考<a href="Graphics.html">isosurface rendering</a>。</p>
+<p class="t">Point Cloud Registration</p>
+<p>登記。多台相機於多個位置拍攝相同景物，各得一群點雲。把所有點雲整合到同一個世界座標系，校正誤差。</p>
+<p>請參考<a href="Representation.html">對齊</a>的演算法。</p>
+<p class="t">Point Cloud ⇨ Mesh</p>
+<p><a href="http://www.enseignement.polytechnique.fr/informatique/INF562/Slides/Slides_Reconstruction.pdf">crust algorithm</a>：先求Voronoi diagram，納入其頂點再求Delaunay triangulation。<a href="http://graphics.berkeley.edu/papers/Kolluri-SSR-2004-07/eigentalk.pdf">改良版本</a>。</p>
+<p><a href="https://en.wikipedia.org/wiki/Ruppert%27s_algorithm">Ruppert's algorithm</a>：美化既有的Delaunay triangulation。</p>
+<p><a href="http://hhoppe.com/proj/poissonrecon/">Poisson surface reconstruction</a>：一、point cloud ⇨ voxel：體素數值內1外0。點雲法向量等於體素梯度，再以體素梯度求解體素數值，即是解Poisson equation。二、voxel ⇨ mesh：體素儲存於八元樹，套用八元樹版本的marching cube。<a href="http://www.cs.jhu.edu/~misha/Code/PoissonRecon/">程式碼與模型</a>。</p>
+<p class="t">Voxel ⇨ Mesh</p>
+<p><a href="http://0fps.net/2012/07/12/smooth-voxel-terrain-part-2/">這篇文章</a>彙整了各種演算法，提供了<a href="http://mikolalysenko.github.io/Isosurface/">實作</a>。</p>
+<p><a href="http://users.polytech.unice.fr/~lingrand/MarchingCubes/algo.html">marching cube</a>：觀察一個立方體：8個體素、12條邊。根據12條邊的端點大小關係，決定網格位置。<a href="http://paulbourke.net/geometry/polygonise/">這是程式碼</a>。<a href="http://www.terathon.com/voxels/">改良版本</a>。</p>
+<p><a href="http://www.frankpetterson.com/publications/dualcontour/dualcontour.pdf">dual contouring</a>：額外知道每個體素的梯度，得以製造美觀網格。</p>
+<p class="t">Parametric Surface ⇨ Mesh</p>
+<p>變成三角形：每一個曲面切成n×n格，每一格沿對角線切成兩個三角形，就這麼簡單。越多格，越細膩，越逼真。</p>
+<p>變成平坦四邊形：我不知道怎麼做。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Model Editing（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Mesh Parameterization</p>
+<p>參數化。表面建立座標系統，方便貼圖、組裝。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/C624wJOWBfc"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/B8dJ5zDhkes"></iframe>--></div>
+<p class="t">Mesh Consolidation</p>
+<p>鞏固。貼齊、拉直、擺正。</p>
+<p class="t">Mesh Fairing</p>
+<p>平滑化。維持模型的基礎結構，撫平模型的形狀。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/FOOynE1F4P4"></iframe>--></div>
+<p class="t">Mesh Deformation</p>
+<p>形變。維持模型的基礎結構，改變模型的形狀。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/PRcXy2LjI9I"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/pajPodDM1XM"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/O4CCQkfUtqE"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/UiXK5xKwIu4"></iframe>--></div>
+<p class="t">Shape Correspondence</p>
+<p>對應。兩個模型找到相對應的部件。</p>
+<p class="t">Shape Matching</p>
+<p>匹配。找到給定的部件。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/usV_K_rmCxM"></iframe>--></div>
+<p class="t">手繪3D模型</p>
+<p>繪製曲線，產生表面。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/e2H35SlLmUA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/tbUljHJv4Rg"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Model Fabrication（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Model Fabrication</p>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/46431064"></iframe>--></div>
+<p class="t">Model Optimization</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/_drZksLRx94"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Ng6MV4x5t6k"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/T_ibOR2owQc"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/98E0FNOch0w"></iframe>--></div>
+<p class="t">Model Compositing</p>
+<p>合成。組裝模型。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/PV_sIrXof6I"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HgoJdG6-c68"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/yjPwPWVXS10"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/RZU8w3uvenU"></iframe>--></div>
+<p class="t">Model Blending</p>
+<p>合成。剪接模型。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/nice6NYb_WA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Xc4qf7v6a-w"></iframe>--></div>
+<p class="t">Model Segmentation（Model Decomposition）</p>
+<p>分段。區分模型的各個部件。</p>
+<pre>
+http://cg.cs.uni-bonn.de/en/projects/point-cloud-processing-with-primitive-shapes/
+Dapper: decompose-and-pack for 3D printing
+</pre>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/pwxPjwXXtbM"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/yD_cSRJ7Gho"></iframe>--></div>
+<p class="t">Model Carving</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/umd5FIDTaK4"></iframe>--></div>
+<p class="t">Model Boxelization</p>
+<p>https://www.disneyresearch.com/project/boxelization/</p>
+<p class="t">Model Assembling</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/U5NtLNWXmAo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/YfrQyO1czBU"></iframe>--></div>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Model.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:31:52 GMT -->
+</html>

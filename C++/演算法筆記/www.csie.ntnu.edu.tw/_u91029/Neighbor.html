@@ -1,0 +1,102 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Neighbor.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:01 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Neighbor</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Nearest Neightbor（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Nearest Neightbor</p>
+<p><a href="https://algnotes.wordpress.com/2015/03/12/">https://algnotes.wordpress.com/2015/03/12/</a></p>
+<p class="e">ICPC 3270</p>
+<p class="t">Relative Nearest Neightbor</p>
+<p>http://en.wikipedia.org/wiki/Relative_neighborhood_graph</p>
+<p class="t">Gabriel Graph</p>
+<p>http://en.wikipedia.org/wiki/Gabriel_graph</p>
+<p class="t">α-Shape</p>
+<p>http://en.wikipedia.org/wiki/Alpha_shape</p>
+<p class="t">β-Skeleton</p>
+<p>http://en.wikipedia.org/wiki/Beta_skeleton</p>
+<p class="t">Θ-Graph</p>
+<pre>
+http://www.cs.tufts.edu/comp/260/lectures.html
+http://en.wikipedia.org/wiki/Theta_graph
+http://en.wikipedia.org/wiki/Yao_graph
+</pre>
+<p class="t">Locality-sensitive Hashing</p>
+<p>http://blog.csdn.net/icvpr/article/details/12342159</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Farthest Neightbor（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Farthest Neightbor</p>
+<p>求每個點的最遠點。先前介紹的「最遠點對」屬於其中一份子。</p>
+<p>Farthest Voronoi Diagram。O(NlogN)。</p>
+<p class="t">Farthest Neightbor</p>
+<p>查詢的點，不是一開始的點。KD-Tree。</p>
+<p class="t">Farthest Neightbor on Convex Hull</p>
+<p>無法使用旋轉卡尺。例如一個橢圓。</p>
+<p>Randomized Incremental Method。O(NlogN)。</p>
+<p>Convex Hull + Monge Matrix。O(N)。</p>
+<p>動態問題可以參考這篇，更新、查詢的平均時間複雜度是O((logN)^2)。</p>
+<pre>
+http://www.ics.uci.edu/~eppstein/pubs/Epp-CGTA-96.pdf
+</pre>
+<p class="e">UVa 12311</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Euclidean Geometry（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Hamilton Circuit</p>
+<p>Bitonic Euclidean TSP</p>
+<p class="e">ICPC 4791</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Taxicab Geometry（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Taxicab Geometry</p>
+<p>L₁ Metric</p>
+<p class="t">Closest Pair</p>
+<p class="e">ICPC 5848</p>
+<p class="t">Farthest Pair</p>
+<p>歐氏距離，窮舉法O(N^2)，凸包與旋轉卡尺O(NlogN)。</p>
+<p>距離公式|x1 - x2| + |y1 - y2| + |z1 - z2|。去掉絕對值，共8種情況。以(x1 - x2) - (y1 - y2) + (z1 - z2)為例，重新整理得到(x1 - y1 + z1) - (x2 - y2 + z2)。若前項盡量大、後項盡量小，則距離越大。</p>
+<p>窮舉8種正負號配置情況（因為對稱，其實只需4種）。對於一種情況，窮舉每個點，記錄最大值、最小值。最大值減最小值，即為所求。時間複雜度O(N)。</p>
+<textarea>
+struct Point {int x, y, z;} p[10];
+
+int f(int a, int b, int c)
+{
+	int max = -1e9, min = 1e9;
+	for (int i=0; i<10; i++)
+	{
+		int v = a * p[i].x + b * p[i].y + c * p[i].z;
+		max = std::max(max, v);
+		min = std::min(min, v);
+	}
+	return max - min;
+}
+
+float farthest_pair()
+{
+	return max(max(f(1,1,1), f(1,1,-1)), max(f(1,-1,1), f(-1,1,1)));
+}
+</textarea>
+<p class="e">UVa 11012 Sphere DISTANCE</p>
+<p class="t">Mininum Spanning Tree</p>
+<p>歐氏距離，Kruskal's Algorithm O(ElogV) = O(NNlogN)，其中E = V(V-1)/2 = O(V^2)。Prim's Algorithm O(N^2)。Voronoi Diagram O(NlogN)。</p>
+<p><a href="http://blog.csdn.net/acm_cxlove/article/details/8890003">http://blog.csdn.net/acm_cxlove/article/details/8890003</a></p>
+<p>邊數降至4N，可套用Kruskal's Algorithm。O(NlogN)。</p>
+<p class="e">ICPC 3662</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Collision（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Collision</p>
+<pre>
+https://www.atmos.illinois.edu/courses/atmos100/userdocs/3Dcollisions.html
+https://code.google.com/archive/p/box2d/downloads
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Neighbor.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:01 GMT -->
+</html>

@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q544: Heavy Cargo</h1>          
+<p>Big Johnsson Trucks Inc.是一家專門製造大卡車的公司。他們生產的最新型卡車Godzilla 
+V12容量非常非常的大。你不用擔心他所能載的重量，但是你得考慮他所行駛的道路是否能承受如此大的重量。</p>  
+<p>給你出發及目的城市，以及其他城市之間道路的最大重量負荷量，你的任務是在這兩個城市間有路徑可通行的情況下，找出Godzilla 
+V12可以運輸的最大負載重量。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料的第一列有2個整數n、r，n代表城市的數目（2 
+&lt;= n &lt;= 200），r代表連接各城市之間道路的數目（1 &lt;= r 
+&lt;= 19900）。接下來的r列每列有2個城市的名字以及一個整數，代表一條道路2端點城市的名字以及此道路重量最大承受量（介於0到10000之間）。城市的名字最多30個字元，且中間不會有空白字元。道路均是雙向的。</p>    
+<p>再接下來的一列有2個城市的名字，代表出發及目的城市。</p>    
+<p>當n=r=0時代表輸入結束。請參考Sample Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出一列這是第幾組測試資料，以及一列從出發城市到目的城市卡車運輸的最大負載重量。</p> 
+<p>每組測試資料後亦輸出一空白列。請參考Sample Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>4 3
+Karlsruhe Stuttgart 100
+Stuttgart Ulm 80
+Ulm Muenchen 120
+Karlsruhe Muenchen
+5 5
+Karlsruhe Stuttgart 100
+Stuttgart Ulm 80
+Ulm Muenchen 120
+Karlsruhe Hamburg 220
+Hamburg Muenchen 170
+Muenchen Karlsruhe
+0 0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                  
+Output</b></span></p>                              
+<pre>Scenario #1
+80 tons
+
+Scenario #2
+170 tons</pre>
+                            
+</body>                            
+                            
+</html>                            

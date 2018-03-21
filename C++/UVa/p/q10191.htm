@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10191: Longest Nap</h1>          
+<p>我想你應該知道教授通常是很忙碌的，他們每天都有一張工作行程表。你的指導教授，讓我們稱他為P教授好了，是位有點懶的人。他想要在工作時間內找個時段小睡一下。由於他的工作很忙碌，他並沒有很多機會這麼做。但是他實在是很想要小睡一下，一天一次就好。既然要睡，所以他決定從工作行程表中找出最大的空檔來睡。他本來要寫一個程式來做這件事的，但是他真的有點懶，所以這件差事就掉到你頭上了。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>有多組測試資料，每組測試資料代表一天的工作行程。</p>  
+<p>每組測試資料的第一列有一個不大於100的正整數 s，代表這天行程表上的工作數目。接下來的s列，每列有一個工作項目，包含該工作開始時間time1，結束時間time2，及工作摘要。所有的時間都以hh:mm這樣的格式來表現。time1,time2中間有一空白格，並且time2一定比time1來的大。因為P教授上班的時間為10:00到18:00，所以工作表上的時間一定都在這個範圍內。工作摘要的內容為任意字串，但是一定都在這一列中，並且一列的長度絕不會超過255。</p>  
+<p>請注意：行程表上各工作項目並未根據任何時間做特殊的排序。請參考Sample 
+Input。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，請輸出：</p>  
+<pre>Day #d: the longest nap starts at hh:mm and will last for [H hours and] M minutes.</pre>
+<p>其中d為第幾組測試資料，hh:mm為可以開始小睡的時間。至於可以小睡的時間（假設總共X分鐘）可以以下2個規則來表示：</p>  
+<ol>
+  <li>如果X小於60，只要輸出&quot;M minutes&quot;即可，在這裡M=X。</li>
+  <li>如果X大於等於60，則輸出&quot;H hours and M minutes&quot;，其中H= 
+    X div 60，M=X mod 60</li>
+</ol>
+<p>請注意：你不用考慮英文文法中單數複數名詞加不加s的那些問題，在這裡通通加就是了。另外可以小睡的時間計算方式為上一個工作結束後到下一個工作開始時，例如：假如有一個工作在14:00結束，並且下一個工作在14:47開始，那麼這段空檔的時間就是(14:47)-(14:00)=47分鐘。</p>  
+<p>假如有2個空檔時段長度一樣，請輸出較早的那一個。你可以放心的假設P教授不會整天忙碌，也就是說一天中一定可以找到空檔時段。請參考Sample 
+Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                          
+Input</b></span></p>                              
+<pre>4
+10:00 12:00 Lectures
+12:00 13:00 Lunch, like always.
+13:00 15:00 Boring lectures...
+15:30 17:45 Reading
+4
+10:00 12:00 Lectures
+12:00 13:00 Lunch, just lunch.
+13:00 15:00 Lectures, lectures... oh, no!
+16:45 17:45 Reading (to be or not to be?)
+4
+10:00 12:00 Lectures, as everyday.
+12:00 13:00 Lunch, again!!!
+13:00 15:00 Lectures, more lectures!
+15:30 17:15 Reading (I love reading, but should I schedule it?)
+1
+12:00 13:00 I love lunch! Have you ever noticed it? :)
+1
+12:00 16:00 I love lunch! Have you ever noticed it? :)
+2
+10:00 16:00 Reading......
+16:01 18:00 Take exercise(table tennis with Professor Z)</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>Day #1: the longest nap starts at 15:00 and will last for 30 minutes.
+Day #2: the longest nap starts at 15:00 and will last for 1 hours and 45 minutes.
+Day #3: the longest nap starts at 17:15 and will last for 45 minutes.
+Day #4: the longest nap starts at 13:00 and will last for 5 hours and 0 minutes.
+Day #5: the longest nap starts at 10:00 and will last for 2 hours and 0 minutes.
+Day #6: the longest nap starts at 16:00 and will last for 1 minutes.</pre> 
+                            
+</body>                            
+                            
+</html>                            

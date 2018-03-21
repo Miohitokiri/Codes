@@ -1,0 +1,50 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10443: Rock, Scissors, Paper</h1>            
+<p>List發明了一種新的文明。在一個二維的格子空間中，一開始每個格子被下面三種生命模式其中之一佔據：石頭（Rocks），剪刀（Scissors），布（Paper）。每一天中每個格子與鄰近（上下左右）格子之間彼此交戰。每次交戰中，石頭贏剪刀、剪刀贏布、布贏石頭。</p>
+<p>在一天結束時，勝方擴展其領土到敗方的格子上，敗方則從格子中消失。</p>
+<p>你的任務是算出在n天後，各格子的生命模式為何。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個正整數，代表以下有多少組測試資料。</p>        
+<p>每組測試資料的第一列，有3個不大於100的整數 r,c,n。r是格子的列數，c是格子的行數，n則是要求的第幾天。接下來的r列每列有c個字元，代表格子空間。每個字元為R,S,P其中之一，分別代表石頭、剪刀、布。請參考Sample Input。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                        
+<p>對每組測試資料請輸出第n天後格子空間的情形。相鄰兩組輸出間亦請空一列。請參考Sample 
+Output。</p>       
+<p>　</p>       
+<table border="1" width="100%" cellpadding="5">        
+  <tr>        
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>              
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>             
+  </tr>             
+  <tr>             
+    <td width="50%"> 
+      <pre>2
+3 3 1
+RRR
+RSR
+RRR
+3 4 2
+RSPR
+SPRS
+PRSP</pre>
+    </td>             
+    <td width="50%">       
+      <pre>RRR
+RRR
+RRR
+
+RRRS
+RRSP
+RSPR</pre>
+    </td>            
+  </tr>            
+</table>            
+                                              
+</body>                                              
+                                              
+</html>                                              

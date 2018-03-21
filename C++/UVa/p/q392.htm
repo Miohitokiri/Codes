@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q392: Polynomial Showdown</h1>          
+<p>給你一個數學多項式的係數，從8次方到0次方。你的任務是把一些不需要的項次拿掉，然後以易讀的格式來輸出。例如：給你  
+0, 0, 0, 1, 22, -333, 0, 1,&nbsp; -1這9個係數，你應該要產生這樣的輸出：  
+<code>x^5 + 22x^4 - 333x^3 + x - 1</code></p> 
+<p>以下是詳細格式的規則：</p>
+<ol>
+  <li>項次必須按降冪出現。</li>
+  <li>指數部分出現在^符號之後。</li>
+  <li>常數項只要出現常數部分就好了，不需有x^0。</li>
+  <li>只有係數非0的項次才需出現。如果所有的係數都是0，那只要輸出常數項就可以了。</li>
+  <li>介於項次之間的+號和-號兩邊各有一空白字元。</li>
+  <li>假如第一項的係數是正的，那麼該係數不需要符號。如果第一項的係數是負的，那該係數必須有-這個符號。例如：<code>-7x^2  
+    + 30x + 66</code></li> 
+  <li>若係數為負，則以減一個正數來表示（除了上面第6條所提到的第一項之外），而非以加一個負數來表示。例如：<code>x^2 
+    + -3x </code>這樣的表示法是錯誤的，應該是：<code>x^2 - 3x</code>才對。</li>
+  <li>1或-1，除了常數項之外都不應該出現。例如：<code>-1x^3 + 
+    1x^2 + 3x^1 - 1 </code>這樣的表示法是錯誤的，應該是：<code>-x^3 
+    + x^2 + 3x - 1 </code>才對。</li>
+</ol>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，含有9個整數（絕對值都小於1000）。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，按照上面的規則輸出多項式。請參考Sample 
+Output。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>0    0    0    1   22 -333    0    1   -1
+0    0    0    0    0    0  -55    5    0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>x^5 + 22x^4 - 333x^3 + x - 1
+-55x^2 + 5x</pre>
+                            
+</body>                            
+                            
+</html>                            

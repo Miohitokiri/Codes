@@ -1,0 +1,277 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Data2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:19:54 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Data</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Data</p>
+</div><div class="c">
+<p class="t">Data / Information</p>
+<p>在計算機科學當中，數據的本身稱做「資料」，數據的含義稱作「資訊」。簡中翻譯成「数据」與「信息」。</p>
+<p class="t">Media / Multimedia</p>
+<p>在計算機科學當中，「媒體」就是記載資訊的媒介，諸如文字、聲音、圖片、動畫都是媒體。「多媒體」就是複合多種媒體，例如網頁、影片、電玩都是多媒體。</p>
+<p>每一種媒體都有專門的研究領域，而且分工相當細緻：</p>
+<pre>
+Data Processing 資料處理
+應用：搜尋引擎、資料庫
+
+Text Processing 文字處理
+應用：文字編輯器、輸入法
+
+Natural Language Processing 自然語言處理
+應用：自動翻譯、自動寫作、搜尋引擎、智慧型輸入法
+
+Audio Processing 音訊處理
+應用：MP3播放軟體、混音、去除雜音（例如手機通話）
+
+Speech Processing 語音處理
+應用：語音輸入（例如手機的語音輸入法）
+　　　語音輸出（例如語音客服專線、語音朗讀）
+　　　辨識說話者、與電腦對話、歌唱評分
+
+Image Processing 影像處理
+應用：修圖、合成照片、數位相機、視覺特效、美術作品
+
+Video Processing 視訊處理
+應用：DVD、電視、攝影、Youtube、視訊會議、合成場景
+
+Geometry Processing 幾何處理（3D模型處理）
+應用：模型設計、3D掃描、3D列印
+
+Computer Music 電腦音樂
+應用：電子樂器、譜曲、網路合奏
+
+Computer Graphics 電腦繪圖
+應用：設計圖表、設計模型（例如建築、產品）、虛擬實境
+　　　醫學影像（例如超音波、斷層掃描）、視覺特效、美術作品
+
+Computer Animation 電腦動畫
+應用：好萊塢電影特效、迪士尼卡通動畫、電視廣告、虛擬偶像
+
+Computer Vision 電腦視覺
+應用：圖片鑑識比對（例如指紋、人像、車牌號碼）、手寫輸入
+　　　自動駕駛、國道收費系統、戰鬥力眼鏡、檢查產品瑕疵
+</pre>
+<p>語音處理不是研究麥克風、耳機，電腦繪圖不是研究螢幕。因為電腦的功能是數學計算，所以上述領域通通都是數學計算！將現實問題對應到數學問題，運用數學計算解決現實問題。</p>
+<p>「懂得程式設計」與「懂得數學計算」是兩碼子事，上述這些領域通通是在鑽研後者。大多數民眾喜歡前者，卻完全忽略後者，進而影響了台灣資訊產業的發展方向。</p>
+<p class="t">Sensor</p>
+<p>在計算機科學當中，「感測器」是獲取資料的設備。</p>
+<p>想要創造資料，可以透過電腦設備，手動輸入資料；或者透過感測器，自動獲取資料。比方說氣象觀測、健康檢查、交通設備，就用上了各式各樣的感測器。維基百科整理了一份感測器大全：</p>
+<p><a href="https://en.wikipedia.org/wiki/List_of_sensors">https://en.wikipedia.org/wiki/List_of_sensors</a></p>
+<p>對於不喜歡數學的民眾來說，也許是個不錯的發展方向。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Data Mining</p>
+</div><div class="c">
+<p class="t">Data Mining（Knowledge Discovery）</p>
+<p>資料探勘。從資料獲得資訊，甚至從資訊獲得知識。經過組織、具備架構的資訊，稱作知識。</p>
+<p>資料探勘的工程經驗遠多於科學理論。大多數的方法，缺乏理論依據、缺乏嚴謹的數學證明，想怎麼說、就怎麼說。</p>
+<p>這裡收集形形色色的課程網站，專注的重點都不一樣：</p>
+<pre>
+http://www.mmds.org/
+https://mycourses.aalto.fi/course/view.php?id=13081
+http://www.csie.ntu.edu.tw/~htlin/mooc/
+http://www.cs.columbia.edu/~blei/courses.html
+http://people.seas.harvard.edu/~jthaler/COSC548.html
+http://www.redbook.io/
+http://www.csd.uoc.gr/~hy460/
+http://www.csie.ntu.edu.tw/~tonytan/teaching/2015b-adb/2015b-adb.html
+</pre>
+<p>這裡收集一些乍聽是專業術語，但是其實缺乏內涵、或者無法使用數學描述、或者源自其他領域，看看就好：</p>
+<pre style="-moz-column-count: 2; column: 2;">
+Data Storage           <a href="http://en.wikipedia.org/wiki/Data_storage">存儲</a>
+Data Warehousing       <a href="http://en.wikipedia.org/wiki/Data_warehouse">倉儲</a>
+Data Integration       <a href="http://en.wikipedia.org/wiki/Data_integration">整合</a>
+Data Aggregation       <a href="http://en.wikipedia.org/wiki/Data_aggregation">聚合</a>
+Data Analysis          <a href="https://en.wikipedia.org/wiki/Data_analysis">分析</a>
+Data Modeling          <a href="http://en.wikipedia.org/wiki/Data_modeling">建模</a>
+Data Acquisition       <a href="http://en.wikipedia.org/wiki/Data_acquisition">擷取</a>
+Data Dredging          <a href="http://en.wikipedia.org/wiki/Data_dredging">挖掘</a>
+Data Cleansing         <a href="http://en.wikipedia.org/wiki/Data_cleansing">清洗</a>
+Data Augmentation      <a href="http://stats.stackexchange.com/questions/5299/">增強</a>
+Data Publishing        <a href="http://en.wikipedia.org/wiki/Data_publishing">發佈</a>
+Data Compression       <a href="http://en.wikipedia.org/wiki/Data_compression">壓縮</a>
+Data Transmission      <a href="http://en.wikipedia.org/wiki/Data_transmission">傳輸</a>
+Data Integrity         <a href="http://en.wikipedia.org/wiki/Data_integrity">完整</a>
+Information Security   <a href="http://en.wikipedia.org/wiki/Information_security">安全</a>
+Information Retrieval  <a href="http://en.wikipedia.org/wiki/Information_retrieval">檢索</a>
+Information Seeking    <a href="http://en.wikipedia.org/wiki/Information_seeking">尋求</a>
+Information Management <a href="https://en.wikipedia.org/wiki/Information_management">管理</a>
+</pre>
+<p class="t">Database</p>
+<p><a href="https://en.wikipedia.org/wiki/Database">資料庫</a>。存取資料的設備。知名工具如<a href="https://zh.wikipedia.org/wiki/MySQL">MySQL</a>、<a href="https://en.wikipedia.org/wiki/MongoDB">MongoDB</a>、<a href="https://en.wikipedia.org/wiki/Elasticsearch">Elasticsearch</a>。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/t8jgX1f8kc4"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/h9uegRqExpU"></iframe>--></div>
+<p class="t">Information System</p>
+<p><a href="https://en.wikipedia.org/wiki/Information_system">資訊系統</a>。資料庫系統加強版，供人分享資訊。用來收集、儲存、處理資料，甚至統計、分析、預測資料。</p>
+<p>例如管理資訊系統Management Information System。運用電腦的儲存能力、傳輸能力，簡化公司行政管理流程，減少人工工作份量。諸如人員上下班簽到、會議室登記、會計財務、表單文件、……等等，都可以透過電腦來處理，增加公司的營運效率。另外還有ERP企業資源規劃、CRM客戶關係管理、SCM供應鏈管理、……等等，讓公司確切掌握資源、衡量成本。</p>
+<p>MIS是為了減少成本而生──開發軟體、建構硬體的成本，低於雇用人力、管理資源的成本。有錢的大企業找專業公司打造MIS，沒錢的小公司雇用程式設計師自造MIS。雖然老闆都想導入MIS來省錢，但是MIS是不是方便合用，那又是另外一回事了。</p>
+<p>另外，在台灣，MIS也經常是指負責維護這套系統的工作職位。系統上的疑難雜症，就找MIS處理，類似工友。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/uwiH9rtz2sc"></iframe>--></div>
+<p class="t">Knowledge-based System</p>
+<p><a href="https://en.wikipedia.org/wiki/Knowledge-based_systems">知識系統</a>。資訊系統加強版，供人活用知識。<p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/mmQl6VGvX-c"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/_P9HqHVPeik"></iframe>--></div>
+<p class="t">Database Query Processing</p>
+<p>查詢。從資料庫撈出想要的資料。兩大方向：</p>
+<p>Database Query Processing：設計查詢指令、設計資料結構。</p>
+<p>Top-k Query Processing：參考各欄位的數值大小，分析利弊，找到前幾名的資料。經典演算法是Fagin's Algorithm。</p>
+<p class="t">Data Stream Processing</p>
+<p>串流。應付源源不絕的資料。兩大方向：</p>
+<p>Data Stream Processing：平行處理、分散式處理的機制。</p>
+<p>Data Stream Algorithm：即時處理資料，獲得各項統計指標。經典演算法是<a href="https://en.wikipedia.org/wiki/Count?in_sketch">Count-Min Sketch</a>和<a href="https://en.wikipedia.org/wiki/HyperLogLog">HyperLogLog</a>。</p>
+<p class="t">Association Rule Mining</p>
+<p><a href="https://en.wikipedia.org/wiki/Association_rule_learning">關聯規則</a>。找到資料欄位的關聯。</p>
+<p>用於廣告投放、風險投資、社會研究。從大量資料當中得到資訊，決定政策方針，甚至利用資訊不對稱來獲利。經典範例是<a href="https://www.inside.com.tw/2016/11/10/beer-diapers-myth">尿布、啤酒、星期五</a>。</p>
+<p>經典演算法是<a href="http://kuoe0.logdown.com/posts/2011/12/01/data-mining-apriori-algorithm">Apriori Algorithm</a>和<a href="http://csc.lsu.edu/~jianhua/FPGrowth.pdf">FP-Growth Algorithm</a>。</p>
+<p class="e">UVa 12560</p>
+<p class="t">Information Recommendation（Collaborative Filtering）</p>
+<p><a href="https://en.wikipedia.org/wiki/Recommender_system">推薦</a>。找出值得關注的資訊。</p>
+<p>用於購物平台、影音平台、社群平台、搜尋引擎。掌握流行趨勢，發掘第一名、最後一名。根據用戶喜好，推薦喜歡的人事物，以增加人流金流。經典範例是<a href="https://www.zhihu.com/question/20782628/answer/16162967">Netflix推薦系統</a>。</p>
+<p>經典手法是<a href="https://www.zhihu.com/question/20465266">Matrix Factorization</a>和Implicit Feedback。</p>
+<p class="e">UVa 12420</p>
+<p class="t">Knowledge Representation</p>
+<p><a href="https://en.wikipedia.org/wiki/Knowledge_representation_and_reasoning">表示</a>。組織資料，梳理思路，奠定架構。</p>
+<p>目前尚無知名成果，關鍵字也許是<a href="http://en.wikipedia.org/wiki/Semantic_web">Semantic Web</a>和<a href="http://en.wikipedia.org/wiki/Semantic_reasoner">Semantic Reasoner</a>。</p>
+<p class="t">Data Visualization / Information Visualization</p>
+<p><a href="http://en.wikipedia.org/wiki/Data_visualization">視覺化</a>、<a href="http://en.wikipedia.org/wiki/Information_visualization">視覺化</a>。將資料變成圖表。與其說是數學，不如說是藝術。已經有人<a href="http://www.springer.com/us/book/9783540330363">整理成冊</a>、<a href="http://www.datavizcatalogue.com/">整理成表</a>。知名工具如D3.js。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/PC99Nw2JX8w"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/BLBtd9p7u0M"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HIko0cdWtrU"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/NzjBPua228Q"></iframe>--></div>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/128373915"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Digital Content</p>
+</div><div class="c">
+<p class="t">Digital Content【For use in Taiwan only】</p>
+<p>「數位內容」是商業術語，也是產業名稱。</p>
+<p>數位內容在國外不是詞彙，在台灣反而成了政府支持的重要產業。想深入了解，請讀<a href="http://dcipo.org.tw/wp-content/uploads/2016/12/2015industry.pdf">2015年的官方報告</a>。</p>
+<p>台灣的產業主力不是軟體業，沒有特別培育計算機科學。缺乏基礎建設的情況之下，大家只好朝向不需要基礎知識的方向發展，因而創造出這種產業。因為價值是人類的主觀認定，所以只要不斷地宣揚好處，就能<del>創造經濟價值</del>吸金了。</p>
+<p>下面的標題都是台灣人自創的。即便國外有類似的詞彙，也不會是台灣人所講的意思。</p>
+<p class="t">數位學習</p>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/112687363"></iframe>--></div>
+<p>這段影片出現的東西，都是世界上各個實驗室正在研究、已有初步成果的技術。這部影片的宗旨是集成當今所有技術，嘗試用於教學，構造未來光景。重點在於整合規劃。</p>
+<p>對於缺乏基礎建設的台灣人或中國人來說，卻是另外一回事。這段影片非常新奇、富含創意。一些有志之士，也覺得自己國家應該群起效尤。於是成立團隊、成立公司、辦理演講、辦理活動，教育社會大眾、呼籲政府重視。但是實際上國內沒有任何人致力於學習這些技術、整合這些技術，一切的努力說穿了只是敲敲邊鼓而已。</p>
+<p>既然無能為力，務實的作為是另闢蹊徑。下面影片是台灣人的作為，強調興趣動機、強調學習成效、強調鋤強扶弱、強調先進尖端。重點在於思想創新。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/dcihmh3kWrQ"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/guCacqy4MAY"></iframe>--></div>
+<p class="t">數位出版</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fkRoVLo3j5s"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/AaJqrm4s0GI"></iframe>--></div>
+<p>大致上可以分為兩大類：電子書、網頁。</p>
+<p>電子書，大致分為三部分：書籍檔案的儲存設備，書籍檔案的瀏覽和收費介面，書籍檔案的閱讀設備。</p>
+<p>國際知名的電子書，例如Amazon Kindle。台灣自製的電子書，例如慈濟與華碩合作的靜思電子書。</p>
+<p>網頁，尚在發展當中。台灣沒有任何動靜。台灣目前最接近的概念是電子報紙、部落格，已經行之有年，沒有再進化。</p>
+<p>直接講結論：台灣市場很小，台灣出版社卻比中國還多。分崩離析，各自為政，做不起來。</p>
+<p>既然無能為力，務實的作為是另闢蹊徑。下面影片是台灣人的作為，強調國人應培養閱讀習慣、強調心路歷程、強調文化深度、強調環境保護。重點在於思想創新。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/AwWzKig93Yk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/rWA5S4nrsG0"></iframe>--></div>
+<p class="t">數位典藏</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/_2hexq64MI0"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/hMQEMda4LJQ"></iframe>--></div>
+<p>記錄具有歷史價值的事物，例如書冊、圖卷、古文物、古蹟，讓後人得以瞻仰。同時也製作便捷美觀的介面，方便後人查閱學習。值得一提的經典作品是<a href="https://zh.wikipedia.org/wiki/?餃???????瘝喳???">電子動態版《清明上河圖》</a>。</p>
+<p class="t">數位影音</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/MMZKoX8eH90"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/0O-xhjUbh6U"></iframe>--></div>
+<p>發展路線是衛星電視、數位電視、寬頻電視、網路電視。</p>
+<p>衛星電視。台灣所謂的「老三台」。訊號傳至人造衛星，人造衛星發射訊號，電視接上天線、小耳朵即可收看。</p>
+<p>數位電視。台灣所謂的「第四台」。由數位電視公司拉一條電視線到家裡。最近政府正在要求大家安裝機上盒，接收數位訊號。</p>
+<p>寬頻電視。由寬頻網路公司拉一條網路線到家裡，可以看電視，也可以上網。台灣知名的產品是中華電信MOD，可以隨時選擇想看的節目。關鍵字IPTV。</p>
+<p>網路電視。將電視內容製做成影片檔案，放在網路上，供大家即時下載即時觀看。國際知名的企業是Netflix，中國知名的軟體是PPS网络电视。台灣是大家自己看著辦。</p>
+<p>除了影視節目以外，也可以提供其他內容，例如Youtube和Vimeo提供個人影片、KKBox提供流行歌曲、Coursesa和Udacity提供教育影片。</p>
+<p class="t">數位遊戲</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/LVeBek52sJs"></iframe>--></div>
+<p>台灣遊戲業就像經營小吃攤一樣，獨立創業，做做小生意，<a href="http://blog.monkeypotion.net/life/sisyphus-stone#more-3781">常常有人滿腹辛酸</a>。詳情請參考<a href="../../images.plurk.com/32vDdBKZPcgqZRdmru2lcc.jpg">遊戲產業職業樹一覽表</a>。</p>
+<p>我覺得很納悶。如果想要製做遊戲，然後又缺資金、缺人脈、缺計畫、缺實力，那麼為何不去新力、任天堂應徵工作？如果想要建立遊戲公司，那麼為何不在家中事先試做幾個小型遊戲，直到客人滿意再來大量生產兜售？為何不先出週邊，再做遊戲？</p>
+<p>國際知名的遊戲發行商，例如Armor Game、Kongregate。國際知名的遊戲經銷商，例如Steam。現在流行的模式，是成立個人工作室，製作出遊戲之後，與前述公司簽約合作。</p>
+<p class="t">數位媒體</p>
+<p>大專院校有此科系。內容是文宣設計、影片製作，不是計算機科學所謂的媒體。簡單來說，就是活用photoshop跟發明photoshop的差別，數位媒體屬於前者。</p>
+<p>主要的應用是商業廣告、電視影集、紀錄片，非常實用。</p>
+<p class="t">數位文化</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/G-9PW3FeL1Y"></iframe>--></div>
+<p>記錄在地民俗風情。我覺得其實就是數位典藏的一種。因為現在中國政府對文創觀光興趣盎然、台灣政府積極鼓吹文創觀光，所以就出現數位文化這個詞彙了。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Information Service</p>
+</div><div class="c">
+<p class="t">Information Service</p>
+<p>「資訊服務」是商業術語，也是產業名稱。</p>
+<p>資訊服務不一定跟計算機科學有關，電腦網路設備僅是其中一個環節。想深入了解，請讀<a href="http://mic.iii.org.tw/micnew/aisp/Book.aspx?sqno=782">官方報告</a>。</p>
+<p>下面介紹的主題，都是商業術語，不是科學術語。由商業人士率先喊出，再由科學家嘗試跟進。</p>
+<p class="t">Over The Top【尚無中文翻譯】</p>
+<p>公司推出的產品或者服務，本身必須使用網路，但是公司不負責建構網路、維護網路。例如大家熟悉的Line。這種類型的商品或服務，稱做Over The Top。</p>
+<p>耗損網路商的頻寬、電力、設備，但是賺了錢卻不用分給網路商。這門生意就是這麼神奇。</p>
+<p class="t">Electronic Commerce電子商務</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/x1Mb_EiQfwc"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/5zILhcGWjhw"></iframe>--></div>
+<p>白話的說法就是網路購物。</p>
+<p>電子商店：例如美國eBay、中國淘宝网、台灣Yahoo奇摩、日本楽天市場。</p>
+<p>電子錢包：例如信用卡、悠遊卡、PayPal、Bitcoin等等。</p>
+<p>台灣的物流業已臻完善，快遞與便利商店無所不在。網路購物以物流業為基礎，簡化了購物流程。對於老闆來說，經營店面需要花錢，儲存貨物需要花錢，雇用人員需要花錢；對於顧客來說，前往購物需要花錢，尋找貨物需要花時間──而網路購物簡化了整個流程，節省了這些支出，是人類的一大進步。</p>
+<p class="t">APP行動應用程式</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Fkd9TWUtFm0"></iframe>--></div>
+<p>人人都有手機、處處都有基地台，基本建設已臻完善。</p>
+<p>手機就是電腦，而且裝備著網路連線、錄像和顯示、錄音和播放等設備，不但比家用電腦還要齊全，甚至還可以隨身攜帶。手機就像電腦一樣，可以安裝各種軟體，處理事務。腦筋動得快的人，專門替手機打造軟體，讓大家可以隨時用手機處理日常生活各種事務。這樣的軟體叫做APP。</p>
+<p>結合電子商務的概念，有些公司建立了Google Play、iOS App Store等<a href="https://zh.wikipedia.org/wiki/銵?頠??潸?撟喳?”">專門提供APP的購物網站</a>。老闆可以在網路上公開販售軟體；顧客可以在網路上隨時購買軟體，立即安裝到自己的手機。</p>
+<p class="t">Cloud雲端</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/92AClPNP_gY"></iframe>--></div>
+<p>商業人士的雲端是指：在網路上提供各種服務，例如隨時存取文件音樂影片、購物消費、溝通辦公等等。商業人士的雲端是無所不在的網路、無所不在的行動裝置、背後有個儲存一切的大型資料庫。大家可以隨時隨地上網，隨時掌握資訊。相關的口號還有<a href="https://zh.wikipedia.org/wiki/頠??單???">軟體即服務</a>。</p>
+<p>工程師的雲端是指：將所有軟體從單機版變成網頁版，軟體不需要安裝在自己電腦裡面，資料不需要儲存在自己電腦裡面。</p>
+<p>計算機科學鮮少使用這個詞彙。比較接近的概念是<a href="https://zh.wikipedia.org/wiki/蝬脫閮?">網格計算</a>。</p>
+<p>雲端具有集中管理的特質。中國政府實施資訊管制，政策上支持雲端發展，想當然台灣政府也就不落人後了。</p>
+<p>政府、企業主、投資客眼中的雲端：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Z5f2FQkLfdo"></iframe>--></div>
+<p>據說是台灣演算法先驅眼中的雲端：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/IAUbbDHkV1U"></iframe>--></div>
+<p>據說是台灣雲端運算計畫負責人眼中的雲端：</p>
+<p><a href="http://pingyeh.blogspot.com/2011/02/blog-post.html">http://pingyeh.blogspot.com/2011/02/blog-post.html</a></p>
+<p>據說曾經是台灣首富眼中的雲端：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/to0V26s1_Ds"></iframe>--></div>
+<p>據說曾經是亞洲最大軟體公司的老董眼中的雲端：</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/RYm1wE3RTLw"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HMzFgwdf5WE"></iframe>--></div>
+<p>所以有誰知道如何實作雲端？老話一句，重點在於思想創新。</p>
+<p class="t">Big Data大數據</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/upeHjkMOoW0?start=639&end=3790"></iframe>--></div>
+<p>緊隨雲端之後出現的商業術語。目前大家都不清楚這是什麼，目前沒有共識。大家看到跟數據有關係的事情，不管三七二十一，通通納入大數據。目前比較多人支持的說法是：所有東西都已經數位化，資料非常多，大家想辦法從中撈出資訊吧。</p>
+<p>也許跟大數據有關的學問：數學領域的統計學、數值分析，計算機科學領域的資料探勘、機器學習、分散式系統。<p>
+<p>也許跟大數據有關的工具：統計學軟體R、分散式計算引擎Apache Spark。</p>
+<p>也許與大數據有關的職稱：資料科學家。不過沒有人知道資料科學家到底該學什麼、要做什麼，大家各自表述。老話一句，重點在於思想創新。</p>
+<p class="t">Open Data開放資料</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/hGkxwyMQYBo"></iframe>--></div>
+<p>想要推廣大數據，首先要有數據。於是有人呼籲大家免費公開資料，讓資料創造更多價值。</p>
+<p>掌握最多資料的地方，就是政府。政府的本質是收取稅金、為民服務，因此政府開放資料給民眾是天經地義的事情，世界上的先進國家都是這麼做。然而台灣的狀況比較特殊。台灣過去採用恐怖統治、極權統治，政府控管所有資源，沒有必要公開資料讓民眾知道，導致現在的台灣政府沒有公開資料的習慣。近年正在積極改善當中。</p>
+<p>台灣有名的相關組織是g0v。</p>
+<p class="t">Internet of Things物聯網</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/6KSiKQxTXQQ"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/FP6H-UqJIoM"></iframe>--></div>
+<p>所有東西通通裝上網路連線設備，可以隨時隨地收集資訊、隨時應變、隨時控制。中國和台灣正在極力推動。相關的口號還有「區塊鏈Blockchain」。</p>
+<p class="t">Smart City智慧城市</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/6QbGfGW1-GQ"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fhkaKJI0cNE"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Sz0kHHXUw9E"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/nY5gomOUbcw"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/0I6rYiseY0Y"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/BNSZ0N_aFTY"></iframe>--></div>
+<p>所有東西通通裝上網路連線設備，可以隨時隨地收集資訊、隨時應變、隨時控制，融入每個人的日常生活。台灣的商業人士正在極力鼓吹。</p>
+<p class="t">附錄：產業生態</p>
+<p>這個產業的本質十分類似炒地蓋房。商業人士負責宣傳生活圈機能，程式設計師負責蓋出房子。前面介紹的主題，都是商業術語，不是科學術語。由商業人士率先喊出，再由科學家嘗試跟進。由於商業人士對於科學技術一知半解，導致這些術語不是基於既有的科學技術，於是常常發生「沒有人知道怎麼做」、「缺少人才」的情況。不過這些情況都不是商業人士所關心的事情。商業人士的計畫是：我負責喊口號以吸引資金，好死不死有工程師實做出來，我便成功改變世界；做不出來，再換一個口號就好。至於這會不會對人類有幫助，不是最重要的事情，只是為做而做。</p>
+<p>商業人士呼喊口號，鼓吹思想創新，運用媒體渲染，使得大眾相信有前景，不斷投入資金。沒有人知道怎麼做的情況下，鬧人才荒，導致工作薪資提高，就連毫無經驗的非本科系人士也想參與其中。更有一些人異想天開，嘗試創業，以為自己追上了浪潮，其實卻是在虛耗社會資源。亦有一些人深諳此道，公司不研發任何技術，而是發明簡單點子、四處推廣好處、快速拓展業務、迅速賣掉公司，玩起金錢遊戲。這個產業通常無須事先從事科技研發、規劃調查，就可以貿然創業，也導致大多數新創公司以失敗收場。當年的「<a href="https://zh.wikipedia.org/wiki/鈭蝬脫部瘝?">.com泡沫化</a>」就是如此。現在的矽谷、中關村仍舊如此，差別只在於多了一些創投人負責把關。</p>
+<p>這個產業是台灣資訊相關科系的主要出路。這方面的工作職位非常多，例如前端後端工程師、網頁設計師、網路管理師、系統工程師、……，學習方式是靠討論區、部落格、電腦補習班、坊間書籍，五花八門什麼都有。公司多半沒有提供完善的教育訓練，員工必須自己開讀書會學習程式語言與開發工具，然後對外宣稱說那是在研究技術，甚至有些公司標榜這是特色。</p>
+<p>在台灣，這個產業一直以來都有自己隨興發揮，自稱做了一些聽起來不得了的事情，藉由媒體報導、研討會活動捧紅身價，最後成為名人（僅限台灣）的案例。在台灣，媒體不時吹捧國外的創業成功案例、尖端科技產品，持續炒作矽谷、蘋果、互聯網等等名詞，塑造高尚形象。這些舉動讓大家精神上獲得滿足，願意認真打拼，宛如極權國家控制人民的手段。</p>
+<p>凡事都是一體兩面。雖然這個產業的本質是投機取巧，但是換個角度來看，這個產業其實有許多好處：一、激發人類的愛與勇氣，促使人類改變世界。二、炒房炒股的投資報酬率總是有天花板。讓錢多到不知道放哪裡的人，不會把錢拿去挖鑽石、買武器，而是嘗試創造新事物。三、讓新穎的科學理論、科學技術得以馬上發揮實際作用，甚至反過來促進科學發展。</p>
+<p>當商業術語凌駕科學發展，那就是虛華；當科學發展凌駕商業術語，那就是匠氣。目前來說，這是一個虛華的產業。參與這個產業之前，最好事先做好心理準備。</p>
+<p>在台灣，這個產業的知名商業人士如賀元、葉平、林之晨，知名工程師如高嘉良、簡志宇、鄭伊廷，知名公司如gogolook、阿碼科技。他們的成功故事都非常值得借鑑。例如賀元與高嘉良的官司。例如無名小站宣稱永不商業化，一邊向民眾求救募款，一邊私下與投資客合作，把無名小站賣給雅虎。例如阿瑪科技的服務跟CTF無關。希望這些人生贏家的案例，能幫助大家理解這個產業的本質，進一步找到自己的方向，讓台灣更好、讓世界更好。</p>
+<p class="t">附錄：產業分類</p>
+<p>在台灣，「資訊服務業」總是被大眾誤認為「軟體業」。</p>
+<p><a href="http://unstats.un.org/unsd/cr/registry/regcst.asp?Cl=27">國際標準產業分類</a>：J63是資訊服務業，J582是軟體業。</p>
+<p><a href="http://www.stat.gov.tw/ct.asp?xItem=40582&amp;ctNode=1309">台灣行業標準分類</a>：承襲國際標準，內容大致相同。</p>
+<p><a href="http://www.naics.com/search/">北美產業分類系統</a>：51是資訊，細分為511210軟體出版、518210資料處理與保管相關服務、……。</p>
+<p><a href="http://gcis.nat.gov.tw/cod/html/catelogo_srh.htm">台灣的公司行號營業項目代碼</a>：I3是資訊服務業，細分為I301010資訊軟體服務業、I301020資料處理服務業、I301030電子資訊供應服務業、I301040第三方支付服務業。</p>
+<p><a href="http://siccode.com/en/codes/sic/737/computer-programming-data-processing-and-other-computer-related-services">美國的標準產業分類碼（證卷交易專用）</a>：73是商業服務，737是電腦程式與資料處理等電腦相關服務，細分為7371電腦程式服務、7372套裝軟體、……。</p>
+<p>舉例來說，谷歌、百度、臉書、領英、微博、推特註冊為7370，微軟、Oracle、Adobe、AutoDesk、趨勢註冊為7372，雅虎註冊為7373，阿里巴巴註冊為7389。</p>
+<p>由國內外產業分類、國內外營業代碼，可以發現資訊服務業和軟體業是兩回事。然而台灣的工程師多半分不清楚，例如有人宣稱<a href="https://leanpub.com/the-lost-ten-years-of-taiwan-software-industry">台灣軟體業發展遲緩</a>、<a href="http://mmdays.com/2012/03/19/why-i-left-google/">台灣沒有軟體業</a>，卻把資訊服務業和軟體業混在一起講。他們的分類方式也許是要不硬體、要不軟體吧。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Data2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:19:56 GMT -->
+</html>

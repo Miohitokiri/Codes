@@ -1,0 +1,45 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q534: Frogger</h1>          
+<p>有一隻叫做Freddy的青蛙坐在湖中央的一塊石頭上，突然間他發現另一隻青蛙（她的名字是Fiona）坐在另一顆石頭上。他想要過去找她，但是因為湖水很髒，到處充滿著遊客的防曬油，所以他決定用跳的，而不要用游的。</p>  
+<p>不妙的是Fiona的石頭離他的距離超出他所能跳的範圍。因此Freddy考慮利用其他的一些石頭當作中繼站，因此他就可以跳比較小的距離（或許要跳許多次）去找Fiona。</p>  
+<p>要這樣子連續的跳，很明顯的Freddy一次能跳的距離必須至少和這一串石頭間的距離最大的距離一樣。因此，介於石頭間的蛙跳距離（frog 
+distance，人類也稱之為minmax distance）定義為要從Freddy所在的石頭要跳到Fiona所在的石頭的路徑中，最小必須要跳的距離。</p>  
+<p>給你Freddy所在的石頭、Fiona所在的石頭，以及湖中所有其他石頭的座標，你的任務是算出介於Freddy和Fiona所在石頭間的蛙跳距離。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料的第一列有1個整數n，代表石頭的數目（2 
+&lt;= n &lt;= 200）。接下來的n列每列有2個整數x<sub>i</sub>，y<sub>i</sub>（0 
+&lt;= x<sub>i</sub>，y<sub>i </sub>&lt;= 1000）代表第i顆石頭的座標。其中第一顆為Freddy所在的石頭，第二顆為Fiona所在的石頭，其他的n-2顆石頭上則是空的。</p>    
+<p>每組測試資料後有一空白列，當n=0時代表輸入結束。請參考Sample 
+Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出一列這是第幾組測試資料，以及一列蛙跳距離。</p> 
+<p>每組測試資料後亦輸出一空白列。請參考Sample Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>2
+0 0
+3 4
+
+3
+17 4
+19 4
+18 5
+
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                  
+Output</b></span></p>                              
+<pre>Scenario #1
+Frog Distance = 5.000
+
+Scenario #2
+Frog Distance = 1.414</pre>
+                            
+</body>                            
+                            
+</html>                            

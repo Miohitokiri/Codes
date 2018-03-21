@@ -1,0 +1,277 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Vision.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:31:44 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Vision</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Vision（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Vision</p>
+<p>分為兩大方向：<a href="http://en.wikipedia.org/wiki/Computer_vision">Computer Vision</a>是處理虛擬數據，<a href="https://en.wikipedia.org/wiki/Machine_vision">Machine Vision</a>是應對現實事物。</p>
+<p>知名函式庫，例如<a href="http://ccw1986.blogspot.tw/2013/09/learningopencv.html">OpenCV</a>和HALCON。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/HG0-MGjpLUY"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ZetSRWchM4w"></iframe>--></div>
+<p class="t">課程</p>
+<pre>
+http://vision.princeton.edu/courses/COS598/2014sp/
+http://vision.princeton.edu/courses/COS429/2015fa/
+https://cvg.ethz.ch/teaching/compvis/
+https://cvg.ethz.ch/teaching/3dvision/
+https://courses.cs.washington.edu/courses/cse455/10au/notes.html
+https://courses.cs.washington.edu/courses/cse455/14au/notes/index.html
+http://vision.stanford.edu/teaching.html
+http://www.cc.gatech.edu/~hays/
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Visual Sensor（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Visual Sensor</p>
+<p>視覺感測器。人類視覺依賴光線，但是<a href="http://redwood.berkeley.edu/wiki/VS298:_Animal_Eyes">動物視覺</a>、機器視覺則不見得跟光線有關。聲納、雷達、陀螺儀，都可以做為視覺設備。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/aKoKVA4Vcu0"></iframe>--></div>
+<p class="t">RGBD Sensor</p>
+<p>獲取顏色RGB數值以及深度數值。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/IqZx1ggVBOw"></iframe>--></div>
+<pre>
+http://vision.princeton.edu/research.html
+http://vision.princeton.edu/projects/2015/RobotInARoom/
+</pre>
+<pre>
+Kinect。微軟出產的RGBD sensor，知名電玩設備。
+OpenNI。偵測現實世界場景、動作的函式庫。
+</pre>
+<pre>
+disparity estimation  3d邊緣偵測
+</pre>
+<p class="t">Range Imaging</p>
+<p>獲取深度。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/QZ-RIhiBtpE"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/4t1C6T9LNCY"></iframe>--></div>
+<p class="t">Multispectral Imaging</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/LjTprliFuGs"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/S2DACEmvNv0"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Visual Recognition（Under Construction!）</p>
+</div><div class="c">
+<p class="t">文字辨識（Optical Character Recognition）</p>
+<div class="z"><!--<iframe src="http://player.vimeo.com/video/109405701"></iframe>--></div>
+<p class="t">手寫辨識（Handwriting Recognition）</p>
+<div class="pre">
+自從有了電腦之後，
+逐漸改用電腦儲存資料，節省空間。
+
+自古以來都是用鍵盤滑鼠輸入資料，
+最近幾年終於出現了比較直覺的方式，
+可以直接在觸控式螢幕上面寫字。
+雖然手寫比打字來得慢，
+但是手寫不需要額外器材，
+隨時隨地都能手寫，不需要隨身帶著一個鍵盤。
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/-vmaNljdHXk"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/bCXwfV0YEzA"></iframe>--></div>
+
+用電腦判斷使用者觸摸的地方，顯示對應線條；
+用電腦把線條軌跡轉換成文字。
+這整個稱作手寫辨識 handwriting recognition。
+另外還可以配合輸入法選字系統，以輔助辨識。
+
+最後補充一下，
+如果你覺得手寫辨識的演算法太難實作，
+也可以採用「人工智慧」的方式唷！
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/JT1eaDgdHls?start=166&end=435"></iframe>--></div>
+</div>
+<p class="t">手繪辨識（Sketch Recognition）</p>
+<div class="pre">
+事實上除了寫文字之外，也可以畫圖表。
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/N4S0QR3fYs8"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/6r6WaWVgX6k"></iframe>--></div>
+
+雖說文字是從畫圖來的（甲骨文），
+不過手寫辨識與手繪辨識的原理感覺上不太相同。
+手寫辨識注重筆順和線條走向，
+手繪辨識注重的是形狀是否相符。
+
+光是畫圖還不夠有趣，
+有了觸控式螢幕和電子白板之後，
+再結合其他技術，
+課堂上的教學花樣就變多了。
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/NZNTgglPbUA"></iframe>--></div>
+
+如果手繪辨識和手寫辨識兩個功能可以結合那就方便多了～
+</div>
+<pre>
+Unistroke Recognition
+https://depts.washington.edu/aimgroup/proj/dollar/
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Visual Tracking（Under Construction!）</p>
+</div><div class="c">
+<p class="t">手勢辨識（Gesture Recognition）</p>
+<div class="pre">
+自從 Kinect 推出之後，偵測人體動作就變得非常輕鬆。
+
+人類身體最靈巧的就是手了，
+所以手勢辨識就變得相當重要。
+除了要找到手的位置以外，還得找到手的動向才行。
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/FTNVPFeIZ3Q"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/KQotk5nWU2Y"></iframe>--></div>
+
+能夠偵測手勢之後，就可以用手代替滑鼠...
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/20OTdy1vpeA"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/k6y2hqpkxQY"></iframe>--></div>
+
+當然也可以辨識手語囉！
+配合機器學習的技術，
+還能讓電腦透過手語新聞影片自動學習。
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ngCI1DpE6T8"></iframe>--></div>
+
+加上手套、指套，
+更容易辨識手部動作，進行更精密的操作。
+再配合投影機和攝影機，就能自在的控制電腦了。
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/YrtANPtnhyg"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/6Si2Y9Sm4AE"></iframe>--></div>
+</div>
+<p class="t">臉部追蹤（Face Tracking）</p>
+<div class="pre">
+首先根據五官特徵，從影片當中找到臉部的五官位置。（Face Capture）
+相關的模型有Active Shape Model和Active Appearance Model。
+http://home.isr.uc.pt/~pedromartins/
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/GbOYh67BzII"></iframe>--></div>
+<div class="z"><!--<iframe src="http://embed.ted.com/talks/lang/zh-tw/siegfried_woldhek_shows_how_he_found_the_true_face_of_leonardo.html"></iframe>--></div>
+
+建立五官的對應關係之後，甚至可以換臉。（Face Alignment）
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/rTvdvNNiCVI"></iframe>--></div>
+
+建立五官的對應關係之後，還可以變形。（Face Interpolation）
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/o-nJpaCXL0k"></iframe>--></div>
+
+可以用來追蹤罪犯，從影片中找出臉部。（Face Detection）
+然後迅速比對面容。（Face Recognition）
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/_QiyFQ05Nh8"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/wrUGO5BvibI"></iframe>--></div>
+
+或者是動畫配音。
+依照嘴型，鑲嵌文字，稱做「配音Dedubbing」。
+依照文字，鑲嵌嘴型，稱做「對嘴Lip Sync」。
+McGurk Effect
+https://www.youtube.com/watch?v=_UzWeZZ9XeQ
+http://gvv.mpi-inf.mpg.de/projects/VisualDubbing/index.html
+
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Kt9_1eyQE38"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/BS0T8Cd4UhA"></iframe>--></div>
+
+最後來個大合體
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/GvMjFIomhpQ"></iframe>--></div>
+</div>
+<p class="t">唇語辨識（Lipreading）</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/5aogzAUPilE"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fa5QGremQf8"></iframe>--></div>
+<p class="t">車牌辨識（License Plate Recognition）</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/EEYbseSqNBQ"></iframe>--></div>
+<div class="pre">
+車牌辨識主要的用途是監視行車安全、捕捉罪犯。
+
+文字辨識的加強版。關鍵點在於如何找到車牌位置。
+可以說是幾乎已被徹底解決的問題，因此不是當前的研究熱點。
+另一方面車牌辨識很容易找到替代方案，例如e-tag。
+</div>
+<p class="t">物體辨識（Object Recognitiom）</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/7Nxl5SRmFkQ"></iframe>--></div>
+<p class="t">物體追蹤（Object Tracking）</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/1GhNXHCQGsM"></iframe>--></div>
+<div class="pre">
+http://info.ee.surrey.ac.uk/Personal/Z.Kalal/tld.html
+
+有位學生開發了物體追蹤的演算法，
+可以偵測、追蹤攝影鏡頭中的物體，
+物體的種類可以自行設定。
+
+使用到了影像處理和機器學習的學問，
+抽取色彩和連通性之類的東西作為特徵，
+然後進行圖片辨識。
+</div>
+<p class="t">肢體動作追蹤（Human Pose Tracking）</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/5rnRWIjFIDc"></iframe>--></div>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Visual Measurement（Under Construction!）</p>
+</div><div class="c">
+<p class="t">視覺測量（Visual Measurement）</p>
+<p>觀看物體，測量長度。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/02lLpeT3pyo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/I6UK1ImDrvs"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/ANk6uC1BY_E"></iframe>--></div>
+<p class="t">視覺隨動（Visual Servoing）</p>
+<p>根據視覺做動作。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/eisG5-A_YWc
+"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/tIIJME8-au8
+"></iframe>--></div>
+<p class="t">自動光學檢查（Automated Optical Inspection）</p>
+<div class="pre">
+在工廠產品線上，用機器代替人類手眼，
+配合光學攝影檢查產品瑕疵，
+配合機械手臂拼裝零件。
+人類只要檢查機器是否正常運作即可。
+</div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/SvjYOpwDIcE"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/DAYAAlqJPew"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/bv03myRVeu4"></iframe>--></div>
+<p class="t">視覺測程（Visual Odometry）</p>
+<p>走動觀看環境，察覺自身動向。彷彿知覺動作訓練。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fqWdSfN9FiA"></iframe>--></div>
+<p class="t">視覺同步定位與建圖（Visual SLAM）</p>
+<p>走動觀看環境，察覺自身方位、繪製周遭地圖。彷彿即時戰略遊戲的開圖過程。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/Q3EMgGI6E5s"></iframe>--></div>
+<pre>
+Monte Carlo localization
+http://www.cs.washington.edu/robotics/mcl/
+
+1. 首先要有地圖。
+
+2. 地圖的建立方法
+  (1) 通常沿著天花板走
+  (2) range sensor照一照，得到一堆點。
+  (3) Hough Transform/RANSAC/ICP拉成直線。
+
+3. 機器人在某處重開機，不知自己身在何處，準備密室逃脫。
+
+4. 機器人看到門，找到地圖上所有一樣的門，在地圖上標記。
+   讓這些地點的機率特別大、一樣大。
+
+5. 機器人移動，地圖上所有標記處一起移動。地圖沒有動。
+  (1) 如果不知道方位，所有標記處呈輻射散開。其實可以裝個指南針。
+  (2) 如果知道方位，所有標記處朝同一方向移動。
+
+6. 機器人又看到門，找到地圖上所有一樣的門，在地圖上標記。
+  (1) 原標記、新標記重疊。使用乘法，而不使用加法。
+  (2) 統計學的觀點，這是兩次觀察，理應是joint distribution。
+
+7. 一直重複上述行為，直到某個標記處機率特別高，
+   機器人就能確定自己正在何處。甚至倒推軌跡。
+
+8. 除了門以外，最常用的是牆壁、地標。
+   地標只有一處有，機率特別高。標記重疊時，使用乘法，乘出來的機率特別大。
+
+9. belief, bayes是用來裝作文青的。
+   (1) 機器人移動時，標記跟著移動，此處可以再套上機率。
+       決定哪個移動方向最有可能出現。
+
+10. 至於如何從一張圖片上找出地標，是影像處理的問題。
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Vision.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:31:44 GMT -->
+</html>

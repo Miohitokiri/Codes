@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q145: Gondwanaland Telecom</h1>          
+<p>Gondwanaland Telecom這家電話公司收費的標準是以所撥電話的距離及時段來訂定的，如下表。在這裡charging 
+step就是指不同的距離。</p>  
+<p><img border="0" src="p145.gif" width="478" height="154"></p>  
+<p>所有的收費是根據該通電話每一分鐘多少錢來計算的，所以若有某通電話有跨時段，則按時段不同的收費標準分別計算在加總。例如：有一通電話從5:58pm開始到6:04pm結束，那前2分鐘是按白天（Day）的標準計費，而後4分鐘則按傍晚（Evening）的標準計費。</p>  
+<p>所有小於一分鐘的電話不列入計費，而且沒有一通電話會持續超過24小時。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每筆測試資料一列，代表某通電話的通話記錄。每列輸入資料包含6個部分，第一個部分為charging 
+step（大寫字母A~E）。第二個部分為所撥的電話號碼（為7個數字及一個&quot;-&quot;的字串），第三、四個部分代表通話開始的時間：時及分。第五、六個部分代表通話結束的時間：時及分（均以24小時的時鐘來看，時、分均以2個數字來表現）。</p>  
+<p>若輸入列的第一個字為#，代表輸入結束。請參考Sample Input</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一筆測試資料輸出一列，也包含6個部分。</p> 
+<p>第一個部分為所撥的電話號碼。第二、三、四部分分別代表這通電話所用各時段（Day,Evening,Night）的分鐘數，第五個部分為charging 
+setp，第六個部分為這通電話總共計費多少錢。</p> 
+<p>各部分輸出於一定位置，以靠右對其來說，分別在10,16,22,28,31,39的位置。請參考Sample 
+Output</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                     
+Input</b></span></p>                              
+<pre>C 765-7457 10 41 04 29
+B 207-0225 21 28 07 53
+B 316-0414 16 43 09 37
+C 463-1401 19 28 00 33
+D 514-9373 01 20 09 08
+#</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>  765-7457   439   240   389  C  362.44
+  207-0225     0    32   593  B   34.45
+  316-0414   174   240   600  B  109.50
+  463-1401     0   152   153  C   70.05
+  514-9373    68     0   400  D  127.16</pre> 
+                            
+</body>                            
+                            
+</html>                            

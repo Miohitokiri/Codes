@@ -1,0 +1,397 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Domination.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:08:00 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Domination</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Domination</p>
+</div><div class="c">
+<p class="t">Domination</p>
+<p>Domination是一個泛稱，專指「支配鄰近元件」這一類的圖論主題，例如Packing與Covering。</p>
+<p>「填裝Packing」是使用一種元件，填滿圖上全部的點、或者邊。元件用量越多越好。</p>
+<p>例如選一些點，但是互不相鄰，稱作Independent Set。</p>
+<img src="Domination1.png">
+<p>「覆蓋Covering」是使用一種元件，蓋住圖上全部的點、或者邊。元件用量越少越好。</p>
+<p>例如拿一些點，蓋住所有鄰點，稱作Dominating Set；例如拿一些點，蓋住所有邊，叫做Vertex Cover；例如拿一些邊，蓋住所有點，叫做Edge Cover。</p>
+<img src="Domination2.png">
+
+</div></div><div class="a"><div class="h">
+<p class="b">Independent Set</p>
+</div><div class="c">
+<p class="t">Independent Set</p>
+<p>無向圖上，選定數點，互不相鄰，稱作「獨立集」。</p>
+<img src="IndependentSet1.png">
+<p>各點之間不相鄰，換到補圖上面就是，各點之間都有邊。原圖的Clique，就是補圖的Independent Set；原圖的Independent Set，就是補圖的Clique。</p>
+<img src="IndependentSet2.png">
+<pre>
+Maximum Independent Set [NP-complete]
+無向圖上，點數最多的Maximum Independent Set。
+
+Maximum Independent Set in Tree [P]
+當給定的圖是樹，得利用Greedy Method求解。
+
+Maximum Independent Set in Bipartite Graph [P]
+當給定的圖是二分圖，得利用Maximum Cardinality Bipartite Matching求解。
+</pre>
+<p class="e">UVa 193 11065 11069 1220</p>
+<p class="t">Independent Edge Set（Matching）</p>
+<p>無向圖上，選定數邊，互不相鄰，稱作「邊獨立集」。正是先前介紹的「匹配」。</p>
+<img src="IndependentSet3.png">
+<p class="t">Maximum Independent Set</p>
+<p>由於是NP-complete問題，目前沒有多項式時間演算法。</p>
+<p>一般都是採用Backtracking計算Maximum Independent Set。亦得改為計算Maximum Clique，請參考本站文件「<a href="ChordalGraph.html">Clique</a>」。</p>
+<p class="t">Maximum Independent Set in Tree</p>
+<p>以邊邊角角的點作為最大獨立集，似乎還不錯。</p>
+<img src="IndependentSet4.png">
+<p>在樹上，邊邊角角的點就是樹葉。運用Divide and Conquer，觀察樹葉及其鄰點，將問題分割成四種情況：</p>
+<pre>
+一、樹葉與父親都是最大獨立集：不成立。
+二、樹葉與父親都不是最大獨立集：那不如採用三或四，獨立集更大。
+三、樹葉是，父親不是：可以一試。
+四、樹葉不是，父親是：可以一試。
+</pre>
+<img src="IndependentSet5.png">
+<p>以樹葉作為最大獨立集，不但填裝比較多點，而且剩餘的圖比較大張、得以填裝更多點！</p>
+<p>於是發現了一個Greedy演算法：由樹葉往樹根方向選出獨立集，儘量選擇樹葉，最後就得到最大獨立集。不過這種方式無法得到字典順序最小的最大獨立集。</p>
+<p>時間複雜度等同於一次Graph Traversal的時間。</p>
+<pre>
+一、建立DFS Tree，找出preorder。
+二、以preorder的逆序，選出Independent Set。
+</pre>
+<pre>
+一、建立BFS tree，找出levelorder。
+二、以levelorder的逆序，選出Independent Set。
+</pre>
+<textarea>
+const int V = 9;
+int adj[9][9];	// adjacency matrix
+bool visit[9];	// DFS visit record
+int parent[9];	// DFS tree
+int order[9];	// preorder
+int t = 0;
+
+bool independent[9];	// Maximum Independent Set
+
+void DFS(int i)
+{
+	order[t++] = i;
+	visit[i] = true;
+	for (int j=0; j<V; ++j)
+		if (adj[i][j] && !visit[j])
+		{
+			DFS(j);
+			parent[j] = i;
+		}
+}
+
+void maximum_independent_set()
+{
+	memset(visit, false, sizeof(visit));
+	memset(parent, -1, sizeof(parent));
+	t = 0;
+	DFS(0);
+
+	memset(independent, true, sizeof(independent));
+	for (int k=V-1; k>=0; --k)
+	{
+		int i = order[k];	// get a leaf
+		if (!independent[i]) continue;	// removed
+//		independent[i] = false;	// remove child
+		if (parent[i] != -1)	// remove parent
+			independent[parent[i]] = false;
+	}
+}
+</textarea>
+<p class="t">Maximum Independent Set in Bipartite Graph</p>
+<p>二分圖當中，「最大點獨立集」與「最大邊獨立集」關係密切！</p>
+<img src="IndependentSet6.png">
+<img src="IndependentSet7.png">
+<p>首先找到最大二分匹配，可以分類成三種情況：</p>
+<pre>
+甲、X側未匹配點的交錯樹們。
+乙、Y側未匹配點的交錯樹們。
+丙、皆是已匹配點的交錯環們（包含單獨的匹配邊）。
+</pre>
+<p>這三個情況互不干涉，是數塊連通分量。用Graph Traversal建立甲、乙的交錯樹們，剩下部分就是丙。</p>
+<p>在二分圖上，邊邊角角的點就是交錯樹的樹葉，而交錯樹的樹葉總是位於偶數距離。要找最大點獨立集，甲、乙是取盡偶數距離的點，丙是取盡偶數距離的點、或者是取盡奇數距離的點，每塊連通分量可以各自為政。最大獨立集的大小，就是匹配邊的數量加上未匹配點的數量。小心處理的話，可以得到字典順序最小的最大獨立集。</p>
+<p>已經有最大二分匹配時，求最大點獨立集的時間複雜度等同於一次Graph Traversal的時間。</p>
+<textarea>
+const int X = 9, Y = 9;
+bool adj[9][9];	// adjacency matrix
+bool mx[9], my[9];
+int cx[9], cy[9];
+bool ix[9], iy[9];	// independent set
+
+bool match(int x)
+{
+	for (int y=0; y<Y; ++y)
+		if (adj[x][y] && !my[y])
+		{
+			my[y] = true;
+			if (cy[y] == -1 || match(cy[y]))
+			{
+				cx[x] = y; cy[y] = x;
+				return true;
+			}
+		}
+	return false;
+}
+
+int maximum_cardinality_bipartite_matching()
+{
+	memset(cx, -1, sizeof(cx));
+	memset(cy, -1, sizeof(cy));
+
+	int c = 0;
+	for (int x=0; x<X; ++x)
+	{
+		memset(my, false, sizeof(my));
+		if (match(x)) c++;
+	}
+	return c;
+}
+
+void DFSx(int x)
+{
+	ix[x] = true;	// even distance vertex
+	for (int y=0; y<Y; ++y)
+		if (adj[x][y] && !my[y])
+		{
+			my[y] = true;
+			if (cy[y] != -1) DFSx(cy[y]);
+		}
+}
+
+void DFSy(int y)
+{
+	iy[y] = true;	// even distance vertex
+	for (int x=0; x<X; ++x)
+		if (adj[x][y] && !mx[x])
+		{
+			mx[x] = true;
+			if (cx[x] != -1) DFSy(cx[x]);
+		}
+}
+
+void maximum_independent_set()
+{
+	maximum_cardinality_bipartite_matching();
+
+	// 建立X側未匹配點的交錯樹們
+	memset(ix, false, sizeof(ix));
+	memset(my, false, sizeof(my));
+	for (int x=0; x<X; ++x)
+		if (cx[x] == -1)
+			DFSx(x);
+
+	// 建立Y側未匹配點的交錯樹們
+	memset(iy, false, sizeof(iy));
+	memset(mx, false, sizeof(mx));
+	for (int y=0; y<Y; ++y)
+		if (cy[y] == -1)
+			DFSy(y);
+
+	// X側未匹配點的交錯樹們＋層層疊疊的交錯環們
+	for (int x=0; x<X; ++x)
+		if (ix[x] || (cx[x] != -1 && !mx[x] && !my[cx[x]]))
+			cout << "選中X側的第" << x << "點";
+
+	// Y側未匹配點的交錯樹們
+	for (int y=0; y<Y; ++y)
+		if (iy[y])
+			cout << "選中Y側的第" << y << "點";
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dominating Set</p>
+</div><div class="c">
+<p class="t">Dominating Set</p>
+<p>無向圖上，選定數點，其餘點皆與之相鄰，稱作「支配集」。</p>
+<img src="DominatingSet1.png">
+<pre>
+Minimum Dominating Set [NP-complete]
+無向圖上點數最少的Dominating Set。
+
+Minimum Dominating Set in Tree [P]
+當給定的圖是樹，得利用DP求解。
+
+Minimum Dominating Set in Bipartite Graph [NP-complete]
+當給定的圖是二分圖。
+</pre>
+<p class="e">UVa 10160 1218</p>
+<p class="t">Edge Dominating Set</p>
+<p>無向圖上，選定數邊，其餘邊皆與之相鄰，稱作「邊支配集」。</p>
+<pre>
+Minimum Edge Dominating Set [NP-hard]
+無向圖上邊數最少的Edge Dominating Set。
+</pre>
+<p class="t">Independent Set與Dominating Set</p>
+<pre>
+independent set
+獨立集。選出一些點，互不相鄰。最佳化問題是越多越好。
+dominating set
+支配集。選出一些點，其餘點皆與之相鄰。最佳化問題是越少越好。
+</pre>
+<pre>
+maximal independent set
+極大獨立集。無法再選出一些點的獨立集。
+maximum independent set
+最大獨立集。點數最多的獨立集（點數最多的極大獨立集）。
+</pre>
+<p>極大獨立集，必是支配集、必是極小支配集。</p>
+<img src="DominatingSet2.png">
+<p>極小支配集，不一定是獨立集、不一定是極大獨立集。</p>
+<img src="DominatingSet3.png">
+<p class="t">延伸閱讀：Independent Dominating Set</p>
+<p>「獨立支配集」。既是支配集、又是獨立集。</p>
+<p class="t">延伸閱讀：Irredundant Set</p>
+<p>每一個選定的點，至少都有一個只有自己才能支配到的點。自己可以支配自己。</p>
+<p>Maximal Irredundant Set = Minimal Dominating Set，一一對應。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Vertex Cover</p>
+</div><div class="c">
+<p class="t">Vertex Cover</p>
+<p>一張無向圖上，挑選數個點，碰觸到所有邊，這些點就叫做一個「點覆蓋」，可能有許多種。換句話說，每一條邊，都會碰觸到一個以上的選定點。</p>
+<img src="VertexCover1.png">
+<p>點覆蓋，就像是紙鎮，壓住了所有邊，讓邊不會被吹走。</p>
+<p>點覆蓋，一個點集合，這些點會是圖上每一條邊，其中一端或兩端的端點。</p>
+<pre>
+Minimum Vertex Cover [NP-complete]
+一張圖上點數最少的Vertex Cover。
+
+Minimum Vertex Cover in Tree [P]
+當給定的圖是樹，得利用Greedy演算法，從樹葉往樹根方向選出節點。
+
+Minimum Vertex Cover in Bipartite Graph [P]
+當給定的圖是二分圖，得化作Maximum Cardinality Bipartite Matching解決。
+</pre>
+<p class="e">UVa 10243 10859 10984 11419 11095 ICPC 2897</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Edge Cover</p>
+</div><div class="c">
+<p class="t">Edge Cover</p>
+<p>一張無向圖上，挑選數條邊，碰觸到所有點，這些邊就叫做一個「邊覆蓋」，可能有許多種。</p>
+<img src="EdgeCover1.png">
+<pre>
+Minimum Edge Cover [P]
+一張圖上邊數最少的Edge Cover。
+得化作Maximum Matching解決。
+
+Minimum Edge Cover in Bipartite Graph [P]
+當給定的圖是二分圖，得利用Greedy演算法，優先覆蓋degree最小的點。
+
+Minimum/Maximum Weight Edge Cover [P]
+一張圖上權重最小（大）的Edge Cover。
+得化作Minimum/Minimum Weight Matching解決。【待補文字】
+</pre>
+<p class="e">UVa 10349</p>
+<p class="t">Minimum Edge Cover</p>
+<p>首先在圖上求得一個Maximum Matching之後，對於那些單身的點，都由匹配點連過去。如此便形成了Minimum Edge Cover。</p>
+<p class="t">Packing與Covering</p>
+<p>一般圖，Packing與Covering相互對應。</p>
+<pre>
+General Graph:
+
+|Maximum Independent Set|      + |Minimum Vertex Cover| = |V|
+|Maximum Independent Edge Set| + |Minimum Edge Cover|   = |V|
+
+各種點獨立集、各種點覆蓋，恰好互補，一一對應。
+最大點獨立集、最小點覆蓋，兩者當然也是互補。
+各種邊獨立集（匹配）、各種邊覆蓋，沒有互補，沒有一一對應、。
+最大邊獨立集（最大匹配）、最小邊覆蓋，兩者幾乎相等，差異是未匹配點所連接的邊。
+</pre>
+<img src="EdgeCover2.png">
+<p>引入Clique。Clique、Independent Set、Vertex Cover，三者等價，可以互相轉換。</p>
+<img src="EdgeCover3.png">
+<p class="t">Packing與Covering in Bipartite Graph</p>
+<p>二分圖，性質更強。König's Theorem。</p>
+<pre>
+Bipartite Graph:
+
+|Maximum Independent Set|       = |Minimum Edge Cover|
+|Maximum Independent Edge Set|  = |Minimum Vertex Cover|
+
+|Maximum Independent Set|      + |Minimum Vertex Cover| = |V|
+              +                             +
+|Maximum Independent Edge Set| + |Minimum Edge Cover|   = |V|
+              ||                            ||
+             |V|                           |V|
+</pre>
+<img src="EdgeCover4.png">
+<p>引入Biclique。Biclique、Independent Set、Vertex Cover，三者等價，可以互相轉換。</p>
+<p>最佳化問題當中，此三者與Edge Cover、Independent Edge Set = Matching，五者等價，可以互相轉換，都可以套用s-t Cut、s-t Flow解決。</p>
+<img src="EdgeCover5.png">
+<p class="e">UVa 11159 12083 12168 ICPC 6309</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Path Domination</p>
+</div><div class="c">
+<p class="t">概論</p>
+<pre>
+問題有兩種：Packing、Covering。
+支配元件有兩種：路徑、環。
+支配元件限制有兩種：點不重覆（邊亦然）、邊不重覆。
+被支配元件有兩種：所有點、所有邊（點亦然）。
+最佳化有四種：支配的路徑數量、路徑長度、單一路徑長度；被支配的點（邊）數量。
+</pre>
+<p>總共2*2*2*2*4種組合，並不是全部都具備討論意義。以下列出我遭遇過的組合，也歡迎大家提供其他組合的題目。</p>
+<p class="t">Packing系列</p>
+<pre>
+{Minimum Cardinality} Vertex-disjoint Path + Vertex + Packing
+Graph [NP-hard] 等同許多條Hamilton Path。
+Tree  [Linear]  Greedy。從樹葉往樹根方向選出路徑。
+                建立BFS Tree。
+                以levelorder的逆序拜訪各點。
+                如果該點的鄰邊超過二條，
+                就隨意留下兩條連往小孩的邊，刪除其餘鄰邊。
+DAG   [P]       化作Maximum Cardinality Bipartite Matching。
+                DAG的邊i->j，對應到二分圖的邊Xi->Yj。
+                當匹配數越大，則尾端端點越少，則路徑數也越少。
+</pre>
+<img src="PathPacking1.png">
+<p class="e">UVa 11381 12831</p>
+<pre>
+{Maximum/Minimum Weight} Vertex-disjoint Path + Vertex + Packing
+Graph [NP-hard] 等同許多條Hamilton Path。
+Tree  [P]       Dynamic Programming。從樹葉往樹根方向遞歸。
+DAG   [P]       化作Maximum Weight Bipartite Matching。
+</pre>
+<p class="e">ICPC 4141</p>
+<pre>
+{Minimum/Maximum Weight} Vertex-disjoint Cycle + Vertex + Packing
+Graph   [P]     即是Minimum/Maximum Weight 2-Factor。
+Digraph [P]     化作Maximum/Minimum Weight Perfect Bipartite Matching。
+                DAG的邊i->j，對應到二分圖的邊Xi->Yj。
+</pre>
+<img src="CyclePacking1.png">
+<p class="e">ICPC 3353 7463</p>
+<pre>
+{Minimum Cardinality} Edge-disjoint Path + Edge + Packing
+Graph [P]       等同許多條Euler Trail。
+                無向圖：不斷以奇點作為路徑起點。答案為奇點數目的一半。
+                有向圖：出邊多於入邊的點，走向入邊多於出邊的點。
+</pre>
+<p class="e">UVa 10248</p>
+<pre>
+{Minimum/Maximum Weight} Edge-disjoint Path + Edge + Packing
+Graph [P]      其實就是整張圖所有邊的權重總和。trivial。
+</pre>
+<pre>
+{Minimum/Maximum Weight} Edge-disjoint Cycle + Edge + Packing
+Graph [P]      Minimum Cost Flow。
+</pre>
+<p class="e">ICPC 4030</p>
+<p class="t">Covering系列</p>
+<pre>
+{Minimum Cardinality} <del>Vertex-disjoint</del> Path + Edge + Covering
+Graph [P]      Minimum s-t Flow。源點連至沒有入邊的點，沒有出邊的點連至匯點。
+</pre>
+<p class="e">UVa 1440 ICPC 4597</p>
+<p class="t">Cycle Double Cover Conjecture</p>
+<p><a href="http://en.wikipedia.org/wiki/Cycle_double_cover">http://en.wikipedia.org/wiki/Cycle_double_cover</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Domination.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:08:28 GMT -->
+</html>

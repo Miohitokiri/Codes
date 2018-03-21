@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q112: Tree Summing</h1>          
+<p>LISP是最早的高階程式語言之一，而Lists則是LISP中最重要的資料結構。Lists可以很簡單的用來表達其他的資料結構，例如：tree。在這個問題中，給你LISP中的S表示式（S-expression），請你寫一個程式判斷這表示式（整數的二元樹）是否存在一條由根節點到樹葉的路徑，且路徑上各節點的值的和為某一特定的數   
+n。例如：在以下的樹中共有4條從根到樹葉的路徑。而各路徑的和分別為27,22,26以及18。</p>  
+<p align="center"><img border="0" src="p122.gif" width="290" height="226"></p>  
+<p align="left">在LISP中的S表示式有以下的格式：</p>  
+<pre><font color="#0000FF"><i>empty tree ::= ()
+tree ::= empty tree | (integer tree tree)</i></font></pre>
+<p align="left">上圖中的樹若以S表示式表達為：(5 (4 (11 (7 () ()) 
+(2 () ()) ) ()) (8 (13 () ()) (4 () (1 () ()) ) ) )</p>  
+<p align="left">注意：在樹中所有的葉節點為 (integer () () )</p>  
+<p align="left">既然空樹不存在任何根到葉的路徑，任何對空樹是否有某個和的詢問，其答案都是否定的。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每組測試資料的開頭有一個整數 n。接下來為一S表示式。所有的S表示式一定是合法的，但是可能會跨多列，並且可能含有空白字元。請參考Sample Input。</p>        
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料輸出一列。如果S表示式所表達的樹存在一條由根到葉的路徑，且路徑上節點值的和為n的話，則輸出yes，否則輸出no。</p>    
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Input</b></span></p>                              
+<pre>22 (5(4(11(7()())(2()()))()) (8(13()())(4()(1()()))))
+20 (5(4(11(7()())(2()()))()) (8(13()())(4()(1()()))))
+10 (3 
+     (2 (4 () () )
+        (8 () () ) )
+     (1 (6 () () )
+        (4 () () ) ) )
+5 ()</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>yes
+no
+yes
+no</pre>
+                            
+</body>                            
+                            
+</html>                            

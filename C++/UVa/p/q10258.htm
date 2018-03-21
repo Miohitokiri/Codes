@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10258: Contest Scoreboard</h1>          
+<p>有想過程式設計比賽的計分版是錯的嗎？現在你有機會來瞭解一下正確的排名方式了。          
+<p>參賽者首先根據解出題數來排名，越多的越好。若是解出的題數一樣則按照處罰時間（penalty 
+time）來排名，越小的越好。若是解出題數及處罰時間都一樣，則按照參賽者的編號由小到大來排。<p>某參賽者被視為解出某一個問題乃由於裁判裁定其某次上傳的答案為正確（也就是Accept啦）。而各參賽者處罰時間的計算方式為：他各題的處罰時間的總和。而某人某題處罰時間的計算方式為：某人某題被判為正確時所花的時間（單位：分鐘）加上該題之前被判為錯誤的上傳次數*20分鐘。例如某人某題在第100分鐘時上傳答案且裁判判為正確，且在這之前此題他曾送出3次錯誤答案。所以他此題的處罰時間為100+3*20=160。請注意：未解出的問題不列入處罰時間，不論他這題送了幾次錯誤答案。另外，某一題的處罰時間只算到該題第一次被判為正確。若某人某題已解出後仍繼續上傳該題答案，則裁判將忽略那些答案。
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+輸入的第一列有一個正整數，代表以下有多少組測試資料。每組測試資料的的內容為裁判收到各次上傳資料及判定的紀錄，包含參賽者編號、題號、上傳時間（按時間排序）及裁判結果，以下列的格式呈現：
+<p><b>contestant&nbsp; problem&nbsp; time&nbsp; L</b></p>
+<p>其中contestant為參賽者編號（1～100），problem為題目編號（1～9），time為上傳的時間（從比賽開始算起的分鐘數），L為裁判結果，分為C、I、R、U、E。C代表正確，I代表不正確，後三者不影響分數。</p>
+<p>輸入的第一列與第一組測試資料之間，以及各組測試資料之間均有一空白列，請參考Sample Input。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                           
+每組測試資料按上面題目所述的方法輸出排名，包括參賽者編號、解出的題數及處罰時間。由於並非1～100號所有的參賽者均有真正出席參賽，所以只需列出有上傳答案的參賽者。
+<p>測試資料間亦請空一列，請參考Sample Output。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                       
+Input</b></span></p>                                              
+<pre>2
+
+1 2 10 I
+3 1 11 C
+1 2 19 R
+1 2 21 C
+1 1 25 C
+
+1 2 10 I
+3 1 11 C
+1 2 19 R
+1 2 21 C
+1 1 25 C
+6 1 50 I
+7 1 60 E</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                
+Output</b></span></p>                                              
+<pre>1 2 66
+3 1 11
+
+1 2 66
+3 1 11
+6 0 0
+7 0 0</pre>   
+                                            
+</body>                                            
+                                            
+</html>                                            

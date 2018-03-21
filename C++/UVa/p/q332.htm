@@ -1,0 +1,56 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q332: Rational Numbers from Repeating Fractions</h1>    
+<p align="left">任何一個有理數一定可以分數的型態p/q來表示，在這裡p,q為整數。以7/22這個分數來說，其十進位的表示法為0.31818181818…其循環小數表示法為<img src="p332_1.gif" width="31" height="15">  
+，表示 18會永遠循環下去。       
+</p>         
+<p align="left">現在我們的問題是給你一個小於 1 的小數並告訴你從哪一個數字開始循環，請你寫一個程式輸出其分數的型態（也就是求p,q）。       
+</p>         
+<p align="left"><br>   
+你可以使用下面的演算法來解決問題：<br>   
+假設小數點後有 k 個不循環的數字然後有 j 個循環的數字。以7/22=.31818181818...... 為例，k=1（數字3）, j=2（數字1和8）。若以X代表<img src="p332_1.gif">，其分數表示法為：       
+</p>         
+<p align="left"><img src="p332_2.gif" width="332" height="41">     
+</p>         
+<p align="left">     
+我們可以算出分子：<br> 
+<br> 
+<img src="p332_3.gif"><br> 
+<br>  
+和分母：1000-10=990     
+</p>         
+<p align="left"><br> 
+所以<img src="p332_1.gif" width="31" height="15">  
+ 的分數表示法為315/990，經過約分後可以得到7/22        
+</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>         
+<p align="left">輸入包含好幾行測試資料，每行的第1個數字代表j，接著一個空白，然後是0.ddddd…（d代表一個十進位的數字,最多有9個d，也就是說k+j最大可為9，注意：j有可能為0，代表不是循環小數）<br>   
+j=-1代表輸入結束。</p>       
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>       
+<p align="left">對每一行輸入資料，輸出第幾個Case，然後輸出其有理數的表示法p/q（需約分）。見Sample output。</p>       
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample             
+Input</b></span></p>          
+<pre>2 0.318
+1 0.3
+2 0.09
+6 0.714285
+-1</pre>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample           
+Output</b></span></p>          
+<pre>Case 1: 7/22
+Case 2: 1/3
+Case 3: 1/11
+Case 4: 5/7</pre>  
+          
+</body>          
+          
+</html>          

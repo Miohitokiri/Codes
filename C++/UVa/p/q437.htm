@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q437: The Tower of Babylon</h1>             
+<p>或許你曾聽過巴比倫塔的傳說，現在這個故事的許多細節已經被遺忘了。現在，我們要告訴你整個故事：</p>
+<p>巴比倫人有 n 
+種不同的積木，每種積木都是實心長方體，且數目都是無限的。第 
+i 種積木的長寬高分別為 { <b>x<sub>i</sub>, y<sub>i</sub>, z<sub>i </sub></b>}。積木可以被旋轉，所以前面的長寬高是可以互相換的。也就是其中2個組成底部的長方形，剩下的一個為高度。巴比倫人想要盡可能的用積木來堆高塔，但是兩塊積木要疊在一起是有條件的：只有在第一塊積木的底部2個邊均小於第二塊積木的底部相對的2個邊時，第一塊積木才可以疊在第二塊積木上方。例如：底部為3x8的積木可以放在底部為4x10的積木上，但是無法放在底部為6x7的積木上。</p>
+<p>給你一些積木的資料，你的任務是寫一個程式算出可以堆出的塔最高是多少。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入含有多組測試資料。每組測試資料的第一列含有1個整數 n（n&lt;=30），代表以下有幾種不同的方塊。接下的n列每列有3個整數 
+<b>x<sub>i</sub>, y<sub>i</sub>, z<sub>i</sub></b>，代表某一種積木的3個邊長。</p>                   
+<p>n=0代表輸入結束，請參考Sample Input。</p>                   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                     
+<p>對每組測試資料輸出可以堆出的塔最高是多少。</p>                  
+<p>輸出格式請參考Sample Output。</p>                  
+<table border="1" width="100%" cellpadding="5">                     
+  <tr>                     
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                       
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                      
+  </tr>                                      
+  <tr>                                      
+    <td width="50%">                          
+      <pre>1
+10 20 30
+2
+6 8 10
+5 5 5
+7
+1 1 1
+2 2 2
+3 3 3
+4 4 4
+5 5 5
+6 6 6
+7 7 7
+5
+31 41 59
+26 53 58
+97 93 23
+84 62 64
+33 83 27
+0</pre>
+    </td>                                   
+    <td width="50%">                             
+      <pre>Case 1: maximum height = 40
+Case 2: maximum height = 21
+Case 3: maximum height = 28
+Case 4: maximum height = 342</pre>
+    </td>                                  
+  </tr>                                  
+</table>                                  
+                                                                    
+</body>                                                                    
+                                                                    
+</html>                                                                    

@@ -1,0 +1,685 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Function2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:01 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Function</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Function (ℝ)</p>
+</div><div class="c">
+<p class="t">Numeric Array</p>
+<img src="NumericFunction1.png">
+<p>陣列相信大家耳熟能詳。各個整數位置，各有一個數值。</p>
+<p class="t">Numeric Function</p>
+<img src="NumericFunction2.png">
+<blockquote>
+Plot3D[(x-3)*(x-3)*(x-3)*(y-1)*(y-1)*2*x*y, {x, -0.1, 4.4}, {y, -0.2, 1.5}, PlotRange -> {-3, 3}, Boxed -> False, Axes -> False, ColorFunction -> "SolarColors"]
+</blockquote>
+<p>函數的概念，請參考本站文件「<a href="Function.html">Function</a>」。此處僅專注於有著數值、有得計算的函數。函數可以想成是陣列的連續版本。</p>
+<p class="t">Function可以畫成圖形</p>
+<p>窮舉各種輸入，分別計算輸出，把輸入與輸出化作座標位置。</p>
+<p>一元函數和二元函數容易作圖，三元函數就只能用空氣濃度來呈現函數值了，四元以上只能用幻想的。</p>
+<img src="NumericFunction3.png">
+<blockquote>
+Plot3D[Sin[x * y] * Cos[x + y], {x, -Pi, Pi}, {y, -Pi, Pi}, PlotRange -> {-2, 2}, Boxed -> False, Axes -> False, ColorFunction -> (ColorData["CherryTones"][Rescale[#3, {-2, 2}]] &) ]
+</blockquote>
+<p class="t">Function Operation</p>
+<p>函數就和實數、複數一樣，有著各種運算。以下將介紹函數的運算：求值、代入、加、減、乘、除、模、複合、微、積。</p>
+<pre>
+       operation (noun)      operation (verb)    result (noun)
+-----  --------------------  ------------------  --------------
+let =  evaluation      求值  evaluate      求值  value       值
+let =  substitution    代入  substitute    代入  expression  式
++      addition        加法  add           加    sum         和
+-      subtraction     減法  subtract      減    difference  差
+       multiplication  乘法  multiply      乘    product     積
+/      division        除法  divide        除    quotient    商
+mod    modulo          模    ---           模    remainder   餘
+∘      composition     複合  compose       複合  composite function 複合函數
+d/dx   differentiation 微分  differentiate 微    derivative  導
+∫ dx   integration     積分  integrate     積    integral    積分
+</pre>
+<p class="t">求值</p>
+<img src="NumericFunction4.png">
+<p>給定輸入數值，計算輸出數值。屬於數值計算。</p>
+<textarea>
+//           sin x   cos y
+// f(x, y) = ----- + -----
+//             y       x
+float f(float x, float y)
+{
+	// x和y不能是0
+	return sin(x) / y + cos(y) / x;
+}
+
+void evaluate()
+{
+	cout << f(1, -0.5);
+}
+</textarea>
+<p class="t">代入</p>
+<p>輸入變數替換為其他變數。屬於符號計算。</p>
+<pre>
+                          x = s + 2
+          sin x   cos y   y = t / 2            sin(s + 2)   cos(t / 2)
+f(x, y) = ————— + —————  ==========> f(s, t) = —————————— + ——————————
+            y       x                             t / 2        s + 2  
+</pre>
+<p class="t">加減乘除模</p>
+<img src="NumericFunction5.png">
+<p>如果經常要把兩個函數的輸出加在一起，可以預先把兩個函數加在一起，得到新函數，節省計算時間！</p>
+<pre>
+兩個函數
+f(x) = x² + x + 1
+g(x) = -x + 2
+
+輸入數值是1的時候，計算所有函數輸出數值的總和
+f(1)        = 1² + 1 + 1 = 3
+g(1)        = -1 + 2     = 1
+f(1) + g(1) = 3 + 1      = 4
+
+輸入數值是2的時候，計算所有函數輸出數值的總和
+f(2)        = 2² + 2 + 1 = 7
+g(2)        = -2 + 2     = 0
+f(2) + g(2) = 7 + 0      = 7
+</pre>
+<pre>
+如果預先讓函數相加的話
+(f + g)(x) = f(x) + g(x)
+           = (x² + x + 1) + (-x + 2)
+           = x² + 3
+
+那麼就可以節省計算時間
+(f + g)(1)  = 1² + 3     = 4
+(f + g)(2)  = 2² + 3     = 7
+
+輸入越多種、函數越多個，節省越多時間！
+</pre>
+<p>用抽象的、簡潔的數學符號表達函數加法：</p>
+<pre>
+f + g
+</pre>
+<p>用直觀的、亮麗的函數圖形表達函數加法：</p>
+<img src="NumericFunction6.png">
+<p>加減乘除模概念相仿，其餘運算就不多提了。</p>
+<p class="t">複合</p>
+<img src="NumericFunction7.png">
+<p>如果輸入經常接連地用函數變換兩次，可以預先把兩個函數複合在一起，得到新函數，節省計算時間！</p>
+<pre>
+兩個函數
+f(x) = x² + x + 1
+g(x) = -x + 2
+
+輸入數值是1的時候，計算先經過g函數、再經過f函數的輸出數值
+g(1)           = -1 + 2     = 1
+f(g(1)) = f(1) = 1² + 1 + 1 = 3
+
+輸入數值是2的時候，計算先經過g函數、再經過f函數的輸出數值
+g(2)           = -2 + 2     = 0
+f(g(2)) = f(0) = 0² + 0 + 1 = 1
+</pre>
+<pre>
+如果預先讓函數複合的話
+(f ∘ g)(x) = f(g(x))
+           = (-x + 2)² + (-x + 2) + 1 
+           = x² - 5x + 7
+
+那麼就可以節省計算時間
+(f ∘ g)(1)  = 1² - 5 + 7   = 3
+(f ∘ g)(2)  = 2² - 10 + 7  = 1
+
+輸入越多種、函數越多個，節省越多時間！
+</pre>
+<p>用抽象的、簡潔的數學符號表達函數複合：</p>
+<pre>
+f ∘ g
+</pre>
+<p>用直觀的、亮麗的函數圖形表達函數複合？我不會畫。</p>
+<p class="t">微分</p>
+<img src="NumericFunction8.png">
+<p>相鄰數字差，通通除以dx，得到新函數。</p>
+<p>請讀者參考本站文件「<a href="Sequence2.html">Sequence</a>」提及的離散版本。此處介紹的是連續版本，只多了個dx：一個無限微小、略大於零的數值。</p>
+<p>用抽象的、簡潔的數學符號表達函數微分：</p>
+<pre>
+ d
+—— f   輸入變數剛好一個
+dx
+
+ ∂
+—— f   輸入變數大於一個
+∂x
+</pre>
+<p>用直觀的、亮麗的函數圖形表達函數微分：</p>
+<p>當輸入變數只有一個，導數是座標(x,f(x))的「斜率slope」。當輸入變數有許多個，各個輸入變數分別求得斜率，合稱「梯度gradient」。</p>
+<img src="NumericFunction9.png">
+<textarea>
+float f(float x) {return sin(x) / x;}	// x不能是0
+
+float differentiate(float x)
+{
+	// 令dx是0.001
+	float dx = 1e-3;
+	// 理論上dx越小則導數越準確，
+	// 實際上則必須考慮浮點數精確度。
+	return (f(x) - f(x - dx)) / dx;	// slope
+}
+</textarea>
+<textarea>
+float f(float x, float y)
+{
+	return sin(x) / y + cos(y) / x;
+}
+
+struct Vector2D {float x, y;}
+
+Vector2D differentiate(float x, float y)
+{
+	static float dx = 1e-3, dy = 1e-3;
+	return (Vector2D){	// gradient
+		(f(x, y) - f(x - dx, y)) / dx,
+		(f(x, y) - f(x, y - dy)) / dy
+	};
+}
+
+Vector2D differentiate(float x, float y)
+{
+	static float d = 1e-3;
+	float fxy = f(x, y);
+	return (Vector2D){
+		(fxy - f(x - d, y)) / d,
+		(fxy - f(x, y - d)) / d
+	};
+}
+</textarea>
+<p class="t">積分</p>
+<img src="NumericFunction10.png">
+<p>從負無限大開始的連續數字和，通通乘以dx，得到新函數。</p>
+<p>用抽象的、簡潔的數學符號表達函數積分：</p>
+<pre>
+∫ f dx
+</pre>
+<p>用直觀的、亮麗的函數圖形表達函數積分：</p>
+<p>當輸入變數只有一個，積分是左至-∞、右至x、下至0、上至f(x)，四個邊界所包圍的「面積area」，面積可正可負。當輸入變數有許多個，各個輸入變數一齊累計，得到「容積volume」。</p>
+<img src="NumericFunction11.png">
+<p>函數積分最簡單的演算法是Rectangle Rule：按照定義來，將面積切割成數條寬度為dx的矩形。</p>
+<p>然而，左至負無限大，演算法永不結束，怎麼辦？解決方式是增設左邊界，想訂多少就多少。數學家把「自訂左右邊界的積分運算」的結果叫做「定積分definite integral」。</p>
+<p>對計算學家來說，定積分就是區間和啦。前綴和改成區間和，就這樣而已。</p>
+<img src="NumericFunction12.png">
+<textarea>
+float f(float x) {return log10(x);}
+
+float integrate(float a, float b)
+{
+	float dx = 1e-3;
+	int n = floor((b - a) / dx);
+	float integral = 0;
+	for (int i=0; i<n; ++i)
+		// 矩形面積等於長乘寬
+		integral += f(a + dx*i) * dx;
+	// 剩下的一小段
+	integral += f(a + dx*n) * (b - (a + dx*n));
+	return integral;
+}
+</textarea>
+<p>矩形畢竟不是無限薄。當函數是斜線，仍有縫隙。只好改用Trapezoidal Rule：將面積切割成數條寬度為dx的梯形。</p>
+<img src="NumericFunction13.png">
+<textarea>
+float trapezoid(float a, float b)
+{
+	// 梯形面積等於上底加下底括號乘以高除以二
+	return (f(a) + f(b)) * (b-a) / 2;
+}
+
+float integrate(float a, float b)
+{
+	float dx = 1e-3;
+	int n = floor((b - a) / dx);
+	float integral = 0;
+	for (int i=0; i<n; ++i)
+		integral += trapezoid(a + dx*i, a + dx*(i+1));
+	integral += trapezoid(a + dx*n, b);
+	return integral;
+}
+</textarea>
+<p>當函數是曲線，仍有縫隙。只好改用Parabolic Rule又稱Simpson's Rule：梯形的斜邊改成拋物線。</p>
+<img src="NumericFunction14.png">
+<textarea>
+float simpson(float a, float b)
+{
+	// 此面積公式的由來，請自行搜尋資料，此處不解釋。
+	float c = (a + b) / 2;
+	return (f(a) + 4*f(c) + f(b)) * (b-a) / 6;
+}
+
+float integrate(float a, float b)
+{
+	float dx = 1e-3;
+	int n = floor((b - a) / dx);
+	float integral = 0;
+	for (int i=0; i<n; ++i)
+		integral += simpson(a + dx*i, a + dx*(i+1));
+	integral += simpson(a + dx*n, b);
+	return integral;
+}
+</textarea>
+<p>長方形的邊是零次、梯形的斜邊是一次、拋物線是二次。當函數是三次曲線，仍有縫隙。無論如何修正，只要函數是更高次曲線就仍有縫隙，況且運算量也更大了。只好改用Adaptive Simpson's Rule：dx最初是b-a；當縫隙太大，就讓dx變成一半。</p>
+<img src="NumericFunction15.png">
+<p>有些區間已經幾乎沒有縫隙，大可不必再切半。</p>
+<img src="NumericFunction16.png">
+<p>函數起起伏伏，難以估量縫隙大小。只好比較前後算得的面積，當面積差異足夠小，就推定面積已經足夠準確、足夠穩定了。</p>
+<img src="NumericFunction17.png">
+<textarea>
+float simpson(float a, float b)
+{
+	float c = (a + b) / 2;
+	return (f(a) + 4*f(c) + f(b)) * (b-a) / 6;
+}
+
+float asr(float a, float b, float A, float eps)
+{
+	float c = (a + b) / 2;
+	float L = simpson(a, c);	// dx變一半了
+	float R = simpson(c, b);	// dx變一半了
+	// 此誤差公式的由來，請自行搜尋資料，此處不解釋。
+	if (fabs(L+R-A) <= 15*eps)	// 前後面積差異足夠小
+		return L+R+(L+R-A)/15;
+	return asr(a, c, L, eps/2)	// 前後面積差異仍太大
+		 + asr(c, b, R, eps/2);
+}
+
+float integrate(float a, float b)
+{
+	// dx最初是b-a
+	return asr(a, b, simpson(a, b), 1e-3);
+}
+</textarea>
+<textarea t="減少f(x)的呼叫次數">
+float simpson(float a, float b,
+			  float fa, float fb, float fc)
+{
+	return (fa + fb + 4*fc) * (b-a) / 6;
+}
+
+float asr(float a, float b, float c,
+		  float fa, float fb, float fc,
+		  float A, float eps)
+{
+	float d = (a+c) / 2, e = (c+b) / 2;
+	float fd = f(d), fe = f(e);
+	float L = simpson(a, c, fa, fc, fd);
+	float R = simpson(c, b, fc, fb, fe);
+	if (fabs(L+R-A) <= 15*eps)
+		return L+R+(L+R-A)/15;
+	return asr(a, c, d, fa, fc, fd, L, eps/2)
+		 + asr(c, b, e, fc, fb, fe, R, eps/2);
+}
+
+float integrate(float a, float b)
+{
+	float c = (a + b) / 2;
+	float fa = f(a), fb = f(b), fc = f(c);
+	return asr(a, b, c, fa, fb, fc,
+			   simpson(a, b, fa, fb, fc), 1e-3);
+}
+</textarea>
+<p class="e">UVa 1356 1280 12528 ICPC 3001</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Function (ℝⁿ)（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Multivariate Function</p>
+<p>多個函數。</p>
+<pre>
+{ f₁(x, y) = x + y
+{ f₂(x, y) = 2x² + 1
+{ f₃(x, y) = 1 / y
+</pre>
+<p>數學家重新解讀為：一個函數，輸入與輸出推廣成多個數值。微觀是多個函數，宏觀是一個函數。</p>
+<pre>
+F(x, y) = (x + y, 2x² + 1, 1 / y)
+</pre>
+<p>多個數值甚至組成向量、矩陣。多個數值視作一個元件，佯裝成普通的函數。寫來簡便，讀來卻傷腦筋。</p>
+<pre>
+             [  x + y  ]
+F( [ x ] ) = [ 2x² + 1 ]
+   [ y ]     [  1 / y  ]
+
+   F(x⃗)    =      y⃗
+</pre>
+<p>原本是「多個函數」，卻被重新解讀，稱做「多變數函數」。</p>
+<p>多個函數顯然可以融合成一個多變數函數，然而一個多變數函數一定可以拆解成多個函數嗎？我也不知道。我從未見過有人討論。</p>
+<p class="t">Multivariate Function可以畫成圖形</p>
+<p>空間處處有數據。物理學家稱此概念為「場Field」。</p>
+<img src="MultivariateFunction1.png">
+<p>空間座標是函數輸入，數據是函數輸出。</p>
+<p>空間可以是一維直線、二維平面、三維空間、……。</p>
+<p>數據可以是一個數值（純量）、一個向量、一個矩陣、……。</p>
+<img src="MultivariateFunction2.png">
+<p>純量場：畫成透視圖、濃度圖、等高線圖；等距取樣之後畫成長條圖、折線圖、數值陣列。</p>
+<img src="MultivariateFunction3.png">
+<blockquote>
+Plot3D[Cos[x]+Cos[y], {x, -2Pi, 2Pi}, {y, -2Pi, 2Pi}, Axes -> False, Boxed -> False, Mesh -> None, ColorFunction -> (ColorData["CherryTones"][Rescale[#3, {-2, 2}]] &) ]
+DensityPlot[Cos[x]+Cos[y], {x, -2Pi, 2Pi}, {y, -2Pi, 2Pi}, Axes -> False, Frame -> False, MaxRecursion -> 1, PlotPoints -> 5, ColorFunction -> "SolarColors"]
+ContourPlot[Cos[x]+Cos[y], {x, -2Pi, 2Pi}, {y, -2Pi, 2Pi}, Axes -> False, Frame -> False]
+</blockquote>
+<p>向量場：畫成軌跡圖（Line Integral Convolution）；等距取樣之後畫成箭矢圖。甚至直接畫成兩個純量場。</p>
+<img src="MultivariateFunction4.png">
+<p class="t">Multivariate Function可以描述世界</p>
+<p>物理學家習慣以多變數函數描述物理現象，諸如水流、氣流、熱傳導、電磁場、重力場、聲波、震波、……。想要用計算機模擬物理現象，首先必須瞭解多變數函數。精彩的思想突破有：</p>
+<img src="MultivariateFunction5.png">
+<p><a href="https://en.wikipedia.org/wiki/Maxwell's_equations">Faraday</a>以三維場解釋電磁現象，衍生古典場論。</p>
+<p><a href="https://en.wikipedia.org/wiki/Einstein_field_equations">Einstein</a>以四維場（納入時間維度）解釋重力現象，衍生相對論。近年獲得驗證。</p>
+<p><a href="https://en.wikipedia.org/wiki/Schr繹dinger_equation">Schrödinger</a>以複數四維場解釋波粒現象，衍生量子場論。大家仍在驗證。質量擁有實部虛部，若隱若現，非常奇葩。</p>
+<p class="t">Multivariate Function Operation</p>
+<p>多了幾種運算。數學家並未命名運算名稱。</p>
+<pre style="tab-size: 2;">
+    	operator  result (noun)
+----	--------  -----------------
+∇·  	div       divergence         散度
+∇×  	curl      curl               旋度
+∇   	grad      gradient           梯度
+∇·∇ 	---       Laplacian          梯度的散度（運算符號由右往左讀）
+∇×∇ 	---       ---                梯度的旋度（總是0，缺乏討論意義）
+∇⁻¹ 	---       inverse gradient   梯度反元素
+∆⁻¹  	---       inverse Laplacian  梯度的散度的反元素
+
+註：∇·∇通常簡寫成∇²或者∆。
+</pre>
+<p class="t">散度</p>
+<pre>
+         ∂Fx
+div(F) = ―――               1D
+         ∂x 
+
+         ∂Fx   ∂Fy
+div(F) = ――― + ―――         2D
+         ∂x    ∂y 
+
+         ∂Fx   ∂Fy   ∂Fz
+div(F) = ――― + ――― + ―――   3D
+         ∂x    ∂y    ∂z
+</pre>
+<p>向量場，求散度，得純量場。模仿點積。</p>
+<p>物理意義是每一處的出入變化多寡，flux change。</p>
+<img src="MultivariateFunction6.html">
+<p>分開觀察XYZ三個分量。求得X分量的X方向的相鄰數字差、Y分量的Y方向的相鄰數字差、Z分量的Z方向的相鄰數字差。加總三個差異。</p>
+<p>我不知道加總的理由。我也不知道「<a href="Point.html">向量點積求得投影量</a>」的加法如何直觀解釋。如果讀者知道，麻煩告訴我。</p>
+<p class="t">旋度</p>
+<pre>
+curl(F) = 0                                       1D
+
+                    ∂Fy   ∂Fx         ∂Fy   ∂Fx
+curl(F) = ( 0 , 0 , ――― - ――― )  ==>  ――― - ―――   2D
+                    ∂x    ∂y          ∂x    ∂y 
+
+            ∂Fz   ∂Fy   ∂Fx   ∂Fz   ∂Fy   ∂Fx  
+curl(F) = ( ――― - ――― , ――― - ――― , ――― - ――― )   3D
+            ∂y    ∂z    ∂z    ∂x    ∂x    ∂y   
+</pre>
+<p>向量場，求旋度，得向量場。模仿叉積。</p>
+<p>物理意義是每一處的自旋變化多寡，vorticity change。</p>
+<img src="MultivariateFunction7.html">
+<p>分開觀察YZ XZ XY三個平面。以XY平面為例，分開觀察XY兩個分量。想像分量是風力，X分量上下差異，令物體轉動；Y分量左右差異，令物體轉動。加總兩個差異，以逆時針為正值、順時針為負值。其中一個差異為順時針，應為負值，故形成兩項相減。</p>
+<img src="MultivariateFunction8.html">
+<p>額外介紹一個歪招。二維的情況下，可以竄改XY方位，以散度求旋度。寫成公式是：旋度（的純量）等於變號、轉90°、散度。</p>
+<pre>
+curl(F) = div(R<sub>90°</sub>(-F)) = -div(R<sub>90°</sub>(F))    2D
+</pre>
+<p class="t">散度定理、旋度定理</p>
+<p>邊界上法線投影量的總和、範圍內散度的總和，兩者相等。</p>
+<p>邊界上切線投影量的總和、範圍內旋度的總和，兩者相等。</p>
+<img src="MultivariateFunction9.html">
+<p>前綴和的任意兩項相減，等於區間和。左右兩式同時微分：任意兩項相減，等於差分的區間和。維度換成二維以及三維，數值換成向量，即得此定理。</p>
+<p class="t">散旋諧分解（Helmholtz-Hodge Decomposition）</p>
+<p>一個向量場等於三個向量場相加：散場（散度非零、旋度是零）、旋場（旋度非零、散度是零）、諧場（兩者皆零）。只有唯一一種分解方式。</p>
+<pre>
+F = D + C + H
+such that  div(D) ≠ 0,  div(C) = 0,  div(H) = 0
+          curl(D) = 0, curl(C) ≠ 0, curl(H) = 0
+</pre>
+<img src="MultivariateFunction.html">
+<p>散場、旋場、諧場互相獨立，但是沒有互相垂直。</p>
+<img src="MultivariateFunction.html">
+<p>散旋諧分解至今沒有其他演算法，只有一道數學公式。</p>
+<pre>
+{ D = grad(∆⁻¹(div(F)))
+{ C = curl(∆⁻¹(curl(-F)))
+{ H = F - D - C
+</pre>
+<p>多變量函數之散場、旋場、諧場，線性變換之縮放、旋轉、位移，兩邊很像。我不清楚兩邊有何關聯。</p>
+<pre>
+fourier(散場+旋場) = 縱場+橫場
+http://physics.stackexchange.com/questions/1115/
+</pre>
+<p>箭矢圖擁有特別性質。遞增函數，箭矢自零散開。遞減函數，箭矢聚集至零。</p>
+<img src="MultivariateFunction.html">
+<p>【註：舊文獻沒有抽離諧場，而是將諧場隨意分攤至散場、旋場，稱之為無旋場irrotational field、無散場solenoidal field。】</p>
+<p class="t">梯度</p>
+<pre>
+          ∂f
+grad(f) = ――                 1D
+          ∂x
+
+            ∂f   ∂f  
+grad(f) = ( ―― , ―― )        2D
+            ∂x   ∂y  
+
+            ∂f   ∂f   ∂f  
+grad(f) = ( ―― , ―― , ―― )   3D
+            ∂x   ∂y   ∂z  
+</pre>
+<p>純量場，求梯度，得向量場。</p>
+<p>物理意義是各個方向的變化多寡，change。</p>
+<img src="MultivariateFunction.html">
+<p>分開觀察XYZ三個方向，求相鄰數字差。</p>
+<p class="t">梯度的散度</p>
+<p>純量場，先求梯度，再求散度，得純量場。</p>
+<p>物理意義是對流往來變化多寡，diffuse change。</p>
+<p class="t">梯度的旋度</p>
+<p>一定是0，缺乏討論意義。</p>
+<p>樓梯幻覺Penrose stairs。</p>
+<a href="https://commons.wikimedia.org/wiki/File:Impossible_staircase.svg"><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Impossible_staircase.svg" width="186"></a>
+<p class="t">梯度反元素、梯度的散度反元素</p>
+<p>Poisson equation。不好解，此處省略。</p>
+<p class="t">靜態平衡、動態平衡</p>
+<img src="MultivariateFunction.html">
+<p>比如液體流動。強者動、弱者靜。有餘者損之，不足者補之。相鄰高低差距，處處等於零，則形成靜態平衡，不生不滅。數學式子是∇F = 0，梯度為零，只剩常數。</p>
+<p>比如氣體擴散。所有東西一齊動。萬物並作，吾以觀復。相鄰出入差距，處處等於零，則形成動態平衡，因果輪迴。數學式子是∆F = 0，梯度的散度為零，而梯度的旋度總是零，只剩諧場。</p>
+<p class="t">延伸閱讀：Exterior Algebra與Differential Form</p>
+<p><a href="https://www.cs.cmu.edu/~kmcrane/Projects/DGPDEC/">https://www.cs.cmu.edu/~kmcrane/Projects/DGPDEC/</a>
+<p>數學家建立了「外代數」這一套世界觀，闡釋點積與叉積、梯度與散度與旋度之間的關聯。讀者若有興趣再來學吧。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Function (ℂ)（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Complex Function</p>
+<p>「複變函數」。輸入、輸出推廣為複數。</p>
+<p>看來看去好像只有analytic => conformal和e^iπ值得一提。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polynomial Function</p>
+</div><div class="c">
+<p class="t">Polynomial</p>
+<p>由未知數（變數）與已知數（常數）的加法、減法、乘法所組成的式子，就叫做「多項式」。以變數次方為主角，多項式可以拆成許多「項」。</p>
+<img src="Polynomial1.png">
+<p>多項式的資料結構，要嘛開個array，每一格存一種次方的係數；要嘛開個list，把係數為零的項統統去掉然後串成一串。</p>
+<img src="Polynomial2.png">
+<p>多項式的運算，主要有加、減、乘、除、模、微、積、分解、代入。中學到大學接觸了六年，應當難不倒各位讀者，就不贅述了。</p>
+<img src="Polynomial3.png">
+<p>大數的四則運算，就是多項式的四則運算：大數其實就是x代入10，大數的骨子裡根本就是多項式。電腦的數字有二進位、十進位、八進位、十六進位，進位法其實就是x代入各種底數，進位法骨子裡根本就是多項式。</p>
+<p class="e">UVa 392 126 10719 10586 10951 463 930 10428 498 10268 10105</p>
+<p class="t">Polynomial Function</p>
+<p>「多項式函數」。離散與連續的橋樑。離散的係數值，變成連續的函數值。數學家正在探索其奧秘。</p>
+<p>多項式函數的導數、積分，仍是多項式函數！dx竟然可以變不見！有興趣的讀者可以觀落陰請教牛頓或萊布尼茲。</p>
+<p>多項式函數的導數、積分，可以預計算！數學家發明了大量的計算手法，得以在紙上推導微積分的結果，得到公式，不必使用前面章節的演算法。有興趣的讀者可以參考微積分、工程數學教科書。</p>
+<p>多項式函數，雖然內容繁雜，但是性質優雅，所以用途廣泛。物理、化學、工程、經濟、……，各種領域都在使用多項式函數。</p>
+<p class="t">Horner's Rule</p>
+<pre>
+f(x) = 3x³ + 2x + 1 = ((((3 * x) + 0) * x) + 2) * x) + 1
+f(5) = 3x³ + 2x + 1 = ((((3 * 5) + 0) * 5) + 2) * 5) + 1
+</pre>
+<p>這是一個演算法。一元多項式函數，代入數值。一乘一加，不斷更迭，求得函數值。完全不需要次方運算。</p>
+<p class="t">Taylor Series</p>
+<pre>
+              f'(a)          f"(a)             
+f(x) = f(a) + ――――― (x-a)¹ + ――――― (x-a)² + ...
+                1!             2!              
+</pre>
+<p>這是一道數學公式。將平滑函數變成多項式函數。</p>
+<p>換句話說，以無限項的多項式函數，趨近平滑函數。</p>
+<pre>
+y  = f(x)
+                                     h¹         h²      
+y₊ = f(x₊) = f(x + h) = f(x) + f'(x) ―― + f"(x) ―― + ...
+                                     1!         2!      
+</pre>
+<p>這是另一種形式。當x略微增減，得知y如何增減。</p>
+<p>當h介於±1之間，則次方越大、數值越小。後面的項，數值越來越小，越來越細膩，越來越不重要。只取前幾項，即是取近似值！多取幾項，即是逼近真實值！數值精確度，以項數多寡來決定。</p>
+<p class="e">UVa 12413</p>
+<p class="t">e</p>
+<p>「歐拉數Euler Number」。實際數值差不多是2.72。</p>
+<p>計算eˣ的演算法：Taylor Series與Horner's Rule。</p>
+<textarea>
+// eˣ = 1 + x/1! + x²/2! + x³/3! + ...
+float exp(float x)
+{
+	const int n = 10;	// degree, precision
+	float sum = 1.0;
+	for (int i = n-1; i > 0; --i)
+		sum = 1.0 + x * sum / i;
+	return sum;
+}
+</textarea>
+<textarea>
+http://www.ptt.cc/bbs/C_and_CPP/M.1379352015.A.BDF.html
+</textarea>
+<textarea>
+double e = exp(1);
+</textarea>
+<p class="t">π</p>
+<p>「圓周率」。圓周長除以直徑，實際數值差不多是3.14。</p>
+<p><a href="http://en.wikipedia.org/wiki/Category:Pi_algorithms">http://en.wikipedia.org/wiki/Category:Pi_algorithms</a></p>
+<textarea>
+http://www.ptt.cc/bbs/C_and_CPP/M.1379499525.A.BE5.html
+</textarea>
+<textarea>
+double π = atan(1) * 4;
+double π = acos(0) * 2;
+double π = acos(-1);
+</textarea>
+<p class="t">延伸閱讀：π is wrong!</p>
+<p><a href="http://www.math.utah.edu/~palais/pi.html">http://www.math.utah.edu/~palais/pi.html</a></p>
+<p>有兩派人馬，一派支持角度，一派支持面積。</p>
+<p>角度派認為π是180°，是圓周角360°的一半，要乘以二才能補成360°，極不方便。這派人馬認為應該替360°特別訂立一個代號。</p>
+<p>面積派認為π剛好就是單位圓面積，明明很方便，不需要改。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Contour（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Contour（Level Set）</p>
+<p><a href="http://paulbourke.net/papers/conrec/">http://paulbourke.net/papers/conrec/</a></p>
+<pre>
+http://paulbourke.net/papers/conrec/contour1.gif
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Mathematical Morphology</p>
+</div><div class="c">
+<p class="t">Mathematical Morphology</p>
+<img src="FunctionMorphing1.png">
+<blockquote>
+Histogram3D[{{0,0},{0,0},{0,0}},{1},Boxed->False,Axes->None]
+</blockquote>
+<p>【註：本人製圖技術差，只好介紹陣列版本，而非函數版本。】</p>
+<p>調整函數形狀的學問。因為不是顯學，所以名稱矯揉造作，不像一般的數學名詞那樣地簡潔有力。關鍵字grayscale morphology。</p>
+<p>基本操作是dilation和erosion，進階操作由基本操作組成。</p>
+<pre>
+            dilation：鄰近格子取最大值。功效是補厚。
+             erosion：鄰近格子取最小值。功效是削薄。
+             closing：先 dilation 再 erosion。
+             opening：先 erosion 再 dilation。
+   top-hat transform：原函數減掉 opening。
+bottom-hat transform：closing 減掉原函數。
+</pre>
+<p>鄰近格子可以自訂樣式。另外，大樣式多半可以改為小樣式，效果相同而且時間複雜度更低。</p>
+<p>例如5×5，改為兩波3×3，亦得取得5×5範圍內的最小值（最大值）。本來讀取X×Y×5×5格，變成只讀取X×Y×3×3×2格。</p>
+<img src="FunctionMorphing2.png">
+<p>運算不可逆、不可抵銷，沒有反運算。個人推測這些運算可以減少亂度。</p>
+<textarea>
+const int N = 10;
+int a[N][N];	// 原函數
+int b[N][N];	// 原函數的整形結果
+
+bool onboard(int i, int j)
+{
+	return i >= 0 && i < N && j >= 0 && j < N;
+}
+
+void dilation()
+{
+	for (int i=0; i<N; ++i)
+		for (int j=0; j<N; ++j)
+		{
+			int value = -1e9;		// 記錄最大值
+			for (int k=0; k<9; ++k)	// a[i][j]附近的3x3範圍
+			{
+				int p = i + (int[]){-1,-1,-1,0,0,0,1,1,1}[k];
+				int q = j + (int[]){-1,0,1,-1,0,1,-1,0,1}[k];
+				if (!onboard(p, q)) continue;
+				if (a[p][q] > value) value = a[p][q];
+			}
+			b[i][j] = value;
+		}
+}
+</textarea>
+<p class="t">額外使用過濾函數</p>
+<p>進階版本。額外設計一個過濾函數。設計不同的過濾函數，得到不同的效果。</p>
+<p>窮舉原函數的每個位置；針對一個位置，令過濾函數的中心對準該位置，各個位置點對點相加（相減）後，才取最大值（最小值）。</p>
+<textarea>
+const int N = 10;
+int a[N][N];	// 原函數
+int b[N][N];	// 原函數的整形結果
+
+const int M = 2;
+int m[M][M];	// 過濾函數
+
+bool onboard(int i, int j)
+{
+	return i >= 0 && i < N && j >= 0 && j < N;
+}
+
+void dilation()
+{
+	for (int i=0; i<N; ++i)
+		for (int j=0; j<N; ++j)
+		{
+			int value = -1e9;
+			for (int k=0; k<M; ++k)
+				for (int l=0; l<M; ++l)
+					if (onboard(i+k-M/2, j+l-M/2))
+						value = max(value, a[i+k-M/2][j+l-M/2] + m[k][l]);
+			b[i][j] = value;
+		}
+}
+
+void erosion()
+{
+	for (int i=0; i<N; ++i)
+		for (int j=0; j<N; ++j)
+		{
+			int value = 1e9;
+			for (int k=0; k<M; ++k)
+				for (int l=0; l<M; ++l)
+					if (onboard(i+k-M/2, j+l-M/2))
+						value = min(value, a[i+k-M/2][j+l-M/2] - m[k][l]);
+			b[i][j] = value;
+		}
+}
+</textarea>
+<p class="t">邏輯運算的版本</p>
+<p>不知道為什麼，影像處理教科書非常喜歡討論邏輯運算的版本。數值改成false和true，最大值（最小值）改成OR（AND），功效是增厚（削薄）圖形的外緣。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/xO3ED27rMHs"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/fmyE7DiaIYQ"></iframe>--></div>
+<p class="e">UVa 12702</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Function2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:11:28 GMT -->
+</html>

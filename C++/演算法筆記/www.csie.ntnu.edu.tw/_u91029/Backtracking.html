@@ -1,0 +1,1148 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Backtracking.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:58:15 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Backtracking</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Backtracking</p>
+<p class="w">手把青秧插滿田，低頭便見水中天，　　　　　</p>
+<p class="w">六根清淨方為道，退步原來是向前。《插秧詩》</p>
+</div><div class="c">
+<p class="t">Backtracking</p>
+<p>中文稱作「回溯法」，枚舉多維度數值的方法。運用遞迴依序窮舉各個維度的數值，製作所有可能的多維度數值，並且在遞迴途中避免枚舉不正確的多維度數值。</p>
+<textarea>
+int solution[MAX_DIMENSION];	// 多維度數值
+
+void backtrack(int dimension)
+{
+	/* prune：在遞迴途中避免枚舉不正確的多維度數值 */
+	if ( solution[] will not be an answer ) return;
+
+	/* 製作了一組多維度數值，並檢驗正不正確 */
+	if ( dimension == MAX_DIMENSION )
+	{
+		check and record solution[];
+		return;
+	}
+
+	/* 窮舉這個維度的所有數值，並遞迴到下一個維度 */
+	for ( x = possible value of current dimension )
+	{
+		solution[dimension] = x;
+		backtrack( dimension + 1 );
+	}
+}
+
+int main()
+{
+	backtrack(0);	// 從第一個維度開始枚舉
+}
+</textarea>
+<p>當多維度數值只需要唯一一組，可以讓程式提早結束。</p>
+<textarea>
+int solution[MAX_DIMENSION];
+bool find_answer = false;	// 隨時記錄是否已經找到正解
+
+void backtrack(int dimension)
+{
+	if ( dimension == MAX_DIMENSION )
+	{
+		check and record solution;
+		find_answer = true;	// 找到正解了
+		return;
+	}
+
+	for ( x = possible value of current dimension )
+	{
+		solution[dimension] = x;
+		backtrack( dimension + 1 );
+		if (find_answer) return;	// 提早結束，跳出遞迴
+	}
+}
+</textarea>
+<p>當多維度數值可以衡量優劣，就隨時剔除劣的、保留優的。</p>
+<textarea>
+int solution[MAX_DIMENSION];
+bool find_answer = false;
+int best_cost;	// 用一數值代表多維度數值的優劣
+
+void backtrack(int dimension)
+{
+	/* bound：多維度數值太糟了，不可能成為正解，不必遞迴下去 */
+	int cost = cost of solution[];	// 計算優劣
+	if ( cost is far away from best_cost ) return;
+
+	if ( dimension == MAX_DIMENSION )
+	{
+		check and record solution[];
+
+		/* bound：多維度數值夠好了，可以成為正解，不必遞迴下去 */
+		best_cost = cost;	// 記錄當前最佳結果
+		if ( cost is enough good ) find_answer = true;
+
+		return;
+	}
+
+	for ( x = possible value of current dimension )
+	{
+		solution[dimension] = x;
+		backtrack( dimension + 1 );
+		if (find_answer) return;
+	}
+}
+</textarea>
+<p>回溯法的特色是隨時避免枚舉不正確的數值。一旦發現不正確的數值，就不遞迴至下一層，而是回溯至上一層，節省時間。</p>
+<p>另外還可以調整維度先後順序、一個維度裡面的枚舉順序。如果安排得宜，可以更快找到正確的多維度數值。</p>
+<p class="e">UVa 140 165 193 222 259 291 301 331 399 435 524 539 565 574 598 628 656 732 10186 10344 10364 10400 10419 10447 10501 10503 10513 10582 10605 10624 10637 129 10160 10802</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Enumerate Tuples</p>
+</div><div class="c">
+<p class="t">© 2010 <a href="http://tkcnandy.blogspot.com/">tkcn</a>. All rights reserved.</p>
+<script src="demo/Backtracking/Backtracking.js"></script>
+<p class="d" id="Backtracking"></p>
+<p class="t">Tuple</p>
+<p>即是「多維度數值」。</p>
+<p>例如數字1、2、3構成的三維數值是{1,1,1}、{1,1,2}、{1,1,3}、{1,2,1}、{1,2,2}、{1,2,3}、……、{3,3,2}、{3,3,3}。</p>
+<p class="t">範例：枚舉「數字1到10選擇五次」全部可能的情形</p>
+<img src="Backtracking1.png">
+<p>製作一個陣列，用來存放一組可能的情形。陣列中不同的格子，就是不同的維度。</p>
+<textarea>
+int solution[5];
+</textarea>
+<p>例如solution[0] = 4表示第一個抓到的數字是4，solution[4] = 9表示第五個抓到的數字是9。</p>
+<textarea>
+int solution[5];	// 用來存放一組可能的情形
+
+void print_solution()	// 印出一組可能的情形
+{
+	for (int i=0; i<5; i++)
+		cout << i << ' ';
+	cout << endl;
+}
+
+void backtrack(int n)	// n 為現在正在枚舉的維度
+{
+	// it's a solution
+	if (n == 5)
+	{
+		print_solution();
+		return;
+	}
+
+	// 逐步枚舉數字1到10，並且遞迴下去，繼續枚舉之後的維度。
+	solution[n] = 1;
+	backtrack(n+1);
+
+	solution[n] = 2;
+	backtrack(n+1);
+
+	......
+
+	solution[n] = 10;
+	backtrack(n+1);
+}
+
+void enumerate_n_tuples()
+{
+	backtrack(0);
+}
+</textarea>
+<p>一般來說，重複很多次的程式碼，都會用迴圈進行簡化。</p>
+<textarea>
+void backtrack(int n)	// n 為現在正在枚舉的維度
+{
+	// it's a solution
+	if (n == 5)
+	{
+		print_solution();
+		return;
+	}
+
+	// 逐步枚舉數字1到10，並且遞迴下去，繼續枚舉之後的維度。
+	for (int i=1; i<=10; ++i)
+	{
+		solution[n] = i;
+		backtrack(n+1);
+	}
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Enumerate Permutations</p>
+</div><div class="c">
+<p class="t">Permutation</p>
+<p>便是數學課本中「排列組合」的「排列」。但是這裡不是要計算排列有多少種，而是枚舉所有的排列，以字典順序枚舉。</p>
+<p>例如{1,2,3}所有的排列就是{1,2,3}、{1,3,2}、{2,1,3}、{2,3,1}、{3,1,2}、{3,2,1}。</p>
+<p class="t">範例：枚舉{0,1,2,3,4}所有排列</p>
+<p>依序枚舉每個位置。針對每個位置，試著填入各種數字。</p>
+<img src="Backtracking2.png">
+<textarea>
+int solution[5];	// 用來存放一組可能的答案
+bool used[5];		// 記錄數字是否使用過，用過為 true。
+
+void backtrack(int n)
+{
+	// it's a solution
+	if (n == 5)
+	{
+		// 印出一組可能的答案
+		for (int i=0; i<5; i++)
+			cout << solution[i] << ' ';
+		cout << endl;
+
+		return;
+	}
+
+	// 逐步枚舉數字0到4，並且遞迴下去，繼續枚舉之後的維度。
+	if (!used[0])			// 用過的數字不能再用
+	{
+		used[0] = true;		// 記錄用過的數字
+
+		solution[n] = 0;	// 第 n 格填入數字 0
+		backtrack(n+1);		// 繼續枚舉之後的維度
+
+		used[0] = false;	// 回收用完的數字
+	}
+
+	if (!used[1])
+	{
+		used[1] = true;
+
+		solution[n] = 1;
+		backtrack(n+1);
+
+		used[1] = false;
+	}
+
+	......
+
+	if (!used[4])
+	{
+		used[4] = true;
+
+		solution[n] = 4;
+		backtrack(n+1);
+
+		used[4] = false;
+	}
+}
+
+void enumerate_permutations()
+{
+	for (int i=0; i<5; i++)	// initialization
+		used[i] = false;
+
+	backtrack(0);	// 印出數字0到4的所有排列。
+}
+</textarea>
+<p>一般來說，重複很多次的程式碼，都會用迴圈進行簡化。</p>
+<textarea>
+void backtrack(int n)
+{
+	// it's a solution
+	if (n == 5)
+	{
+		for (int i=0; i<5; i++)
+			cout << solution[i] << ' ';
+		cout << endl;
+
+		return;
+	}
+
+	// 寫成一個迴圈
+	for (int i=0; i<5; i++)
+		if (!used[i])
+		{
+			used[i] = true;
+
+			solution[n] = i;
+			backtrack(n+1);
+
+			used[i] = false;
+		}
+}
+</textarea>
+<p class="t">範例：枚舉{0,1,2,3,4}所有排列</p>
+<p>依序枚舉每個數字。針對每個數字，試著填入各個位置。</p>
+<img src="Backtracking3.png">
+<textarea>
+int solution[5];	// 用來存放一組可能的答案
+bool filled[5];		// 記錄各個位置是否填過數字，填過為true
+
+void backtrack(int n)
+{
+	// it's a solution
+	if (n == 5)
+	{
+		for (int i=0; i<5; i++)
+			cout << solution[i] << ' ';
+		cout << endl;
+
+		return;
+	}
+
+	for (int i=0; i<5; i++)		// 試著將數字 n 填入各個位置
+		if (!filled[i])
+		{
+			filled[i] = true;	// 記錄填過的位置
+
+			solution[i] = n;	// 將數字 n 填入第 i 格
+			backtrack(n+1);		// 繼續枚舉下一個數字
+
+			filled[i] = false;	// 回收位置
+		}
+}
+
+void enumerate_permutations()
+{
+	for (int i=0; i<5; i++)	// initialization
+		filled[i] = false;
+
+	backtrack(0);	// 印出數字1到5的所有排列。
+}
+</textarea>
+<p class="t">範例：枚舉abc所有排列</p>
+<p>這跟先前範例大同小異，程式碼稍做修改即可。</p>
+<textarea>
+char s[3] = {'a', 'b', 'c'};	// 字串，需要先由小到大排序過
+char solution[3];	// 用來存放一組可能的答案
+bool used[3];		// 記錄該字母是否使用過，用過為true。
+
+void backtrack(int n, int N)
+{
+	if (n == N)	// it's a solution
+	{
+		for (int i=0; i<N; i++)
+			cout << solution[i];
+		cout << endl;
+		return;
+	}
+
+	// 針對solution[i]這個位置，枚舉所有字母，並各自遞迴。
+	for (int i=0; i<N; i++)
+		if (!used[i])
+		{
+			used[i] = true;
+			solution[n] = s[i];	// 填入字母
+			backtrack(n+1, N);
+			used[i] = false;
+		}
+}
+
+void enumerate_permutations()
+{
+	for (int i=0; i<5; i++)	// initialization
+		used[i] = false;
+
+	backtrack(0, 3);	// 印出字母abc的所有排列。
+}
+</textarea>
+<p class="t">範例：枚舉abb所有排列，避免重複排列。</p>
+<p>答案應該為abb、aba、baa。然而使用剛剛的程式碼，答案卻是這樣：</p>
+<pre>
+abb
+abb
+bab
+bba
+bab
+bba
+</pre>
+<p>這跟預期的不一樣。會有這種結果，是由於之前的程式有個基本假設：字串中的每個字母都不一樣。儘管出現了一樣的字母，但是程式還是當作不一樣的字母，依舊列出所有可能的排列，導致有些排列重複出現。</p>
+<p>想要避免產生重複排列，在枚舉某一個位置的字母時，避免重複填入一樣的字母。若將輸入的字串由小到大排序，字母會依照順序出現，所以只需檢查方才填入的字母，判斷一不一樣，就可以避免填入一樣的字母了。</p>
+<textarea>
+char s[3] = {'a', 'b', 'b'};	// 字串，需要先由小到大排序過
+char solution[3];
+bool used[3];
+
+void backtrack(int n, int N)
+{
+	if (n == N)
+	{
+		for (int i=0; i<N; i++)
+			cout << solution[i];
+		cout << endl;
+		return;
+	}
+
+	char last_letter = '\0';
+	for (int i=0; i<N; i++)
+		if (!used[i])
+			if (s[i] != last_letter)	// 避免枚舉一樣的字母
+			{
+				last_letter = s[i];		// 記錄方才填入的字母
+				used[i] = true;
+
+				solution[n] = s[i];
+				backtrack(n+1, N);
+
+				used[i] = false;
+			}
+}
+</textarea>
+<textarea>
+char s[3] = {'a', 'b', 'b'};	// 字串，需要預先由小到大排序
+char solution[3];
+bool used[3];
+
+void backtrack(int n, int N)
+{
+	if (n == N)
+	{
+		for (int i=0; i<N; i++)
+			cout << solution[i];
+		cout << endl;
+		return;
+	}
+
+	char last_letter = '\0';
+	for (int i=0; i<N; i++)
+	{							// if not 改成 continue
+		if (used[i]) continue;
+		if (s[i] == last_letter) continue;	// 避免枚舉一樣的字母
+
+		last_letter = s[i];		// 記錄剛才使用過的字母
+		used[i] = true;
+
+		solution[n] = s[i];
+		backtrack(n+1, N);
+
+		used[i] = false;
+	}
+}
+</textarea>
+<p>當字母重覆出現次數很多次，此時可以使用128格的陣列，每一格分別存入128個ASCII字元的出現次數，簡化程式碼。</p>
+<textarea>
+char s[3] = {'a', 'b', 'b'};
+char solution[3];
+int array[128];	// 分別存入 128 個 ASCII 字元的出現次數
+
+void backtrack(int n, int N)
+{
+	if (n == N)
+	{
+		for (int i=0; i<N; i++)
+			cout << solution[i];
+		cout << endl;
+		return;
+	}
+
+	for (int i=0; i<128; i++)	// 枚舉每一個字母
+		if (array[i] > 0)		// 還有字母剩下來，就要枚舉
+		{
+			array[i]--;			// 用掉了一個字母
+
+			solution[n] = i;	// char 變數可以直接存入 ascii 數值
+			backtrack(n+1, N);
+
+			array[i]++;			// 回收了一個字母
+		}
+}
+
+void enumerate_permutations()
+{
+	// initialization
+	for (int i=0; i<3; i++) array[i] = 0;
+	for (int i=0; i<3; i++) array[s[i]]++;
+
+	backtrack(0, 3);	// 印出字母abb的所有排列。
+}
+</textarea>
+<p class="e">UVa 195 441 10098 10063 10776</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Enumerate Combinations</p>
+</div><div class="c">
+<p class="t">Combination（Subset）</p>
+<p>便是數學課本中「排列組合」的「組合」；概念等於「子集合」。但是這裡不是要計算組合有多少種，而是枚舉所有的組合，以字典順序枚舉。</p>
+<p>例如{1,2,3}所有的組合就是{}、{1}、{2}、{3}、{1,2}、{1,3}、{2,3}、{1,2,3}。</p>
+<p class="t">範例：枚舉{0,1,2,3,4}所有組合</p>
+<p>該如何枚舉呢？先觀察平時我們計算組合個數的方法。</p>
+<p>{0,1,2,3,4}所有組合個數總共2^5個：0可取可不取，有兩種情形、1可取可不取，有兩種情形、...、4可取可不取，有兩種情形。根據乘法原理，總共2*2*2*2*2 = 2^5種情形。</p>
+<p>枚舉方式可以仿照乘法原理。建立一個陣列，當作一個集合。solution[i] = true表示這個集合擁有第i個元素，觀念等同「<a href="Set.html">Set資料結構: 索引儲存</a>」。</p>
+<p>依序枚舉每個位置。針對每個位置，試著填入取或不取。</p>
+<img src="Backtracking4.png">
+<textarea>
+bool solution[5];	// 索引儲存
+
+void backtrack(int n)
+{
+	// it's a solution
+	if (n == 5)
+	{
+		for (int i=0; i<5; i++)
+			if (solution[i])
+				cout << i << ' ';
+		cout << endl;
+		return;
+	}
+
+	// 選取數字n，然後繼續枚舉之後的位置。
+	solution[n] = true;
+	backtrack(n+1);
+
+	// 不取數字n，然後繼續枚舉之後的位置。
+	solution[n] = false;
+	backtrack(n+1);
+}
+
+void enumerate_combinations()
+{
+	backtrack(0);
+}
+</textarea>
+<p>亦得改用其他資料結構，例如「<a href="Set.html">Set資料結構: 循序儲存</a>」。</p>
+<img src="Backtracking5.png">
+<textarea>
+int subset[5];	// 循序儲存
+
+void backtrack(int n, int size)	// size為子集合大小
+{
+	// it's a solution
+	if (n == 5)
+	{
+		// print solution
+		for (int i=0; i<size; i++)
+			cout << subset[i] << ' ';
+		cout << endl;
+		return;
+	}
+
+	// 選取數字n，然後繼續枚舉剩下的數字。
+	subset[size] = n;
+	backtrack(n+1, size+1);
+
+	// 不取數字n，然後繼續枚舉剩下的數字。
+	backtrack(n+1, size);
+}
+
+void enumerate_combinations()
+{
+	backtrack(0, 0);
+}
+</textarea>
+<p class="t">範例：枚舉{0,1,2,3,4}所有組合</p>
+<p>依序枚舉每個選取。針對每個選取，試著填入各個位置。</p>
+<img src="Backtracking6.png">
+<textarea>
+bool solution[5];	// 索引儲存
+
+void backtrack(int n)
+{
+	// print_solution
+	for (int i=0; i<5; i++)
+		if (solution[i])
+			cout << i << ' ';
+	cout << endl;
+
+	for (; n<5; ++n)
+	{
+		// 選取數字n
+		solution[n] = true;
+
+		// 然後繼續枚舉後面的數字
+		backtrack(n+1);
+
+		// 回復原狀
+		solution[n] = false;
+	}
+}
+
+void enumerate_combinations()
+{
+	backtrack(0);
+}
+</textarea>
+<img src="Backtracking7.png">
+<textarea>
+int subset[5];	// 循序儲存
+
+void backtrack(int n, int size)	// size為子集合大小
+{
+	// print_solution
+	for (int i=0; i<size; i++)
+		cout << subset[i] << ' ';
+	cout << endl;
+
+	for (; n<5; ++n)
+	{
+		// 選取數字n
+		subset[size] = n;
+
+		// 然後繼續枚舉後面的數字
+		backtrack(n+1, size+1);
+
+		// 不必特地回復原狀，數字n會覆蓋過去。
+	}
+}
+
+void enumerate_combinations()
+{
+	backtrack(0, 0);
+}
+</textarea>
+<p class="t">範例：枚舉{6,7,13,4,2}所有組合</p>
+<p>預先排序數字，輸出結果就會照字典順序排列。</p>
+<textarea>
+int array[5] = {6, 7, 13, 4, 2};
+int subset[5];	// 循序儲存
+
+void backtrack(int n, int size)	// size為子集合大小
+{
+	// it's a solution
+	if (n == 5)
+	{
+		print_solution();
+		return;
+	}
+
+	// 選取數字array[n]，然後繼續枚舉剩下的數字。
+	subset[size] = array[n];
+	backtrack(n+1, size+1);
+
+	// 不取數字array[n]，然後繼續枚舉剩下的數字。
+	backtrack(n+1, size);
+}
+
+void enumerate_combinations()
+{
+	sort(array, array+5);
+	backtrack(0, 0);
+}
+</textarea>
+<textarea>
+int array[5] = {6, 7, 13, 4, 2};
+int subset[5];	// 循序儲存
+
+void backtrack(int n, int size)	// size為子集合大小
+{
+	print_solution();
+
+	for (; n<5; ++n)
+	{
+		// 選取數字array[n]
+		subset[size] = array[n];
+
+		// 然後繼續枚舉剩下的數字
+		backtrack(n+1, size+1);
+	}
+}
+
+void enumerate_combinations()
+{
+	sort(array, array+5);
+	backtrack(0, 0);
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">8 Queen Problem</p>
+</div><div class="c">
+<p class="t">八皇后問題</p>
+<img src="Backtracking8.png">
+<p>問題：在8x8的西洋棋棋盤上擺放八隻皇后，讓他們恰好無法互相攻擊對方。皇后的攻擊範圍是米字。</p>
+<p>一個非常簡單的想法：每一格都有「放」和「不放」兩種選擇，枚舉所有可能，並避免枚舉皇后互相攻擊的情形。建立8x8的bool陣列，代表一個8x8的棋盤盤面情形。例如solution[0][0] = true表示(0,0)這個位置有放置皇后。</p>
+<textarea>
+bool solution[8][8];
+
+void backtrack(int x, int y)
+{
+	if (y == 8) x++, y = 0;	// 換到下一排格子
+
+	// it's a solution
+	if (x == 8)
+	{
+		print_solution();
+		return;
+	}
+
+	// 放置皇后
+	solution[x][y] = true;
+	backtrack(x, y+1);
+
+	// 不放置皇后
+	solution[x][y] = false;
+	backtrack(x, y+1);
+}
+
+void eight_queen()
+{
+	backtrack(0, 0);
+}
+</textarea>
+<p>接著要避免枚舉不可能出現的答案：任一直線、橫線、左右斜線上面只能有一隻皇后。分別建立四個bool陣列，記錄皇后在各條線上擺放的情形。</p>
+<textarea>
+bool solution[8][8];
+bool mx[8], my[8], md1[15], md2[15];	// 初始值都是 false
+
+void backtrack(int x, int y)
+{
+	if (y == 8) x++, y = 0;	// 換到下一排格子
+
+	// it's a solution
+	if (x == 8)
+	{
+		print_solution();
+		return;
+	}
+
+	// 放置皇后
+	int d1 = (x+y) % 15, d2 = (x-y+15) % 15;
+
+	if (!mx[x] && !my[y] && !md1[d1] && !md2[d2])
+	{
+		// 這隻皇后佔據了四條線，記得標記起來。
+		mx[x] = my[y] = md1[d1] = md2[d2] = true;
+
+		solution[x][y] = true;
+		backtrack(x, y+1);
+
+		// 遞迴結束，回復到原本的樣子，要記得取消標記。
+		mx[x] = my[y] = md1[d1] = md2[d2] = false;
+	}
+
+	// 不放置皇后
+	solution[x][y] = false;
+	backtrack(x, y+1);
+}
+
+void eight_queen()
+{
+	backtrack(0, 0);
+}
+</textarea>
+<p>以及避免枚舉不可能出現的答案：最終的棋盤上面不足八隻皇后。</p>
+<textarea>
+bool solution[8][8];
+bool mx[8], my[8], md1[15], md2[15];	// 初始值都是 false
+
+void backtrack(int x, int y, int c)
+{
+	if (y == 8) x++, y = 0;	// 換到下一排格子
+
+	// it's a solution
+	if (x == 8)
+	{
+		if (c != 8) return;	// 不是八隻皇后就避免枚舉答案
+		print_solution();
+		return;
+	}
+
+	// 放置皇后
+	int d1 = (x+y) % 15, d2 = (x-y+15) % 15;
+	if (!mx[x] && !my[y] && !md1[d1] && !md2[d2])
+	{
+		mx[x] = my[y] = md1[d1] = md2[d2] = true;
+		solution[x][y] = true;
+		backtrack(x, y+1, c+1);	// 皇后多一隻
+		mx[x] = my[y] = md1[d1] = md2[d2] = false;
+	}
+
+	// 不放置皇后
+	solution[x][y] = false;
+	backtrack(x, y+1, c);		// 皇后和原來一樣多
+}
+
+void eight_queen()
+{
+	backtrack(0, 0, 0);	// 一開始棋盤是空的，皇后數目為零。
+}
+</textarea>
+<p class="t">改進</p>
+<p>由於一條線必須剛好擺放一隻皇后，故可以以線為單位來遞迴窮舉。重新建立一條一維int陣列，solution[0] = 5表示第零個直行上的皇后，擺在第五個位置。</p>
+<textarea>
+int solution[8];
+
+void backtrack(int x) // 每次都換一排格子
+{
+	// it's a solution
+	if (x == 8)
+	{
+		print_solution();
+		return;
+	}
+
+	// 分別放置皇后在每一格，並各自遞迴下去。
+	solution[x] = 0;
+	backtrack(x+1);
+
+	solution[x] = 1;
+	backtrack(x+1);
+
+	......
+
+	solution[x] = 7;
+	backtrack(x+1);
+}
+</textarea>
+<p>縮成迴圈是一定要的啦！</p>
+<textarea>
+int solution[8];
+
+void backtrack(int x)	// 每次都換一排格子
+{
+	// it's a solution
+	if (x == 8)
+	{
+		print_solution();
+		return;
+	}
+
+	// 分別放置皇后在每一格，並各自遞迴下去。
+	for (int y=0; y<8; ++y)
+	{
+		solution[x] = y;
+		backtrack(x+1);
+	}
+}
+</textarea>
+<p>接著要避免枚舉不可能出現的答案。</p>
+<textarea>
+int solution[8];
+bool my[8], md1[15], md2[15];	// 初始值都是 false
+								// x這條線可以不用檢查了
+
+void backtrack(int x)	// 每次都換一排格子
+{
+	// it's a solution
+	if (x == 8)
+	{
+		print_solution();
+		return;
+	}
+
+	// 分別放置皇后在每一格，並各自遞迴下去。
+	for (int y=0; y<8; ++y)
+	{
+		int d1 = (x+y) % 15, d2 = (x-y+15) % 15;
+
+		if (!my[y] && !md1[d1] && !md2[d2])
+		{
+			// 這隻皇后佔據了四條線，記得標記起來。
+			my[y] = md1[d1] = md2[d2] = true;
+
+			solution[x] = y;
+			backtrack(x+1);
+
+			// 遞迴結束，回復到原本的樣子，要記得取消標記。
+			my[y] = md1[d1] = md2[d2] = false;
+		}
+	}
+}
+</textarea>
+<p class="t">改進</p>
+<p>8 Queen Problem的答案是上下、左右、對角線對稱的。排除對稱的情形，可以節省枚舉的時間。這裡不加贅述。</p>
+<p class="t">另一種左右斜線判斷方式</p>
+<p>比用陣列記錄還麻煩。自行斟酌。</p>
+<textarea>
+void backtrack(int x)	// 每次都換一排格子
+{
+	for (int i=0; i<x; ++i)
+		if (abs(x - i) == abs(solution[x] - solution[i]))
+			return;
+
+	......
+}
+</textarea>
+<p class="e">UVa 167 750 10513 639 989 10893 10957</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">0/1 Knapsack Problem</p>
+</div><div class="c">
+<p class="t">0/1背包問題</p>
+<img src="Backtracking9.png">
+<p>問題：各式各樣的物品，重量與價值皆異。一個背包，具有耐重限制。現在將物品儘量塞入背包，令背包裡物品總價值最高。</p>
+<p>一個簡單的想法：每個物品都有「要」和「不要」兩種選擇，窮舉所有可能，並避免枚舉背包超載的情形。建立一維bool陣列，solution[0] = true表示第零個物品有放進背包。</p>
+<textarea>
+bool solution[10];	// 十個物品
+
+int weight[10] = {4, 54, 1, ..., 32};	// 十個物品分別的重量
+int cost[10] = {3, 3, 11, ..., 23};		// 十個物品分別的價值
+
+const int maxW = 100;	// 背包承載上限
+int maxC = 0;			// 出現過的最高總值
+
+void backtrack(int n, int w, int c)
+{
+	// it's a solution
+	if (n == 10)
+	{
+		if (c > maxC)	// 記錄總值最高的
+		{
+			maxC = c;
+			store_solution();
+		}
+		return;
+	}
+
+	// 放進背包
+	if (w + weight[n] <= maxW)	// 檢查背包超載
+	{
+		solution[n] = true;
+		backtrack(n+1, w + weight[n], c + cost[n]);
+	}
+
+	// 不放進背包
+	solution[n] = false;
+	backtrack(n+1, w, c);
+}
+
+
+bool answer[10];	// 正確答案
+
+void store_solution()
+{
+	for (int i=0; i<10; ++i)
+		answer[i] = solution[i];
+}
+</textarea>
+<p>檢查背包超載的部分可以修改成更美觀的樣子。</p>
+<textarea>
+void backtrack(int n, int w, int c)
+{
+	if (w > maxW) return;	// 背包超載
+
+	// it's a solution
+	if (n == 10)
+	{
+		if (c > maxC)	// 記錄總值最高的
+		{
+			maxC = c;
+			store_solution();
+		}
+		return;
+	}
+
+	// 放進背包
+	solution[n] = true;
+	backtrack(n+1, w + weight[n], c + cost[n]);
+
+	// 不放進背包
+	solution[n] = false;
+	backtrack(n+1, w, c);
+}
+</textarea>
+<p>各位可以預先排序物品重量，再執行backtracking程式碼，看看效率有何不同。然後嘗試使用heuristic bound加快速度。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Inclusion-Exclusion Principle</p>
+</div><div class="c">
+</div><div class="c">
+<p class="t">排容原理</p>
+<img src="Backtracking10.png">
+<p>類似於枚舉所有子集合，但是每個子集合有正負號之別──奇數個集合的交集為正號、偶數個集合的交集為負號。</p>
+<p>舉例：求出1到100當中不可被3或5或8整除的整數有幾個。3、5、8均兩兩互質。</p>
+<img src="Backtracking11.png">
+<textarea>
+int array[3] = {3, 5, 8};
+
+// 排容，sign為正負號，divisor為各種可能的除數
+int backtrack(int n, int sign, int divisor)
+{
+	// it's a solution
+	if (n == 3) return sign * (100 / divisor);
+
+	int total = 0;
+
+	// 不選。正負號維持不變，除數維持不變。
+	// solution[n] = false;
+	total += backtrack(n+1, sign, divisor);
+
+	// 選。須變號，並逐步累計除數。
+	// 因逐步累計除數，故不需要具體記錄選到的數字
+	// solution[n] = true;
+	total += backtrack(n+1, -sign, divisor * array[n]);
+
+	return total;
+}
+
+void inclusion_exclusion()
+{
+	cout << "1到100當中不可被3或5或8整除的整數";
+	cout << "有" << backtrack(0, +1, 1) << "個";
+}
+</textarea>
+<p>考慮數字之間不互質的一般情形：</p>
+<textarea>
+int array[5] = {3, 5, 6, 7, 9};
+
+// 最大公因數
+int gcd(int a, int b)
+{
+	return b ? gcd(b, a%b) : a;
+}
+
+// 最小公倍數
+int lcm(int a, int b)
+{
+	return a / gcd(a, b) * b;
+}
+
+// 精簡過後的排容程式碼，divisor為各種可能的除數
+int backtrack(int n, int divisor)
+{
+	if (n == 5) return 100 / divisor;
+	return backtrack(n+1, divisor)
+			- backtrack(n+1, lcm(divisor, array[n]));
+}
+
+void inclusion_exclusion()
+{
+	cout << "1到100當中不可被3或5或6或7或9整除的整數";
+	cout << "有" << backtrack(0, 1) << "個";
+}
+</textarea>
+<p>枚舉子集合（組合）有兩種枚舉方式，排容原理亦有兩種枚舉方式。</p>
+<textarea>
+int array[5] = {3, 5, 6, 7, 9};
+
+int backtrack(int n, int divisor)
+{
+	int total = 0;
+	total += 100 / divisor;	// 目前湊出來的集合
+
+	// 繼續枚舉之後的數字，記得變號
+	for (int i=n; i<5; ++i)
+		total -= backtrack(i+1, lcm(divisor, array[i]));
+
+	return total;
+}
+
+void inclusion_exclusion()
+{
+	cout << "1到100當中不可被3或5或6或7或9整除的整數";
+	cout << "有" << backtrack(0, 1) << "個";
+}
+</textarea>
+<p class="e">UVa 10325</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Euclidean Shortest Path</p>
+</div><div class="c">
+<p class="t">© 2010 <a href="http://tkcnandy.blogspot.com/">tkcn</a>. All rights reserved.</p>
+<script src="demo/EuclideanShortestPath/EuclideanShortestPath.js"></script>
+<p class="d" id="EuclideanShortestPath"></p>
+<p class="t">二維座標平面，兩點之間的最短路徑</p>
+<p>在一張地圖上有很多個地點，鄰近的地點有筆直道路相通，我們也知道每一段道路的長度。現在要沿著道路，從一個地點走到另一個地點，請問要怎麼走距離最短呢？</p>
+<p>一條最短的路徑，肯定不會繞圈子。我們可以使用backtracking窮舉所有排列，製造所有可能的路徑。每當生成一條路徑，就判斷這條路徑是不是歷來最短的路徑，並且隨時記得歷來最短的路徑。</p>
+<textarea>
+struct Point {double x, y;} p[10];	// 所有地點的座標，
+									// 編號為 0 到 9。
+bool connect[10][10];	// 兩個地點之間是否有筆直道路相通
+						// 若相通為 true，不相通為 false。
+int s = 0, t = 9;		// 起點與終點的編號
+
+int solution[10];		// 一條可能的路徑
+bool used[10];			// 記錄數字是否使用過，用過為 true。
+
+int best_solution[10];	// 隨時記得歷來最短的路徑
+int best_dist;			// 隨時記得歷來最短的路徑的長度
+
+// 計算兩點之間的直線距離
+double length(Point& a, Point& b)
+{
+	double dx = b.x - a.x, dy = b.y - a.y;
+	return sqrt(dx * dx + dy * dy);
+}
+
+void backtrack(int n, int a, int dist)
+{
+	// prune，生成不合理的解答就馬上回溯。
+	if (n > 2 && !connect[solution[n-2]][solution[n-1]])
+		return;
+
+	// it's a solution
+	if (a == t)
+	{
+		// 記錄歷來最短的路徑
+		if (dist < best_dist)
+		{
+			best_dist = dist;
+			for (int i=0; i<n; ++i)
+				best_solution[i] = solution[i];
+		}
+		return;
+	}
+
+	// 窮舉所有排列
+	for (int b=0; b<10; ++b)
+		if (!used[b])
+		{
+			used[b] = true;
+
+			solution[n] = b;
+			backtrack(n+1, b, dist + length(p[a], p[b]);
+
+			used[b] = false;
+		}
+}
+
+void Euclidean_shortest_path()
+{
+	best_dist = 1e9;	// 設定為很大的數值，代表無限遠。
+
+	used[s] = true;		// 設定好起步起點
+	solution[0] = s;
+	backtrack(0+1, 0, 0);
+}
+</textarea>
+<p>prune的程式碼，可以放在遞迴函式一開始的地方，也可以放在遞迴函式呼叫的前一刻。視情況選用直觀易懂的寫法。</p>
+<textarea>
+void backtrack(int n, int a, int dist)
+{
+	// it's a solution
+	if (a == t)
+	{
+		// 記錄歷來最短的路徑
+		if (dist < best_dist)
+		{
+			best_dist = dist;
+			for (int i=0; i<n; ++i)
+				best_solution[i] = solution[i];
+		}
+		return;
+	}
+
+	// 窮舉所有排列
+	for (int b=0; b<10; ++b)
+		if (connect[a][b])	// prune，有路才能通行。
+			if (!used[b])
+			{
+				used[b] = true;
+
+				solution[n] = b;
+				backtrack(n+1, b, dist + length(p[a], p[b]);
+
+				used[b] = false;
+			}
+}
+</textarea>
+<p>很多人誤認backtracking就是圖論中的DFS，然而兩者沒有關係。兩者相似的地方是：backtracking遇到不合理的解答會馬上回溯，DFS遇到拜訪過的節點會馬上回溯。</p>
+<p class="t">Bounding</p>
+<p>遞迴過程中，如果當下產生的路徑片段，已經超過歷來最短的路徑長度，則可以馬上回溯。堅持遞迴下去，路徑片段只會越變越長，將來仍然是超過歷來最短的路徑長度，根本不可能構成正確解答──不如當下就回溯，及早發現及早治療。</p>
+<textarea>
+void backtrack(int n, int a, int dist)
+{
+	// bound
+	// 路徑片段已經太長，窮舉下去沒有意義了，可以馬上回溯。
+	if (dist >= best_dist) return;
+
+	......
+}
+</textarea>
+<p class="t">Heuristic Bounding</p>
+<p>遞迴過程中，如果當下產生的片段路徑，我們預測它延伸到終點之後，鐵定超過歷來最短的路徑長度，則可以馬上回溯。先知先覺，防範未然，少走許多冤枉路。</p>
+<textarea>
+void backtrack(int n, int a, int dist)
+{
+	// heuristic bound
+	// 還沒到之前，如果發現已經太遠了，就不繼續走，改換條路。
+	if (dist + length(p[a], p[t]) >= best_dist) return;
+
+	......
+}
+</textarea>
+<p>這個問題可以套用最短路徑演算法，甚至可以使用A*、IDA*解決。不過這已經超出backtracking的範圍了。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Backtracking.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 14:58:19 GMT -->
+</html>

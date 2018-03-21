@@ -1,0 +1,1045 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Residue.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:28 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Residue</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Residue</p>
+<p class="w">高者抑之，下者舉之；有餘者損之，不足者與之。《老子》</p>
+</div><div class="c">
+<p class="t">Residue</p>
+<p>整數除法：被除數除以除數得到商數與餘數。分堆到底為止。</p>
+<img src="Residue1.png">
+<p>可以分堆、補堆任意次數的時候，除數就變成了「模數」，餘數就變成了「留數」。</p>
+<img src="Residue2.png">
+<p>餘數只有一個，留數有無限多個。只要隨便求出一個餘數，不斷加減模數，就得到各個留數；各個留數皆平等，任選一個當代表都行，通常是寫最接近零、大於等於零的那一個。一般使用≡全等符號表示各個留數兩兩之間的平等關係。</p>
+<img src="Residue3.png">
+<p>中文習慣把留數也稱作餘數。以下皆用餘數稱呼留數。</p>
+<textarea>
+int quotient = 8 / 3;	// 求商數，此運算符號稱作「除」。
+int remainder = 8 % 3;	// 求餘數，此運算符號稱作「模」。
+
+int quotient = -8 / 3;
+int remainder = -8 % 3;	// 結果是負數，要小心處理。
+
+// 除數為負值，規則詭異，小心使用。
+int q = 8 / -3;
+int r = 8 % -3;
+int q = -8 / -3;
+int r = -8 % -3;
+</textarea>
+<p class="t">中英對照</p>
+<pre>
+被除數 dividend
+除數 divisor
+商數 quotient
+餘數 remainder
+模數 modulus
+留數/殘數/殘值/餘數 residue
+全等/同餘 congruence
+</pre>
+<p class="t">餘數運算</p>
+<p>residue一般是指「殘值」，例如殘值定理；在餘數系統，則是指「餘數」，是一個實際數值。</p>
+<p>congruence一般是指「全等」，例如三角形全等；在餘數系統，則是指「同餘」，是一種抽象概念，是一個運算符號。</p>
+<p>計算學家重視數值，因此演算法書籍喜愛討論residue；數學家重視性質，因此數學書籍喜愛討論congruence。</p>
+<p>實數運算，等於=不是主角，加減乘除才是主角；餘數運算，同餘≡當然也不是主角，加減乘除才是主角。</p>
+<p>因此接下來將要討論residue的加減乘除。</p>
+<p class="t">+</p>
+<p>模數相同時，餘數可相加。<p>
+<img src="Residue4.png">
+<pre>
+8 (mod 3) + 7 (mod 3) ≡ 15 (mod 3)
+8 (mod 3) + 7 (mod 3) + 6 (mod 3) ≡ 21 (mod 3)
+</pre>
+<p>模數相同時，mod符號可以精簡成一個，寫在式子後面。</p>
+<pre>
+8 + 7 ≡ 15 (mod 3)
+8 + 7 + 6 ≡ 21 (mod 3)
+</pre>
+<p>餘數加法實際上是「無限多個」加「無限多個」等於「無限多個」。這三項當中，任取一個餘數當代表都行，等式皆成立。然而實際計算時，大可不必想得如此複雜，就是加與模，求得最接近零、大於等於零的那一個餘數。</p>
+<textarea>
+// 先加一加，最後才模。
+int n = (8 + 7) % 3;
+// 隨時模，避免溢位。
+int n = (8 % 3 + 7 % 3) % 3;
+</textarea>
+<textarea>
+/* a+b ≡ x (mod m) */
+int add(int a, int b, int m)
+{
+	// 小心負數！
+	int n = (a % m + b % m) % m;
+	if (n < 0) n += m;
+	return n;
+}
+
+int add(int a, int b, int m)
+{
+	// 小心負數！
+	return (((a % m + b % m) % m) + m) % m;
+}
+</textarea>
+<p class="t">延伸閱讀：模數不一致的加法</p>
+<p>雞肋。窮舉每一種餘數並且相加。</p>
+<pre>
+  1 (mod 4) + 1 (mod 6)
+≡ ⋯ ∪ 
+  { 1 (mod 4) + -5 } ∪ 
+  { 1 (mod 4) +  1 } ∪ 
+  { 1 (mod 4) +  7 } ∪ 
+  ⋯
+≡ { 0 (mod 4) } ∪ { 2 (mod 4) }
+</pre>
+<p class="t">−</p>
+<p>模數相同時，餘數可相減。</p>
+<pre>
+8 - 7 ≡ 1 (mod 3)
+8 - 7 - 6 ≡ -5 (mod 3)
+</pre>
+<textarea>
+/* a-b ≡ x (mod m) */
+int sub(int a, int b, int m)
+{
+	return add(a, -b, m);
+}
+</textarea>
+<p class="e">UVa 10787</p>
+<p class="t">×</p>
+<p>餘數可以乘上整數倍率，等同於連加。</p>
+<img src="Residue5.png">
+<pre>
+8 (mod 5) × 7 ≡ 56 (mod 5)
+8 (mod 5) × 7 × 6 ≡ 336 (mod 5)
+</pre>
+<p>倍率可以推廣成餘數。換句話說：模數相同時，餘數可相乘。</p>
+<img src="Residue6.png">
+<pre>
+8 (mod 5) × 7 (mod 5) ≡ 56 (mod 5)
+8 (mod 5) × 7 (mod 5) × 6 (mod 5) ≡ 336 (mod 5)
+</pre>
+<p>模數相同時，mod符號可以精簡成一個，寫在式子後面。</p>
+<pre>
+8 × 7 ≡ 56 (mod 5)
+8 × 7 × 6 ≡ 336 (mod 5)
+</pre>
+<p>直接套用「<a href="Number.html">整數乘法</a>」的演算法。</p>
+<textarea>
+/* a×b ≡ x (mod m) */
+int mul(int a, int b, int m)
+{
+	// 轉型成long long int，避免溢位。
+	return (int)((long long)a * (long long)b % (long long)m);
+}
+
+int mul(int a, int b, int m)
+{
+	// 運用隱性轉型，簡化程式碼。
+	return (long long)a * b % m;
+}
+</textarea>
+<textarea>
+long long mul(long long a, long long b, long long m)
+{
+	unsigned long long x = 0, t = a;
+	for (; b > 0; b >>= 1)
+	{
+		if (b & 1) x = (x + t) % m;
+		t = (t + t) % m;
+	}
+	return x;
+}
+</textarea>
+<p class="e">UVa 10787</p>
+<p class="t">÷</p>
+<p>已知一乘數、乘積，求另一乘數。</p>
+<pre>
+☐ × 7 ≡ 21 (mod 5)
+8 × ☐ ≡ 56 (mod 5)
+</pre>
+<p>移項一下，即是除法。</p>
+<pre>
+21 ÷ 7 ≡ 3 (mod 5)
+56 ÷ 7 ≡ 8 ≡ 3 (mod 5)  
+</pre>
+<p>餘數除法、實數除法，概念完全不同。實數除法具備「分成幾等份」的意義，而餘數除法不具備這種意義！餘數除法被定義成餘數乘法的反運算。餘數除法的本質是乘法式子解未知數。</p>
+<p>任選一個餘數當代表，儘管看似無法整除，卻存在計算結果。</p>
+<pre>
+☐ × 7 ≡ 21 (mod 5)  ->  3 × 7 ≡ 21 (mod 5)  ->  21 ÷ 7 ≡ 3 (mod 5)
+☐ × 7 ≡ 16 (mod 5)  ->  3 × 7 ≡ 16 (mod 5)  ->  16 ÷ 7 ≡ 3 (mod 5)
+☐ × 7 ≡ 11 (mod 5)  ->  3 × 7 ≡ 11 (mod 5)  ->  11 ÷ 7 ≡ 3 (mod 5)
+☐ × 7 ≡ 6  (mod 5)  ->  3 × 7 ≡ 6  (mod 5)  ->   6 ÷ 7 ≡ 3 (mod 5)
+☐ × 7 ≡ 1  (mod 5)  ->  3 × 7 ≡ 1  (mod 5)  ->   1 ÷ 7 ≡ 3 (mod 5)
+</pre>
+<p>有時候也可能無解、多解。</p>
+<pre>
+☐ × 2 ≡ 3 (mod 4)   ->  3 ÷ 2 ≡ ☐ (mod 4)   ☐不存在
+☐ × 4 ≡ 5 (mod 10)  ->  5 ÷ 4 ≡ ☐ (mod 10)  ☐不存在
+☐ × 3 ≡ 0 (mod 6)   ->  0 ÷ 3 ≡ ☐ (mod 6)   ☐是0或2
+☐ × 3 ≡ 3 (mod 12)  ->  3 ÷ 3 ≡ ☐ (mod 12)  ☐是1或5或9
+</pre>
+<p>究竟如何計算餘數除法呢？數學家發明了倒數！</p>
+<p class="t">倒數</p>
+<p>數學家利用等量乘法原理，建立倒數的概念。</p>
+<pre>
+1 ÷ 7     ≡ ☐     (mod 5)   移項之後的式子
+☐ × 7     ≡ 1     (mod 5)   原問題
+☐ × 7 × <u>7</u> ≡ 1 × <u>7</u> (mod 5)   等號兩側同乘以「7的倒數」
+☐         ≡ 1 × <u>7</u> (mod 5)   7乘以「7的倒數」令它是1，就能消掉。
+</pre>
+<p>數學家於是規定：原數與倒數相乘等於1。除法變成「乘以倒數」，解決了看似無法整除的情況！</p>
+<pre>
+1 ÷ 7 ≡ 1 × <u>7</u> ≡ ☐ (mod 5)
+</pre>
+<p>預先求出倒數，便可計算餘數除法！</p>
+<pre>
+模5的時候，7的倒數是3。因為 7 × 3 ≡ 1 (mod 5)。
+<u>7</u> ≡ 3 (mod 5)
+
+21 ÷ 7 ≡ 21 × <u>7</u> ≡ 21 × 3 ≡ 63 ≡ 3 (mod 5)
+20 ÷ 7 ≡ 20 × <u>7</u> ≡ 20 × 3 ≡ 60 ≡ 0 (mod 5)
+ 3 ÷ 7 ≡  3 × <u>7</u> ≡  3 × 3 ≡  9 ≡ 4 (mod 5)
+ 2 ÷ 7 ≡  2 × <u>7</u> ≡  2 × 3 ≡  6 ≡ 1 (mod 5)
+ 1 ÷ 7 ≡  1 × <u>7</u> ≡  1 × 3 ≡  3 ≡ 3 (mod 5)
+</pre>
+<p>實數系統的倒數，就是分子與分母顛倒。餘數系統的倒數，可以運用「<a href="GreatestCommonDivisor.html">輾轉相除法</a>」求得。</p>
+<pre>
+倒數的定義
+a × <u>a</u> ≡ 1 (mod m)
+
+已知a與m，欲求<u>a</u>，
+使得 a × <u>a</u> ≡ 1 (mod m)。
+
+取其中一個餘數當作代表，上式可以重新整理成
+a × <u>a</u> = 1 + m × k
+a × <u>a</u> - m × k = 1
+a × <u>a</u> + m × (-k) = 1
+
+再利用延伸版本的輾轉相除法，
+求得a與m的最大公因數（必須是1），
+並求得倍率<u>a</u>與(-k)。
+其中<u>a</u>就是我們想要的「a的倒數」。
+</pre>
+<textarea>
+/* a×x ≡ 1 (mod m) */
+int inverse(int a, int m)
+{
+	int d = m, x = 0, s = 1, q, r, t;
+	while (a != 0)
+	{
+		q = d / a, r = d % a;
+		d = a, a = r;
+		t = x - q * s, x = s, s = t;
+	}
+	if (d != 1) return -1;	// 沒有倒數、無法整除
+	return (x + m) % m;
+}
+
+/* a÷b ≡ a×inv(b) ≡ x (mod m) */
+int div(int a, int b, int m)
+{
+	return mul(a, inverse(b, m), m);
+}
+</textarea>
+<textarea>
+void gcd(int a, int b, int& d, int& x, int& y)
+{
+	if (!b) {d = a; x = 1; y = 0; return;}
+	gcd(b, a%b, d, y, x);
+	y -= x*(a/b);
+}
+
+int inverse(int a, int m)
+{
+	int d, x, y;
+	gcd(a, m, d, x, y);
+	return d == 1 ? (x+m)%m : -1;
+}
+</textarea>
+<p>根據輾轉相除法的推導結果，如果一個數與模數的最大公因數等於一（互質），才擁有倒數。</p>
+<pre>
+最大公因數是1，才能一路逆推，使得倒數的式子成立。
+a × <u>a</u> + m × (-k) = 1
+a × <u>a</u> - m × k = 1
+a × <u>a</u> = 1 + m × k
+a × <u>a</u> ≡ 1 (mod m)
+</pre>
+<p>換個角度來說。模數是質數，每一個數都有倒數；模數不是質數，只有跟模數互質的數才有倒數！</p>
+<p>我不知道如何判斷餘數除法是唯一解、無解、多解。</p>
+<p class="t">反元素（inverse element）、單位元素（identity element）</p>
+<p>世界事物往往相對，有前就有後，有上就有下。</p>
+<p>創造一個數學運算，往往就出現了反向運算：加法之於減法，乘法之於除法，函數之於反函數。</p>
+<p>一般來說，正與反是能夠等量相消的。用以等量相消的元素，稱作「反元素」：加法的反元素是負數-x，乘法的反元素是倒數1/x，函數的反元素是反函數f⁻¹。所謂的「元素」，視情況是指數值、是指函數、是指矩陣、……，算是個總稱。</p>
+<p>正與反等量相消之後，成為了一個無能的、沒用的元素，稱作「單位元素」：加法當中，數與負數相加等於單位元素，是零；乘法當中，數與倒數相乘等於單位元素，是一；函數轉換中，函數與反函數合成等於單位函數（identity function）；矩陣與反矩陣合成等於單位矩陣（identity matrix），對角線是一、其餘是零。</p>
+<p>每當數學家創造新的數系、創造新的數學運算，就會勘查反元素、單位元素。學習這些概念後，就有了個行動綱領，就有了個標準作業流程SOP，用以對付人類還不曉得的數學。</p>
+<p>數學系的基礎代數課程，就會提到反元素、單位元素。雖然是形而上，但是這不是什麼深奧的數學概念，讀者不必自己嚇自己。</p>
+<p class="t">^</p>
+<p>餘數可以有整數次方，等同於連乘。</p>
+<pre>
+8 (mod 3) ^ 3 ≡ 8 (mod 3) × 8 (mod 3) × 8 (mod 3) ≡ 512 (mod 3)
+</pre>
+<p>套用「<a href="Number.html">整數次方</a>」的演算法即可。</p>
+<textarea>
+/* a^b ≡ x (mod m) */
+int pow(int a, int b, int m)
+{
+	int x = 1;
+	for (a %= m; b > 0; b >>= 1)
+	{
+		if (b & 1) x = mul(x, a, m);
+		a = mul(a, a, m);
+	}
+	return x;
+}
+</textarea>
+<p>次方可以推廣成餘數，但是次方的模數不是原本模數。</p>
+<pre>
+「<a href="http://en.wikipedia.org/wiki/Fermat's_little_theorem">Fermat's Little Theorem</a>」
+若模數是質數p，則次方的模數正是p-1。
+2 (mod 7) ^ 100 ≡ 2 (mod 7) ^ 100 (mod 6)
+
+「<a href="http://en.wikipedia.org/wiki/Carmichael_function">Carmichael's Theorem</a>」
+若模數與底數互質，則次方的模數，
+是模數的「Carmichael Function, λ(m)」的其中一個因數。
+2 (mod 9) ^ 100 ≡ 2 (mod 9) ^ 100 (mod λ(9))
+
+「<a href="http://en.wikipedia.org/wiki/Euler's_theorem">Euler's Theorem</a>」
+若模數與底數互質，則次方的模數，
+是模數的「Euler's Totient Function, φ(m)」的其中一個因數。
+φ(m)不精準，有多餘的因數，有些因數不可能是次方的模數。但是φ(m)比較容易求得。
+2 (mod 9) ^ 100 ≡ 2 (mod 9) ^ 100 (mod φ(9))
+
+若模數是普通數字，則沒有數學公式，只能使用窮舉法求得次方的模數。
+</pre>
+<p>計算λ(m)和φ(m)，需要質因數分解，曠日費時，乏人問津。況且我們也不確定是λ(m)和φ(m)的哪一個因數。</p>
+<p>但是如果預先知道λ(m)或φ(m)，就可以預先將次方值模λ(m)或φ(m)，以加速次方運算。</p>
+<pre>
+預先知道 φ(9) = 6
+  2 (mod 9) ^ 100
+≡ 2 (mod 9) ^ 100 (mod φ(9))
+≡ 2 (mod 9) ^ 100 (mod 6)
+≡ 2 (mod 9) ^ 4 (mod 6)
+≡ 16 (mod 9)
+≡ 7 (mod 9)
+</pre>
+<p></p>
+<p class="e">UVa 374</p>
+<p class="t">倒數（模數是質數）</p>
+<p>根據費馬小定理，當模數為質數p，那麼倒數即是p-2次方。</p>
+<pre>
+模數為質數p
+a ^ p         ≡ a (mod p)
+a ^ (p-1)     ≡ 1 (mod p)   當 a ≢ 0 (mod p)
+a ^ (p-2) × a ≡ 1 (mod p)   當 a ≢ 0 (mod p)
+<u>a</u> = a ^ (p-2)     (mod p)   當 a ≢ 0 (mod p)，0沒有倒數
+</pre>
+<p>不必另外撰寫輾轉相除法。時間複雜度也差不多。</p>
+<p class="t">倒數表（模數是質數）</p>
+<p>若模數是質數，則每一個數都有倒數！</p>
+<p>此時可以預先建立倒數表，預先計算每一個數的倒數。建立倒數表有著較快的演算法，時間複雜度為O(N)，N為模數大小。大可不必逐個數字套用輾轉相除法。</p>
+<pre>
+ p % i = p - (p ÷ i) × i
+ p % i ≡   - (p ÷ i) × i           (mod p)
+inv[i] ≡   - (p ÷ i) × inv[p % i]  (mod p)   i移項到左邊，p%i移項到右邊
+</pre>
+<textarea>
+int inv[100];
+
+void inverse_table(int p)
+{
+	inv[1] = 1;
+	for (int i=2; i<p; ++i)
+		inv[i] = (p - (p/i) * inv[p%i] % p) % p;
+}
+</textarea>
+<p class="t">log</p>
+<p>已知底數、乘積，求指數。</p>
+<pre>
+8 ^ ☐ ≡ 512 (mod 3)
+</pre>
+<p>移項一下，即是對數。</p>
+<pre>
+8 (mod 3) ^ 3 (mod φ(3)) ≡ 512 (mod 3)
+log₈( 512 (mod 3) ) ≡ 3 (mod φ(3)) 
+</pre>
+<p>宛如餘數除法，餘數對數可能是唯一解、無解、多解。</p>
+<p>演算法非常多，此處僅介紹Baby-step Giant-step Algorithm。為求簡單起見，此處僅討論底數與模數互質的情況。</p>
+<p>原理是試誤法。a^0到a^(m-1)依序等分為n個區塊，第一區塊採用窮舉法，其餘區塊採用記憶法。</p>
+<pre>
+a ^ x ≡ b (mod m)   已知a b m，求x。另外gcd(a,m) = 1。
+
+一、隨便選一個正整數n。（通常是sqrt(m)）
+二、Baby-step，一共有n步：
+　甲、計算a^0, a^1, ..., a^(n-1)，
+　　　如果等於b，就找到答案了。
+三、Giant-step，一共有m/n步：
+　甲、一口氣處理a^n到a^(2n-1)：
+　　　　a^(n+k) ≡ b
+　　　　a^n × a^k ≡ b
+　　　　a^k ≡ b × inv(a^n)
+　　　先前計算的a^0, a^1, ..., a^n-1，
+　　　如果等於b × inv(a^n)，就找到答案了。
+　乙、一口氣處理a^2n到a^(3n-1)，
+　　　　a^(2n+k) ≡ b
+　　　　a^n × a^n × a^k ≡ b
+　　　　a^k ≡ b × inv(a^n) × inv(a^n)
+　　　先前計算的a^0, a^1, ..., a^n-1，
+　　　如果等於b × inv(a^n) × inv(a^n)，就找到答案了。
+　丙、如法炮製。
+</pre>
+<p>採用陣列、以counting sort的手法儲存a^0到a^(n-1)，空間複雜度為O(m)。如此一來，Baby-step的時間複雜度為O(n)，Gaint-step的時間複雜度為O(m/n)，整體的時間複雜度為O(n + m/n)。令n = sqrt(m)讓時間複雜度達到最低，為O(sqrt(m))。</p>
+<p>採用binary search tree儲存a^0到a^(n-1)，空間複雜度降低為O(n)，時間複雜度升高為O(n + (m/n) * log(n))。</p>
+<p>當模數m很大，記憶體不足，資料結構可以改為hash table。</p>
+<textarea t="只找出最小的那一個解">
+/* a^x ≡ b (mod m) */
+int log(int a, int b, int m)
+{
+	// 儲存a^0 ... a^(n-1)
+	vector<int> x(m, -1);	// associative array
+//	map<int, int> x;		// red-black tree
+//	unordered_map<int, int> x;	// hash table
+
+	// a^0 ... a^(n-1)
+	int n = sqrt(m);
+	int t = 1;
+	for (int i=0; i<n; ++i)
+	{
+		if (t == b) return i;
+		if (x[e] == -1) x[t] = i;
+//		if (!x.count(e)) x[t] = i;
+		t = mul(t, a, m);
+	}
+
+	// a^n ... a^(2n-1)
+	// a^2n ... a^(3n-1)
+	// ......
+	int f = inv(t, m);
+	for (int i=0; i<n+1; ++i)
+	{
+		if (x[b] != -1) return i*n + x[b];
+//		if (x.count(b)) return i*n + x[b];
+		b = mul(b, f, m);
+	}
+	return -1;	// 無解
+}
+</textarea>
+<p>其他的經典演算法，例如「<a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/phexample.pdf">Pohlig-Hellman Algorithm</a>」適用於φ(n)的質因數都很小的情況，讀者可以看完本章節再來回顧。</p>
+<p class="e">UVa 10225 11916</p>
+<p class="t">√‾</p>
+<p>已知指數、乘積，求底數。</p>
+<pre>
+☐ ^ 3 ≡ 512 (mod 3)
+</pre>
+<p>移項一下，即是開方。不過這已經偏離問題核心。</p>
+<pre>
+8 (mod 3) ^ 3 (mod φ(3)) ≡ 512 (mod 3)
+ ____________
+∛ 512 (mod 3) ≡ 8 (mod 3) 
+</pre>
+<pre>
+4^5與8^3誰比較大？
+
+首先把底數換成一樣，換成最小的底數。
+4^5 = (2^2)^5 = 2^10
+8^3 = (2^3)^3 = 2^9
+如此一來就能比較大小了
+</pre>
+<pre>
+x ^ a ≡ b (mod m)   已知a b m，求x。
+
+m的其中一個原根是r，做為底數。
+令 x = r^p，b = r^q
+原式變成 r ^ ap ≡ r ^ q (mod m)
+繼而變成 ap ≡ q (mod φ(m))。
+
+先解 b ≡ r^q (mod m)   對數，求得q。
+再解 ap ≡ q (mod φ(m)) 線性方程式，求得p。
+末解 x ≡ r^p (mod m)   次方，求得x。
+</pre>
+<p>原根宛如單位根，容後解釋。</p>
+<p class="e">ICPC 4746</p>
+<p class="t">判斷餘數開方是否有解</p>
+<p>宛如餘數除法，餘數開方可能是唯一解、無解、多解。</p>
+<p>讀者可搜尋二次互反律（Quadratic Reciprocity）、三次互反律（Cubic Reciprocity）。我不清楚是否有相關演算法。</p>
+<p class="e">UVa 10831</p>
+<p class="t">多項式</p>
+<p>已知數（係數）、未知數，皆是餘數，採用相同模數。</p>
+<pre>
+x³ + 2x² - 5x + 1 (mod 3)
+3x² + y² + 2xy - 5x + y + 1 (mod 3)
+</pre>
+<p>係數通常是寫最接近零、大於等於零的那一個。</p>
+<pre>
+x³ + 2x² - 5x + 1 ≡ x³ + 2x² + x + 1 (mod 3)
+3x² + y² + 2xy - 5x + y + 1 ≡ y² + 2xy + x + y + 1 (mod 3)
+</pre>
+<p>餘數多項式的特色，是係數有範圍限制，必須模一下。</p>
+<p>餘數多項式跟整數多項式差別不大，一樣可以加減乘除、因式分解、求最大公因式等等。前提是模數得相同。</p>
+<p class="t">方程式</p>
+<p>兩個同餘（相等）的式子即是方程式。解餘數方程式是相當困難的課題！很難找到比窮舉法更好的演算法！簡單的方程式，才有特殊演算法，例如「<a href="http://en.wikipedia.org/wiki/Cipolla's_algorithm">Cipolla's Algorithm</a>」、「<a href="http://en.wikipedia.org/wiki/Tonelli?hanks_algorithm">Tonelli-Shanks Algorithm</a>」。</p>
+<pre>
+x³ + 2x² - 5x + 1 ≡ 1 (mod 3)
+x² - 2x + 1 ≡ x² + x + 1 (mod 5)
+</pre>
+<p>題外話。本段落和前段落的數學式子，儘管都是同餘式子，卻在闡述不同事情。光看數學式子，有時候還是無法確定對方想表達的事情。</p>
+<p class="t">方程組</p>
+<p>方程式已經很難解了，更何況方程組！當今世上似乎也不存在方程組的演算法。</p>
+<p>然而中國古代數學家率先發現了一元一次方程組的解法！</p>
+<p class="t">一元一次方程組，係數皆是一，模數兩兩互質。</p>
+<p>中國古代的數學著作《孫子算經》有一道關於餘數的題目：今有物不知其數，三三數之賸二，五五數之賸三，七七數之賸二，問物幾何？</p>
+<p>用現代的數學術語來說，這個問題就是餘數系統的一元一次方程組，而且係數皆是一，而且模數兩兩互質。</p>
+<pre>
+{ x ≡ 2 (mod 3)
+{ x ≡ 3 (mod 5)
+{ x ≡ 2 (mod 7)
+</pre>
+<p>窮舉法：首先把符合「三三數之賸二」的數字列出來，然後是「五五數之賸三」與「七七數之賸二」。在三個列表都出現的數字，就是正確答案。</p>
+<pre>
+{ x ≡ 2 (mod 3)  ⇔  x = ..., 8, 5, 2, -1, -4, ...
+{ x ≡ 3 (mod 5)  ⇔  x = ..., 13, 8, 3, -2, -7, ...
+{ x ≡ 2 (mod 7)  ⇔  x = ..., 16, 9, 2, -5, -12, ...
+</pre>
+<p>試誤法：一一列出各種答案，試著除以三、五、七。</p>
+<p>不幸的是，答案有無限多個，試誤法無法找到所有答案。然而試誤法讓我們發現答案具有規律。</p>
+<textarea>
+void solve_simultaneous_equations()
+{
+	for (int x=-1000; x<=+1000; ++x)
+		if (x % 3 == 2 && x % 5 == 3 && x % 2 == 7)
+			cout << x;
+}
+</textarea>
+<p>遞推法：逐式代入求解，魔鬼藏在細節裡。</p>
+<p><a href="http://www.cut-the-knot.org/blue/chinese.shtml">http://www.cut-the-knot.org/blue/chinese.shtml</a></p>
+<pre>
+{ x ≡ 2 (mod 3) 
+{ x ≡ 3 (mod 5)
+{ x ≡ 2 (mod 7)
+
+最初 x ≡ 2 (mod 3)
+⇒ x = 3t + 2
+
+代入 x ≡ 3 (mod 5)
+⇒ 3t + 2 ≡ 3 (mod 5) ⇒ 3t ≡ 1 (mod 5) ⇒ t ≡ 2 (mod 5)
+⇒ t = 5s + 2
+代回 x = 3t + 2
+⇒ x = 3(5s + 2) + 8 = 15s + 8
+
+代入 x ≡ 2 (mod 7)
+⇒ 15s + 8 ≡ 2 (mod 7) ⇒ 15s ≡ 1 (mod 7) ⇒ s ≡ 1 (mod 7)
+⇒ s = 7u + 1
+代回 x = 15s + 8
+⇒ x = 15(7u + 1) + 8 = 105u + 23
+</pre>
+<p>公式解：遠在宋朝時期就發明了！讀者可搜尋「大衍求一術」。</p>
+<pre>
+一、一元一次方程組，係數皆是一，模數 m₁ 到 m<sub>N</sub> 兩兩互質。
+　　{ x ≡ r₁ (mod m₁)
+　　{ ⋮
+　　{ x ≡ r<sub>N</sub> (mod m<sub>N</sub>)
+
+二、令 M = m₁ × m₂ × ... × m<sub>N</sub>
+　　　 M₁ = M ÷ m₁
+　　　 ⋮
+　　　 M<sub>N</sub> = M ÷ m<sub>N</sub>
+
+　　Mᵢ 原本包含所有模數，但是刻意消去了 mᵢ。
+　　造成 Mᵢ 只對其中一個模數 mᵢ 有反應（無法整除）（互質）：
+　　Mᵢ % mⱼ ≠ 0   when i = j
+　　Mᵢ % mⱼ = 0   when i ≠ j
+
+三、令 <u>M₁</u> = M₁的倒數，模數為 m₁
+　　　 ⋮
+　　　 <u>M<sub>N</sub></u> = M<sub>N</sub>的倒數，模數為 m<sub>N</sub>
+
+　　進一步讓 (Mᵢ × <u>Mᵢ</u>) 只對其中一個模數 mᵢ 有反應，得到結果是 1：
+　　(Mᵢ × <u>Mᵢ</u>) % mⱼ = 1   when i = j
+　　(Mᵢ × <u>Mᵢ</u>) % mⱼ = 0   when i ≠ j
+
+四、再來讓 (rᵢ × Mᵢ × <u>Mᵢ</u>) 只對其中一個模數 mᵢ 有反應，得到結果是 rᵢ。
+　　每一種 i 恰恰對應方程組的每一道式子：
+　　(rᵢ × Mᵢ × <u>Mᵢ</u>) % mⱼ = rᵢ   when i = j
+　　(rᵢ × Mᵢ × <u>Mᵢ</u>) % mⱼ = 0    when i ≠ j
+
+五、N道式子通通加起來，以滿足方程組。
+　　x ≡ r₁ M₁ <u>M₁</u> (mod m₁) + …… + r<sub>N</sub> M<sub>N</sub> <u>M<sub>N</sub></u> (mod m<sub>N</sub>) 
+
+六、模數統一設定成 m₁ 到 m<sub>N</sub> 的最小公倍數，也就是 M。
+　　方程組的唯一解為：
+　　x ≡ r₁ M₁ <u>M₁</u> + r₂ M₂ <u>M₂</u> + …… + r<sub>N</sub> M<sub>N</sub> <u>M<sub>N</sub></u> (mod M)
+</pre>
+<textarea>
+const int N = 3;
+int r[N] = {2, 3, 2};
+int m[N] = {3, 5, 7};
+
+int solve_simultaneous_equations()
+{
+	// 調整餘數範圍變成0到m[i]-1，以防溢位。
+//	for (int i=0; i<N; i++)
+//		r[i] = (r[i] % m[i] + m[i]) % m[i];
+
+	// 公式解
+	int M = 1, n = 0;
+	for (int i=0; i<N; ++i) M *= m[i];
+	for (int i=0; i<N; ++i) (n += r[i] * M/m[i] * inverse(M/m[i], m[i])) %= M;
+	if (n < 0) n += M;
+	return n;
+}
+</textarea>
+<p class="t">一元一次方程組，係數皆是一。</p>
+<p>一道方程式可以拆解成多道方程式，原模數等於新模數的最小公倍數即可。</p>
+<pre>
+                       { x ≡ 2 (mod 9)
+x ≡ 2 (mod 360)  <-->  { x ≡ 2 (mod 10)
+                       { x ≡ 2 (mod 24)
+其中
+360 = lcm(9, 10, 24)
+</pre>
+<p>我們習慣將模數分解成質因數的次方。如此一來模數就會互質。</p>
+<pre>
+                       { x ≡ 2 (mod 8)
+x ≡ 2 (mod 360)  <-->  { x ≡ 2 (mod 9)
+                       { x ≡ 2 (mod 5)
+其中
+360 = 2^3 × 3^2 × 5^1 = 8 × 9 × 5 = lcm(8, 9, 5)
+</pre>
+<p>拆解之後，如果有許多條式子，其模數都是同一個質數的倍數，那麼我就不知道怎麼辦了。</p>
+<pre>
+                        { x ≡ 2 (mod 4)  ✔
+{ x ≡ 2 (mod 4)         { x ≡ 6 (mod 8)  ✔
+{ x ≡ 6 (mod 24)  <-->  { x ≡ 6 (mod 3)  
+{ x ≡ 4 (mod 80)        { x ≡ 4 (mod 16) ✔
+                        { x ≡ 5 (mod 5)
+</pre>
+<p class="t">一元一次方程組</p>
+<p>一道方程式當中，如果係數和模數剛好互質，那麼就能運用倒數、消去係數。</p>
+<pre>
+{ 1x ≡ 2 (mod 3)        { x ≡ 2×1 (mod 3)        { x ≡ 2 (mod 3)
+{ 3x ≡ 3 (mod 5)  <-->  { x ≡ 3×2 (mod 5)  <-->  { x ≡ 6 (mod 5)
+{ 5x ≡ 2 (mod 7)        { x ≡ 2×3 (mod 7)        { x ≡ 6 (mod 7)
+</pre>
+<p>一道方程式當中，如果係數和模數沒有互質、有公因數，那麼我就不知道怎麼辦了。</p>
+<p class="t">Chinese Remainder Theorem（中國餘數定理）</p>
+<p>模數之於中國餘數定理，猶如質數之於算術基本定理。</p>
+<p>首先選定一組兩兩互質的模數(m₁, m₂, …, m<sub>N</sub>)。凡是餘數都可以藉由一元一次方程組成為一個獨一無二的餘數數列，不同的x對應不同的(x₁, x₂, …, x<sub>N</sub>)。</p>
+<pre>
+algebra presentation    | numerical example    | 
+------------------------+----------------------+-------------------
+{ x ≡ x₁ (mod m₁)       | { 10 ≡ 1 (mod 3)     | 一元一次方程組
+{ :   :    :  :         | { 10 ≡ 0 (mod 5)     | 係數為一、模數互質
+{ x ≡ x<sub>N</sub> (mod m<sub>N</sub>)       | { 10 ≡ 3 (mod 7)     | 
+------------------------+----------------------+-------------------
+x (mod M)               | 10 (mod 3×5×7)       | 中國餘數定理
+ <--> { x₁ (mod m₁) ,   |  <--> { 1 (mod 3) ,  | 
+        ......      ,   |         0 (mod 5) ,  | 一維餘數與多維餘數
+        x<sub>N</sub> (mod m<sub>N</sub>) }   |         3 (mod 7) }  | 的一對一轉換
+------------------------+----------------------+-------------------
+   (m₁...m<sub>N</sub>)            |     (3,5,7)          | 隱藏模數
+x <---------> (x₁...x<sub>N</sub>) | 10 <-------> (1,0,3) | 比較好讀
+</pre>
+<pre>
+   設定一組模數，
+   分別計算餘數。
+       O(N)
+10 -----------> (1,0,3)
+   <-----------
+     O(NlogM)
+     解方程組。
+</pre>
+<p>根據中國餘數定理，一維餘數的四則運算，可以變成多維餘數的四則運算。</p>
+<pre>
+分解前  模數 105 | 分解後                     模數 (3, 5, 7)
+5                | (2, 0, 5)
+9                | (0, 4, 2)
+-----------------+------------------------------------------
+5 + 9 ≡ 14       | (2+0, 0+4, 5+2) ≡ (2, 4, 7)
+5 - 9 ≡ -4 = 101 | (2-0, 0-4, 5-2) ≡ (2, -4, 3) ≡ (2, 1, 3)
+5 × 9 ≡ 45       | (2×0, 0×4, 5×2) ≡ (0, 0, 10)
+5 ÷ 9 ≡ undefine | (2÷0, 0÷4, 5÷2) ≡ undefine
+5 ÷ 8 ≡ 5 × 92   | (2÷2, 0÷3, 5÷1) ≡ (1, 0, 5)
+      ≡ 460 ≡ 40 |
+5 ^ 2 ≡ 25       | (2^2, 0^2, 5^2) ≡ (4, 0, 25) ≡ (1, 0, 4)
+</pre>
+<p>從數學的觀點來看，多維餘數與一維餘數完全等價，運算完全相同。餘數系統下的二維平面座標、三維空間座標，可以直接轉化成一維數線座標進行討論。</p>
+<p>從計算學的觀點來看，一維餘數變成多維餘數，宛如一個餘數拆成多個餘數，而且模數也變小了，有著Divide and Conquer的味道，計算變得更容易了。</p>
+<p class="e">UVa 756 700 11754</p>
+<p class="t">整數系統與餘數系統互相轉換</p>
+<p>介紹一個重要的計算技巧：一段整數的計算流程，改為套上各種模數並且分別計算答案，最後運用中國餘數定理還原正確答案──先換到餘數系統，再還原為整數系統。</p>
+<pre>
+(999 + 25) × 333 ÷ 256 = ?
+
+採用互質的模數3、5、11
+(999 + 25) × 333 ÷ 256 ≡ (0 + 1) × 0 ÷ 256 ≡ 0 (mod 3)
+(999 + 25) × 333 ÷ 256 ≡ (-1 + 0) × 3 ÷ 1 ≡ 2 (mod 5)
+(999 + 25) × 333 ÷ 256 ≡ (9 + 3) × 3 × 4 ≡ 1 × 1 ≡ 1 (mod 11)
+
+聯立，再運用中國餘數定理，可知
+=> (999 + 25) × 333 ÷ 256 ≡ 12 (mod 165)
+
+999+25是4位數，333是3位數，256是3位數，推測正確答案是4位數：
+12 + 165 × 6 = 1002
+1002 + 165 = 1167
+1167 + 165 = 1332
+...
+</pre>
+<p>一、當數字很大、式子很長時，此技巧就能發揮功效！</p>
+<p>二、模數們最好兩兩互質，方便套用中國餘數定理。</p>
+<p>三、此技巧得到的答案一定是整數；也就是說，當正確答案是整數，才能使用此技巧。比如說，式子之中有除法，導致正確答案是分數，此時就不能使用此技巧。</p>
+<p>四、式子之中若有除法，則令模數是質數，餘數除法保證有唯一解。承第二點，也就是說，模數們最好都是質數。</p>
+<p>五、選定的模數們，其乘積足夠大，大於正確答案時，那麼最後求得的餘數，即是正確答案，不必再推測。</p>
+<p>例如求「<a href="http://en.wikipedia.org/wiki/Hilbert_matrix">Hilbert Matrix</a>」的反矩陣。Hilbert Matrix由單位分數組成，其反矩陣恰好都是整數。先將問題轉換成餘數系統，選擇多個模數並且各別以高斯消去法求得反矩陣，最後再用中國餘數定理轉換回整數系統。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Congruence</p>
+</div><div class="c">
+<p class="t">餘數系統的特色：有限範圍</p>
+<p>餘數系統有個非常重要的特性：數字大於等於零、不超過模數。</p>
+<p>電腦只能處理有限範圍的整數。餘數系統得發揮功效。</p>
+<pre>
+實數系統的加法表、乘法表
++ | 0  1  2  3 ...   × | 0  1  2  3 ...
+--|-----------       --|-----------    
+0 | 0  1  2  3 ...   0 | 0  0  0  0 ...
+1 | 1  2  3  4 ...   1 | 0  1  2  3 ...
+2 | 2  3  4  5 ...   2 | 0  2  4  6 ...
+3 | 3  4  5  6 ...   3 | 0  3  6  9 ...
+:   :  :  :  :       :   :  :  :  :    
+</pre>
+<pre>
+餘數系統的加法表、乘法表
+(mod 1)  (mod 2)    (mod 3)       (mod 4)          (mod 5)
++ | 0    + | 0  1   + | 0  1  2   + | 0  1  2  3   + | 0  1  2  3  4
+--|--    --|-----   --|--------   --|-----------   --|--------------
+0 | 0    0 | 0  1   0 | 0  1  2   0 | 0  1  2  3   0 | 0  1  2  3  4
+         1 | 1  0   1 | 1  2  0   1 | 1  2  3  0   1 | 1  2  3  4  0
+                    2 | 2  0  1   2 | 2  3  0  1   2 | 2  3  4  0  1
+                                  3 | 3  0  1  2   3 | 3  4  0  1  2
+                                                   4 | 4  0  1  2  3
+
+(mod 1)  (mod 2)    (mod 3)       (mod 4)          (mod 5)
+× | 0    × | 0  1   × | 0  1  2   × | 0  1  2  3   × | 0  1  2  3  4
+--|--    --|-----   --|--------   --|-----------   --|--------------
+0 | 0    0 | 0  0   0 | 0  0  0   0 | 0  0  0  0   0 | 0  0  0  0  0
+         1 | 0  1   1 | 0  1  2   1 | 0  1  2  3   1 | 0  1  2  3  4
+                    2 | 0  2  1   2 | 0  2  0  2   2 | 0  2  4  1  3
+                                  3 | 0  3  2  1   3 | 0  3  1  4  2
+                                                   4 | 0  4  3  2  1
+</pre>
+<p class="t">連加循環</p>
+<p>不斷連加，導致循環。循環是餘數系統的重要性質！</p>
+<img src="Congruence1.png">
+<p>畫在圈圈內部，更清楚。</p>
+<img src="Congruence2.png">
+<p>連加畫在圓的等分點上，得以構造正多邊形、正多角星。</p>
+<img src="Congruence3.png">
+<img src="Congruence4.png">
+<p>連加畫在數線上，得以連結到最小公倍數的概念。</p>
+<img src="Congruence5.png">
+<p>當模數是連加數的倍數（連加數是模數的因數）（連加數整除模數），大多數情況無法遭遇全部數字，除非連加數、模數是一。</p>
+<p>考慮所有情況，歸納簡潔結論：連加數與模數，最大公因數不等於一（不互質），遭遇部分數字；最大公因數等於一（互質），遭遇全部數字。</p>
+<p>簡單一句話：互質，遭遇全部數字。</p>
+<p>循環節長度等於「最小公倍數除以連加數」，也等於「模數除以最大公因數」。請讀者自行按圖推理。</p>
+<p>順帶一提「與模數互質的連加數」總共有φ(m)個。</p>
+<p class="t">連乘循環</p>
+<p>不斷連乘，導致循環。</p>
+<img src="Congruence6.png">
+<img src="Congruence7.png">
+<p>加法循環，跳躍很規律；一種連加數，只有一種循環節。</p>
+<p>乘法循環，跳躍沒規律；一種連乘數，擁有各種循環節。</p>
+<p>想要確認循環節起點、循環節長度，可以使用Floyd's Algorithm或Brent's Algorithm。</p>
+<p class="t">乘法群</p>
+<p>數學家傾向討論性質優美的事物。</p>
+<p>首先區隔「與模數互質的數字」和「不與模數互質的數字（模數的因數、不含一）」，只取前者。</p>
+<p>「與模數互質的數字」不斷相乘，絕不會得到「不與模數互質的數字（模數的因數、不含一）」，而且所有數字都位於某個循環節之內。</p>
+<img src="Congruence8.png">
+<img src="Congruence9.png">
+<p>由於與模數互質，每個數字都只有唯一一個倒數，餘數除法亦成立！乘法正向跳躍，除法反向跳躍，雙向都通。</p>
+<img src="Congruence10.png">
+<p>「與模數互質的數字」暨乘法除法，性質優美，自成一格，數學家稱作「<a href="http://en.wikipedia.org/wiki/Multiplicative_group_of_integers_modulo_n">乘法群</a>」。一種模數得到一種乘法群。另類的有限範圍！</p>
+<p>順帶一提「與模數互質的數字」總共有φ(m)個。</p>
+<p class="t">次方循環</p>
+<p>連乘循環的特例。起點是零次方。</p>
+<img src="Congruence11.png">
+<img src="Congruence12.png">
+<p>循環長度必定是λ(m)的因數（或者是φ(m)的某些因數）。目前沒有演算法可以快速驗證是哪一個因數，只能使用試誤法。</p>
+<p class="t">原根（Primitive Root）</p>
+<p>數學家傾向討論性質優美的事物。</p>
+<p>首先取出「與模數互質的數字」當作底數。引入乘法群的觀點，這些底數的任意次方，仍是「與模數互質的數字」。</p>
+<p>從中取出「遭遇全部數字」的底數。當模數是1、2、4、p^n、2*(p^n)才有可能（p是大於2的質數），不過我不會證明。</p>
+<img src="Congruence13.png">
+<p>每種次方剛好遭遇每種數字、所有數字都在同一個循環節裡面。依照遭遇順序，重新串成一圈。</p>
+<img src="Congruence14.png">
+<p>符合條件的底數，彷彿「<a href="http://en.wikipedia.org/wiki/Root_of_unity">單位根</a>」：「1開φ(m)次方」、「φ(m)次根號1」。符合條件的底數通常只有其中幾個，而「單位根」是指每一個，不盡相同，因此數學家另取一名「原根」。</p>
+<p class="t">原根的演算法</p>
+<p>除了試誤法，目前沒有更好的演算法。</p>
+<pre>
+窮舉各種底數r，總共有φ(m)種可能。
+口、針對一種底數r，窮舉各種次方。
+　　如果皆不等於1，r就是原根。
+口、另一種方式：
+　　質因數分解φ(m)，得到質因數p1 p2 ... pk。
+　　針對一種底數r，窮舉各種質因數p1 p2 ... pk。
+　　如果 r^(φ(m)/p1) r^(φ(m)/p2) ... r^(φ(m)/pk) 皆不等於1，
+　　r就是原根。
+　（檢測各種循環節長度。φ改成λ，檢測次數更少；然而λ很難算。）
+</pre>
+<p>求得其中一個原根，就容易求得所有原根。手法是連加循環！</p>
+<p>求得其中一個原根之後，以此原根的某個次方（選擇適當的連加數），當作新的原根，嘗試遭遇所有數字。</p>
+<img src="Congruence15.png">
+<p>再來一個模數更大的例子。模數是13，取出與模數互質的數字1 2 ... 12，總共φ(13) = 12個。用試誤法求得其中一個原根是2，依照次方順序重新串成一圈。找到與φ(13) = 12互質的數字1 5 7 11當做連加數，以遭遇全部數字，符合原根定義！連加數總共φ(φ(13))個。</p>
+<img src="Congruence16.png">
+<p>最後下個結論：模數m必須是1、2、4、p^n、2*(p^n)，才有原根，其個數是φ(φ(m))。p是大於2的質數。</p>
+<p class="t">階乘循環</p>
+<p>本人才疏學淺，不清楚。</p>
+<p class="t">延伸閱讀：群、環、體</p>
+<p><a href="http://itchen.class.kmu.edu.tw/Crypto/GRF.html">http://itchen.class.kmu.edu.tw/Crypto/GRF.html</a></p>
+<p>數學家擅於分類性質優美的事物。此即一種分類方式，以運算符號和運算律來分類。科學味道稀薄、工程味道濃厚，不必強記。</p>
+<iframe src="http://www.youtube.com/embed/gViLqrT6UUU"></iframe>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polynomial Residue</p>
+</div><div class="c">
+<p><a href="http://picks.logdown.com/archives">http://picks.logdown.com/archives</a></p>
+<pre>
+我們比較常看到餘數系統的"整數運算"
+5+3=0 (mod 4)  5^-1 = 3 (mod 7) 這種的　　輾轉相除法求倒數　大步小步算法　等等
+
+而這系列文章是講餘數系統的"多項式運算"
+諸如多項式除法，多項式倒數等等
+他說可以用 divide and conquer 和 fft 很快地算出來
+
+最後他還搞出了「多項式版本的牛頓法」這個終極武器
+本來牛頓法是求根 (find x , let f(x) = 0)
+    x在什麼情況下，y會等於零？
+    輸入x是實數，輸出y是實數，利用斜率dy/dx，遞推法，逼近根的位置
+結果他把實數推廣成多項式  照算不誤
+
+最後他把各種多項式運算，例如除法、次方等等，通通用牛頓法來算
+把式子移項，變成"甚麼甚麼等於零"　--->  x在什麼情況下,y會等於0　---> 這就求根阿
+就這樣　牛頓法搞定全部
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Finite Field</p>
+</div><div class="c">
+<p class="t">楔子</p>
+<p>整數，擁有質數的概念。列舉質數、判斷質數、質因數分解，可參考本站文件「<a href="Prime.html">Prime</a>」。</p>
+<pre>
+列舉質數：2, 3, 5, 7, 11, ...
+判斷質數：999 is not prime
+質因數分解：999 = 3 × 3 x 3 x 37
+</pre>
+<p>整數多項式，亦擁有質式的概念。通常只討論一元多項式（只有一個變數）。列舉質式、判斷質式、因式分解，更加困難。</p>
+<pre>
+列舉質式：x, x + 1, x + 2, ...
+判斷質式：x² + x + 1 is irreducible polynomial
+因式分解：2x² + 5x + 2 = (2x + 1)(x + 2)
+</pre>
+<p>餘數多項式，亦擁有質式的概念。列舉質式、判斷質式、因式分解的演算法，例如<a href="http://mudream.logdown.com/posts/246434/">Berlekamp's Algorithm</a>和<a href="http://en.wikipedia.org/wiki/Cantor?assenhaus_algorithm">Cantor-Zassenhaus Algorithm</a>。</p>
+<pre>
+列舉質式：x (mod 2), x + 1 (mod 2), x² + x + 1 (mod 2), ...
+判斷質式：x³ + x + 1 (mod 2) is irreducible polynomial
+因式分解：<q>x² + 1 (mod 2)</q> = <q>x + 1 (mod 2)</q> × <q>x + 1 (mod 2)</q>
+</pre>
+<p class="t">餘數系統，對象是整數</p>
+<pre>
+5 ≡ 2 (mod 3)
+4 + 5 ≡ 0 (mod 3)
+4 × 5 ≡ 2 (mod 3)
+</pre>
+<p>先前章節皆屬此類！</p>
+<p>實際應用時，常令模數為質數，讓每個數字都有乘法反元素（倒數），建立加減乘除四則運算。</p>
+<p class="t">餘數系統，對象是整數多項式</p>
+<pre>
+x³ ≡ -x - 1 (mod x³ + x + 1)
+x² + (x² + 1) ≡ 2x² + 1 (mod x³ + x + 1)
+x² × (x² + 1) ≡ -x (mod x³ + x + 1)
+</pre>
+<p>實際應用時，常令模數為質式，讓每個多項式都有乘法反元素（倒數），建立加減乘除四則運算。</p>
+<p class="t">餘數系統，對象是餘數多項式</p>
+<pre>
+<q>x³ (mod 2)</q> ≡ <q>x + 1 (mod 2)</q> (mod <q>x³ + x + 1 (mod 2)</q>)
+<q>x² (mod 2)</q> + <q>x² + 1 (mod 2)</q> ≡ <q>1 (mod 2)</q> (mod <q>x³ + x + 1 (mod 2)</q>)
+<q>x² (mod 2)</q> × <q>x² + 1 (mod 2)</q> ≡ <q>x (mod 2)</q> (mod <q>x³ + x + 1 (mod 2)</q>)
+</pre>
+<p>終於來到重頭戲！</p>
+<p>實際應用時，常令模數為質式暨質數，讓每個餘數多項式都有乘法反元素（倒數），建立加減乘除四則運算。簡易的理解方式是：</p>
+<p>一、多項式最多n項（低於n次），模數是質式（n次）。</p>
+<p>二、而且係數範圍是0到p-1，模數是質數p。</p>
+<p>標記方式是GF(pⁿ)，另以文字說明質式為何。</p>
+<pre>
+GF(2³), irreducible polynomial is x³ + x + 1　（習慣省略mod）
+x³ ≡ x + 1
+x² + (x² + 1) ≡ 1
+x² × (x² + 1) ≡ x
+</pre>
+<p>「模數是質式暨質數」暨加減乘除法，數學家稱做「<a href="http://en.wikipedia.org/wiki/Finite_field">有限體</a>」。</p>
+<p class="t">餘數多項式改寫成數字</p>
+<p>餘數多項式得簡化成數字：係數變位數、模數變底數。</p>
+<pre>
+x (mod 2)          --->  10₍₂₎ = 2₍₁₀₎
+x² + 1 (mod 2)     ---> 101₍₂₎ = 5₍₁₀₎
+x² + x + 1 (mod 2) ---> 111₍₂₎ = 7₍₁₀₎
+</pre>
+<p>將GF(pⁿ)如法炮製，最後便得到一個有限範圍整數的運算系統，有pⁿ種整數。不過加減乘除的結果變得非常詭異，尤其是乘除，根本毫無規律可言。由於毫無規律，所以非常適合用於製造隨機排列、製造亂數、製造密碼等等。</p>
+<pre>
+GF(2³), irreducible polynomial is x³ + x + 1 ---> 11
+x³ ≡ x + 1         ---> 8 ≡ 3
+x² + (x² + 1) ≡ 1  ---> 4 + 5 ≡ 1
+x² × (x² + 1) ≡ x  ---> 4 × 5 ≡ 2
+
++ | 0  1  2  3　4  5  6  7     × | 0  1  2  3　4  5  6  7
+--|-----------------------     --|-----------------------
+0 | 0  1  2  3  4  5  6  7     0 | 0  0  0  0  0  0  0  0
+1 | 1  0  3  2  5  4  7  6     1 | 0  1  2  3  4  5  6  7
+2 | 2  3  0  1  6  7  4  5     2 | 0  2  4  6  3  1  7  5
+3 | 3  2  1  0  7  6  5  4     3 | 0  3  6  5  7  4  1  2
+4 | 4  5  6  7  0  1  2  3     4 | 0  4  3  7  6  2  5  1
+5 | 5  4  7  6  1  0  3  2     5 | 0  5  1  4  2  7  3  6
+6 | 6  7  4  5  2  3  0  1     6 | 0  6  7  1  5  3  2  4
+7 | 7  6  5  4  3  2  1  0     7 | 0  7  5  2  1  6  4  3
+</pre>
+<p>只消調整一下質式與質數，輕鬆得到另一套詭異的運算表。</p>
+<p>關於質數。電腦採用二進位，為了方便計算，我們習慣令質數為2，即GF(2ⁿ)，把餘數多項式變成二進位數字。</p>
+<p>關於質式。餘數多項式的質式不好求。我們習慣直接使用前人留下來的表格：</p>
+<p><a href="http://mathworld.wolfram.com/IrreduciblePolynomial.html">http://mathworld.wolfram.com/IrreduciblePolynomial.html</a></p>
+<p class="t">乘法群</p>
+<p>從整數推廣到餘數多項式。</p>
+<p>模數是任意的餘數多項式。取出「與模數互質的餘數多項式」。「與模數互質的餘數多項式」暨乘法除法，也是乘法群。</p>
+<p>進一步將多項式簡化為數字，可以得到超級詭異的運算系統，難以察覺規律！</p>
+<p class="t">原多項式（Primitive Polynomial）</p>
+<p>從整數推廣到餘數多項式。即原根！</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">範例：Water Jug Problem</p>
+</div><div class="c">
+<p class="t">Water Jug Problem</p>
+<p>手邊有兩個容器，一個三公升、一個五公升，都沒有刻度。另外身邊還有一個水龍頭和一個水槽，我們可以用水龍頭的水裝滿容器，也可以把容器的水倒入水槽（有點浪費），或者把一個容器的水倒入到另一容器、裝滿另一容器。如何利用這兩個容器量出四公升的水？</p>
+<p class="t">演算法（State Space Search）</p>
+<p>請參考「<a href="State.html">3 Jugs Problem</a>」。</p>
+<p>BFS Tree恰好是水量變化最少的路線。可用下面的模型證明。</p>
+<p class="e">UVa 571</p>
+<p class="t">演算法（Modeling）</p>
+<p>以三角座標系統當作模型：</p>
+<p><a href="http://www.cut-the-knot.org/triangle/glasses.shtml">http://www.cut-the-knot.org/triangle/glasses.shtml</a></p>
+<p>首先建立二維座標系，只有第一象限。其中一軸為三公升的容器，範圍是零到三；另外一軸為五公升的容器，範圍是零到五。然後畫上很多斜線：</p>
+<img src="WaterJugProblem1.png">
+<p>座標代表著兩容器的水量。我們描一個點來表示目前兩容器的水量。一開始起點在原點，代表著兩個容器都沒有裝水：</p>
+<img src="WaterJugProblem2.png">
+<p>如果三公升的容器填滿水或倒光水，點就往三公升軸的一端或另一端移動到底；五公升的容器亦同。如果兩個容器互相倒水，點就往斜線方向移動到底：</p>
+<img src="WaterJugProblem3.png">
+<p>至此，Water Jug Problem變成了：由原點畫線，只能畫直線、橫線、斜線並畫到底，然後畫到座標其中一個維度的數值是四的地方。</p>
+<img src="WaterJugProblem4.png">
+<p class="t">演算法（Modeling）</p>
+<p>以餘數方程式當作模型：</p>
+<p><a href="http://www.matrix67.com/blog/archives/5100">http://www.matrix67.com/blog/archives/5100</a></p>
+<p>兩容器，體積a和b；量水，體積c。變成ax ≡ c (mod b)。</p>
+<p class="e">ICPC 6501</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">範例：Josephus Problem</p>
+</div><div class="c">
+<p class="t">Josephus Problem</p>
+<p>有n個人圍成一圈，現在從第一個人開始報數，數到第m人時，就殺掉這第m人；然後從被殺的下一位繼續重新報數，數到第m人時，就殺掉這第m人。如此不斷數m人、殺此人，直到最後會剩下一個人，請問他是誰？</p>
+<p>這個美式風格的問題似乎有點殘酷。如果改成「不斷數m個人，被點名的人就臉頰泛紅，害羞的跑開了」這樣應該會童真一點。</p>
+<p class="t">演算法（Simulation）</p>
+<p>直接模擬「不斷數m個人，被點名的人就臉頰泛紅，害羞的跑開了」這個行為。時間複雜度為 O(nm)。</p>
+<p>有個加速的小手段是：當要數的人數超過實際人數時，可以模一下、取餘數。</p>
+<textarea>
+bool live[100];	// 記錄哪些人是活人
+
+// 找出下一個活人
+int next(int& a)
+{
+	do a = (a + 1) % n; while (!live[a]);
+}
+
+void josephus(int n, int m)
+{
+	// 一開始所有人都活著
+	for (int i=0; i<n; ++i)
+		live[i] = true;
+
+	int answer = 0;	// 開始數的地方
+	for (int man = n; man > 1; --man)
+	{
+		// 數 m-1 個人（第一個人剛剛數過了）
+//		for (int i=0; i<m-1; ++i) next(answer);
+		for (int i=0; i<(m-1)%man; ++i) next(answer);
+		// 第 m 個人害羞的跑開了
+		live[answer] = false;
+		// 找到下一個人，重新報數
+		next(answer);
+	}
+
+	cout << "存活的人是" << answer << "號";
+}
+</textarea>
+<p class="e">UVa 133 305 402</p>
+<p class="t">演算法（Modeling）</p>
+<p>數人和殺人的動作可以整合成queue的操作。首先把每個人依序放進queue，然後只要連續的pop和push m-1人，於pop第m人時，不要將他放回queue裡面，這樣就成功的模擬了！時間複雜度為 O(nm)。實作時可以使用circular queue節省記憶體空間。</p>
+<textarea>
+void josephus(int n, int m)
+{
+	// 將 n 個人放進 queue
+	queue<int> q;
+	for (int i=0; i<n; ++i)
+		q.push(i);
+
+	int answer;
+	while (!queue.empty())
+	{
+		// pop 和 push m-1 人
+		for (int i=0; i<m-1; ++i)
+		{
+			int a = q.front(); q.pop();
+			q.push(a);
+		}
+
+		// 第 m 個人 pop 出來後就不放回去
+		answer = q.front(); q.pop();
+	}
+
+	cout << "存活的人是" << answer << "號";
+}
+</textarea>
+<p class="t">演算法（Dynamic Programming）</p>
+<img src="JosephusProblem.png">
+<p>除去一人之後，剩下來的人重新編號，就變成了子問題了。觀察原編號和新編號的關係，得到一遞迴公式：</p>
+<pre>
+f(n, m) = (f(n-1, m) + m) % n
+f(1, m) = 0;
+
+f(n, m)：最後活下來的人的編號。
+</pre>
+<p>用此遞迴公式進行計算，時間複雜度為O(n)。</p>
+<textarea>
+// bottom-up DP
+void josephus(int n, int m)
+{
+	int answer = 0;
+	for (int i=1; i<=n; ++i)
+		answer = (answer + m) % i;
+	cout << "存活的人是" << answer << "號";
+}
+</textarea>
+<p class="e">UVa 10015 151 440 10940 11351 180</p>
+<p class="t">演算法</p>
+<p>http://maskray.me/blog/2013-08-27-josephus-problem-two-log-n-solutions</p>
+<p class="t">延伸閱讀：運用餘數的問題</p>
+<pre>
+http://www.mathaware.org/mam/2014/calendar/perfectshuffle.html
+http://en.wikipedia.org/wiki/Tupper's_self-referential_formula
+http://en.wikipedia.org/wiki/Pisano_period
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">範例：Tessellation</p>
+</div><div class="c">
+<p class="t">Tessellation</p>
+<p>http://en.wikipedia.org/wiki/Tiling_by_regular_polygons</p>
+<p class="t">Coordinates</p>
+<p class="e">UVa 209 10161 808 10182 10595 10964</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Residue.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:57 GMT -->
+</html>

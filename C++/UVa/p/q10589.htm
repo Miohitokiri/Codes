@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10589: Area</h1>              
+<p>在幾何學問題中測量某個形狀的面積是很重要的。當這個形狀變的複雜的時候，要測量這個形狀的面積也會變的很困難。在某些時候，一些亂數的演算法會幫助我們大概的找出面積。在這個問題中，我們就是要用亂數演算法來找出以下形狀的面積。</p>   
+<p align="center"><img border="0" src="p10589.jpg" width="372" height="333"></p>   
+<p>ABCD是個邊長為 a 
+的正方形，平面座標如上圖所示。若分別以A, B, C, D為圓心，a 
+為半徑，畫出 4 個 1/4 
+圓，其交集的部分即為圖形中斜線的區域。我們的目的就是要用亂數演算法算出斜線區域的面積。</p>   
+<p>在這裡，亂數演算法的運作如下所述：給你N個點的座標（均落於ABCD正方形內）如果其中有M個點落在斜線區域中，那麼我們可以估計斜線區域的面積為：A=(M/N)*a*a。請你用這個觀念找出斜線區域的面積。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p><span lang="zh-tw">輸入含有多組測試資料。</span></p>            
+<p><span lang="zh-tw">每組測試資料的第一列有 2 個整數 <b>N</b>（1 
+&lt;= N &lt;= 10<sup>6</sup>）和 <b>a</b>（10 &lt;= a &lt; 100）。N 
+代表以下有多少個點， a代表此正方形的邊長。接下來的N列每列有2個浮點數（到小數點後7位），代表一個點的座標。這些點一定會落在正方形區域中。另外，落在斜線區域邊上的點視為落在斜線區域中。</span></p>             
+<p><span lang="zh-tw">當 N=0 代表輸入結束。</span>請參考Sample Input。</p>              
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                            
+<p>每組測試資料輸出一列。輸出所估計出斜線區域的面積，輸出到小數點後5位。</p>          
+<table border="1" width="100%" cellpadding="5">           
+  <tr>           
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                  
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                 
+  </tr>                 
+  <tr>                 
+    <td width="50%">  
+      <pre>1 10
+5.0000000 5.0000000
+10 10
+1.0000000 1.0000000
+2.0000000 1.0000000
+0.0000000 5.0000000
+5.0000000 5.0000000
+5.0000000 6.0000000
+6.0000000 5.0000000
+3.0000000 9.0000000
+0.0000000 9.0000000
+1.0000000 9.0000000
+1.0000000 9.0000000
+0 0</pre> 
+    </td>                 
+    <td width="50%">           
+      <pre>100.00000
+30.00000
+
+
+
+
+
+
+
+
+
+
+
+</pre> 
+    </td>                
+  </tr>                
+</table>                
+                                                  
+</body>                                                  
+                                                  
+</html>

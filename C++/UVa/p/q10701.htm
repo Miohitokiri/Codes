@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10701: Pre, in and post</h1>            
+<p>在資料結構中有一個常見的問題就是二元樹的尋訪（traversal  
+of a binary tree）。有三種方式來尋訪二元樹的每個節點：</p>          
+<ul>
+  <li>前序（<span style="FONT-WEIGHT: bold">Pre-order</span>）：先拜訪樹根，然後左子樹，然後右子樹。</li>
+  <li>中序（<span style="FONT-WEIGHT: bold">In-order</span>）：先拜訪左子樹，然後樹根，然後右子樹。</li>
+  <li>後序（<span style="FONT-WEIGHT: bold">Post-order</span>）：先拜訪左子樹，然後右子樹，然後樹根。</li>
+</ul>
+<p>以下圖為例：</p>          
+<p align="center"><img border="0" src="p10701.png" width="174" height="135"></p>
+<p>前序的拜訪順序為：&nbsp; ABCDEF， 中序的拜訪順序為：CBAEDF 
+，後序的拜訪順序為： CBEFDA。</p>
+<p>在本問題中，給你一棵二元樹的中序及前序的拜訪順序，請你算出該二元樹的後序拜訪順序。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                
+<p>輸入的第一列有一個正整數 C（C &lt;= 2000），代表以下有多少組測試資料。</p>     
+<p>每組測試資料一列。每列的開始有一個整數 N（1 &lt;= N &lt;= 
+52），代表二元樹中節點的數目。接下來有2個字串，分別代表某一棵2元樹的前序及中序的拜訪順序。2個字串都只包含大寫或小寫英文字母，而且不會有重複的字母出現。輸入格式請參考Sample 
+Input。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                 
+<p>對每一列輸入，請輸出該2元樹以後序拜訪的順序。</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                         
+Input</b></span></p>                                
+<pre>3
+3 xYz Yxz
+3 abc cba
+6 ABCDEF CBAEDF</pre>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                  
+Output</b></span></p>                                
+<pre>Yzx
+cba
+CBEFDA</pre> 
+                              
+</body>                              
+                              
+</html>                              

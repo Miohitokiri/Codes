@@ -1,0 +1,541 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Permutation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:16:50 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Permutation</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Gray Code</p>
+</div><div class="c">
+<p class="t">Gray Code</p>
+<p>「格雷碼」。一個數列，0到2^n - 1的整數各出現一次，寫成二進位數字。數列頭尾循環，相鄰數字恰有一個位數不相同，可能是1變0、0變1。符合條件的數列，通常有許多種。</p>
+<pre>
+[n = 0] 0
+[n = 1] 0 1
+[n = 2] 00 01 11 10
+[n = 3] 000 001 011 010 110 111 101 100
+</pre>
+<p>N維空間，正N方體，邊長為1，靠在原點上，貼齊座標軸，置於第一象限。任選一個頂點開始，沿邊行走，經過每個頂點各一次，走完一圈回到起點。途經座標就是一組Gray Code！</p>
+<pre>
+  011         111        011________ 111
+     /|      /|            /        |   
+001 / |  101/ |        001/_______  |   
+   |  |_____|_|110       010______|_|110
+   | 010    |              /      |     
+000|________|100       000/_______|100  
+</pre>
+<p>Gray Code可以推廣到高維度。比方說二維的情況下，Gray Code是一個方陣，上下左右皆循環，四方向相鄰數字恰有一個位數不相同。符合條件的方陣，通常有許多種。</p>
+<pre>
+[n = 0] 0
+[n = 1] 0 1
+        1 0
+[n = 2] 00 01 11 10
+        01 11 10 00
+        11 10 00 01
+        10 00 01 11
+</pre>
+<p class="t">生成Gray Code</p>
+<p>奇數項數字，由上一個數字，改變最低位數而得；偶數項數字，由上一個數字，改變最低位的1的更高位數而得。</p>
+<textarea>
+// 0 < n < 32
+for (int i = 0, c = 0; i < (1 << n); i += 2)
+{
+	cout << (c ^= 1);
+	cout << (c ^= ((c & -c) << 1));
+}
+</textarea>
+<p>不知如何解釋的方法。</p>
+<textarea>
+// 0 <= n <= 32
+for (unsigned int i = 0; i < (1 << n); i++)
+	cout << (i ^ (i >> 1));
+</textarea>
+<p class="t">Gray Code的應用</p>
+<p>Tower of Hanoi河內塔的解法順序就是Gray Code！</p>
+<p>Chinese Ring Puzzle九連環的解法順序就是Gray Code！</p>
+<p><a href="http://britton.disted.camosun.bc.ca/chinesering/ninering_sol.html" class="l">http://britton.disted.camosun.bc.ca/chinesering/ninering_sol.html</a></p>
+<p class="e">UVa 10455 11535</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Permutation</p>
+</div><div class="c">
+<p class="t">前言</p>
+<p>電腦擅於處理大量資料。處理大量資料，除了大家熟悉的排序和搜尋以外，其實還有排列和組合。</p>
+<p>有些問題需要找到最好的排列組合方式。例如求最佳排列的問題Travelling Salesman Problem、Scheduling Problem，例如求最佳組合的問題Partition Problem、Knapsack Problem。</p>
+<p>想要解決這些問題，最簡單的方法就是枚舉法：枚舉所有可能的排列、組合，一一驗證，從中找到最好的排列、組合。</p>
+<p class="t">排列</p>
+<p>此處的排列是名詞。排列就是交換位置。排列也是交換順序。</p>
+<pre>
+例如有五筆資料　　　●★■▲◆
+
+這是其中一種排列　　▲●◆★■
+這也是其中一種排列　●★■▲◆
+</pre>
+<p>設定編號，變成數字，方便記載。</p>
+<pre>
+　　　　　　　　　　12345
+例如有五筆資料　　　●★■▲◆
+
+這是其中一種排列　　41523
+這也是其中一種排列　12345
+</pre>
+<p class="t">替各種排列編號</p>
+<p>http://en.wikipedia.org/wiki/Factorial_number_system</p>
+<p>http://en.wikipedia.org/wiki/Lehmer_code</p>
+<p>http://stackoverflow.com/questions/1506078/</p>
+<p class="e">UVa 941 417 11027</p>
+<p class="t">枚舉所有排列</p>
+<p><a href="http://www.cut-the-knot.org/do_you_know/AllPerm.shtml">http://www.cut-the-knot.org/do_you_know/AllPerm.shtml</a></p>
+<p>「<a href="Backtracking.html">Backtracking</a>」：遞迴填入數字。可以得到字典順序。</p>
+<textarea>
+int a[5];
+bool used[5];
+
+void print()
+{
+	for (int i=0; i<N; ++i) cout << a[i];
+	cout << '\n';
+}
+
+void backtrack(int n, int N)
+{
+	if (n == N) {print(); return;}
+
+	for (int i=0; i<N; i++)
+		if (!used[i])
+		{
+			used[i] = true;
+			a[n] = i;
+			backtrack(n+1);
+			used[i] = false;
+		}
+}
+
+void enumerate_permutations(int N)
+{
+	for (int i=0; i<N; i++) used[i] = false;
+	backtrack(0, N);
+}
+</textarea>
+<p>「<a href="https://en.wikipedia.org/wiki/Steinhaus?ohnson?rotter_algorithm">Steinhaus-Johnson-Trotter Algorithm</a>」：以Gray Code的順序兩兩交換。</p>
+<textarea>
+https://rosettacode.org/wiki/Permutations_by_swapping
+</textarea>
+<p>「<a href="https://en.wikipedia.org/wiki/Heap's_algorithm">Heap's Algorithm</a>」：判斷奇偶，適時交換。</p>
+<textarea>
+const int N = 5;
+int a[N] = {1, 2, 3, 4, 5};
+int c[N];	// factorial number system
+
+void print()
+{
+	for (int i=0; i<N; ++i) cout << a[i];
+	cout << '\n';
+}
+
+void enumerate_permutations()
+{
+	for (int i=0; i<N; ++i) c[i] = 0;
+
+	print();
+	for (int i=0; i<N; )
+		if (c[i] < i)
+		{
+			swap(a[i & 1 ? c[i] : 0], a[i]);
+			c[i]++;
+			i = 0;
+			print();
+		}
+		else
+			c[i++] = 0;
+}
+</textarea>
+<p class="t">下一個排列</p>
+<p>給定其中一個排列，按照字典順序，找到下一個排列。</p>
+<p>把數字想像成數字卡。先拿起一張低位數的數字卡，再利用手上的數字卡，嘗試重新拼出比原本更大一點點的數值（下一個排列）。如果拼不出來，就再多拿起一張數字卡，再拼一遍。</p>
+<p>可以直接使用STL的next_permutation。</p>
+<textarea>
+const int N = 5;
+int a[N] = {1, 2, 3, 4, 5};
+
+void print()
+{
+	for (int i=0; i<N; ++i) cout << a[i];
+	cout << '\n';
+}
+
+bool next_permutation()
+{
+	for (int i=n-1; i>0; i--)
+		if (a[i-1] < a[i])
+		{
+			int j = N-1;
+			while (a[i-1] >= a[j]) j--;
+			swap(a[i-1], a[j]);
+			reverse(a+i, a+N);
+			return true;
+		}
+//	reverse(a, a+N);	// 從頭開始循環
+	return false;
+}
+
+void enumerate_permutations()
+{
+	do print(); while (next_permutation());
+}
+</textarea>
+<p class="e">UVa 146 845</p>
+<p class="t">Consecutive Ones Problem</p>
+<p>N個人，排成一直線。限制某些人一定要排在一起，這樣的限制有許多組，必須同時滿足；如果限制過多，也可能無解。問有幾種排法、列出所有排法。</p>
+<p>建立一個矩陣。令一個row代表一個限制，要排一起的人標1。兩個column交換，就等於一直線中的兩個人對調位置。不斷交換column，當每個row各自都連成連續的1，就形成一組解了！</p>
+<p>為了快速解決這個問題，而發明了PQ Tree資料結構，時間複雜度是O(N+M+S)，N是人數，M是限制數量，S是所有排法的長度總和。</p>
+<p>由於PQ Tree非常噁心，這裡不再多提，有興趣的讀者請自行搜尋資料。</p>
+<p class="e">ICPC 3511 UVa 11993</p>
+<p class="t">Consecutive Ones Submatrix Problem</p>
+<p>NP-hard。</p>
+<p class="t">隨機排列</p>
+<p>一群數字不按順序排好、打亂順序。排序的相反。</p>
+<p>隨機排列經常用於隨機演算法，避免輸入資料成為worst case，降低演算法的時間複雜度。隨機排列也經常用於製造隨機輸入，用來測試程式是否穩健。</p>
+<p>「<a href="https://en.wikipedia.org/wiki/Fisher?ates_shuffle">Fisher-Yates Shuffle</a>」：產生整數1到N的隨機排列，每種排列出現機率都一樣，時間複雜度O(N)。</p>
+<p>可以直接使用STL的random_shuffle。</p>
+<textarea>
+// 產生[0,x)的隨機整數。注意到x不能大於RAND_MAX。
+int rand(int x)
+{
+	return rand() % x;
+}
+
+// 產生[x,y]的隨機整數。
+int rand(int x, int y)
+{
+	return x + rand(y - x + 1);
+}
+
+void shuffle()
+{
+	// 設定亂數表，之後才能使用rand()。
+	srand(time(0));
+
+	// 初始化，填入1到99的數字
+	int a[100];
+	for (int i=0; i<100; i++)
+		a[i] = i;
+
+	// shuffle
+	for (int i=0; i<100; i++)
+		swap(a[i], a[ rand(i, 100-1) ]);
+}
+</textarea>
+<textarea>
+// 產生[0,x)的隨機整數。注意到x不能大於RAND_MAX。
+int rand(int x)
+{
+	return rand() % x;
+}
+
+void shuffle()
+{
+	srand(time(0));
+
+	int a[100];
+	for (int i=0; i<100; i++)
+		a[i] = i;
+
+	// 倒過來做，少寫一個函式。
+	for (int i=99; i>0; i--)
+		swap(a[i], a[ rand(i+1) ]);
+}
+</textarea>
+<p class="t">統計所有排列</p>
+<textarea>
+int count_permutations(int N, int K)
+{
+	int c = 1;
+	while (K--) c *= N--;
+	return c;
+}
+</textarea>
+<textarea>
+// Stirling's approximation
+long double log_factorial(long double n)
+{
+	const long double π = 2.0 * acos(0);
+	return log(2.0 * π * n) / 2.0 + n * (log(n) - 1.0);
+}
+
+int count_permutations(int N, int K)
+{
+	return round(exp(log_factorial(N) - log_factorial(N-K)));
+}
+</textarea>
+<p>更進階的情況，例如「庭院深深深幾許」、「男女相間坐成一圈」，基本上是益智遊戲，這裡就不提了。</p>
+<p class="e">UVa 12257</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Combination</p>
+</div><div class="c">
+<p class="t">組合（子集合）</p>
+<p>從一堆東西當中，挑出其中幾個。可以全部都挑，也可以什麼都不挑。</p>
+<p>組合就是挑選。組合就是剔除。無關順序。</p>
+<pre>
+例如有五筆資料　　　　●★■▲◆
+
+這是其中一種組合　　　★■◆
+這和方才是同一種組合　◆★■
+這是其中一種組合　　　▲
+這是其中一種組合　　　●★■▲◆
+這是其中一種組合　　　nothing
+</pre>
+<p class="t">替各種組合編號</p>
+<p>一個二進位數字，可以代表一個子集合。</p>
+<pre>
+       0       1      2     3       4
+U = {lemon, orange, lime, apple, banana};
+
+　　　　　43210
+二進位數字01010，即是子集合 {orange, apple}
+二進位數字00001，即是子集合 {lemon}
+二進位數字00000，即是子集合 { }
+</pre>
+<p>實作程式碼時，運用資料結構「<a href="Set.html">Bitset</a>」或「<a href="Number.html">整數</a>」儲存一種組合，可以節省空間。運用程式語言的「<a href="standard.html">Bitwise Operation</a>」語法，可以節省時間。</p>
+<textarea>
+const int N = 5;	// 元素數量
+
+void print(int comb)
+{
+	cout << '{';
+	for (int i=0; i<N; ++i)
+		if (comb & (1 << i))
+			cout << 1;
+		else
+			cout << 0;
+	cout << '}' << '\n';
+}
+</textarea>
+<p class="t">枚舉所有組合</p>
+<p><a href="http://www.applied-math.org/subset.pdf">http://www.applied-math.org/subset.pdf</a></p>
+<p>字典順序：數字由小到大。</p>
+<pre>
+000
+001
+010
+011
+100
+101
+110
+111
+</pre>
+<textarea>
+for (int i=0; i<(1<<N); i++)
+	print(i);
+</textarea>
+<p>Gray Code：相鄰數字僅改動一個位元。</p>
+<pre>
+000
+001
+011
+010
+110
+111
+101
+100
+</pre>
+<textarea>
+for (int i=0; i<(1<<N); i++)
+	print(i^(i>>1));
+</textarea>
+<p>Banker's Sequence：先枚舉小集合，再枚舉大集合；同樣大小的集合們之間，先枚舉數字大的（字典順序大的），再枚舉數字小的（字典順序小的）。</p>
+<pre>
+000 -- size = 0
+100  \
+010   | size = 1
+001  /
+110   \
+101    | size = 2
+011   /
+111    -- size = 3
+</pre>
+<textarea>
+https://rosettacode.org/wiki/Banker's_algorithm
+</textarea>
+<p class="t">下一個組合</p>
+<textarea>
+// http://graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation
+void next_combination(unsigned int comb)
+{
+	unsigned int t = (comb | (comb - 1)) + 1;
+	comb = t | ((((t & -t) / (comb & -comb)) >> 1) - 1);
+}
+</textarea>
+<p class="t">限制元素數量的組合</p>
+<textarea>
+// C(n,k)
+// Gosper's Hack
+for (unsigned int comb = (1 << k) - 1; comb < 1 << n;)
+{
+	print(comb);
+	unsigned int x = comb & -comb, y = comb + x;
+	comb = ((comb ^ y) / x >> 2) | y;
+}
+</textarea>
+<p class="t">排容原理</p>
+<textarea>
+void inclusion_exclusion_principle(int N)
+{
+	for (int comb = 0; comb < 1<<N; ++comb)
+	{
+		int c = 0;	// size of set
+		for (int i=0; i<N; ++i)
+			if (comb & (1 << i))
+				c++;
+
+		if (c & 1) cout << "negative";
+		else cout << "positive";
+	}
+}
+</textarea>
+<p class="e">UVa 10325 11806 10458</p>
+<p class="t">隨機組合</p>
+<p>「<a href="http://www.geeksforgeeks.org/reservoir-sampling/">Reservoir Sampling</a>」：N個數字隨機取出K個，每個數字取出機率均等。online演算法，時間複雜度O(N)。</p>
+<p class="t">統計所有組合</p>
+<textarea>
+int count_combinations(int N, int K)
+{
+	int c = 1;
+	for (int k=1, n=N; k<=K; k++, n--)
+		c = c * n / k;
+	return c;
+}
+</textarea>
+<p class="t">組合公式</p>
+<p>「<a href="https://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>」：C(n,k)。</p>
+<p>「<a href="https://en.wikipedia.org/wiki/Pascal's_triangle">Pascal's Rule</a>」：C(n,k) = C(n-1,k) + C(n-1,k-1)。分治法，取一物，分成兩種情況相加：物在組合內、物不在組合內。</p>
+<p>「<a href="https://en.wikipedia.org/wiki/Binomial_theorem">Binomial Theorem</a>」：二項式定理，多項式展開之後的係數，跟巴斯卡三角形有關。</p>
+<p>「<a href="http://en.wikipedia.org/wiki/Lucas_theorem">Lucas Theorem</a>」：二項式定理推廣成餘數。</p>
+<p>「<a href="https://en.wikipedia.org/wiki/Kummer's_theorem">Kummer's Theorem</a>」：二項式定理推廣成p進數。</p>
+<p>「<a href="https://en.wikipedia.org/wiki/Cayley's_formula">Cayley's Formula</a>」：n個點的樹，統計有幾種。</p>
+<p class="e">UVa 10213 10790 10843</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Permutation</p>
+</div><div class="c">
+<p class="t">Permutation</p>
+<p>「排列」可以看成是一對一函數，每個數字變成另一個數字。</p>
+<p>以下用「<a href="Graph.html">圖</a>」解釋「排列」。「排列」畫成圖，每個點恰有一條出邊、一條入邊，必然形成許多環。一個「排列」就是許多環！</p>
+<p>因此「排列」經常寫成循環節的形式。</p>
+<img src="Permutation1.png">
+<p class="e">UVa 11071 ICPC 6899</p>
+<p class="t">Orbit</p>
+<p>套用一個排列，就是各點同時走一步。</p>
+<p>持續套用同一個排列，就是各點同時走一步、走兩步、……。</p>
+<p>每個點總是繞行於自己的環裡面。</p>
+<img src="Permutation2.png">
+<p>持續套用兩個不同的排列，順序隨意。相交的環，都能走到。</p>
+<p>每個點總是漫步於自己的連通分量裡面。</p>
+<img src="Permutation3.png">
+<p>持續套用多個不同的排列，以此類推。</p>
+<p>每一塊走動範圍稱作「軌道」。</p>
+<p class="t">Permutation Group</p>
+<p>給定一個排列，我們可以找出許多排列，令每個點總是繞行於自己的環裡面，不會離開環。</p>
+<p>例如給定一個排列，共有四個環。符合上述條件的其中一個排列是：第一個環走兩步，第二個環走零步，第三個環走三步，第四個環走一步。</p>
+<p>符合上述條件的所有的相異排列，總數量等於：每個環的長度相乘！這些排列們稱為一個「排列群」。</p>
+<img src="Permutation4.png">
+<p>另外，若有長度一樣的環（甚至呈倍數關係），可令這些環一齊走相同步數。排列數量減少了，但是仍是一個「排列群」。</p>
+<img src="Permutation5.png">
+<p>給定多個不同的排列，亦得如法炮製。我們可以找出許多排列，令每個點總是繞行於自己的連通分量裡面。符合條件的所有的相異排列，也是一個「排列群」。若有構造一樣的連通分量（甚至呈倍數關係），可令這些連通分量一齊走相同步法，仍是一個「排列群」。</p>
+<p>注意到，數學家給予「群」、「排列群」、「群作用」非常明確的定義。此處省略了許多細節。</p>
+<p class="t">Orbit-Stabilizer Theorem</p>
+<pre>
+o(x) = { g‧x | g∈G }      從x可走到的點們。
+orbit                    （一個環、一個連通分量）
+
+s(x) = { g∈G | g‧x = x }  讓x走回原處的排列們。
+stabilizer               （x的環走零步，其他環走隨意步）
+
+f(g) = { x∈X | g‧x = x }  套用一個排列g，走回原處的點們。
+fixed point              （某些環所走的步數，恰等於環的長度的倍數）
+                         （某些連通分量所走的步法，恰回到原處）
+</pre>
+<p>軌道衛星定理：一個排列群，任選一點x，|o(x)| |s(x)|相乘，等於排列群大小、等於排列總數量。</p>
+<p>將x所在的軌道（暨同步軌道們），分離出來罷了。</p>
+<p class="t">不動點計數定理【沒有正式學術名稱】</p>
+<pre>
+sum_all_x |s(x)| = sum_all_g |f(g)|
+</pre>
+<p>不動點計數定理：一個排列群，所有排列的所有不動點，共有兩種計數方式。</p>
+<img src="Permutation6.png">
+<p>首先觀察單一軌道：</p>
+<p>左式：第一點，分別走零一二三……步，走回原處的次數；第二點，分別走零一二三……步，走回原處的次數；……。通通加起來。</p>
+<p>右式：所有點各走零步，走回原處的點數；所有點各走一步，走回原處的點數；……。通通加起來。</p>
+<p>接著把單一軌道推廣成多個軌道，接著把環上的步數推廣成連通分量上的步法，即得証。</p>
+<p>順帶一提，此定理即是微積分Fubini's Theorem的實際應用。</p>
+<p class="t">Orbit Counting Theorem</p>
+<pre>
+              |o(x)| |s(x)| =          #(g)   [orbit-stabilizer theorem]
+sum_one_orbit |o(x)| |s(x)| =   |o(x)| #(g)   [repeat |o(x)| times]
+|o(x)| sum_one_orbit |s(x)| =   |o(x)| #(g)   [constant]
+       sum_one_orbit |s(x)| =          #(g)
+       sum_all_orbit |s(x)| = #(orbit) #(g)
+           sum_all_x |s(x)| = #(orbit) #(g)
+           sum_all_g |f(g)| = #(orbit) #(g)   [Fubini's theorem]
+
+           sum_all_g |f(g)|
+           ―――――――――――――――― = #(orbit)
+                 #(g)
+</pre>
+<p>軌道計數定理：一個排列群，不動點的平均值，就是軌道數量。</p>
+<p>軌道不好算，不動點很好算，因此數學家兜出這個式子。</p>
+<p class="t">Pólya Counting Theorem</p>
+<pre>
+                               #(cycles of g)
+sum_all_g |f(g)|   sum_all_g  k
+―――――――――――――――― = ―――――――――――――――――――――――――― = #(orbit)
+      #(g)                    #(g)
+</pre>
+<p>這是特殊案例。排列的對象，不是n個東西，而是n^k個東西：n個相同元件，k種不同顏色，每個元件塗上其中一種顏色，全部的可能性。</p>
+<p>雖然有n^k個東西，但是排列規則只有排列n個元件，並未提及元件的顏色。</p>
+<p>波利亞計數定理：一、僅排列n個元件，求得虛擬排列群。此時看清楚n^k個東西的排列情況，恰好是真的排列群。可以套用軌道計數定理。二、此時一個排列的不動點數量，恰好是k的次方，次方值是該排列的循環節數量。</p>
+<p>證明省略。請看範例。</p>
+<p class="t">範例：方格著色</p>
+<p>四個方格呈田字，每個方格是白色或黑色，總共2^4 = 16種。</p>
+<p>當旋轉視為相同，那麼就剩下6種。</p>
+<img src="Permutation7.png">
+<p>我們的目標是：不比對所有田字，快速算出答案是6種。</p>
+<p>旋轉即排列。此例當中，旋轉的基本單位是90°。</p>
+<p>以90°為基礎，建構虛擬的排列群，涵蓋所有旋轉方式：順時針旋轉90°、180°、270°、360° = 0°。此排列群是虛擬的排列群，僅考慮4個方格，而非2^4種田字。</p>
+<img src="Permutation8.png">
+<p>看清楚2^4種田字的排列情況，這四個排列恰好是真的排列群：以90°做為基礎，每個環走每種步數、一些同步軌道。</p>
+<img src="Permutation9.png">
+<p>我們的目標是：此排列群的軌道數量，就是答案，一共6種。</p>
+<p>實務上沒有人像我這樣把所有排列詳細畫出來，然後找連通分量。快速的方法是軌道計數定理、波利亞計數定理，直接列出不動點，求平均值。此例的不動點，就是旋轉之後，仍舊一樣的田字。</p>
+<img src="Permutation10.png">
+<p>不喜歡圖片的話，請見文字版本。</p>
+<pre>
+顏色k=2種                      循環節數量
+旋轉       排列     不動點數量  括號數量
+     |       g      | |f(g)| ||  cycle  | k^cycle 
+---- | -------------|--------||---------|---------
+  0° | (1)(2)(3)(4) |   16   ||    4    | 2^4 = 16
+ 90° | (1234)       |    2   ||    1    | 2^1 = 2 
+180° | (13)(24)     |    4   ||    2    | 2^2 = 4 
+270° | (1432)       |    2   ||    1    | 2^1 = 2 
+
+orbit counting theorem: (16+2+4+2)/4 = 6
+Pólya counting theorem: [(2^4)+(2^1)+(2^2)+(2^1)]/4 = 6
+</pre>
+<p>以上就是波利亞計數定理的用途。</p>
+<p>以下另外提供顏色數量為1、2、3時的不動點。讀者可以從中觀察波利亞定理的精神。</p>
+<img src="Permutation11.png">
+<p class="e">UVa 10601 10733 11255 11540</p>
+<p class="t">延伸閱讀：其他定理</p>
+<p>如果你真的很喜歡群論和數論，可以研究看看。</p>
+<pre>
+Lagrange's theorem：子群的大小，整除群的大小。
+  Cauchy's theorem：當質數p整除群的大小（例如排列群），
+                    那麼此群存在一個元素g（例如一個排列），
+                    使得 g^p = 1（此排列套用p次，每個軌道剛好走零步）。
+  Cayley's theorem：隨便一個群，
+                    一定可以等價地變成某個對稱群的子群（例如排列群）。
+</pre>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Permutation.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:00 GMT -->
+</html>

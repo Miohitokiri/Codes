@@ -1,0 +1,916 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Sequence2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:17:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Sequence</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Sequence（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Sequence</p>
+<p>Sequence，在英文當中是「一連串」的意思，在數學當中則是「一連串數字」的意思，中文譯作「數列」。</p>
+<p>像這樣就是一個數列：</p>
+<pre>
+4 -1 6 0 9
+</pre>
+<p>我們習慣用一維陣列儲存一個數列：</p>
+<textarea>
+int array[5] = {4, -1, 6, 0, 9};
+</textarea>
+<p>數學家談數列，是談等差數列、等比數列、數列求和、遞迴數列。計算學家談數列，則是談積分、微分、排序、搜尋。</p>
+<p class="t">最小值、最大值、總和</p>
+<p>靜態版本請參考本站文件「<a href="MaximumSubarray.html">Maximum Sum Subarray</a>」。</p>
+<p>動態版本請參考本站文件「<a href="Sequence.html">Sequence</a>」。</p>
+<p class="t">排序、搜尋、選擇</p>
+<p>請參考本站文件「<a href="SequenceManipulation.html">Sequence Manipulation</a>」。</a>
+<p class="t">排列、組合</p>
+<p>請參考本站文件「<a href="Permutation.html">Permutation</a>」。</a>
+<p class="t">加減乘除模</p>
+<p>對應項加減乘除模。就這樣。</a>
+<p class="t">點積、摺積</p>
+<p>請參考本站文件「<a href="Polynomial.html">Polynomial</a>」。</a>
+<pre>
+similarity ---> dot ---> cos
+
+bcz  all pair product = 1 - dot
+     (impurity, i!=j)
+</pre>
+<p class="t">積分（前綴和）</p>
+<p>從頭開始、連續數字和。</p>
+<pre>
+原本數列  4 -1  6  0  9
+積分之後  4  3  9  9 18
+</pre>
+<textarea>
+int array[5] = {4, -1, 6, 0, 9};
+int sum[5];	// 前綴和
+
+void prefix_sum()
+{
+	sum[0] = array[0];
+	for (int i=1; i<5; i++)
+		sum[i] = sum[i-1] + array[i];
+}
+
+// [i,j]區間和。
+// 預先以O(N)計算前綴和，便能以O(1)計算區間和。
+int interval_sum(int i, int j)
+{
+	if (i > j) swap(i, j);
+	if (i == 0) return sum[j];
+	return sum[j] - sum[i - 1];
+}
+</textarea>
+<textarea>
+// 陣列開頭加一空格，就不必擔心超出陣列邊界。程式碼更簡潔。
+int array[5+1] = {0, 4, -1, 6, 0, 9};
+int sum[5+1] = {0};	// 前綴和
+
+void prefix_sum()
+{
+	for (int i=1; i<=5; i++)
+		sum[i] = sum[i-1] + array[i];
+}
+
+int interval_sum(int i, int j)
+{
+	if (i > j) swap(i, j);
+	return sum[j] - sum[i - 1];
+}
+</textarea>
+<p class="e">UVa 10324 10994 983</p>
+<p class="t">微分（差分）</p>
+<p>相鄰數字差。</p>
+<pre>
+原本數列  4 -1  6  0  9
+微分之後  4 -5  7 -6  9
+</pre>
+<textarea>
+int array[5] = {4, -1, 6, 0, 9};
+int diff[5];	// 差分
+
+void finite_difference()
+{
+	diff[0] = array[0];
+	for (int i=1; i<5; i++)
+		diff[i] = array[i] - array[i-1];
+}
+</textarea>
+<p class="e">UVa 10038</p>
+<p class="t">積分與微分是反運算</p>
+<p>積分與微分可以相互抵消！一個數列，先積分、再微分，得到原數列。一個數列，先微分、再積分，仍得到原數列。不斷積分與微分，只要兩者次數一樣多，終究得到原數列。</p>
+<p class="t">積分與微分的妙用：二元搜尋樹</p>
+<p>運用集合（索引儲存）、數列（偽線段樹）、積分、二分搜尋，得取代二元搜尋樹的功能。</p>
+<pre>
+集合freq[i]
+替freq[i]建立數列資料結構
+freq[n]++              <---> 插入數字n     O(logN)
+freq[n]--              <---> 刪除數字n     O(logN)
+freq[n]積分            <---> 數字n的名次   O(logN)
+freq[n]積分，二分搜尋k <---> 第k大的數字   O(logNlogN)
+</pre>
+<p class="e">UVa 11525 11990 ICPC 4329</p>
+<p class="t">積分與微分的妙用：區間一齊增減一數值、區間總和</p>
+<pre>
+數列a[i]、數列微分d[i]
+替d[i]與i*d[i]建立數列資料結構
+d[i]左界+n右界-n <---> a[i]區間+n   O(logN)
+d[i]積分         <---> a[i]第k項    O(logN)
+d[i]積分積分     <---> a[i]積分     O(logN)
+（用d[i]和i*d[i]算）
+</pre>
+<p class="e">PKU 3468</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polynomial Multiplication（Under Construction!）</p>
+</div><div class="c">
+<p class="t">多項式加法與減法 = 數列加法與減法</p>
+<pre>
+多項式加法
+        a₀ x⁰ +       a₁ x¹ +       a₂ x²
++)      b₀ x⁰ +       b₁ x¹ +       b₂ x²
+—————————————————————————————————————————
+   (a₀+b₀) x⁰ +  (a₁+b₁) x¹ +  (a₂+b₂) x²
+</pre>
+<pre>
+數列加法
+(a₀ a₁ a₂) + (b₀ b₁ b₂) = (a₀+b₀ a₁+b₁ a₂+b₂)
+</pre>
+<img src="Convolution1.png">
+<p class="t">多項式乘法與除法 = 數列摺積與反摺積</p>
+<p>多項式乘法，是數列的什麼呢？數學家以不斷位移的點積，兜出多項式乘法的結果，然後命名為摺積。</p>
+<pre>
+多項式乘法
+                         a₀ x⁰ +   a₁ x¹ +   a₂ x²
+×)                       b₀ x⁰ +   b₁ x¹ +   b₂ x²
+——————————————————————————————————————————————————
+                       a₀b₂ x² + a₁b₂ x³ + a₂b₂ x⁴
+             a₀b₁ x¹ + a₁b₁ x² + a₂b₁ x³
+   a₀b₀ x⁰ + a₁b₀ x¹ + a₂b₀ x²
+——————————————————————————————————————————————————
+     c₀ x⁰ +   c₁ x¹ +   c₂ x² +   c₃ x³ +   c₄ x⁴
+
+其中
+c₀ = a₀b₀
+c₁ = a₀b₁ + a₁b₀
+c₂ = a₀b₂ + a₁b₁ + a₂b₀
+c₃ = a₁b₂ + a₂b₁
+c₄ = a₂b₂
+</pre>
+<pre>
+數列摺積
+(a₀ a₁ a₂) convolution (b₀ b₁ b₂) = (c₀ c₁ c₂ c₃ c₄)
+
+其中
+c₀ = (-  -  a₀ a₁ a₂ -  - ) dot (b₂ b₁ b₀ -  -  -  - )
+c₁ = (-  -  a₀ a₁ a₂ -  - ) dot (-  b₂ b₁ b₀ -  -  - )
+c₂ = (-  -  a₀ a₁ a₂ -  - ) dot (-  -  b₂ b₁ b₀ -  - )
+c₃ = (-  -  a₀ a₁ a₂ -  - ) dot (-  -  -  b₂ b₁ b₀ - )
+c₄ = (-  -  a₀ a₁ a₂ -  - ) dot (-  -  -  -  b₂ b₁ b₀)
+
+對齊一下
+c₀:                     c₁:                     c₂:
+(-  -  a₀ a₁ a₂ -  - )  (-  -  a₀ a₁ a₂ -  - )  (-  -  a₀ a₁ a₂ -  - )
+(b₂ b₁ b₀ -  -  -  - )  (-  b₂ b₁ b₀ -  -  - )  (-  -  b₂ b₁ b₀ -  - )
+
+c₃:                     c₄:
+(-  -  a₀ a₁ a₂ -  - )  (-  -  a₀ a₁ a₂ -  - )
+(-  -  -  b₂ b₁ b₀ - )  (-  -  -  -  b₂ b₁ b₀)
+</pre>
+<img src="Convolution2.png">
+<p class="t">Convolution</p>
+<p>等長的兩串數列，做「對應項乘法」運算，得到一串數列。時間複雜度O(N)。</p>
+<pre>
+Pointwise Product:
+                                   a₀  a₁  a₂  
+(a₀ a₁ a₂) multiply (b₀ b₁ b₂) = ( ×   ×   ×  ) = (a₀b₀ a₁b₁ a₂b₂)
+                                   b₀  b₁  b₂  
+</pre>
+<p>等長的兩串數列，做「點積」運算，得到一個值：對應項相乘後求和。時間複雜度O(N)。</p>
+<pre>
+Dot Product:
+                            a₀   a₁   a₂
+(a₀ a₁ a₂) dot (b₀ b₁ b₂) = ×  + ×  + ×  = a₀b₀ + a₁b₁ + a₂b₂
+                            b₀   b₁   b₂
+</pre>
+<p>兩串數列，做「摺積」運算，得到一個數列：第二串數列頭尾顛倒，窮舉各種對齊方式，各做一次點積。至於第二串數列為何要頭尾顛倒？正是為了迎合多項式乘法！時間複雜度O(AB)。</p>
+<pre>
+Convolution:
+
+(a₀ a₁ a₂ a₃ a₄) convolution (b₀ b₁ b₂) = (c₀ c₁ c₂ c₃ c₄ c₅ c₆)
+
+c₀ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (b₂ b₁ b₀ -  -  -  -  -  - )
+c₁ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (-  b₂ b₁ b₀ -  -  -  -  - )
+c₂ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (-  -  b₂ b₁ b₀ -  -  -  - )
+c₃ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (-  -  -  b₂ b₁ b₀ -  -  - )
+c₄ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (-  -  -  -  b₂ b₁ b₀ -  - )
+c₅ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (-  -  -  -  -  b₂ b₁ b₀ - )
+c₆ = (-  -  a₀ a₁ a₂ a₃ a₄ -  - ) dot (-  -  -  -  -  -  b₂ b₁ b₀)
+</pre>
+<p>摺積是很多次點積，第二串頭尾顛倒，各種位移。</p>
+<p>多項式乘法有交換率、結合率、分配律，當然摺積也有。</p>
+<p class="t">Deconvolution</p>
+<p>「反摺積」就是摺積的反運算，解摺積式子。</p>
+<pre>
+☐ convolution b = c   --->   c deconvoution b = ☐
+</pre>
+<p>化作矩陣乘法，求反矩陣即可。</p>
+<p><a href="http://dsp.stackexchange.com/questions/15096/">http://dsp.stackexchange.com/questions/15096/</a>。</p>
+<p>但是我不清楚如何求得摺積的反元素。</p>
+<p class="t">多項式循環乘法 = 數列循環摺積</p>
+<p>緊接著引入「循環」的概念！多項式相乘，刻意讓次方循環。</p>
+<pre>
+多項式循環乘法
+                         a₀ x⁰ +   a₁ x¹ +   a₂ x²
+×)                       b₀ x⁰ +   b₁ x¹ +   b₂ x²
+—————————————————————————————————————————————————————
+                       a₀b₂ x² + a₁b₂ x³ + a₂b₂ x⁴
+             a₀b₁ x¹ + a₁b₁ x² + a₂b₁ x³
+   a₀b₀ x⁰ + a₁b₀ x¹ + a₂b₀ x²
+—————————————————————————————————————————————————————
+   a₁b₂ x⁰ + a₂b₂ x¹ + a₀b₂ x²
+   a₂b₁ x⁰ + a₀b₁ x¹ + a₁b₁ x²
+   a₀b₀ x⁰ + a₁b₀ x¹ + a₂b₀ x²
+—————————————————————————————————————————————————————
+     c₀ x⁰ +   c₁ x¹ +   c₂ x²
+
+其中
+c₀ = a₁b₂ + a₂b₁ + a₀b₀
+c₁ = a₂b₁ + a₀b₁ + a₁b₁
+c₂ = a₀b₀ + a₁b₀ + a₂b₀
+
+也就是
+(a₀ a₁ a₂)      (a₀ a₁ a₂)      (a₀ a₁ a₂)
+    dot    x⁰ +     dot    x¹ +     dot    x²
+(b₀ b₂ b₁)      (b₁ b₀ b₂)      (b₂ b₁ b₀)
+</pre>
+<pre>
+數列循環摺積
+(a₀ a₁ a₂) circular convolution (b₀ b₁ b₂) = (c₀ c₁ c₂)
+
+其中
+c₀ = (a₀ a₁ a₂) dot (b₀ b₂ b₁)
+c₁ = (a₀ a₁ a₂) dot (b₁ b₀ b₂)
+c₂ = (a₀ a₁ a₂) dot (b₂ b₁ b₀)
+</pre>
+<img src="Convolution3.png">
+<p class="t">Circular Convolution</p>
+<p>等長的兩串數列，做「循環摺積」運算，得到一串數列：與摺積大同小異，超出數列的部分，改成頭尾循環。時間複雜度O(N^2)。</p>
+<p>第二串數列由第0項到第N-1項輪流作為首項、頭尾顛倒、頭尾循環。</p>
+<pre>
+                  circular
+(a₀ a₁ a₂ a₃ a₄) convolution (b₀ b₁ b₂ b₃ b₄) = (c₀ c₁ c₂ c₃ c₄)
+
+c₀ = (a₀ a₁ a₂ a₃ a₄) dot (b₀ b₄ b₃ b₂ b₁)
+c₁ = (a₀ a₁ a₂ a₃ a₄) dot (b₁ b₀ b₄ b₃ b₂)
+c₂ = (a₀ a₁ a₂ a₃ a₄) dot (b₂ b₁ b₀ b₄ b₃)
+c₃ = (a₀ a₁ a₂ a₃ a₄) dot (b₃ b₂ b₁ b₀ b₄)
+c₄ = (a₀ a₁ a₂ a₃ a₄) dot (b₄ b₃ b₂ b₁ b₀)
+</pre>
+<pre>
+c0:               c1:               c2:
+(a₀ a₁ a₂ a₃ a₄)  (a₀ a₁ a₂ a₃ a₄)  (a₀ a₁ a₂ a₃ a₄)
+(b₀ b₄ b₃ b₂ b₁)  (b₁ b₀ b₄ b₃ b₂)  (b₂ b₁ b₀ b₄ b₃)
+
+c3:               c4:
+(a₀ a₁ a₂ a₃ a₄)  (a₀ a₁ a₂ a₃ a₄)
+(b₃ b₂ b₁ b₀ b₄)  (b₄ b₃ b₂ b₁ b₀)
+</pre>
+<p class="t">Convolution Theorem【尚無正式名稱】</p>
+<p>多項式與數列互相轉換。</p>
+<pre>
+a₀x⁰ + a₁x¹ + a₂x²  <--->  (a₀ a₁ a₂)
+</pre>
+<p>數列轉換成多項式。</p>
+<pre>
+(a₀ a₁ a₂)  ---->  a₀x⁰ + a₁x¹ + a₂x²
+</pre>
+<p>數列轉換成多項式，可以看成點積，可以看成線性變換。</p>
+<pre>
+線性變換矩陣
+A = [ x⁰ x¹ x² ]
+
+數列
+    [ a₀ ]
+a = [ a₁ ]
+    [ a₂ ]
+
+數列轉換成多項式
+                  [ a₀ ]
+Aa = [ x⁰ x¹ x² ] [ a₁ ] = a₀x⁰ + a₁x¹ + a₂x²
+                  [ a₂ ]
+</pre>
+<p>這種線性變換有個特性：「變換前的摺積 = 變換後的乘法」。</p>
+<pre>
+A = [ x⁰ x¹ x² ]
+
+    [ a₀ ]       [ b₀ ]
+a = [ a₁ ]   b = [ b₁ ]
+    [ a₂ ]       [ b₂ ]
+
+p = Aa = (a₀x⁰ + a₁x¹ + a₂x²)
+q = Ab = (b₀x⁰ + b₁x¹ + b₂x²)
+
+pq = Aa Ab = (a₀x⁰ + a₁x¹ + a₂x²) (b₀x⁰ + b₁x¹ + b₂x²)
+           = (a convolution b) 然後添上 [ x⁰ x¹ x² x³ x⁴ ]
+           = A(a convolution b)    a與b末端補零，A末端補項。
+</pre>
+<p>次方值乘上任意倍率，此特性一樣成立。</p>
+<pre>
+A = [ x⁰ x¹ x² ]
+
+A = [ x⁰ x⁵ x¹⁰ ]
+
+A = [ x⁰ x⁻⁷ x⁻²¹ ]
+
+A = [ x⁰ x⁰ x⁰ ]
+</pre>
+<p>所有元素一齊乘上任意倍率，此特性一樣成立。</p>
+<pre>
+A = [ 7x⁰ 7x¹ 7x² ]
+
+A = [ -x⁰ -x⁵ -x¹⁰ ]
+
+A = [ 0 0 0 ]
+</pre>
+<p>從一個橫列推廣到一個矩陣，此特性一樣成立。</p>
+<pre>
+    [ 7x⁰ 7x¹  7x²   ]
+A = [ -x⁰ -x⁵  -x¹⁰  ]
+    [  x⁰  x⁻⁷  x⁻²¹ ]
+
+Aa multiply Ab = A(a convolution b)
+</pre>
+<p>結論就是：</p>
+<img src="Convolution4.png">
+<p class="t">Cicular Convolution Theorem【尚無正式名稱】</p>
+<p>接下來繼續補強矩陣，除了滿足「變換前的摺積 = 變換後的乘法」，也要滿足「變換前的乘法 = 變換後的摺積」！</p>
+<p>從數學來看，補強性質，達成了對稱之美；從計算學來看，補強限制，極可能產生特殊演算法。</p>
+<img src="Convolution5.png">
+<p>那麼就得讓A擁有反矩陣A⁻¹，而且A和A⁻¹都具備上個段落提到的特性。一種嘗試是正規正交矩陣：A⁻¹ = Aᵀ，前述特性變成了行與列同時成立，容易觀察。</p>
+<p>實數系統下，x次方漸增，數值越來越大，導致基底不可能垂直（內積不可能為零）。很不幸的，這種矩陣不存在。</p>
+<pre>
+             [ x⁰ x⁰ x⁰ x⁰ .. ]
+     -1   T  [ x⁰ x¹ x² x³ .. ]
+A = A  = A = [ x⁰ x² x⁴ x⁶ .. ]
+             [ x⁰ x³ x⁶ x⁹ .. ]
+             [ :  :  :  :     ]
+
+Aa multiply Ab = A(a convolution b)
+Aa convolution Ab = A(a multiply b)
+</pre>
+<p>折衷的方式是令x的次方產生循環，讓數值能夠變小，使得基底互相垂直、內積是零。（用數學術語來說：從open set改成closed set。）</p>
+<p>複數系統下，把x設定成e<sup>i⋅2π/N</sup>（或其倒數e<sup>-i⋅2π/N</sup>），令x的次方產生循環。此即「<a href="Wave.html">傅立葉轉換</a>」。</p>
+<pre>
+Fourier Transform: x = e<sup>-i⋅2π/N</sup>; k = 1/sqrt(N); N is size of matrix
+
+      [ x⁰ x⁰ x⁰ x⁰ .. ]          [ x⁻⁰ x⁻⁰ x⁻⁰ x⁻⁰ .. ]
+      [ x⁰ x¹ x² x³ .. ]    -1    [ x⁻⁰ x⁻¹ x⁻² x⁻³ .. ]
+A = k [ x⁰ x² x⁴ x⁶ .. ]   A  = k [ x⁻⁰ x⁻² x⁻⁴ x⁻⁶ .. ]
+      [ x⁰ x³ x⁶ x⁹ .. ]          [ x⁻⁰ x⁻³ x⁻⁶ x⁻⁹ .. ]
+      [ :  :  :  :     ]          [ :   :   :   :      ]
+
+Aa multiply Ab = A(a circular convolution b)
+Aa circular convolution Ab = A(a multiply b)
+</pre>
+<p>餘數系統下，則是把x設定成任意一個原根（或其倒數），令x的次方產生循環。此即「數論轉換」。</p>
+<pre>
+Number Theoretic Transform: x = primitive root (mod n)
+
+    [ x⁰ x⁰ x⁰ x⁰ .. ]        [ x⁻⁰ x⁻⁰ x⁻⁰ x⁻⁰ .. ]
+    [ x⁰ x¹ x² x³ .. ]    -1  [ x⁻⁰ x⁻¹ x⁻² x⁻³ .. ]
+A = [ x⁰ x² x⁴ x⁶ .. ]   A  = [ x⁻⁰ x⁻² x⁻⁴ x⁻⁶ .. ]
+    [ x⁰ x³ x⁶ x⁹ .. ]        [ x⁻⁰ x⁻³ x⁻⁶ x⁻⁹ .. ]
+    [ :  :  :  :     ]        [ :   :   :   :      ]
+
+Aa multiply Ab = A(a circular convolution b)
+Aa circular convolution Ab = A(a multiply b)
+</pre>
+<p>原本的特性，也變得循環：「變換前的循環摺積 = 變換後的乘法」、「變換前的乘法 = 變換後的循環摺積」！</p>
+<img src="Convolution6.png">
+<p>引入時域與頻域的觀念：「頻域的乘法 = 時域的循環摺積」、「頻域的循環摺積 = 時域的乘法」！</p>
+<p class="t">Circular Convolution的快速演算法<br>Polynomial Circular Multiplication的快速演算法</p>
+<img src="Convolution7.png">
+<p>正向傅立葉轉換、數論轉換需時O(NlogN)，對應項相乘需時O(N)，逆向傅立葉轉換、數論轉換需時O(NlogN)。總時間複雜度為O(NlogN)。</p>
+<p>傅立葉轉換的弱點是浮點數誤差。數論轉換的弱點是數值大小不得超過模數大小。</p>
+<p>注意到，快速傅立葉轉換、快速數論轉換，數列長度必須是2的次方。當數列長度不是2的次方，千萬不能直接補零到2的次方。</p>
+<pre>
+正確的循環摺積計算結果：
+            circular
+(a₀ a₁ a₂) convolution (b₀ b₁ b₂) = (c₀ c₁ c₂)
+
+c₀ = a₀b₀ + a₁b₂ + a₂b₁
+c₁ = a₀b₁ + a₁b₀ + a₂b₂
+c₂ = a₀b₂ + a₁b₁ + a₂b₀
+
+長度補到2的次方，計算結果完全不同：
+              circular
+(a₀ a₁ a₂ 0) convolution (b₀ b₁ b₂ 0) = (d₀ d₁ d₂ d₃)
+
+d₀ = a₀b₀ + a₂b₂
+d₁ = a₀b₁ + a₁b₀
+d₂ = a₀b₂ + a₁b₁ + a₂b₀
+d₃ = a₁b₂ + a₂b₁
+</pre>
+<p>正確的方式：先補零直到不受循環影響，再補零直到長度是2的次方，最後讓輸出數列循環。</p>
+<pre>
+想要計算      circular
+  (a₀ a₁ a₂) convolution (b₀ b₁ b₂) = (c₀ c₁ c₂)
+
+改為計算          circular
+　(a₀ a₁ a₂ 0 0) convolution (b₀ b₁ b₂ 0 0) = (d₀ d₁ d₂ d₃ d₄)
+
+長度補到2的次方         circular
+　(a₀ a₁ a₂ 0 0 0 0 0) convolution (b₀ b₁ b₂ 0 0 0 0 0)
+= (d₀ d₁ d₂ d₃ d₄ 0 0 0)
+
+最後讓輸出數列循環
+  c₀ = d₀ + d₃
+  c₁ = d₁ + d₄
+  c₂ = d₂
+</pre>
+<p class="t">Convolution的快速演算法<br>Polynomial Multiplication的快速演算法</p>
+<p>運用循環摺積，計算摺積。</p>
+<pre>
+想要計算
+  (a₀ a₁ a₂ a₃) convolution (b₀ b₁ b₂)
+= (c₀ c₁ c₂ c₃ c₄ c₅)
+
+改為計算             circular
+  (a₀ a₁ a₂ a₃ 0 0) convolution (b₀ b₁ b₂ 0 0 0)
+= (c₀ c₁ c₂ c₃ c₄ c₅ 0)
+
+長度補到2的次方           circular
+  (a₀ a₁ a₂ a₃ a₄ 0 0 0) convolution (b₀ b₁ b₂ 0 0 0 0 0)
+= (c₀ c₁ c₂ c₃ c₄ c₅ 0 0)
+
+截斷輸出數列至正確長度
+  (c₀ c₁ c₂ c₃ c₄ c₅ 0 0) -> (c₀ c₁ c₂ c₃ c₄ c₅)
+</pre>
+<p class="t">範例：大數乘法</p>
+<img src="Convolution8.png">
+<p>大數乘法即是多項式乘法！</p>
+<p>傅立葉轉換、數論轉換得以計算大數乘法，時間複雜度從O(N^2)降為O(NlogN)。</p>
+<textarea>
+char sa[300], sb[300];
+long long x1[1024], x2[1024], a[1024];
+
+void s2a(char* s, long long* a, int n, int nn)
+{
+	int i = 0;
+	for (; i<n; ++i) a[i] = s[n-i-1] - '0';
+	for (; i<nn; ++i) a[i] = 0;
+}
+
+void a2s(long long* a, int n)
+{
+	while (n > 0 && a[n] <= 0) n--;
+	while (n >= 0) cout << a[n--];
+	cout << '\n';
+}
+
+void mul(char* sa, char* sb)
+{
+	int n1 = strlen(sa);
+	int n2 = strlen(sb);
+
+	int n = 1;
+	while (n < n1 + n2) n <<= 1;
+//	int n = 1 << (32 - __builtin_clz(n1+n2));
+	long long r = pow(proot, m/n, m);
+	long long invr = pow(r, m-2, m);
+	long long invn = pow(n, m-2, m);
+
+	s2a(sa, x1, n1, n);
+	s2a(sb, x2, n2, n);
+
+	fnt(x1, n, r);
+	fnt(x2, n, r);
+	for (int i=0; i<n; ++i)
+		x1[i] = mul(x1[i], x2[i], m);
+	fnt(x1, n, invr);
+	for (int i=0; i<n; ++i)
+		a[i] = mul(x1[i], invn, m);
+	for (int i=0; i<n-1; ++i)
+		a[i+1] += a[i] / 10, a[i] %= 10;
+
+	a2s(a, n1 + n2 - 1);
+}
+</textarea>
+<p class="t">範例：兩兩和（Pairwise Sum）（X+Y Problem）</p>
+<img src="Convolution9.png">
+<p>甲集合，乙集合，只有整數。甲取一個數，乙取一個數，相加，會是哪些數？</p>
+<p>集合的資料結構，使用循序儲存。窮舉法與排序為O(N^2)。</p>
+<p>集合的資料結構，使用索引儲存。時間複雜度為O(RlogR)，R為數字範圍。</p>
+<p>摺積觀點：整數加法變成位移，兩兩和變成摺積。</p>
+<p>多項式觀點：集合變成多項式，元素值變成x的次方，出現與否變成x的係數（未出現是0，出現是1以上），兩兩和變成多項式乘法。</p>
+<p class="t">範例：樣式匹配（Pattern Matching）</p>
+<p>經典問題「從一個陣列當中，搜尋一個值」，解法是循序搜尋（窮舉法）、先排序再二分搜尋、Sqrt分解、偽線段樹、四元樹。</p>
+<img src="Convolution10.png">
+<p>進階問題「從一個陣列當中，搜尋一串連續數列」，解法是字串匹配、多重解析度匹配（金字塔）、樹套樹、傅立葉轉換。此處討論最後一種方法。</p>
+<img src="Convolution11.html">
+<pre>
+http://www.cs.jhu.edu/~misha/Spring15/
+https://maskray.me/blog/2016-10-03-discrete-fourier-transform
+http://www.jjj.de/fxt/fxtbook.pdf
+</pre>
+<pre>
+min sum (f[t+r] - g[t])² = min sum f[t+r]² + g[t]² - 2 ⟪f[t+r],g[t]⟫
+ r   t                      r   t
+
+‖f - g‖² = f² + g² - 2 ⟪f,g⟫
+                       ^^^^^
+</pre>
+<p>預計算兩串數列當中每個數字的平方、預計算所有可能的點積（摺積）。而摺積可以用傅立葉轉求得。然後就可以迅速求得a² + b² - 2ab。整體時間複雜度O(NlogN)。</p>
+<textarea>
+http://morris821028.github.io/2015/07/21/zj-b451/
+</textarea>
+<p>可以求匹配（找到零）、求相似度（找最小值）。</p>
+<p>用於字串匹配，把字元看成ASCII數值。字串末端補零，避免循環匹配。</p>
+<img src="Convolution12.html">
+<p>用於形狀匹配，把形狀看成「<a href="Function2.html">Radical Function</a>」。循環函數，不必補零。形狀旋轉等同於數列循環位移，不影響結果。</p>
+<img src="Convolution13.html">
+<p class="e">UVa 12298 ICPC 4671 5705 7159</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polynomial Factorization（Under Construction!）</p>
+</div><div class="c">
+<p class="t">多項式與函數點互相轉換（point-value presentation）</p>
+<p>根據「<a href="Interpolation.html">多項式內插</a>」的「唯一解定理」，N項多項式，等同N個相異函數點。</p>
+<img src="ZeroPole1.html">
+<p>N項多項式的加減法，等同N個函數點的加減法。</p>
+<p>N項與M項多項式的乘法（次方變成N+M-1），等同N+M-1個函數點的乘法。</p>
+<p>N項與M項多項式的除法（次方變成N-M+1），若整除，則N-M+1個函數點皆整除。若不整除，則無法處理。</p>
+<p class="t">Cicular Convolution Theorem【尚無正式名稱】</p>
+<p>這個版本比較容易記誦。教科書採用這個版本。</p>
+<p>傅立葉矩陣碰巧是Vandermonde Matrix！可援引多項式內插！</p>
+<p>正向傅立葉轉換，可以看成多項式求值：已知N個多項式係數，x代入下述數值，求得N個函數值。</p>
+<p>逆向傅立葉轉換，可以看成多項式內插：已知N個函數值，x等於下述數值，求得N個多項式係數。</p>
+<pre>
+傅立葉轉換：x代入e<sup>-i⋅(2π/N)⋅0</sup>、e<sup>-i⋅(2π/N)⋅1</sup>、……、e<sup>-i⋅(2π/N)⋅(N-1)</sup>。
+數論轉換：x代入r⁰、r¹、……、r<sup>N-1</sup>。
+</pre>
+<p>傅立葉矩陣是正規正交矩陣、一對一函數，唯一解定理成立！因此，N項多項式的循環乘法，等同N個函數點的乘法。</p>
+<img src="Convolution10.png">
+<p class="t">Polynomial Factorization</p>
+<p>N項多項式恰有N-1個根，可能有重根，可能是虛數。</p>
+<p>取N-1個根當作函數點！但是少了一個函數點，況且無法處理重根。</p>
+<p>「因式分解」。</p>
+<p>「質式Irreducible Polynomial」</p>
+<p>「生成器Primitive Polynomial」</p>
+<p class="t">演算法（Kronecker's Algorithm）</p>
+<p>原理是「<a href="Interpolation.html">Lagrange Interpolation</a>」。</p>
+<pre>
+      N-1         x  - rj
+p(x) = ∑  di  ∏  ---------
+      i=0    j≠i  ri - rj
+</pre>
+<p>兩個多項式整除，所有對應點也會整除。</p>
+<p>【待補文字】</p>
+<p class="t">Zero與Pole</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Toeplitz Matrix（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Circulant Matrix</p>
+<p>「循環矩陣」。每行每列皆循環的矩陣。</p>
+<pre>
+[ 1 5 3 7 2 ]
+[ 2 1 5 3 7 ]
+[ 7 2 1 5 3 ]
+[ 3 7 2 1 5 ]
+[ 5 3 7 2 1 ]
+</pre>
+<p>「循環摺積」與「循環矩陣」完全等價！</p>
+<pre>
+[ b₀ b₄ b₃ b₂ b₁ ] [ a₀ ]   [ c₀ ]
+[ b₁ b₀ b₄ b₃ b₂ ] [ a₁ ]   [ c₁ ]
+[ b₂ b₁ b₀ b₄ b₃ ] [ a₂ ] = [ c₂ ]
+[ b₃ b₂ b₁ b₀ b₄ ] [ a₃ ]   [ c₃ ]
+[ b₄ b₃ b₂ b₁ b₀ ] [ a₄ ]   [ c₄ ]
+</pre>
+<p>求值、求解、乘法、反矩陣，運用傅立葉轉換或數論轉換，時間複雜度為O(NlogN)。</p>
+<p class="t">Toeplitz Matrix（Diagonal-constant Matrix）</p>
+<p>「常對角矩陣」。每一條左上右下斜線，都是同一個元素的矩陣。以下只討論方陣。</p>
+<p>「循環矩陣」是「常對角矩陣」的特例。</p>
+<pre>
+[ 1 5 3 2 1 ]
+[ 2 1 5 3 2 ]
+[ 7 2 1 5 3 ]
+[ 4 7 2 1 5 ]
+[ 8 4 7 2 1 ]
+</pre>
+<p>「常對角矩陣」與「摺積」不等價。「摺積」可以化作「常對角矩陣」，反之則不然，除非矩陣無限大。</p>
+<pre>
+                               [  0 ]
+[ b₂ b₁ b₀  0  0  0  0  0  0 ] [  0 ]   [ c₀ ]
+[  0 b₂ b₁ b₀  0  0  0  0  0 ] [ a₀ ]   [ c₁ ]
+[  0  0 b₂ b₁ b₀  0  0  0  0 ] [ a₁ ]   [ c₂ ]
+[  0  0  0 b₂ b₁ b₀  0  0  0 ] [ a₂ ] = [ c₃ ]
+[  0  0  0  0 b₂ b₁ b₀  0  0 ] [ a₃ ]   [ c₄ ]
+[  0  0  0  0  0 b₂ b₁ b₀  0 ] [ a₄ ]   [ c₅ ]
+[  0  0  0  0  0  0 b₂ b₁ b₀ ] [  0 ]   [ c₆ ]
+                               [  0 ]
+
+[ b₀  0  0  0  0 ]          [ c₀ ]
+[ b₁ b₀  0  0  0 ] [ a₀ ]   [ c₁ ]
+[ b₂ b₁ b₀  0  0 ] [ a₁ ]   [ c₂ ]
+[  0 b₂ b₁ b₀  0 ] [ a₂ ] = [ c₃ ]
+[  0  0 b₂ b₁ b₀ ] [ a₃ ]   [ c₄ ]
+[  0  0  0 b₂ b₁ ] [ a₄ ]   [ c₅ ]
+[  0  0  0  0 b₂ ]          [ c₆ ]
+</pre>
+<p>常對角矩陣的演算法較為複雜，以下開始介紹。</p>
+<p class="t">加法</p>
+<p>兩個Toeplitz Matrix相加，時間複雜度O(N)。</p>
+<p>2N-1個數字就能記錄一個Toeplitz Matrix。</p>
+<p class="t">乘法</p>
+<p>兩個Toeplitz Matrix相乘，時間複雜度O(N^2)。</p>
+<p><a href="http://stackoverflow.com/questions/15889521/">http://stackoverflow.com/questions/15889521/</a></p>
+<p class="t">乘法的反運算：反矩陣</p>
+<p>時間複雜度O(N^2)。比高斯喬登消去法O(N^3)快。</p>
+<p>Toeplitz Matrix的反矩陣，通常不是Toeplitz Matrix，但是可以表示成Circulant Matrix與上三角Toeplitz Matrix的乘積。</p>
+<p><a href="http://www.sciencedirect.com/science/article/pii/S0893965907000535">http://www.sciencedirect.com/science/article/pii/S0893965907000535</a></p>
+<p class="t">求值</p>
+<p>時間複雜度O(NlogN)。比普通矩陣求值O(N^2)快。</p>
+<p>填充元素成為循環矩陣，化為循環摺積，套用傅立葉轉換、數論轉換。最後從中抽取正確答案。</p>
+<pre>
+                     [ 1 5 3 7 2 ] [ 1 ]
+[ 1 5 3 ] [ 1 ]      [ 2 1 5 3 7 ] [ 2 ]      (1 2 3 0 0)
+[ 2 1 5 ] [ 2 ] ---> [ 7 2 1 5 3 ] [ 3 ] --->      ⍟
+[ 7 2 1 ] [ 3 ]      [ 3 7 2 1 5 ] [ 0 ]      (1 2 7 3 5)
+                     [ 5 3 7 2 1 ] [ 0 ]
+Toeplitz matrix      circulant matrix      circular convolution
+</pre>
+<p class="t">求值的反運算：求解</p>
+<p>時間複雜度O(N^2)。比高斯消去法O(N^3)快。</p>
+<p><a href="https://en.wikipedia.org/wiki/Levinson_recursion">https://en.wikipedia.org/wiki/Levinson_recursion</a></p>
+<p>另外還有時間複雜度O(N(logN)^2)的演算法。我沒有涉獵。</p>
+<p class="t">Toeplitz Decompoisition</p>
+<p>任意方陣都可以化為一連串Toeplitz Matrix的乘積。</p>
+<p><a href="http://www.stat.uchicago.edu/~lekheng/work/toeplitz.pdf">http://www.stat.uchicago.edu/~lekheng/work/toeplitz.pdf</a></p>
+<p class="t">Eigenvalue與Fourier Transform</p>
+<p>循環矩陣，特徵向量是傅立葉矩陣，特徵值是第一個橫條的傅立葉轉換。</p>
+<p><a href="http://math.stackexchange.com/questions/25126/">http://math.stackexchange.com/questions/25126/</a></p>
+<pre>
+1. 兩個循環矩陣相乘  = 總是可以用fourier matrix作對角化 = 對角線矩陣相乘
+　 (還是循環矩陣)        (C = F D F⁻¹) (F⁻¹ = Fᵀ)　      (對應的eigenvalue相乘)
+
+2. 兩個數列的循環摺積     = fft                         = 對應項相乘
+
+3. 兩個多項式的循環乘法   = 多項式求值，以e^-itn取樣　　= 對應的點座標相乘
+
+4. 兩個分解式的循環乘法   = 這是甚麼東西？
+   (2n個根融合成n個根)
+</pre>
+<pre>
+tridiagonal and Toeplitz matrix's eigenvalues:
+a + 2 sqrt(bc) cos(k pi / (n+1))   for k = 1~n
+</pre>
+<pre>
+eigenvectors of fourier matrix is gaussian function
+eigenvalues of fourier matrix is +1 -1 +i -i
+F^4 = I
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Convolution-Multiplication Duality（Under Construction!）</p>
+</div><div class="c">
+<p class="t">數列與多項式互相轉換（z-transform）</p>
+<pre>
+(2 -5 1 0 4)  <--->  2x⁰ - 5x¹ + 1x² + 0x³ + 4x⁴
+(a₀ a₁ a₂ a₃ a₄)  <--->  a₀x⁰ + a₁x¹ + a₂x² + a₃x³ + a₄x⁴
+</pre>
+<p>數列加法與減法 = 多項式加法與減法</p>
+<p>數列摺積與反摺積 = 多項式乘法與除法</p>
+<p class="t">係數與函數值互相轉換（Unisolvence Theorem）</p>
+<pre>
+               2x⁰ - 5x¹ + 1x² + 0x³ + 4x⁴
+               x = {1, 2, 3, 4, 5}
+(2 -5 1 0 4)  <--------------------------> ()
+</pre>
+<p>多項式內插。</p>
+<p>係數加法與減法 = 多項式加法與減法 = 函數值加法與減法</p>
+<p>係數摺積與反摺積 = 多項式乘法與除法 = 函數值乘法與除法</p>
+<p>最後來個趣味題目，兩步猜出多項式的係數：</p>
+<p><a href="http://www.matrix67.com/blog/archives/4064">http://www.matrix67.com/blog/archives/4064</a></p>
+<p class="t">矩陣形式（Vandermonde Matrix）</p>
+<pre>
+[ x₀⁰ x₀¹ x₀² x₀³ x₀⁴ ] [  2 ]   [  ]
+[ x₁⁰ x₁¹ x₁² x₁³ x₁⁴ ] [ -5 ]   [  ]
+[ x₂⁰ x₂¹ x₂² x₂³ x₂⁴ ] [  1 ] = [  ]
+[ x₃⁰ x₃¹ x₃² x₃³ x₃⁴ ] [  0 ]   [  ]
+[ x₄⁰ x₄¹ x₄² x₄³ x₄⁴ ] [  4 ]   [  ]
+</pre>
+<p>求反矩陣，即可反向轉換！</p>
+<p class="t">循環導致對偶</p>
+<p>左邊摺積等於右邊乘法。</p>
+<p>引入循環的概念之後，性質就對稱了，左邊乘法等於右邊摺積。</p>
+<p>不必特地求反矩陣了。反向轉換的時間複雜度從O(N^2)降到O(NlogN)，用FFT、FNT系列。</p>
+<p class="t">數列與Dirichlet級數互相轉換（ζ-transform？）</p>
+<pre>
+(2 -5 1 0 4)  <--->  2⋅0ˣ - 5⋅1ˣ + 1⋅2ˣ + 0⋅3ˣ + 4⋅4ˣ
+(a₀ a₁ a₂ a₃ a₄)  <--->  a₀0ˣ + a₁1ˣ + a₂2ˣ + a₃3ˣ + a₄4ˣ
+</pre>
+<p>數列加法與減法 = Dirichlet級數加法與減法</p>
+<p>數列Dirichlet摺積與反摺積 = Dirichlet級數乘法與除法</p>
+<p class="t">係數與函數值互相轉換</p>
+<p>查無名稱。理論上辦的到，只要寫成矩陣就行了。但是不清楚何時存在反矩陣。</p>
+<p class="t">矩陣形式</p>
+<p>查無名稱。</p>
+<p class="t">循環導致對偶</p>
+<p>是這樣子嗎？</p>
+<p>目前似乎還沒有快速演算法。八九不離十是篩法。</p>
+<p class="t">單位元素、反元素</p>
+<pre>
+convolution: 加法分解
+Dirichlet convolution: 乘法分解
+</pre>
+<p>加性摺積當中，單位元素是脈衝函數δ。</p>
+<pre>
+impulse function δ: δ(0) = 1; δ(±1) = δ(±2) = ... = 0
+f ∗ g = δ  g是加性摺積反元素
+</pre>
+<p>乘性摺積當中，單位元素是脈衝函數ε。</p>
+<p>常數函數1的反元素是乘性排容函數Möbius function。</p>
+<pre>
+impulse function ε: ε(1) = 1; ε(2) = ε(3) = ... = 0
+f ∗ g = ε  g是乘性摺積反元素
+μ ∗ 1 = ε
+</pre>
+<p class="t">延伸閱讀：Bitwise XOR Convolution</p>
+<p>結合運算子從加法、乘法改成了程式語言的^異或運算子。又稱作dyadic convolution或logical convolution。</p>
+<p>矩陣形式是Hadamard matrix或Walsh matrix。數值都是±1而且向量互相垂直（點積為零）。</p>
+<p>轉換名稱叫做Hadamard transform或Walsh transform。因為沒有循環，所以沒有對偶？</p>
+<pre>
+http://book.huihoo.com/pdf/algorithms-for-programmers/afp.pdf   p362 $9.6
+http://iris.elf.stuba.sk/JEEEC/data/pdf/09-10_102-10.pdf
+http://en.wikipedia.org/wiki/Hadamard_matrix
+https://en.wikipedia.org/wiki/Dyadic_rational
+</pre>
+<p class="t">延伸閱讀：Infimal Convolution</p>
+<pre>
+convolution：加法結合，數值相乘，加法累計。
+dirichlet convolution：乘法結合，數值相乘，加法累計。
+bitwise XOR convolution：XOR結合，數值相乘，加法累計。
+infimal convolution: 加法結合，函數加法，下界累計。Minkowski sum。
+</pre>
+<p class="t">Fourier Transform</p>
+<p>傅立葉轉換是一對一函數，輸入和輸出都是一串複數。</p>
+<p>請參考本站文件「<a href="Wave.html">Fourier Transform</a>」。</a>
+<p>e的純虛數次方會不斷繞圈。採用單位根的次方e<sup>i⋅2π/N</sup>。</p>
+<pre>
+複數　垂直座標　　轉換機制　　頻率座標　　轉換名稱　　時間複雜度
+一一　一一一一一　一一一一一　一一一一一　一一一一一　一一一一一
+數字　實部、虛部　長度、角度　幅長、幅角　極轉換　　　O(1)
+函數　實部、虛部　複數波　　　強度、相位　傅立葉轉換　O(NlogN)
+</pre>
+<pre>
+e^x              　輸入相加＝輸出相乘
+fourier transform　輸入點積＝輸出摺積
+</pre>
+<p>傅立葉轉換也許可以視作座標系轉換。有些問題在垂直座標很難算，在頻率座標卻很好算。複數乘法變長度相乘、角度相加。數列摺積變數列乘法。</p>
+<p>傅立葉轉換是積分變換，可以視作向量空間的座標系。</p>
+<p class="t">Number Theoretic Transform</p>
+<p>數論轉換是一對一函數，輸入和輸出都是一串餘數。</p>
+<p>餘數的次方會不斷繞圈。採用原根的次方。</p>
+<p><a href="http://www.apfloat.org/prim.html">http://www.apfloat.org/prim.html</a></p>
+<p>輸出入每個數值都是餘數，皆大於等於零、小於模數。當輸入數值很大，那麼模數也必須足夠大。</p>
+<p>數論轉換的特色是完全沒有浮點數誤差！</p>
+<textarea>
+// 預先算好的，支援到n = 1<<18。
+const long long m = 50000000001507329LL;	// 質數 k*n+1
+const long long primitive_root = 3;
+
+long long mul(long long a, long long b, long long m)
+{
+	long long y = (long long)((double)a*b/m+0.5);
+	long long r = (a*b-y*m) % m;
+	if (r < 0) r += m;
+	return r;
+}
+
+/* n^e (mod m) ≡ x */
+long long pow(long long n, long long e, long long m)
+{
+	long long x = 1;
+	for (n %= m ; e; e >>= 1)
+	{
+		if (e & 1) x = mul(x, n, m);
+		n = mul(n, n, m);
+	}
+	return x;
+}
+
+// 快速數論轉換
+void FNT(long long* z, long long n, long long ω)
+{
+	for (int k=n; k>=2; k>>=1)
+	{
+		long long θ = 1;
+		for (int i=0; i<k/2; i++)
+		{
+			for (int j=i; j<n; j+=k)
+			{
+				long long a = z[j];
+				long long b = z[j + k/2];
+				z[j] = (a + b) % m;
+				z[j + k/2] = mul((a - b + m) % m, θ, m);
+			}
+			θ = mul(θ, ω, m);
+		}
+		ω = mul(ω, ω, m);
+	}
+
+	for (int i=1, j=0; i<n; ++i)
+	{
+		for (int k=n>>1; k<(j^=k); k>>=1) ;
+		if (i > j) swap(z[i], z[j]);
+	}
+}
+
+void demo()
+{
+	long long z[1024];
+	long long n = 1024;
+	long long r = pow(primitive_root, m/n, m);
+	long long invr = pow(r, m-2, m);
+	long long invn = pow(n, m-2, m);
+
+	// 正向轉換
+	FNT(z,n,r);
+
+	// 逆向轉換
+	FNT(z,n,invr);
+	for (int i=0; i<n; ++i)
+		z[i] = mul(z[i], invn, m);
+}
+</textarea>
+<p class="t">Hadamard Transform</p>
+<textarea>
+http://www.frozenc.com/blog/fwt_in_icpc/
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Poset（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Poset / Antimatroid？</p>
+<p>數列推廣成偏序集（或者是反擬陣？）。</p>
+<p>一個偏序集，子集合總和（偏序集積分）、子集合排容（偏序集微分），互為反運算。</p>
+<p>積分前摺積 = 積分後乘法。定義祖性摺積：令兩元素的結合結果是最低共同祖先LCA。數列摺積的結合運算子是加法、乘法，偏序集摺積則是LCA。</p>
+<pre>
+https://mycourses.aalto.fi/mod/resource/view.php?id=90388
+</pre>
+<p>引入cyclic inclusion-exclusion就滿足對偶了？此時偏序集積分的效果等同於FFT、FNT等轉換。</p>
+<pre>
+Invitation to Algorithmic Uses of Inclusion–Exclusion
+https://arxiv.org/abs/1105.2942
+</pre>
+<p class="t">範例</p>
+<p>當偏序集是子集關係。結合運算子是聯集。<p>
+<p>當偏序集是分割數（組合數）關係，此定理即是巴斯卡三角形。<p>
+<p>當偏序集是區間包覆關係，此定理似乎是「<a href="http://www.idav.ucdavis.edu/education/CAGDNotes/Uniform-B-Splines-as-a-Convolution/Uniform-B-Splines-as-a-Convolution.html">Normalized B-splines</a>」曲線。<p>
+<p>當偏序集是因數關係，此定理即是Möbius inversion formula。此時偏序集微積分可以寫成乘性摺積：積分是摺以常數函數1，微分是摺以Möbius function μ。結合運算子是最小公倍數。<p>
+<pre>
+    偏序集積分
+    --------->
+ 祖 |        | 點
+ 性 |        | 乘
+ 摺 |        |        我猜是這樣
+ 積 v        v
+    <---------
+    偏序集微分
+　  乘性摺積（因數關係）
+</pre>
+<p class="t">Sequence + Poset</p>
+<p>當偏序集是數列項次的因數關係。</p>
+<p>原數列每一項除以(1+x^i)後z轉換，等於積分後z轉換。左式叫做Lambert series。</p>
+<p>原數列ζ轉換、再乘上一個倍率ζ(s)，等於積分後ζ轉換。</p>
+<p>反元素：</p>
+<pre>
+ζ(s) = sum 1/(n^s)
+1/ζ(s) = sum u(n)/(n^s)
+</pre>
+<p class="t">Euler Product</p>
+<p>歐拉加乘對偶。</p>
+<p class="t">最大公因數的傅立葉轉換就是Euler's Totient Function</p>
+<p><a href="http://en.wikipedia.org/wiki/Euler%27s_totient_function#Fourier_transform" class="l">http://en.wikipedia.org/wiki/Euler%27s_totient_function#Fourier_transform</a></p>
+<pre>
+       <sub>N-1</sub>
+φ(n) =  ∑ { gcd(n, k) ÷ e<sup>i⋅2π⋅(n/N)⋅k</sup> }
+       <sup>k=0</sup>
+</pre>
+<p class="t">因數與乘性摺積</p>
+<pre>
+constant function 1: 1(1) = 1(2) = ... = 1
+identity function I: I(n) = n
+divisor function τ: τ(n) = # of divisors of n
+totient function φ: φ(n) = # of relative prime of n
+1 ∗ 1 = σ₀ = τ   divisor count
+
+φ ∗ 1 = I        x
+I ∗ 1 = σ₁ = σ   divisor sum
+</pre>
+<p class="e">ICPC 7837</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Sequence2.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:18:07 GMT -->
+</html>

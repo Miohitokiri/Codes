@@ -1,0 +1,36 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q343: What Base Is This ?</h1>          
+<p>我們知道在一個數字中不同的位置其權重（weight）是不同的。例如10進位的數字362中，2的權重是10<sup>0</sup>，6的權重是10<sup>1</sup>，3的權重是10<sup>2</sup>。所以這個數10進位的值=3*10<sup>2</sup>+6*10<sup>1</sup>+2*10<sup>0</sup>。同樣的機制也適用於其他的進位制。然而362這個數字在9進位制或14進位制中所代表的值是和10進位制的362不同的。<p>在本問題中，給你2個數字（以X、Y代表），請你寫一個程式找出X最小是多少進位制，且Y最小是多少進位制，才能使X，Y代表相同的值。例如：給你12和5。若用10進位來看的話，這2個數明顯是不同的。但是假如你用3進位來看12,用6進位來看5呢？12<sub>(3進位)</sub>=1*3<sup>1</sup>+2*3<sup>0</sup>=5<sub>(10進位)</sub>，而5<sub>(6進位)</sub>=5<sub>(10進位)</sub>。所以如果你選對進位制的話，12和5是可以代表相同的值的。
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+每組測試資料一列，包含2個數字X、Y。X、Y可以2進位制到36進位制來看待。在表達上，0～9就代表0～9，A,B,C,......,Z則分別代表10,11,12,......,35  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                           
+每組測試資料輸出的一列，格式請參考Sample  
+Output。請注意X、Y有可能在2進位制到36進位制中均無法使之相等。 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                         
+Input</b></span></p>                                                
+<pre>12   5
+    10     A
+12 34
+  123   456
+  1    2
+  10   2
+0 0</pre>     
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                  
+Output</b></span></p>                                                
+<pre>12 (base 3) = 5 (base 6)
+10 (base 10) = A (base 11)
+12 (base 17) = 34 (base 5)
+123 is not equal to 456 in any base 2..36
+1 is not equal to 2 in any base 2..36
+10 (base 2) = 2 (base 3)
+0 (base 2) = 0 (base 2)</pre>     
+                                              
+</body>                                              
+                                              
+</html>                                              

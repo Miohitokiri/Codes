@@ -1,0 +1,36 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10344: 23 Out of 5</h1>          
+<p>你的任務是寫一個程式，看看是否能在5個數字間插入一些運算子使得結果為23。</p>
+<p>考慮以下的運算式結果是否可能等於23。</p>
+<p><b>(((a<sub>1</sub> O<sub>1</sub> a<sub>2</sub>) O<sub>2</sub> a<sub>3</sub>)  
+O<sub>3</sub> a<sub>4</sub>) O<sub>4</sub> a<sub>5</sub></b></p> 
+<p>在這裡a<sub>1</sub>～a<sub>5</sub>為5個給你的整數（順序可以隨便排列，但一定都要出現一次），O<sub>1</sub>～O<sub>4</sub>為運算子，內容為{+,-,*}其中一個。如果你還不清楚的話，以下面的例子來說明：</p>
+<p>輸入5個整數2,3,5,711<br>
+你可以找到有一組運算式 (((11*3)-5)+2)-7=23，所以輸出Possible。（當然，可以得到23的答案的運算式可能不只一組）</p> 
+<p>若輸入的5個整數為1,1,1,1,1<br>
+那你就找不到任一種運算式的組合可以使答案為23。所以輸出Impossible。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每一測試資料一列，有5個整數。每個整數均介於0到50之間。當輸入為5個0時代表輸入結束。測試資料總共不會超過25列。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>根據輸入的5個整數，判斷是否可能找到使其答案為23的運算式。請參考Sample Output</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre><span lang="EN" style="COLOR: black; mso-ansi-language: EN">1 1 1 1 1
+1 2 3 4 5
+2 3 5 7 11
+0 0 0 0 0</span></pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                  
+Output</b></span></p>                              
+<pre><span lang="EN" style="COLOR: black; mso-ansi-language: EN">Impossible
+Possible
+Possible</span></pre>
+                            
+</body>                            
+                            
+</html>                            

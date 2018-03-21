@@ -1,0 +1,507 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Tree.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:00:36 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Tree</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Tree</p>
+</div><div class="c">
+<p class="t">Tree</p>
+<p>「樹」。樹是一種很特別的圖。樹的定義是：任兩點之間都相通，並且沒有「環」的圖。「<a href="Cycle.html">環</a>」是指繞圈子的循環路線。</p>
+<img src="Tree1.png">
+<p>樹的定義對初學者來說或許太過抽象。換個說法吧：一棵樹可想做是由一個點開始，藉由許多條邊不斷地延伸拓展到其他點，而且點和邊都不會重複地被拓展到。</p>
+<img src="Tree2.png">
+<p class="t">Node</p>
+<p>「節點」。進行延伸拓展的點、被延伸拓展到的點，稱作「節點」，也就是說樹上的點都是「節點」。</p>
+<p>【註：為了方便，以下仍稱呼「點」。】</p>
+<img src="Tree3.png">
+<p class="t">Branch</p>
+<p>「枝」。延伸拓展所用到的邊稱作「枝」，也就是說樹上的邊都是「枝」。一個點藉由邊往外延伸拓展，稱作「分枝Branching」。</p>
+<p>【註：為了方便，以下仍稱呼「邊」。】</p>
+<img src="Tree4.png">
+<p class="t">Root</p>
+<p>「根」。方才提到，一棵樹可想做是由一個點開始分枝──這個點便是「根」。一棵樹上的每一個點都可以作為根。</p>
+<img src="Tree5.png">
+<p class="t">Leaf</p>
+<p>「葉」。在一棵樹上選定根後，由根開始不斷分枝，途中所有無法繼續分枝的點皆是「葉」。</p>
+<p>也可以不選定根，這種情況下，只連著一條邊的點都是「葉」。</p>
+<img src="Tree6.png">
+<p>如果樹上總共只有一個點，那麼此點既是根、也是葉。</p>
+<p class="t">Level</p>
+<p>「層」。在一棵樹上選定根後，按照拓展的順序（也就是按照每個點離根的距離），可以將樹上的點分層次，使得樹上每一個點都擁有一個層數。如果改變根，那麼分層的結果就會不同。</p>
+<p>還有另一種比較少見的分層方式，是設定所有葉在同一層，由葉開始計算層數。</p>
+<img src="Tree7.png">
+<p class="t">Parent & Child</p>
+<p>「父親」與「小孩」。在一棵樹上選定根後，以邊相連的任兩點，靠近樹根者相對地稱作「父親」，靠近樹葉者相對地稱作「小孩」。</p>
+<img src="Tree8.png">
+<p>一個點的父親，是指與其相鄰的點當中，較此點靠近樹根者，為其父親。父親只會有一個，特例是：樹根沒有父親。</p>
+<p>一個點的小孩，是指與其相鄰的點當中，較此點靠近樹葉者，為其小孩。小孩可以是任意多個，特例是：樹葉沒有小孩。</p>
+<img src="Tree9.png">
+<p class="t">Ancestor & Descendant</p>
+<p>「祖先」與「子孫」。在一棵樹上選定根後，一個點的父親、父親的父親、……皆是此點的「祖先」。一個點的小孩、小孩的小孩、……皆是此點的「子孫」。</p>
+<img src="Tree10.png">
+<p class="t">Directed Tree</p>
+<p>在一棵樹上選定樹根後，可以把邊的方向設定成分枝的方向、遠離樹根的方向；也可以把邊的方向設定成朝向樹根的方向，但是這種情況比較少。</p>
+<img src="Tree11.png">
+<p class="t">Weight</p>
+<p>一棵樹可以有權重。當邊擁有權重時，一棵樹的權重等於樹上所有邊的權重總和。</p>
+<img src="Tree12.png">
+<p class="t">Forest</p>
+<p>「森林」。很多棵樹稱作一叢「森林」。只有一棵樹也是「森林」。</p>
+<img src="Tree13.png">
+<p class="t">樹的特性</p>
+<pre>
+1. 樹沒有環。
+2. 樹上所有點之間都相連通。
+3. 沒有環的圖，就是樹或森林。
+   沒有環的圖、連通的圖，就是樹。
+4. 任意兩點之間只有唯一一條路徑。
+5. 在樹上任意添加一條邊，就會產生環。
+6. 在樹上任意刪除一條邊，一顆樹就裂成兩棵樹。
+7. 邊數等於點數減一。
+</pre>
+<p class="e">UVa 615 599</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Tree資料結構</p>
+</div><div class="c">
+<p>樹是一種圖。圖的資料結構adjacency matrix、adjacency lists可以儲存一棵樹。值得一提的是，一棵樹剛好V個點、V-1條邊，所以adjacency lists的空間複雜度是O(V+E) = O(V)。</p>
+<p>順便一提。有根樹（森林），例如DFS Forest、BFS Forest，可以只用一條陣列儲存每個點的父親。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Tree Property</p>
+</div><div class="c">
+<p class="t">先看個圖片</p>
+<p>圖片中省略了點的編號。</p>
+<img src="TreeProperty1.png">
+<p class="t">parent-child relationship</p>
+<p>建立DFS tree或者BFS tree，就可以輕鬆判斷一點是不是另一點的父親。</p>
+<textarea t="判斷父子關係（adjacency matrix）">
+bool adj[9][9];
+int p[9];	// DFS tree
+
+void DFS(int x)
+{
+	for (int y=0; y<9; ++y)
+		if (adj[x][y] && y != p[x])
+		{
+			p[y] = x;
+			DFS(y);
+		}
+}
+
+bool x_is_parent_of_y(int x, int y)
+{
+	return x == p[y];
+}
+
+void parent_child(int root)
+{
+	p[root] = -1;	// 輸入相等的xy時，避免造成錯誤。
+	DFS(root);
+
+	int x, y;
+	while (cin >> x >> y)
+		if (x_is_parent_of_y(x, y))
+			cout << "x是y的父親";
+		else if (x_is_parent_of_y(y, x))
+			cout << "y是x的父親";
+		else
+			cout << "xy不是父子關係";
+}
+</textarea>
+<p class="t">ancestor-descendant relationship</p>
+<p>利用DFS的遍歷順序，就可以輕鬆判斷一點是不是另一點的祖先。</p>
+<textarea t="判斷祖孫關係（adjacency matrix）">
+bool adj[9][9];
+int tin[9], tout[9];	// DFS進入各點的時刻、離開各點的時刻
+int t = 0;				// 現在時刻
+
+void DFS(int x, int px)	// px是x的父親
+{
+	tin[x] = t++;
+
+	for (int y=0; y<9; ++y)
+		if (adj[x][y] && y != px)
+			DFS(y, x);
+
+	tout[x] = t++;
+}
+
+bool x_is_ancestor_of_y(int x, int y)
+{
+	return tin[x] < tin[y] && tout[x] > tout[y];
+}
+
+void ancestor_descendant(int root)
+{
+	t = 0;
+	for (int i=0; i<9; ++i) tin[i] = 0;
+	DFS(root, root);
+
+	int x, y;
+	while (cin >> x >> y)
+		if (x_is_ancestor_of_y(x, y))
+			cout << "x是y的祖先";
+		else if (x_is_ancestor_of_y(y, x))
+			cout << "y是x的祖先";
+		else
+			cout << "xy不是祖孫關係";
+}
+</textarea>
+<p class="t">distance</p>
+<p>一棵樹、兩點之間的「距離」，就是兩點之間的邊數。</p>
+<p>由其中一個點開始進行BFS或DFS即可。</p>
+<p class="e">UVa 1599</p>
+<p class="t">depth</p>
+<p>一棵有根樹、每個點的「深度」，就是根到每個點的距離。</p>
+<img src="TreeProperty2.png">
+<p>由根開始進行BFS或DFS即可。</p>
+<textarea t="樹上每個點的深度（adjacency matrix）">
+bool adj[9][9];	// adjacency matrix，儲存一棵樹。
+int depth[9];	// 每個點的深度
+
+void DFS(int x, int px)	// px是x的父親
+{
+	for (int y=0; y<9; ++y)
+		if (adj[x][y] && y != px)
+		{
+			depth[y] = depth[x] + 1;
+			DFS(y, x);
+		}
+}
+
+void tree_depth(int root)
+{
+	depth[root] = 0;
+	DFS(root, root);
+	for (int i=0; i<9; ++i)
+		cout << "節點" << i << "的深度是" << depth[i];
+}
+</textarea>
+<p>遍歷一棵樹與遍歷一張圖，概念上完全相同，實作上則有些微差異：一棵樹，任意兩點之間只有一條路，只要避免走回頭路，就不必記錄每一點是否已經拜訪過。</p>
+<p class="t">height</p>
+<p>一棵有根樹、每個點的「高度」，就是每個點到下方的葉的最遠距離。</p>
+<img src="TreeProperty3.png">
+<p>運用Divide and Conquer，移除一棵樹的樹根，形成許多子樹，並分頭處理子樹。</p>
+<img src="TreeProperty4.png">
+<p>寫成程式碼之後，Divide and Conquer的運作順序，剛好就是DFS的遍歷順序。因此，有人把這樣的程式碼，直接稱為DFS。這用詞並非精準，然而其過程恰是遍歷一張圖，讀取資訊算出答案，故稱之為DFS倒也無妨。</p>
+<textarea t="樹的高度（adjacency matrix）">
+bool adj[9][9];
+
+int DFS(int x, int px)	// px是x的父親
+{
+	int h = 0;
+	for (int y=0; y<9; ++y)
+		if (adj[x][y] && y != px)
+			h = max(h, DFS(y, x) + 1);
+	return h;
+}
+
+void tree_height(int root)
+{
+	cout << "整棵樹的高度是" << DFS(root, root);
+}
+</textarea>
+<p class="t">diameter</p>
+<p>一張圖的「直徑」，是指最長的最短路徑。</p>
+<p>一棵無根樹的「直徑」，恰好是相離最遠的兩個點的距離。</p>
+<img src="TreeProperty5.png">
+<p>稍微修改一下計算高度的程式碼，就可以順便計算直徑。</p>
+<textarea t="樹的直徑，邊無權重（adjacency matrix）">
+bool adj[9][9];
+int diameter = 0;
+
+int DFS(int x, int px)	// px是x的父親
+{
+	int h1 = 0, h2 = 0;	// 記錄最高與次高的高度
+	for (int y=0; y<9; ++y)
+		if (adj[x][y] && y != px)
+		{
+			int h = DFS(y, x) + 1;
+			if (h > h1) h2 = h1, h1 = h;
+			else if (h > h2) h2 = h;
+		}
+	diameter = max(diameter, h1 + h2);
+	return h1;
+}
+
+void tree_diameter()
+{
+	diameter = 0;	// 初始化
+
+	int root = 0;	// 隨便選一個樹根
+	DFS(root, root);
+	cout << "樹的直徑是" << diameter;
+}
+</textarea>
+<p class="e">UVa 10308 11695 12379</p>
+<p class="t">radius（balanced height）</p>
+<p>想辦法選定一個樹根，讓樹的高度最小。</p>
+<img src="TreeProperty6.png">
+<p>樹根位於直徑的中央，能讓樹的高度最小。</p>
+<p>演算法請自行參考程式碼，時間複雜度為兩次DFS的時間。</p>
+<textarea t="平衡樹高度＋平衡樹樹根（adjacency matrix）">
+bool adj[9][9];
+int p[9];			// DFS tree
+int h1[9], h2[9];	// 記錄最高與次高的高度
+int c1[9], c2[9];	// 記錄最高與次高的來源
+
+void record(int x, int height, int child)
+{
+	if (height > h1[x])
+	{
+		h2[x] = h1[x]; c2[x] = c1[x];
+		h1[x] = height; c1[x] = child;
+	}
+	else if (height > h2[x])
+	{
+		h2[x] = height; c2[x] = child;
+	}
+}
+
+void DFS1(int x)
+{
+	h1[x] = h2[x] = 0;
+	for (int y=0; y<9; ++y)
+		if (adj[x][y])
+			if (y != p[x])
+			{
+				p[y] = x;
+				DFS1(y);
+				record(x, h1[y] + 1, y);
+			}
+			else
+				;	// 由父親過來的高度，只能留待下一波解決。
+}
+
+void DFS2(int x)
+{
+	if (p[x] != x)	// 樹根沒有父親，不必算。
+	{
+		int y = p[x];	// 上一波沒解決的部分
+
+		// 之前記錄次高的高度，用意在於這裡！
+		// 當y的最高高度來源是x，
+		// 此時y的次高高度，對x來說才是由y過來的高度。
+		if (c1[y] == x)
+			record(x, h2[y] + 1, y);
+		else
+			record(x, h1[y] + 1, y);
+	}
+
+	for (int y=0; y<9; ++y)
+		if (adj[x][y])
+			if (y != p[x])
+				DFS2(y);
+}
+
+void balanced_height()
+{
+	int root = 0;	// 隨便挑一點當作樹根皆可
+	p[root] = root;
+	DFS1(root);
+	DFS2(root);
+
+	int b_height = 1e9;
+	int diameter = 0;	// 順便算直徑
+	for (int x=0; x<9; ++x)
+	{
+		b_height = min(b_height, h1[x]);
+		diameter = max(diameter, h1[x]);
+	}
+	cout << "樹經過平衡之後的高度是" << b_height;
+	cout << "樹的直徑是" << diameter;
+
+	for (int x=0; x<9; ++x)
+		if (h1[x] == b_height)
+			cout << "可以作為樹根的點為" << x;
+
+	for (int x=0; x<9; ++x)
+		if (h1[x] == diameter)
+			cout << "可作為直徑的端點有" << x;
+}
+</textarea>
+<p class="e">UVa 10459 10939</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Kth Ancestor</p>
+</div><div class="c">
+<p class="t">Kth Ancestor（Level Ancestor）</p>
+<p>一棵有根樹，樹上一個點的祖先，通常有許多個。</p>
+<p>現在要找到上k輩祖先。往樹根走k步。</p>
+<img src="KthAncestor1.png">
+<p class="t">演算法（Preprocessing）</p>
+<p>建立表格，紀錄每一點的祖先。很容易想到兩種策略：</p>
+<p>每個節點做為起點，實施遍歷，找到所有子孫。</p>
+<p>每個節點做為起點，走向樹根，找到所有祖先。</p>
+<p>建立需時O(V^2)，查詢需時O(1)。</p>
+<p class="t">演算法（Jump Pointer Algorithm）</p>
+<p><a href="http://tmtacm.blogspot.tw/2016/01/blog-post_15.html">http://tmtacm.blogspot.tw/2016/01/blog-post_15.html</a></p>
+<p>預先算好每個節點的上一輩祖先、上兩輩祖先、上四輩祖先、上八輩祖先、……，再以二分搜尋找到上k輩祖先。</p>
+<p>輩分太高，超出樹根時，可將祖先直接設定成樹根，比較容易實作程式碼。</p>
+<p>建立需時O(VlogV)，查詢需時O(logV)。</p>
+<p class="t">演算法（Ladder Algorithm）</p>
+<p><a href="http://tmtacm.blogspot.tw/2016/01/blog-post_15.html">http://tmtacm.blogspot.tw/2016/01/blog-post_15.html</a></p>
+<p>一棵樹分解為數條不重疊路徑：從樹根走到最深的樹葉，形成一條路徑，然後遞迴分解其餘子樹。</p>
+<p>預先算好樹上每一點隸屬於哪一條路徑。預先算好每條路徑起點的上一輩祖先、上兩輩祖先、上三輩祖先、……、上高度輩祖先，再以倍增搜尋找到上k輩祖先。</p>
+<p>建立需時O(VlogV)，查詢需時O(logV)。</p>
+<p class="t">演算法（Jump Pointer Algorithm + Ladder Algorithm）</p>
+<p>一、找到祖先，輩分是2的次方、略小於k。（若2的次方恰等於k，則演算法結束）。</p>
+<p>二、輩分再翻倍，顯然超過k。該祖先高度再翻倍，顯然超過k。該祖先所在路徑保證最深最高，保證其祖先表格含有上k輩祖先。</p>
+<p>建立需時O(VlogV)，查詢需時O(1)。</p>
+<p class="t">演算法（Micro Tree）</p>
+<p>Micro Tree沒有實務上的價值，只有理論上的價值。</p>
+<p>建立需時O(V)，查詢需時O(1)。</p>
+<p class="t">演算法（Euler Tour Technique）</p>
+<p><a href="https://en.wikipedia.org/wiki/Level_ancestor_problem">https://en.wikipedia.org/wiki/Level_ancestor_problem</a></p>
+<p>建立需時O(V)，查詢需時O(1)。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Lowest Common Ancestor</p>
+</div><div class="c">
+<p class="t">Lowest Common Ancestor</p>
+<p>一棵有根樹，樹上兩點的共同祖先當中，離根最遠、深度最深的那一個共同祖先，稱作「最低共同祖先」，常簡稱為LCA。</p>
+<img src="LowestCommonAncestor1.png">
+<p class="t">演算法（Preprocessing）</p>
+<p>建立表格，紀錄所有點對的LCA。</p>
+<p>知道x與y的LCA，也就知道x的小孩與y的小孩的LCA了。遞迴公式如下：</p>
+<pre>
+LCA(x, y) =
+ { x                   , if x = y
+ { x                   , if x = parent(y)
+ { y                   , if y = parent(x)
+ { LCA(parent(x), y)   , otherwise
+ { LCA(x, parent(y))   , otherwise
+</pre>
+<pre>
+LCA(x, y) =
+ { x                   , if x = y or x = parent(y)
+ { LCA(parent(x), y)   , otherwise
+</pre>
+<p>建立需時O(V^2)，查詢需時O(1)。</p>
+<p class="e">UVa 12182</p>
+<p class="t">演算法（Tarjan's Algorithm）</p>
+<p>用來求出所有點對的LCA。亦得求出部分點對的LCA，必須預先知道是哪些點對，排好順序以利實作。</p>
+<p>運用DFS遍歷順序，配合Disjoint-sets Forest，把已經拜訪過的點，依照層級聚合起來，方便找到LCA。</p>
+<img src="LowestCommonAncestor2.png">
+<textarea>
+bool adj[9][9];	// adjacency matrix，儲存一棵樹。
+bool visit[9];	// DFS當下已經拜訪過的點
+int lca[9][9];	// 所有兩點之間的LCA
+
+// 最多兩步
+int find(int x)
+{
+	return x == p[x] ? x : (p[x] = find(p[x]));
+}
+
+int DFS(int x)
+{
+	if (visit[x]) return;
+	visit[x] = true;
+
+	// 計算LCA
+	for (int y=0; y<9; ++y)
+		if (visit[y])
+			lca[x][y] = lca[y][x] = find(y);
+
+	// DFS
+	for (int y=0; y<9; ++y)
+		if (adj[x][y])
+		{
+			DFS(y);
+			p[y] = x;	// union(y, x)，並讓x是樹根。
+		}
+}
+
+void demo()
+{
+	for (int i=0; i<9; ++i) p[i] = i;
+
+	for (int i=0; i<9; ++i) visit[i] = false;
+	DFS(0);	// 假設樹根為0
+
+	int x, y;
+	while (cin >> x >> y)
+		cout << "x點與y點的LCA是" << lca[x][y];
+}
+</textarea>
+<p>時間複雜度分成三部份討論：</p>
+<p>一、DFS：端看樹的資料結構。使用adjacency matrix，時間複雜度是O(V^2)；使用adjacency lists，時間複雜度是O(V+E)。</p>
+<p>二、union：直接考慮p[]的存取次數，總共是O(V)。</p>
+<p>三、find：求出所有點對的LCA，每次find最多存取兩次p[]，總共是O(V^2)。求出部分點對的LCA，p[]的存取次數只降不升，最多是O(V^2)，最少是O(1)。</p>
+<p>總時間複雜度是O(V^2)。</p>
+<p>宏觀來看，合併連成一線、沒有分枝的邊，以樹根作為起點的單源最短路徑們的長度總和，就是p[]的存取次數上限。</p>
+<p class="e">UVa 12238 ICPC 2045</p>
+<p class="t">演算法（Jump Pointer Algorithm）</p>
+<p>預先算好每個節點的上一輩祖先、上兩輩祖先、上四輩祖先、上八輩祖先、……，再以二分搜尋找到LCA。</p>
+<p>輩分太高，超出樹根時，可將祖先直接設定成樹根，比較容易實作程式碼。</p>
+<p>建立需時O(VlogV)，查詢需時O(logV)。</p>
+<textarea>
+bool adj[9][9];			// adjaceny matrix，儲存一棵樹。
+int tin[9], tout[9], t = 0;
+int a[9][log2(9/2)];	// 每個節點的上一輩祖先、
+						// 上兩輩祖先、上四輩祖先、……。
+
+void DFS(int x, int px)
+{
+	tin[x] = t++;
+
+	a[x][0] = px;	// 上一輩父親
+	for (int i=1; 1<<i < N/2; i++)
+		a[x][i] = a[a[x][i-1]][i-1];
+
+	for (int y=0; y<N; y++)
+		if (adj[x][y] && y != px)
+			DFS(y, x);
+
+	tout[x] = t++;
+}
+
+// x是y的祖先、x等於y。
+bool ancestor(int x, int y)
+{
+	return tin[x] <= tin[y] && tout[x] >= tout[y];
+}
+
+int log2(int n)
+{
+	int i = 0;
+	while (1<<i <= n) i++;
+	return i-1;
+}
+
+int LCA(int x, int y)
+{
+	if (ancestor(x, y)) return x;
+	if (ancestor(y, x)) return y;
+
+	// 二分搜尋找到LCA。不斷上升逼近之。
+	for (int i=log2(N/2); i>=0; i--)
+		if (!ancestor(a[x][i], y))
+			x = a[x][i];
+	return a[x][0];
+}
+
+void demo()
+{
+	t = 0;
+	DFS(0, 0);	// 假設樹根為0。令樹根的祖先是自己。
+
+	int x, y;
+	while (cin >> x >> y)
+		cout << "x點與y點的LCA是" << LCA(x, y);
+}
+</textarea>
+<p class="e">ICPC 5061</p>
+<p class="t">演算法（Heavy-Light Decomposition）</p>
+<p>建立需時O(V)，查詢需時O(logV)。</p>
+<p>請見本站文件「<a href="Graph2.html">Heavy-Light Decomposition</a>」。</p>
+<p class="t">演算法（Euler Tour Technique）</p>
+<p>建立需時O(V)，查詢需時O(logV)。</p>
+<p>請見本站文件「<a href="Graph2.html">Euler Tour Technique</a>」。</p>
+<p>亦得利用「<a href="Sequence.html">Cartesian Tree</a>」將LCA問題轉換成±1RMQ問題。建立需時O(V)，查詢需時O(1)。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Tree.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:00:57 GMT -->
+</html>

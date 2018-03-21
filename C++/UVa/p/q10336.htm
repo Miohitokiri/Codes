@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10336: Rank the Languages</h1>          
+<p>你可能有注意到世界上有許多地區使用英語及西班牙語。現在我們就要來對世界上所有地區使用的語言作個排行榜。</p>  
+<p>你會給一個地圖，在上面會標示各地區以幾他們所使用的語言。請看以下的地圖：</p>  
+<pre style="MARGIN-RIGHT: 0.5in; TEXT-ALIGN: justify"><span style="COLOR: black" class="GramE">ttuuttdd
+ttuuttdd
+uuttuudd
+uuttuudd</span><span style="COLOR: black"><o:p>
+</o:p>
+</span></pre>
+<p>每個字元代表一種語言，並且區域被定義為同一個字元相連的地區。2個字元&quot;相連&quot;指的是該2字元有上、下、左、右四個方向鄰近的關係。所以在上圖中有3個區域說 
+t 語言，有3個區域說 u 語言，有1個區域說 d 語言。</p>  
+<p>你的任務就是要找出地圖中每種語言被說的區域數，並且按照一定的順序輸出。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入的第一列有一個整數N，代表以下有幾組測試資料。每組測試資料的第一列有2個整數 
+H 及 W ，代表此地圖的高度及寬度。接下來的H列每列有W個字元。所有的字元均為小寫的英文字（a~z）。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每組測試資料，先輸出&quot;World #n&quot;，n是第幾組測試資料。接下來輸出在此地圖中每種語言被說的區域數，請由大到小排列。如果有2種語言區域數相同，請依英文字的順序輸出，例如i語言要在q語言之前。請參考Sample 
+Output</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                       
+Input</b></span></p>                              
+<pre style="MARGIN-RIGHT: 0.5in; TEXT-ALIGN: justify"><span style="COLOR: black">2
+4 8</span><span style="COLOR: black" class="GramE">
+ttuuttdd
+ttuuttdd
+uuttuudd
+uuttuudd</span><span style="COLOR: black">
+9 9</span><span style="COLOR: black" class="GramE">
+bbbbbbbbb
+aaaaaaaab
+bbbbbbbab
+baaaaacab
+bacccccab
+bacbbbcab
+bacccccab
+baaaaaaab
+bbbbbbbbb</span></pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre style="MARGIN-RIGHT: 0.5in; TEXT-ALIGN: justify"><span style="COLOR: black">World #1</span><span style="COLOR: black" class="GramE">
+t</span><span style="COLOR: black">: 3</span><span style="COLOR: black" class="GramE">
+u</span><span style="COLOR: black">: 3</span><span style="COLOR: black" class="GramE">
+d</span><span style="COLOR: black">: 1
+World #2</span><span style="COLOR: black" class="GramE">
+b</span><span style="COLOR: black">: 2</span><span style="COLOR: black" class="GramE">
+a</span><span style="COLOR: black">: 1</span><span class="GramE">
+c</span>: 1</pre>
+                            
+</body>                            
+                            
+</html>                            

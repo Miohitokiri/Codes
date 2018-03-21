@@ -1,0 +1,74 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q333: Recognizing Good ISBNs</h1>          
+<p>現在大部分的書都有一個唯一辨識的號碼，我們稱為國際標準書碼：ISBN（International 
+Standard Book Number ）。ISBN是由10個數字組合而成的，但在某些情況下X也可能出現在第10個數字。&quot;-&quot;這個符號也常出現在ISBN中，但只是為了容易讀的理由，沒有其他特別的意義。在sample 
+output中你可以看到某些合法及不合法的ISBN。</p>  
+<p>事實上，ISBN只有用前9個數字被用來指出一本書，第10個字元被當作是檢查碼（跟身份證號碼最後一個數字一樣），用來檢查前9個數字是否正確。這個檢查碼是由下面要提到的演算法計算出來的值去除以11所得到的餘數。因為除以11可能會得到10這個餘數，所以X就是被用來扮演這個角色。</p>  
+<p>要檢查一個ISBN的演算法相當簡單，我們用2個總和，s1和s2來計算ISBN的數字，其中s1是各數字的部分和，s2是s1的部分和（請參考以下的例子）。如果最後s2可以整除11,那這個ISBN就是合法的。</p>  
+<p>例子：某本書的ISBN（正確的）： 0-13-162959-X，首先我們看s1的計算：</p>  
+<pre>       -----------------------------------------------------------------
+       digits in the ISBN    0   1   3   1   6   2   9   5   9   10(X)
+       partial sums          0   1   4   5  11  13  22  27  36   46
+       -----------------------------------------------------------------</pre>
+<p>s2的計算是以s1的部分和而來：</p>  
+<pre>       -----------------------------------------------------------------
+       s2 (running totals)   0   1   5  10  21  34  56  83  119  165
+       -----------------------------------------------------------------</pre>
+<p>s2最後為165，可以被11整除，所以這是一個正確的ISBN。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>              
+<p align="left">輸入包含好幾組測試資料，每組資料有1列。可能在前後或中間有空白字元存在，但總長度不會超過80個字元。一個合法的ISBN中&quot;-&quot;可以出現在任何位置。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>             
+<p align="left">輸出應包含輸入的資料，然後說明該資料是否為正確。請參考sample 
+output。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample             
+input</b></span></p>                         
+<pre>0-89237-010-6
+   0892370106
+089237 0106
+0-8306-3637-4      
+  0-06-017758-6
+    This_is_garbage
+1-56884-030-6
+    0-8230-2571-3
+    0-345-31386-0
+    0-671-88858-7
+    0-8104-5687-7
+    0-671-74119-5
+    0-812-52030-0
+    0-345-24865-1-150
+0-452-26740-4
+    0-13-139072-4
+    0-1315-2447-X</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                           
+Output</b></span></p>                          
+<pre>0-89237-010-6 is correct.
+0892370106 is correct.
+089237 0106 is incorrect.
+0-8306-3637-4 is correct.
+0-06-017758-6 is correct.
+This_is_garbage is incorrect.
+1-56884-030-6 is correct.
+0-8230-2571-3 is correct.
+0-345-31386-0 is correct.
+0-671-88858-7 is correct.
+0-8104-5687-7 is correct.
+0-671-74119-5 is correct.
+0-812-52030-0 is correct.
+0-345-24865-1-150 is incorrect.
+0-452-26740-4 is correct.
+0-13-139072-4 is correct.
+0-1315-2447-X is correct.</pre>
+                         
+</body>                         
+                         
+</html>                         

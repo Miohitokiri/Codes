@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q170: Clock Patience</h1>             
+<p>紙牌專家 Albert Smith正在寫一本關於紙牌遊戲的書。為了重複確認書中的例子，他正在寫程式來找出一副牌的最佳玩法。其中一種叫做「時鐘」紙牌的描述如下：紙牌被發出去（面朝下）成為一個時鐘的樣式，每個小時的位置有一堆紙牌，然後在中心也有額外的一堆（總共13堆，這13堆的名字分別為A, 
+2, 3, ..., T, J, Q,K。見下圖）。發牌的順序為先發一點鐘的牌（面朝下），然後二點鐘的牌，依此發牌到十二點鐘，最後發時鐘中心的牌。如此重複4圈，也就是說一副牌有52張，依此方法發牌，這13堆牌每堆會有4張牌。</p>
+<p><img border="0" src="p170.gif" width="146" height="155"></p>
+<p>遊戲開始的時候，K堆的最上面一張牌被翻開變成目前牌，然後看這張牌的點數，將這張牌移到相對的那堆牌最下面（面朝上），然後翻開這堆牌的最上方一張牌成為目前牌。例如：如果目前牌的點數是J，那這牌就被移到J堆牌的最下面，然後翻開J堆牌的最上方那張牌成為目前牌。遊戲如此不斷下去直到要翻牌的時候發現那堆牌已經沒有面朝下的牌了，這時候遊戲結束。如果所有的牌都被翻開，那表示你的運氣真的太好了！</p> 
+<p>你的任務是寫一個程式讀入一堆牌，然後模擬這個遊戲。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                        
+<p>輸入包含多組測試資料。每組測試資料4列，每列有13張牌的資料。每張牌以2個字元代表。第一個字元代表牌的點數（A=Ace,    
+2~9, T=10, J=Jack, Q=Queen, K=King），第二個字元代表牌的花色（C=Clubs,    
+D=Diamonds, H=Hearts, S=Spades）</p>                          
+<p>若遇到僅含#的一列代表輸入結束。請參考Sample Input。</p>                            
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                              
+<p>對每組測試資料輸出遊戲結束時總共翻開多少張牌（2位數，必要時在前面加0），以及最後被翻開的那張牌。輸出格式請參考Sample         
+Output。</p>                           
+<table border="1" width="100%" cellpadding="5">                        
+  <tr>                        
+    <td width="56%" bgcolor="#00FF00"><b>Sample Input</b></td>                                              
+    <td width="44%" bgcolor="#00FF00"><b>Sample Output</b></td>                                             
+  </tr>                                             
+  <tr>                                             
+    <td width="56%">                                 
+      <font face="Courier,Times New Roman,Arial Helvetica" size="3">TS QC 8S 8D QH 2D 3H KH 9H 2H TH KS KC<br> 
+      9D JH 7H JD 2S QS TD 2C 4H 5H AD 4D 5D<br> 
+      6D 4S 9S 5S 7S JS 8H 3D 8C 3S 4C 6S 9C<br> 
+      AS 7C AH 6H KD JC 7D AC 5C TC QD 6C 3C<br> 
+      6D 4S 9S 5S 7S JS 8H 3D 8C 3S 4C 6S 9C<br> 
+      9D JH 7H JD 2S QS TD 2C 4H 5H AD 4D 5D<br> 
+      TS QC 8S 8D QH 2D 3H KH 9H 2H TH KS KC<br> 
+      AS 7C AH 6H KD JC 7D AC 5C TC QD 6C 3C<br> 
+      #</font> 
+    </td>                                         
+    <td width="44%">                                   
+      <pre><font face="Courier,Times New Roman,Arial Helvetica" size="3">44,KD
+42,KC</font></pre>
+    </td>                                       
+  </tr>                                       
+</table>                                       
+                                                                         
+</body>                                                                              
+                                                                              
+</html>                                                                              

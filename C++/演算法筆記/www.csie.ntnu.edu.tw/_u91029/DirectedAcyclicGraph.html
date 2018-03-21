@@ -1,0 +1,222 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/DirectedAcyclicGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:01:04 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Directed Acyclic Graph</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Directed Acyclic Graph</p>
+</div><div class="c">
+<p class="t">Directed Acyclic Graph（DAG）</p>
+<p>沒有環、無向圖，就是先前提到的「樹」、「森林」；沒有環、有向圖，就是現在提到的「有向無環圖」。由於英文名稱很長，所以大家習慣採用縮寫「DAG」，字母皆大寫。</p>
+<p>先前我們用延伸拓展的觀點來看待Tree；同樣地，我們也可以用延伸拓展的觀點來看待DAG。</p>
+<p>DAG沒有環，不走回頭路、永遠不回頭、不斷向前進。DAG可以重新繪製，讓所有邊朝著同一個方向延伸拓展、讓所有點有著先後次序。</p>
+<img src="DAG1.png">
+<p>在各式各樣的圖之中，Tree與DAG是十分重要的特例，往往存在速度極快的演算法。由於Tree和DAG沒有環、方向明確，所以我們很容易安排出一個計算順序（一般是採用拓撲順序），循序漸進求得答案，不必受到環的折騰。</p>
+<p class="t">現實生活當中的DAG</p>
+<p>不斷前進、不會後退，有時分化、有時聚合，就是DAG的最佳寫照。</p>
+<p>是DAG：課程擋修規則、族譜、水系、閃電、洗澡。</p>
+<p>非DAG：道路交通、食物鏈、人體血脈、山脈、氣流。</p>
+<p>以時間軸當作主角，緣起緣滅、緣聚緣散，凡事都是DAG。</p>
+<p class="e">UVa 925</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Topological Ordering</p>
+</div><div class="c">
+<p class="t">楔子</p>
+<p>在枚舉所有排列的問題之中，如果我們另外再限制誰要排在誰前方、誰要排在誰後方，那麼在這些限制之下，合理的排列還會剩下哪些呢？</p>
+<img src="TopologicalOrdering1.png">
+<p>【註：枚舉所有排列，讀者們可另行參考「<a href="Backtracking.html">Enumerate Permutations</a>」一文。】</p>
+<p class="t">先後限制與圖</p>
+<p>誰要排在誰前方、誰要排在誰後方，其實就是兩兩之間的關係，故可以改用圖來表示：把圖上一條由A點連向B點的邊，想成是A必須排在B前方（B必須排在A後方）。</p>
+<img src="TopologicalOrdering2.png">
+<p>當然啦，也可以把圖上一條由A點連向B點的邊，想成是A必須排在B後方。不過一般來說我們習慣成自然地使用前者。</p>
+<p class="t">Topological Sort與Topological Ordering</p>
+<p>「拓撲排序」是排序一張有向圖的點的方式。把圖上一條由A點連向B點的邊，想成是A必須排在B前方（B必須排在A後方）。「拓撲排序」用來找出合理的排列順序，讓每一個點的先後順序，符合每一條邊所規定的先後順序。</p>
+<img src="TopologicalOrdering3.png">
+<p>「拓撲順序」是指一張有向圖經過「拓撲排序」後，每一個點的先後順序。一張圖有許多種「拓撲順序」。只要不違背圖上每一條邊的先後規定，要怎麼排列圖上的點都行。</p>
+<p class="t">圖上不能有環</p>
+<p>當圖上有環，拓樸順序就不存在。因為環上每一個點都會有連向自己的邊，意味著環上每一個點必須排在其他點的後方，環上每一個點都不能在排列順序中拔得頭籌，所以合理的排列順序不存在。</p>
+<img src="TopologicalOrdering4.png">
+<p class="t">找出一個合理的排列順序（Kahn's Algorithm）</p>
+<p>要找出合理的排列順序，首先得決定第一點！知道如何找出第一點，那麼就可以循序漸進的再找出第二點、第三點了。</p>
+<p>可以作為第一點的點，想必它不必排在其他點後方。也就是說，沒有被任何邊連向的點，就可以作為第一點。如果有很多個第一點，那麼找哪一點都行。</p>
+<img src="TopologicalOrdering5.png">
+<p>決定第一點之後，那麼剩下所有點都會在第一點後方。所有關於第一點的先後規定，都已經符合了，規定存不存在都無所謂。因此，決定第一點之後，就可以刪去此點，以及刪去由此點連出去的邊──原問題可以遞迴地縮小！</p>
+<img src="TopologicalOrdering6.png">
+<p>只要反覆尋找沒有被任何邊連向的點，然後刪去此點以及刪去由此點連出去的邊，就可以找出一個合理的排列順序了。</p>
+<p>附帶一提，要找出合理的排列順序，也可以由最後一點開始決定！無論要從第一點找到最後一點，或是從最後一點找到第一點，都是可以的。各位可以想想看該怎麼做。</p>
+<p>儘管這個問題有遞迴的性質，可以用遞迴語法來實作，但由於遞迴的分支只有一條，故亦可以用迴圈語法。我想大家都會選擇以比較簡單的迴圈語法來實作吧？</p>
+<p>實作時，可以利用變數記錄圖上每一個點目前仍被多少條邊連到。尋找沒有被任何邊連向的點，就直接看該變數是不是零；刪去由此點連出去的邊，就順便更新變數的值。</p>
+<img src="TopologicalOrdering7.png">
+<textarea>
+bool adj[9][9];	// adjacency matrix
+int ref[9];		// 記錄圖上每一個點目前仍被多少條邊連到
+
+void topological_ordering()
+{
+	for (int i=0; i<9; ++i) ref[i] = 0;	// 初始化為0
+
+	// 累計圖上每一個點被幾條邊連到
+	for (int i=0; i<9; ++i)
+		for (int j=0; j<9; ++j)
+			if (adj[i][j])
+				ref[j]++;
+
+	// 開始找出一個合理的排列順序
+	for (int i=0; i<9; ++i)
+	{
+		// 尋找沒有被任何邊連向的點
+		int s = 0;
+		while (s < 9 && ref[s] != 0) ++s;
+
+		if (s == 9) break;	// 找不到。表示目前殘存的圖是個環。
+		ref[s] = -1;		// 設為已找過（刪去s點）
+
+		cout << s;			// 印出合理的排列順序的第i點
+
+		// 更新ref的值（刪去由s點連出去的邊）
+		for (int t=0; t<9; ++t)
+			if (adj[s][t])
+				ref[t]--;
+	}
+}
+</textarea>
+<textarea>
+int adj[9][9], size[9];	// adjacency lists
+int ref[9];		// 記錄圖上每一個點目前仍被多少條邊連到
+
+void topological_ordering()
+{
+	for (int i=0; i<9; ++i) ref[i] = 0;	// 初始化為0
+
+	// 累計圖上每一個點被幾條邊連到
+	for (int i=0; i<9; ++i)
+		for (int j=0; j<size[i]; ++j)
+			ref[adj[i][j]]++;
+
+	// 宣告一個queue來記錄已經沒有被任何邊連向的點
+	queue<int> Q;
+	for (int i=0; i<9; ++i)
+		if (ref[i] == 0)
+			Q.push(i);
+
+	// 開始找出一個合理的排列順序
+	for (int i=0; i<9; ++i)
+	{
+		// 尋找沒有被任何邊連向的點
+		if (Q.empty()) break;		// 找不到。表示目前殘存的圖是個環。
+		int s = Q.front(); Q.pop();
+		ref[s] = -1;				// 設為已找過（刪去s點）
+
+		cout << s;					// 印出合理的排列順序的第i點
+
+		// 更新ref的值（刪去由s點連出去的邊）
+		for (int j=0; j<size[s]; ++j)
+		{
+			int t = adj[s][j];
+			ref[t]--;
+			if (!ref[t]) Q.push(t);	// 記錄已經沒有被任何邊連向的點
+		}
+	}
+}
+</textarea>
+<p>時間複雜度等於一次Graph Traversal的時間。圖的資料結構為adjacency matrix的話，便是O(V^2)；圖的資料結構為adjacency lists的話，便是O(V+E)。</p>
+<p>這個演算法可以想成是修改過的BFS：沒有被任何邊連向的點才能放入queue。</p>
+<p class="e">UVa 10305 200</p>
+<p class="t">找出一個合理的排列順序（Depth-first Search）</p>
+<p>DFS離開點的順序，顛倒之後，正好是拓撲順序。</p>
+<p>DFS優先走到最深的點，直到不能再深為止。DFS也會優先找出所有最深的點，離開點的原則是最深的點先離開。最深的點當然就是拓撲順序最後的點。</p>
+<textarea>
+bool adj[9][9];		// adjacency matrix
+int visit[9];		// 記錄DFS遍歷過的點
+int order[9], n;	// 儲存一個合理的排列順序
+
+bool cycle;			// 記錄DFS的過程中是否偵測到環
+
+void DFS(int s)
+{
+	// back edge，有環。
+	if (visit[s] == 1) {cycle = true; return;}
+	// forward edge、cross edge。
+	if (visit[s] == 2) return;
+
+	visit[s] = 1;
+	for (int t=0; t<9; ++t)
+		if (adj[s][t])
+			DFS(t);
+	visit[s] = 2;
+
+	order[n--] = s;		// 記錄合理的排列順序
+}
+
+void topological_ordering()
+{
+	// 初始化
+	for (int i=0; i<9; i++) visit[i] = 0;
+	cycle = false;
+	n = 9-1;
+
+	// 進行DFS
+	for (int s=0; s<9; ++s)
+		if (!v[s])
+			DFS(s);
+
+	// 輸出結果
+	if (cycle)
+		cout << "圖上有環";
+	else
+		// 印出一個合理的排列順序
+		for (int i=0; i<9; ++i)
+			cout << order[i];
+}
+</textarea>
+<p class="t">找出所有合理的排列順序</p>
+<p>請用Backtracking。此處不詳述了，直接看練習題吧。</p>
+<p class="e">UVa 124</p>
+<p class="t">計算所有合理的排列順序個數</p>
+<p>請用Dynamic Programming，時間複雜度O(2^V * V^2)。</p>
+<p><a href="http://blog.csdn.net/tiaotiaoyly/article/details/2712349">http://blog.csdn.net/tiaotiaoyly/article/details/2712349</a></p>
+<p>小遊戲：<a href="http://www.kongregate.com/games/agame/romance-maker">http://www.kongregate.com/games/agame/romance-maker</a>。</p>
+<p class="t">延伸閱讀：Inhomogeneous Sorting</p>
+<p>1 2 3 ... N，一共N個數字，由小到大排列。現在制定了一些兩兩相鄰交換的規則，例如規則「18 ↔ 81」就表示1和8相鄰時可以對調。</p>
+<p>請問：一、字典順序最大的排列？二、總共幾種不同排列？</p>
+<p>不能兩兩相鄰交換，也就是有先後限制。可以兩兩相鄰交換，也就是沒有先後限制。此問題等價於Topological Sorting！</p>
+<p class="t">延伸閱讀：Activity Network（PERT Network）</p>
+<p>接下來介紹拓樸順序的實際應用範例。</p>
+<p>專案管理領域，經常需要規劃大量工作，這些工作有著工作時間限制、工作先後限制，可以畫成「<a href="http://en.wikipedia.org/wiki/Program_evaluation_and_review_technique">活動網路</a>」。</p>
+<p>然後規劃一套總時程最短的工作方式，並且畫成「<a href="http://en.wikipedia.org/wiki/Gantt_chart">甘特圖</a>」。最常用的方法是「<a href="http://en.wikipedia.org/wiki/Critical_path_method">關鍵路徑法</a>」，然而它是人工作業的方法。現在請你設計電腦演算法，取代人工作業。</p>
+<p class="e">UVa 452 10461 506</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Lowest Common Ancestor</p>
+</div><div class="c">
+<p class="t">Depth</p>
+<img src="DAG3.png">
+<p>DAG可以仿照Tree來定義「深度」：一張有向無環圖，每個點的「深度」，就是起點到每個點的最遠距離。</p>
+<p>DAG的起點和終點有許多個，抵達一個點的路線有許多條。DAG的「深度」也就是邊數最多的那一條路線的邊數（即Longest Path的長度）。</p>
+<p>利用拓樸順序、取最大值，就可求得各點的深度。</p>
+<p>應該也有最近距離的版本，但是我不知道專有名詞是什麼。</p>
+<p class="t">Lowest Common Ancestor</p>
+<img src="DAG4.png">
+<p>DAG可以仿照Tree來定義「最低共同祖先」：一張有向無環圖，圖上兩點的共同祖先當中，離起點最遠、深度最深的那一個共同祖先。</p>
+<p>Tree只有唯一一個LCA；DAG可能有許多個LCA、也可能沒半個。</p>
+<p>如果定義成最近距離，會產生什麼問題呢？留給讀者想想看。</p>
+<p class="t">演算法</p>
+<p>求出有向無環圖上所有點對的LCA。</p>
+<pre>
+一、每個點，求深度：拓樸順序、取最大值。
+二、每個點，找出祖先們：每個點，作為起點，逆向Graph Traversal。
+三、每個點對，找出LCA：窮舉共同祖先，深度最深的共同祖先就是LCA。
+</pre>
+<p>時間複雜度分成三部份討論：</p>
+<p>一、一次Graph Traversal的時間。</p>
+<p>二、V次Graph Traversal的時間。圖的資料結構為adjacency matrix，時間複雜度為O(V^3)；圖的資料結構為adjacency list，時間複雜度為O(V*(V+E))，或者簡單寫作O(VE)。</p>
+<p>三、求出一個點對的LCA需時O(V)，總共O(V^2)個點對，時間複雜度為O(V^3)。</p>
+<p>總時間複雜度為O(V^3)。</p>
+<p class="e">UVa 11457</p>
+<p class="t">演算法</p>
+<p><a href="http://www.dcs.warwick.ac.uk/~czumaj/PUBLICATIONS/DRAFTS/LCA-Max-witness.pdf" class="l">http://www.dcs.warwick.ac.uk/~czumaj/PUBLICATIONS/DRAFTS/LCA-Max-witness.pdf</a></p>
+<p>時間複雜度為O(VE)。</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/DirectedAcyclicGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:01:13 GMT -->
+</html>

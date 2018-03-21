@@ -1,0 +1,105 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q290: Palindroms &lt;-&gt; smordnilaP</h1>          
+<p>以下的問題是關於數字的迴文（Palindroms）。一個數字如果從左讀到右和從右讀到左都一樣的話，我們稱他是一個迴文。<p>現在，給你10進位的數字65，加上其反轉後的數字：56，就會得到121，這是一個迴文。對於另一個數，你可能得多重複這個動作幾次才能得到一個迴文。例如：87（10進位）
+<pre>    87 + 78 = 165
+    165 + 561 = 726
+    726 + 627 = 1353
+    1353 + 3531 = 4884</pre>
+<p>所以得經過4次加法之後才得到迴文 4884.</p> 
+<p>給你一個數字，請你找出15進位到2進位表示法中，各需要多少次上述的加法才能得到迴文。<p>以下的例子為87在15進位到2進位表示法中做加法以得到迴文的情形：
+<table border="1" width="100%">
+  <tr>
+    <td width="20%" align="center" bgcolor="#FFFFCC">Base 15</td> 
+    <td width="24%" align="center" bgcolor="#FFFFCC">Base 14</td> 
+    <td width="18%" align="center" bgcolor="#FFFFCC">Base 13</td> 
+    <td width="19%" align="center" bgcolor="#FFFFCC">Base 12</td> 
+    <td width="19%" align="center" bgcolor="#FFFFCC">Base 11</td> 
+  </tr> 
+  <tr> 
+    <td width="20%"><font face="Courier New" size="2">87 + 78 = 110<br> 
+      110 + 011 = 121<br> 
+      <font color="#0000FF">2 steps</font></font></td> 
+    <td width="24%"><font face="Courier New" size="2">87 + 78 = 111<br> 
+      <font color="#0000FF">1 step</font></font></td> 
+    <td width="18%"><font face="Courier New" size="2">87 + 78 = 132<br> 
+      132 + 231 = 363<br> 
+      <font color="#0000FF">2 steps</font></font></td> 
+    <td width="19%"><font face="Courier New" size="2">87 + 78 = 143<br> 
+      143 + 341 = 484<br> 
+      <font color="#0000FF">2 steps</font></font></td> 
+    <td width="19%"><font face="Courier New" size="2">87 + 78 = 154<br> 
+      154 + 451 = 5A5<br> 
+      <font color="#0000FF">2 steps</font></font></td> 
+  </tr> 
+  <tr> 
+    <td width="20%" align="center" bgcolor="#FFFFCC">Base 10</td> 
+    <td width="24%" align="center" bgcolor="#FFFFCC">Base 9</td> 
+    <td width="18%" align="center" bgcolor="#FFFFCC">Base 8</td> 
+    <td width="19%" align="center" bgcolor="#FFFFCC">Base 7</td> 
+    <td width="19%" align="center" bgcolor="#FFFFCC">Base 6</td> 
+  </tr> 
+  <tr> 
+    <td width="20%"><font size="2" face="Courier New">87 + 78 = 165<br> 
+      165 + 561 = 726<br> 
+      726 + 627 = 1353<br> 
+      1353 + 3531 = 4884<br> 
+      <font color="#0000FF">4 steps</font></font></td> 
+    <td width="24%"><font size="2" face="Courier New">87 + 78 = 176<br> 
+      176 + 671 = 857<br> 
+      857 + 758 = 1726<br> 
+      1762 + 2671 = 7543<br> 
+      7543 + 3457 = 12111<br> 
+      12111 + 11121 = 23232<br> 
+      <font color="#0000FF">6 steps</font></font></td> 
+    <td width="18%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+    <td width="19%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+    <td width="19%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+  </tr> 
+  <tr> 
+    <td width="20%" bgcolor="#FFFFCC" align="center">Base 5</td> 
+    <td width="24%" bgcolor="#FFFFCC" align="center">Base 4</td> 
+    <td width="18%" bgcolor="#FFFFCC" align="center">Base 3</td> 
+    <td width="19%" bgcolor="#FFFFCC" align="center">Base 2</td> 
+    <td width="19%" bgcolor="#FFFFCC" align="center">　</td>
+  </tr>
+  <tr>
+    <td width="20%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+    <td width="24%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+    <td width="18%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+    <td width="19%"><font color="#0000FF" size="2" face="Courier New">illegal ?  
+      steps</font></td> 
+    <td width="19%">　</td>
+  </tr>
+</table>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+每組測試資料一列，包含一個數字（由0～9,A～E組成）。  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                           
+每組測試資料輸出的一列，共有14個整數，分別代表該數字在15進位制到2進位制中需做多少次加法才可得到一迴文。若某數字在某進位制為不合法（例如：2在2進位制中），則輸出?代替。請參考Sample 
+Output。給你的測試資料均可以在100次加法內得到迴文。 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                        
+Input</b></span></p>                                               
+<pre>87
+ED
+1</pre>    
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                 
+Output</b></span></p>                                               
+<pre>2 1 2 2 2 4 6 ? ? ? ? ? ? ?
+19 ? ? ? ? ? ? ? ? ? ? ? ? ?
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+</pre>    
+                                             
+</body>                                             
+                                             
+</html>                                             

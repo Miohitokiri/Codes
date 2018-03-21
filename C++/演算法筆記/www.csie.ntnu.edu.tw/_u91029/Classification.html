@@ -1,0 +1,1079 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Classification.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:59 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Classification</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Clustering</p>
+<p class="w">同聲相應，同氣相求；水流濕，火就燥，雲從龍，風從虎。《易傳》</p>
+</div><div class="c">
+<p class="t">Cluster</p>
+<p>所有數據進行分組，相似數據歸類於同一組，一筆數據只屬於某一組，每一組稱作一個「群集」。</p>
+<img src="Clustering1.png">
+<p>如何定義所謂的相似呢？方法很多：距離越近，推定為越相似；鄰居越密集，推定為越相似。</p>
+<img src="Clustering2.png">
+<p>群集演算法的基本原理，一類是近朱者赤、近墨者黑，不斷將數據重新分組；另一類是不斷切割群集，表示成樹狀圖。</p>
+<p class="t">演算法（K-Means Clustering）（Lloyd-Max Algorithm）</p>
+<img src="Clustering3.png">
+<p><a href="http://etrex.blogspot.tw/2008/05/k-mean-clustering.html">http://etrex.blogspot.tw/2008/05/k-mean-clustering.html</a></p>
+<p>一、群集數量推定為K，隨機散佈K個點作為群集中心（常用既有的點）。</p>
+<p>二、每一點分類到距離最近的群集中心（常用直線距離）。</p>
+<p>三、重新計算每一個群集中心（常用平均值）。</p>
+<p>重複二與三，直到群集不變、群集中心不動為止。最後形成群集中心的Voronoi Diagram。</p>
+<p>時間複雜度為O(NKT)，N是數據數量，K是群集數量，T是重複次數。我們無法預先得知群集數量、重複次數。數據分布情況、群集中心的初始位置，都會影響重複次數，運氣成份很大。</p>
+<p>缺點是群集不能重疊、群集分界不能是曲線和折線、極端數據容易使群集中心偏移、一開始難以決定群集數量與群集中心、數據分布呈甜甜圈時群集中心可能永不停住。</p>
+<img src="Clustering4.png">
+<p class="t">演算法（K-Means++ Clustering）</p>
+<p><a href="https://mycourses.aalto.fi/mod/resource/view.php?id=153957">https://mycourses.aalto.fi/mod/resource/view.php?id=153957</a></p>
+<p>改良K-Means Clustering步驟一。逐一設定K個群集中心。計算每一個點到已設定的群集中心的最短距離，以最短距離的n次方做為機率大小，決定下一個群集中心。距離越遠，機率越大。</p>
+<p>0次方等同隨機散佈，K-Means。2次方是K-Means++。∞次方等同找最遠點，Farthest-point Traversal，效果最好。</p>
+<p>優點是群集中心比較分散，不容易擠在一起。</p>
+<p class="t">演算法（Linde-Buzo-Gray Clustering）</p>
+<img src="Clustering5.png">
+<p>首先隨機設定一個群集中心（常用平均值）。不斷讓群集中心往反方向分裂成兩倍數量（常用少量移動、群集內最遠點對），並且重新實施K-Means Clustering。</p>
+<p>優點是不用煩惱群集中心的初始位置。</p>
+<p class="t">演算法（EM Clustering）（Gaussian Mixture Model）</p>
+<p>假設每個群集各是一個常態分布，平均數、變異數可以相異。</p>
+<p>首先設定群集數量（常態分布數量）。然後將所有常態分布融合成一個分布，實施估計，估計方式採用Maximum Likelihood，演算法採用EM Algorithm。名稱是這樣來的。</p>
+<p>融合數個常態分布成為一個分布，即Gaussian Mixture Model，替每個常態分布設定不同比重。</p>
+<p>優點是考慮了群集尺寸與疏密。</p>
+<p class="t">演算法（K-Nearest Neighbor Clustering）</p>
+<p>每一點各自找到距離最近的K個點作為鄰居，採多數決歸類到群集。如果距離超過了自訂臨界值，找不足K個鄰居，就替該點創造一個新的群集。</p>
+<p>優點是不用煩惱群集數量，缺點是群集鬆散。</p>
+<p class="t">演算法（Jarvis-Patrick Clustering）</p>
+<p>每一點各自找到距離最近的K個點做為鄰居。當a和b彼此都是鄰居，或者a和b至少有K'個相同鄰居（K'是自訂臨界值，K' ≤ K），則a和b歸類到同一個群集。</p>
+<p>優點是不用煩惱群集數量、群集形狀。</p>
+<p class="t">演算法（DBSCAN）</p>
+<p><a href="https://en.wikipedia.org/wiki/DBSCAN">https://en.wikipedia.org/wiki/DBSCAN</a></p>
+<p class="t">演算法（Nearest Neighbor Chain）</p>
+<p><a href="https://en.wikipedia.org/wiki/Nearest-neighbor_chain_algorithm">https://en.wikipedia.org/wiki/Nearest-neighbor_chain_algorithm</a></p>
+<p class="t">演算法（Minimum Spanning Tree）</p>
+<p>運用「<a href="SpanningTree.html">Minimum Spanning Tree</a>」的瓶頸性質。實施Kruskal's Algorithm，每次新添的邊，若距離不超過threshold，則邊的兩端就視作同一個群集。</p>
+<p class="t">演算法（Minimum Cut Tree）</p>
+<p>運用「<a href="Cut.html">Minimum Cut Tree</a>」的瓶頸性質。然而最小割是距離最近而不是距離最遠，無法用於分離群集，所以就把一個割的權重修改為：</p>
+<pre>
+ ∑ w(i, j) ÷ min(|S|, |<u>S</u>|)
+i∈S
+j∈<u>S</u>
+</pre>
+<p>詳情請讀者請自行上網搜尋資料。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Classification</p>
+<p class="w">師曠之聰，不以六律，不能正五音。《孟子》</p>
+</div><div class="c">
+<p class="t">Classification</p>
+<p>Clustering：未知群集（分類），找到群集（分類）。某些演算法會順便找到分界線，例如K-Means Clustering。</p>
+<p>Classification：已知群集（分類），找到分界線。</p>
+<img src="Classification1.png">
+<p>群聚與隔離，一體兩面。相似數據群聚，相異數據也漸漸隔離。最後出現了群聚中心，也出現了隔離界線。</p>
+<p>不同類別的數據稍微黏在一起，仍然可以找到大致的分界線。如果不同類別的數據幾乎混在一起（例如太極圖案），那麼分界線沒有任何意義。</p>
+<p>找到分界線之後，對於一筆新的數據，就利用分界線來決定其類別──這就是Classification的主要功能。</p>
+<p class="t">如何應用Classification？</p>
+<p>Classification應用十分廣泛，是世上最實用的演算法之一，也是當前的研究熱點之一。</p>
+<p>比如說，讓電腦揀土豆。一粒土豆是一筆數據，(土豆重量,土豆顏色)是其數值。</p>
+<p>首先，取一百粒土豆，個別以儀器測量其數值，然後人工進行分類，分為良與劣兩類。這些數據全數輸入到電腦當中。</p>
+<p>接著，利用任何一種Classification的演算法，找到良與劣的分界線。</p>
+<p>最後，每一粒新產的土豆，以儀器自動測量其數值，再用演算法判斷數值在分界線的哪一側，就能判斷出土豆的良劣了。</p>
+<p class="t">應用Classification需要考量的關鍵點</p>
+<p>這整套自動辨識的流程當中，我們需要考量的有：</p>
+<p>一、我們要挑選哪些特徵？例如重量、顏色、形狀等等。</p>
+<p>二、我們要如何將特徵化為數值？例如用磅秤得到重量數值，用攝影機得到顏色數值，用影像處理演算法得到形狀數值。</p>
+<p>三、我們要取哪些土豆當作樣本？這跟統計學有關。</p>
+<p>四、我們如何提升分類的正確率？這跟統計學有關。</p>
+<p>五、我們如何從分界線當中發現新的性質？例如重量越重則土豆越優、形狀越圓則土豆越優之類的。</p>
+<p class="t">Error</p>
+<p>Regression讓所有間距平方和盡量小。Clustering讓最大間距盡量小。Classification讓最小間距盡量大。三者都是針對間距進行Optimization。</p>
+<img src="Classification2.png">
+<p class="t">Point-set Function【尚無專有名詞】</p>
+<p>Regression、Clustering、Classification可以看做是「點集合函數」最佳化。函數輸入是一個點集合，代表數據們；函數輸出是一個數值，代表誤差總和。</p>
+<p>後面章節的演算法們，雖然掛名為Classification演算法，但是本質都是「點集合函數最佳化演算法」。更換一下誤差函數，即可解決Regression、Clustering、Classification，甚至其他問題。</p>
+<p>注意到，凸函數最佳化，有著高速演算法，有著唯一的極值。我們往往把誤差函數設計成凸函數。</p>
+<p>點到點距離、點到直線距離，恰是凸函數。凸函數的平方，仍是凸函數。多個凸函數相加、取最大值，仍是凸函數。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Linear Classification</p>
+</div><div class="c">
+<p class="t">Linear Classification</p>
+<p>以直線當作分界線。</p>
+<img src="LinearClassification1.png">
+<p>數據的維度可以推廣到三維以上，此時分界線就成了分界面、分界體等等。分界物是數據維度減少一維（hyperplane）。</p>
+<p>雖然可以視作計算幾何問題，但是當維度太高的時候，計算相當複雜，難以快速求得精確解。因此採用了數值方法的套路。</p>
+<p class="t">演算法（Perceptron）</p>
+<p>不考慮分界線到數據的距離。分界線只要分開數據即可。</p>
+<script>
+function Classification(type) {
+var canvas = document.getElementById(type);
+var ctx    = canvas.getContext('2d');
+
+var A = [[90, 0],[ 90,10],[ 80,40],[ 60,50],[ 60,70]];
+var B = [[10,10],[-20,20],[-30,30],[-40,40],[-50,50],[20,-40],[80,-40]];
+var weight  = [0,0,0];
+var weights = new Array(); weights[0] = [0,0,0];
+var countA  = new Array(A.length); countA.fill(1);
+var countB  = new Array(B.length); countB.fill(1);
+
+var algorithm = perceptron;
+if      (type === 'Perceptron') algorithm = perceptron;
+else if (type === 'AdaBoost'  ) algorithm = adaboost;
+
+var loop = 0, finish = false, id = 0;
+canvas.onclick = function(){
+	weights[0] = [0,0,0];
+	countA.fill(1);
+	countB.fill(1);
+
+	loop = 0; finish = false;
+	clearInterval(id);
+	id = setInterval(function(){
+		algorithm();
+		draw();
+		if (++loop > 1000 || finish) clearInterval(id);
+	}, 50);
+};
+
+draw();
+DrawBanner();
+
+function perceptron() {
+	weight = weights[loop+1] = weights[loop].slice();
+	for (var i=0; i<A.length; ++i) train(A[i], 1, weight);
+	for (var i=0; i<B.length; ++i) train(B[i], 0, weight);
+	if (weight[0] == weights[loop][0] &&
+		weight[1] == weights[loop][1] &&
+		weight[2] == weights[loop][2]) finish = true;
+}
+
+function adaboost() {
+	// perceptron: train 10 times
+	weight = weights[loop+1] = weights[loop].slice();
+	for (var k=0; k<10; ++k) {
+		for (var i=0; i<A.length; ++i) train(A[i], 1, weight, countA[i]);
+		for (var i=0; i<B.length; ++i) train(B[i], 0, weight, countB[i]);
+	}
+	if (weight[0] == weights[loop][0] &&
+		weight[1] == weights[loop][1] &&
+		weight[2] == weights[loop][2]) finish = true;
+
+	// total weighted error
+	var error = 0, sum = 0;
+	for (var i=0; i<A.length; ++i) {
+		error += countA[i] * !verify(A[i], 1, weight);
+		sum   += countA[i];
+	}
+	for (var i=0; i<B.length; ++i) {
+		error += countB[i] * !verify(B[i], 0, weight);
+		sum   += countB[i];
+	}
+
+	// update input weight
+	var avg = error / sum;
+	var ratio = (1 - avg) / avg;
+	for (var i=0; i<A.length; ++i)
+		if (!verify(A[i], 1, weight))
+			countA[i] *= ratio;
+	for (var i=0; i<B.length; ++i)
+		if (!verify(B[i], 0, weight))
+			countB[i] *= ratio;
+}
+
+function train(input, answer, weight, count = 1) {
+	var f = input[0] * weight[0] + input[1] * weight[1] + weight[2];
+	f = (f > 0 ? 1 : 0);
+	var error = (answer - f) * count;
+	weight[0] += error * input[0];
+	weight[1] += error * input[1];
+	weight[2] += error;
+}
+
+function verify(input, answer, weight) {
+	var f = input[0] * weight[0] + input[1] * weight[1] + weight[2];
+	return answer == (f > 0 ? 1 : 0);
+}
+
+function draw() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.save();
+	ctx.translate(0, canvas.height);
+	ctx.scale(1, -1);
+	ctx.translate(canvas.width/2, canvas.height/2);
+
+	// points
+	DrawPointArray(ctx, A, "rgb(  0, 176, 240)");
+	DrawPointArray(ctx, B, "rgb(146, 208,  80)");
+
+	// classifier
+	ctx.strokeStyle = "rgb(192,0,0)";
+	ctx.lineWidth = 2.25;
+	if (weight[1] == 0) {
+		ctx.beginPath();
+		ctx.moveTo(-weight[2] / weight[0], -canvas.height);
+		ctx.lineTo(-weight[2] / weight[0],  canvas.height);
+	} else {
+		ctx.beginPath();
+		ctx.moveTo(-canvas.width, (-weight[2] + weight[0] * canvas.width ) / weight[1]);
+		ctx.lineTo( canvas.width, (-weight[2] - weight[0] * canvas.width ) / weight[1]);
+	}
+	ctx.stroke(); 
+
+	// print a b c
+	ctx.restore();
+	ctx.font = "10pt Verdana";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillStyle = 'rgb(0,0,0)';
+	ctx.fillText(
+		"[" + (type === 'AdaBoost' ? loop*10 : loop) + "]" +
+		" a=" + Math.round(weight[0]) +
+		", b=" + Math.round(weight[1]) +
+		", c=" + Math.round(weight[2])
+		, 0, 0);
+
+//		alert("a = " + weight[0] +
+//			" , b  = " + weight[1] +
+//			" , c  = " + weight[2]);
+}
+
+function DrawPointArray(ctx, p, rgb) {
+//	ctx.fillStyle = "rgb(255,255,255)";
+	ctx.fillStyle = rgb;
+	ctx.lineWidth = 1.5;
+	for (var i = 0; i < p.length; ++i) {
+		ctx.beginPath();
+		ctx.arc(p[i][0], p[i][1], 4, 0, Math.PI * 2, true);
+		ctx.fill();
+	}
+}
+
+function DrawBanner() {
+	ctx.font = "32pt Arial";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.strokeStyle = "rgb(0,127,0)";
+	ctx.strokeText("Click Me !", canvas.width/2, canvas.height/2);
+}
+};
+</script>
+<style>canvas {border: 1px solid black;}</style>
+<canvas id="Perceptron" width="200" height="200"></canvas>
+<script>new Classification('Perceptron');</script>
+<p>分界線是一條直線ax+by+c=0。想判斷一筆數據(x₁,y₁)位於分界線的哪一側，就將(x₁,y₁)代入到直線方程式，計算ax₁+by₁+c，如果大於零就是在正側，小於零就是在反側，等於零就是在分界線上。</p>
+<img src="LinearClassification2.png">
+<p>每一筆數據都代入計算，不見得都能正確分類。我們必須調整分界線的位置，也就是調整a b c三個參數。該如何調整才好呢？我們可以利用最佳化的思維。</p>
+<p>設定誤差是「正確結果、分類結果不相符的數據筆數」，誤差越小越好。為了方便統計誤差，將結果定為數值0和1。正確結果：數據共兩類，第一類數據定為0，第二類數據定為1。分類結果：數據在線上、在反側定為0，數據在正側定為1。</p>
+<img src="LinearClassification3.png">
+<p>如此一來，統計誤差，只需數值運算、無需邏輯運算。正確結果和分類結果先相減再平方，等於0即相符，等於1即不相符。</p>
+<p>0和1顛倒設定也沒關係，a b c的計算結果多了負號而已。</p>
+<pre>
+ N                     2
+ ∑  [gᵢ - u(axᵢ+byᵢ+c)]
+i=1
+
+gᵢ          : correct    result of data i (0 or 1)
+u(axᵢ+byᵢ+c): classified result of data i (0 or 1)
+u           : unit step function          (0 or 1)
+</pre>
+<p>最佳化演算法採用Gradient Descent：往梯度最陡的方向逐步移動。首先推導梯度，也就是分別對a b c三個變數進行偏微分：</p>
+<pre>
+∂   N                     2
+――  ∑  [gᵢ - u(axᵢ+byᵢ+c)]  =  ∑ [gᵢ - u(axᵢ+byᵢ+c)] ⋅ -2xᵢ
+∂a i=1
+                            =  ∑ errorᵢ ⋅ -2xᵢ
+
+∂   N                     2
+――  ∑  [gᵢ - u(axᵢ+byᵢ+c)]  =  ∑ [gᵢ - u(axᵢ+byᵢ+c)] ⋅ -2yᵢ
+∂b i=1
+                            =  ∑ errorᵢ ⋅ -2yᵢ
+
+∂   N                     2
+――  ∑  [gᵢ - u(axᵢ+byᵢ+c)]  =  ∑ [gᵢ - u(axᵢ+byᵢ+c)] ⋅ -2
+∂c i=1
+                            =  ∑ errorᵢ ⋅ -2
+</pre>
+<p>一開始a b c設定成任意值。a b c不斷往梯度最陡的方向移動一段距離，朝最小值前進：</p>
+<pre>
+     [ 0 ]
+w<sub>0</sub> = [ 0 ]  一開始a b c設定成任意值
+     [ 0 ]
+                 [ ∑ errorᵢ ⋅ -2xᵢ ]               [ ∑ errorᵢ ⋅ xᵢ ]
+w<sub>t+1</sub> = w<sub>t</sub> - rate [ ∑ errorᵢ ⋅ -2yᵢ ] = w<sub>t</sub> + 2 rate [ ∑ errorᵢ ⋅ yᵢ ]
+                 [ ∑ errorᵢ ⋅ -2   ]               [ ∑ errorᵢ      ]
+
+通常會把2併入rate。或者一開始設定誤差函數多乘一個1/2，來把2消掉。
+</pre>
+<p>推廣成online演算法，依序處理每一筆數據，一次一筆。</p>
+<pre>
+                   [ errorᵢ ⋅ xᵢ ]
+w<sub>t+1</sub> = w<sub>t</sub> + 2 rate [ errorᵢ ⋅ yᵢ ]
+                   [ errorᵢ      ]
+
+通常會把2併入rate。或者一開始設定誤差函數多乘一個1/2，來把2消掉。
+</pre>
+<p>公式非常簡潔！這就是為什麼使用這種誤差設定方式、使用Gradient Descent的原因。這是前人努力試驗出來的最簡潔的方式。</p>
+<p>當數據可分為兩半，則誤差呈單峰函數，Gradient Descent不會卡在區域極值。證明方式是逐次加入一筆數據。【尚待確認】</p>
+<p>換句話說，當數據可分為兩半，而且rate適中（太小導致攤在山腰、太大導致越過山頂），則此演算法一定可以找到正確的分界線。當數據不可分為兩半，則此演算法毫無用武之地。</p>
+<textarea>
+const int A = 200, B = 200;
+float dataA[200][2], dataB[200][2];	// (xᵢ,yᵢ)
+float weight[3];					// a b c
+const float rate = 0.7;
+
+// u(axᵢ+byᵢ+c)
+// 一筆資料代入直線方程式，判斷資料位於直線哪一側。
+int classify(float input[2])
+{
+	float sum = 0;
+	sum += weight[0] * input[0];
+	sum += weight[1] * input[1];
+	sum += weight[2];
+	return sum > 0;
+}
+
+// gradient descent
+void train(float input[2], int answer)
+{
+	float error = answer - classify(input);
+	weight[0] += error * rate * input[0];
+	weight[1] += error * rate * input[1];
+	weight[2] += error * rate;
+}
+
+void perceptron()
+{
+	for (int i=0; i<A; ++i)
+		cin >> dataA[i][0] >> dataA[i][1];
+	for (int i=0; i<B; ++i)
+		cin >> dataB[i][0] >> dataB[i][1];
+
+	for (int i=0; i<3; ++i)
+		weight[i] = 0;
+
+	for (int k=0; k<1000; ++k)
+	{
+		for (int i=0; i<A; ++i) train(dataA[i], 0);
+		for (int i=0; i<B; ++i) train(dataB[i], 1);
+
+		// 可以額外在此檢查分界線是否正確，立即結束演算法。
+		// 可以額外在此持續記錄歷來最佳解。
+		......;
+	}
+
+	cout << "分界線的係數是";
+	cout << weight[0] << weight[1] << weight[2];
+
+	float x, y;
+	while (cin >> x >> y)
+	{
+		float data[2] = {x, y};
+		if (classify(data[i]))
+			cout << "是A類";
+		else
+			cout << "是B類";
+	}
+}
+</textarea>
+<p>「一筆數據代入直線方程式」這件事，通常畫成理工味道十足的圖。這個東西有個古怪名稱叫做perceptron：</p>
+<img src="LinearClassification4.png">
+<p>所有輸入乘上權重、相加起來，經過unit step function，最後輸出0或1（也有人輸出+1或-1）。</p>
+<p>函數不一定得是unit step function。有些時候需要輸出實數，就可以改成sigmoid function。</p>
+<p class="e">UVa 11289 ICPC 3581</p>
+<p class="t">演算法（Support Vector Machine）</p>
+<p>考慮分界線到數據的距離。分界線位於正中央，兩類數據相隔越遠越好。準確來說，分界線到兩類數據的最短距離均等、最短距離越大越好。</p>
+<img src="LinearClassification5.png">
+<p>舉例來說，二維的情況下，兩類數據各自求凸包，分界線是凸包之間最近點對的中垂線，或者分界線平行於凸包上某一條邊。</p>
+<p>但是當維度太高的時候，難以計算凸包、中垂超平面。只好採用數值方法的套路。</p>
+<img src="LinearClassification6.png">
+<p>分界線是一條直線ax+by+c=0。想計算一筆數據(x₁,y₁)到分界線的距離，就將(x₁,y₁)代入到點與直線距離公式，計算(ax₁+by₁+c) / sqrt(a²+b²)。距離有正負號，如果大於零就是在正側，小於零就是在反側，等於零就是在分界線上。</p>
+<p>間距線是兩條直線ax+by+c=1和ax+by+c=-1（已將截距縮放為1）。想計算間距線到分界線的距離，就將間距線上任意一點代入到點與直線距離公式（顯然分子是1和-1）。如此便得到半個間距。</p>
+<p>每一筆數據到分界線的距離，都必須大於等於半個間距。而且每一筆數據都要選對邊。</p>
+<img src="LinearClassification7.png">
+<p>當數據可以分成兩半，採用regularization：最大化間距，限制是全部數據都分對。</p>
+<p>為了方便判斷距離，數據標記為-1和+1（本應是0和1）。為了避免除以零，改為最小化間距的倒數（本應是負數）。為了方便最佳化，再取平方變成凸函數。</p>
+<p>針對此誤差式子的最佳化演算法是Sequential Minimal Optimization，請讀者自行查詢。</p>
+<p><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">https://www.csie.ntu.edu.tw/~cjlin/libsvm/</a></p>
+<pre>
+                                                             s
+classifer: px+qy+r=0   margin: px+qy+r=±s   half-width: ――――――――――― 
+                                                        sqrt(p²+q²)
+
+let a = p/s, b = q/s, c = r/s, remove variable s.
+
+                                                             1
+classifer: ax+by+c=0   margin: ax+by+c=±1   half-width: ――――――――――― 
+                                                        sqrt(a²+b²)
+
+         1                      axᵢ+byᵢ+c         1
+max ―――――――――――   subject to { ――――――――――― ≥ ――――――――――― ⋅ gᵢ } for all i
+    sqrt(a²+b²)                sqrt(a²+b²)   sqrt(a²+b²)
+
+         1
+max ―――――――――――   subject to { axᵢ+byᵢ+c ≥ gᵢ } for all i
+    sqrt(a²+b²)
+
+min sqrt(a²+b²)   subject to { axᵢ+byᵢ+c ≥ gᵢ } for all i
+
+min   (a²+b²)     subject to { axᵢ+byᵢ+c ≥ gᵢ } for all i
+
+min   (a²+b²)     + ∑ αᵢ [ (axᵢ+byᵢ+c) - gᵢ ]   (αᵢ ≥ 0)
+</pre>
+<p>當數據不能分成兩半，採用scalarization：最大化間距，最小化分錯的數據數量。記得調整成凸函數。不過沒人這樣做。</p>
+<pre>
+         1
+max ―――――――――――  ,  min ∑ [ axᵢ+byᵢ+c < gᵢ ]
+    sqrt(a²+b²)
+
+min α (a²+b²) + β ∑ [u(gᵢ - (axᵢ+byᵢ+c))]²   (α ≥ 0, β ≥ 0)
+</pre>
+<p>有人刪去unit step函數，把β設定成1，稱做Least Squares Support Vector Machine。有點莫名其妙。</p>
+<pre>
+min α (a²+b²) + β ∑ [gᵢ - (axᵢ+byᵢ+c)]²   (α ≥ 0, β = 1)
+</pre>
+<p class="t">Inlier / Outlier</p>
+<p>真實世界的數據並非完美，常有例外。</p>
+<p>無彈性的定義：全部數據分為inlier和outlier；inlier是分對的數據，outlier 是分錯的數據。</p>
+<p>有彈性的定義：全部數據分為inlier和outlier；inlier是距離分界線太近的數據、以及分對的數據，outlier是距離分界線太遠又分錯的數據。</p>
+<img src="LinearClassification8.png">
+<p>順帶一提，當數據無法分兩半，常見的手法是：無視彈性範圍內的數據，並且限制其數量上限。可以透過regularization處理。</p>
+<img src="LinearClassification9.png">
+<p class="t">演算法（AdaBoost）（Adaptive Boosting）</p>
+<canvas id="AdaBoost" width="200" height="200"></canvas>
+<script>new Classification('AdaBoost');</script>
+<p>實施分類演算法，分錯的數據，複製並增加其數量，再繼續實施分類演算法。這使得誤差大幅增加，使得分界線大幅靠近分錯的數據，進而迅速減少分錯的數據。</p>
+<p>增加倍率：分對的數量除以分錯的數量。數量不必是整數。</p>
+<img src="LinearClassification10.png">
+<p>AdaBoost好處多多。分類過程中，分界線的移動步伐變大了，提早找到正確分界線。分類結束後，每筆數據的數量，可以看成是出錯程度，可依此判斷outlier。分類結束後，如果數據無法正確分兩半，就以每回合的分界線的平均，推定是最理想的分界線。</p>
+<p>AdaBoost儘管缺乏理論根據，儘管名字怪異，卻非常實用。</p>
+<textarea>
+const int A = 200, B = 200;
+float dataA[200][2], dataB[200][2];	// (xᵢ,yᵢ)
+float countA[200], countB[200];		// 數據的數量
+float weight[3];					// a b c
+float weights[1000][3];				// 歷來的 a b c
+const float rate = 0.7;
+
+// u(axᵢ+byᵢ+c)
+// 一筆資料代入直線方程式，判斷資料位於直線哪一側。
+int classify(float input[2])
+{
+	float sum = 0;
+	sum += weight[0] * input[0];
+	sum += weight[1] * input[1];
+	sum += weight[2];
+	return sum > 0;
+}
+
+void train(float input[2], int answer, float count)
+{
+	// 須考慮數量
+	float error = (answer - classify(input)) * count;
+	weight[0] += error * rate * input[0];
+	weight[1] += error * rate * input[1];
+	weight[2] += error * rate;
+}
+
+void perceptron()
+{
+	// 隨便跑個幾次就夠了
+	for (int k=0; k<10; ++k)
+	{
+		for (int i=0; i<A; ++i)
+			train(dataA[i], 0, countA[i]);
+		for (int i=0; i<B; ++i)
+			train(dataB[i], 1, countB[i]);
+	}
+}
+
+void adaboost()
+{
+	for (int i=0; i<A; ++i)
+	{
+		cin >> dataA[i][0] >> dataA[i][1];
+		countA[i] = 1;
+	}
+
+	for (int i=0; i<B; ++i)
+	{
+		cin >> dataB[i][0] >> dataB[i][1];
+		countB[i] = 1;
+	}
+
+	// 實施1000回合。
+	// 每回合都跑一次分類演算法、更新一次數據數量。
+	for (int k=0; k<1000; ++k)
+	{
+		// 取得上回合的分界線，繼續實施分類。
+		// 然後記錄歷來的分界線。
+		if (k == 0)
+			for (int i=0; i<3; ++i)
+				weight[i] = 0;
+		else
+			for (int i=0; i<3; ++i)
+				weight[i] = weight[k-1][i];
+
+		perceptron();
+
+		for (int i=0; i<3; ++i)
+			weights[k][i] = weight[i];
+
+		// 可以額外在此檢查分界線是否正確，立即結束演算法。
+		......;
+
+		// 統計分對的數量、分錯的數量
+		float bad = 0, sum = 0;
+		for (int i=0; i<A; ++i)
+		{
+			bad += countA[i] * (classify(dataA[i]) != 1);
+			sum += countA[i];
+		}
+		for (int i=0; i<B; ++i)
+		{
+			bad += countB[i] * (classify(dataB[i]) != 0);
+			sum += countB[i];
+		}
+
+		// 更新數據數量。只有分錯的數據，需要複製並增加數量。
+		// 增加倍率：分對的數量除以分錯的數量。
+		// 小心溢位。可以取log，乘法變加法；需要時，再取exp。
+//		float avg = bad / sum;
+//		float ratio = (1.0f - avg) / avg;
+		float ratio = (sum - bad) / bad;
+		for (int i=0; i<A; ++i)
+			if (classify(dataA[i]) != 1)
+				countA[i] *= ratio;
+		for (int i=0; i<B; ++i)
+			if (classify(dataB[i]) != 0)
+				countB[i] *= ratio;
+	}
+
+	// 如果數據無法正確分兩半，
+	// 就以每回合的分界線的平均，推定是最理想的分界線。
+	for (int k=0; k<1000; ++k)
+		for (int i=0; i<3; ++i)
+			weight[i] += weights[k][i];
+	for (int i=0; i<3; ++i)
+		weight[i] /= 1000;
+
+	cout << "分界線的係數是";
+	cout << weight[0] << weight[1] << weight[2];
+
+	float x, y;
+	while (cin >> x >> y)
+	{
+		float data[2] = {x, y};
+		if (classify(data[i]))
+			cout << "是A類";
+		else
+			cout << "是B類";
+	}
+}
+</textarea>
+<p class="t">演算法（Gradient Boosting）</p>
+<p>實施分類演算法，得到分界線。然後不斷微調分界線。</p>
+<img src="LinearClassification11.png">
+<p>挑出分錯的數據，另外實施分類演算法，得到微調用的分界線。當前分界線，加上微調用的分界線，完成一次微調。重複這些步驟，直到分錯的數據足夠少，或者是誤差總和足夠小。</p>
+<p>微調用的分界線，可以乘上倍率。注意到倍率太大就不是微調了，而倍率太小就失去調整效果了。</p>
+<p>概念宛如Gradient Descent，故取名Gradient。概念宛如Adaptive Boosting，故取名Boosting。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polynomial Classification</p>
+</div><div class="c">
+<p class="t">Polynomial Classification</p>
+<p>以多項式曲線、多項式曲面當作分界線。</p>
+<img src="PolynomialClassification1.png">
+<p>根據工程師的實驗，數據套用函數重新呈現、分界線是直線，原始數據、分界線是曲線，前者比後者的效果更好──儘管目前還沒有嚴謹的數學證明。因此這裡就不介紹分界線是曲線的情況了。</p>
+<p class="t">Representation（Feature Map）</p>
+<img src="PolynomialClassification2.png">
+<blockquote>
+classifier center = (24,22) radius = 10, #(data) = 13 + 7 = 21
+p = {{17,8},{21,8},{27,8},{33,10},{37,15},{39,22},{36,30},{30,35},{21,35},{12,32},{12,28},{7,22},{10,14},{18,15},{24,16},{28,18},{16,19},{18,24},{24,23},{31,25},{27,29}};
+f[x_] := (x-24)*(x-24);
+g[y_] := (y-22)*(y-22);
+h[x_,y_] := Sqrt[2]*(x-24)*(y-22);
+q = Transpose[{
+	f[ p[[All,1]] ],
+	g[ p[[All,2]] ],
+	Apply[h, p, {1}]
+}];
+ListPointPlot3D[{q[[1;;13]], q[[14;;21]]}, BoxRatios -> {1,1,1}, PlotStyle -> PointSize[Large]]
+c = Classify[q -> {"A","A","A","A","A","A","A","A","A","A","A","A","A","B","B","B","B","B","B","B","B"}, "Decision", Method->"SupportVectorMachine"];
+</blockquote>
+<p><a href="http://cseweb.ucsd.edu/classes/sp13/cse151-a/Kernels.pdf">http://cseweb.ucsd.edu/classes/sp13/cse151-a/Kernels.pdf</a></p>
+<p>數據套用函數、增加維度，重新呈現。新數據的分界線是直線，則原數據的分界線是曲線。</p>
+<p>但是如何挑選函數呢？首先你要學會通靈。</p>
+<p>點與直線距離，時間複雜度從O(D)變成O(D')，D是原數據的維度，D'是新數據的維度。</p>
+<p class="t">Kernel</p>
+<p><a href="http://www.robots.ox.ac.uk/~az/lectures/ml/">http://www.robots.ox.ac.uk/~az/lectures/ml/</a></p>
+<p>實施分類演算法，每回合都要重新累計誤差總和：每筆數據先套用函數重新呈現、再計算點與直線距離。</p>
+<p>兩個步驟，有點煩。有個投機取巧方式稱作kernel trick：不設計函數、不推導距離，而是改為設計「數據套用函數之後的距離函數」。關於距離函數，請參考本站文件「<a href="Transformation.html">Metric</a>」。</p>
+<p>分界線的參數a b c，其中a b可以表示成新數據的加權平均值（新數據根據其類別額外乘上+1或-1）。點與直線距離，其中一部分變成了新數據與新數據的點積，即是kernel。</p>
+<p>點與直線距離，運用kernel，只需原數據、無需新數據，時間複雜度為O(ND)，D是原數據的維度。當原維度遠小於新維度，kernel trick就有好處，可以很快算好誤差總和。</p>
+<p class="t">Underfitting / Overfitting</p>
+<p>用單純的函數去區分複雜的數據們，顯然分類的不太完美。</p>
+<p>用複雜的函數去區分單純的數據們，顯然事情被搞複雜了。</p>
+<img src="PolynomialClassification3.png">
+<p>如果我們不清楚數據的性質，也就無法抉擇函數了。那麼，該如何了解數據的性質呢？這屬於宗教信仰的範疇，就此打住。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Hierarchical Classification</p>
+</div><div class="c">
+<p class="t">Hierarchical Classification</p>
+<p>數據往往無法順利地一分為二，數據往往有兩種以上類別，先前的演算法往往毫無用武之地。</p>
+<p>解法是階層架構、樹狀圖，稱作「決策樹Decision Tree」。</p>
+<img src="HierarchicalClassification1.png">
+<p>另一種解法是一連串測試，稱作「蕨Fern」。奇葩的名稱。蕨是決策樹的簡易版本：同一層節點，共用同一條分界線。</p>
+<img src="HierarchicalClassification2.png">
+<p class="t">演算法（Decision Tree）（Classification Tree）</p>
+<p>援引「<a href="Position.html">k-Dimensional Tree</a>」的精神，用於分類。</p>
+<img src="HierarchicalClassification3.png">
+<p>貪心法。選擇分類效果最好的分界線，將數據分兩份。兩份數據分頭遞迴下去，直到不同類別的數據都被分開為止。</p>
+<p>每次選擇分界線時，窮舉各種分界線走向（窮舉每個維度），窮舉各種分界線位置（窮舉每筆數據），從中找到分類效果最好者。</p>
+<p>分界線兩側的數據，分頭計算混亂程度。兩個混亂程度，求加權平均值（權重是數據數量），做為分類效果。數值越低，效果越好。</p>
+<p>混亂程度有兩種評估方式：一、Gini impurity：各個類別的數據比例，兩兩相乘（不乘自身），總和越小越好；二、information gain：各個類別的數據比例，求熵，總和越小越好。</p>
+<p>兩種方式都沒有科學根據。通常使用第一種，比較好算。</p>
+<p>不採用清澈程度、卻採用混亂程度，這般迂迴曲折，是因為清澈程度不好揣摩、而混亂程度容易具體實現。</p>
+<pre>
+Gini impurity:  ∑ [ p(Ci) p(Cj) ] = 1 - ∑ [ p(Ci) p(Ci) ]
+               i≠j                      i
+
+information gain: - ∑ [ p(Ci) log₂ p(Ci) ]
+                    i
+
+  Ci ：第i種類別的數據集合。
+p(Ci)：第i種類別的數據數量，除以所有類別的數據總數量。也就是比例。
+</pre>
+<img src="HierarchicalClassification4.png">
+<p>因為是貪心法，所以分界線配置往往不是最精簡的、分界線數量往往不是最少的。</p>
+<p>時間複雜度為O(DNNN)。運用「<a href="Point2.html">掃描線</a>」為O(DNNlogN)。當運氣很好，數據的數量每次都剛好對半分，為O(DN(logN)^2)。</p>
+<pre>
+一、窮舉D個維度、窮舉N筆數據，找到分界線。
+二、針對一條分界線，判斷每筆數據位於哪一側，需時O(N)。
+三、兩側數據，分頭計算C種類別之間的混亂程度，需時O(C)。C通常視作常數。
+四、分界線數量最少0條（數據只有唯一一種類別）。
+　　分界線數量最多N-1條（每次都分出一筆數據）。
+　　分界線數量就是節點數量。
+</pre>
+<textarea>
+const int N = 12;	// 數據數量
+const int D = 2;	// 數據維度
+const int C = 2;	// 分類數量
+
+// +1 dimension for the correct answer: either 0 or 1
+int data[N][D+1] =
+{
+	{ 90, 0,0},{ 90,10,0},{ 80,40,0},{ 60,50,0},
+	{ 60,70,0},{ 10,10,1},{-20,20,1},{-30,30,1},
+	{-40,40,1},{-50,50,1},{20,-40,1},{80,-40,1}
+};
+
+// sort pointers instead of data
+int* p[N];
+void init() {for (int i=0; i<N; ++i) p[i] = data[i];}
+int dim;
+bool cmp_dim(int* p1, int* p2) {return p1[dim] < p2[dim];}
+
+struct Node
+{
+	int left, right;	// child
+	int dimension;
+	float threshold;
+	int result;			// classification result
+};
+
+Node node[N];			// decision tree
+int size = 0;			// node number
+
+void build(int L, int R, int n)
+{
+	// 統計每個類別的數據數量
+	int total[C] = {};
+	for (int i=L; i<=R; ++i)
+		total[p[i][D]]++;
+
+	// 如果全部數據皆屬同類，則不必繼續分枝。
+	int sum = R - L + 1;
+	for (int c=0; c<C; ++c)
+		if (total[c] == sum)
+		{
+			node[n].result = c;
+			return;
+		}
+
+	// 選擇分界線：窮舉每個維度，窮舉每一個分界線位置。
+	// 小於等於臨界值，放到左小孩；大於臨界值，放到右小孩。
+	double min = 1e9;
+	int M, dimension, threshold;
+	for (int d=0; d<D; ++d)
+	{
+		// 排序
+		dim = d; sort(p+L, p+R+1, cmp_dim);
+
+		// 窮舉每一個分界線位置。
+		// 左小孩、右小孩至少要有一筆數據。
+		int count[C] = {}, numL = 0;
+		for (int i=L; i<R; ++i)
+		{
+			// 累計左小孩的每個類別的數據數量
+			count[p[i][D]]++;
+			numL++;
+
+			// 恰好在分界線上面的數據，都要放到左小孩！
+			if (p[i][d] == p[i+1][d]) continue;
+
+			// 統計Gini impurity
+			int numR = sum - numL;
+			int giniL = numL * numL;
+			for (int c=0; c<C; ++c)
+				giniL -= count[c] * count[c];
+			int giniR = numR * numR;
+			for (int c=0; c<C; ++c)
+				giniR -= (total[c] - count[c]) * (total[c] - count[c]);
+			double gini = (double)giniL / numL
+						+ (double)giniR / numR;
+
+			// 找到最小的Gini impurity，做為分界線。
+			if (gini < min)
+			{
+				min = gini;
+				M = i;
+				dimension = d;
+				threshold = p[i][d];
+			}
+		}
+	}
+
+	// 分不開。同一個座標有許多個數據，而且類別不相同。
+	if (min == 1e9)
+	{
+		node[n].result = 1e9;
+		return;
+	}
+
+	// 建立節點
+	int left = ++size;
+	int right = ++size;
+	node[n] = (Node){left, right, dimension, threshold, -1};
+
+	// 繼續處理左小孩和右小孩。別忘記排序。
+	dim = dimension; sort(p+L, p+R+1, cmp_dim);
+	build(L, M, left);
+	build(M+1, R, right);
+}
+
+int classify(int data[D])
+{
+	int n = 0;	// root
+	while (node[n].result == -1)
+		if (data[node[n].dimension] <= node[n].threshold)
+			n = node[n].left;
+		else
+			n = node[n].right;
+	return node[n].result;
+}
+
+bool validate()
+{
+	for (int i=0; i<N; ++i)
+		if (classify(data[i]) != data[i][D])
+			return false;
+	return true;
+}
+
+void decision_tree()
+{
+	init();
+	build(0, N-1, 0);
+	assert(validate());
+}
+</textarea>
+<p class="t">演算法（Random Forest）</p>
+<p>選擇分界線時，改為隨機窮舉一小部分，可以省時。</p>
+<p>接著，製造大量的樹，刪除相似的樹。多數決。就這樣子。</p>
+<p>隨機的副作用是分不乾淨。不過為了避免overfitting，也就沒必要分乾淨。而多數決不但抑制了副作用，同時也改良了分界線。</p>
+<p class="t">演算法（Random Ferns）</p>
+<p>樹改成蕨。可以省時。可以省程式碼。</p>
+<p class="t">Predefined Classifier【尚無專有名詞】</p>
+<img src="HierarchicalClassification5.png">
+<p>預先設置一些分界線，每次找分界線時，就考慮這些分界線。如此一來，分界線就不必是鉛直線、水平線，分界線可以是任意圖形。甚至多條分界線可以合成一種分界線。</p>
+<p>當數據有兩種以上類別，先運用Linear Classification，兩兩之間求分界線；再運用Hierarchical Classification，選取適當的分界線，建立階層架構。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graphical Classification（Under Construction!）</p>
+</div><div class="c">
+<p class="t">楔子</p>
+<div class="z"><!--<iframe src="http://embed.ted.com/talks/lang/zh-tw/jeff_hawkins_on_how_brain_science_will_change_computing.html"></iframe>--></div>
+<p class="t">Neuron與Perceptron</p>
+<p>生物學家、醫學家研究動物，發現了動物藉由神經來接收與傳達訊息，神經的基本單位是「神經元」。後來又發現，動物的大腦由大量神經元構成。</p>
+<a href="../../commons.wikimedia.org/wiki/File_Blausen_0657_MultipolarNeuron.html"><img src="../../upload.wikimedia.org/wikipedia/commons/1/10/Blausen_0657_MultipolarNeuron.png" width="500"></a>
+<p>計算學家、數學家仿照神經元，發明了「感知器」，用來分類和預測事物。後來又發現，感知器其實就是線性分類器。</p>
+<img src="ArtificialNeuralNetwork2.png">
+<p>於是科學家大膽猜測：大腦似乎是一大堆線性分類器，思考似乎是一連串線性分類！科學家正在深入研究當中。</p>
+<p>人格、行為、情緒、本能、直覺、天分、三觀、智力、智慧，這些抽象的心理概念，也許就是一堆線性分類器。</p>
+<p class="t">一大堆Neuron與Perceptron</p>
+<p>神經元、感知器能做什麼事？</p>
+<p>數學家發現感知器可以分類。一個感知器，製造筆直的分界線。一連串感知器，得以兜出各式各樣的分類效果，製造曲折的分界線。</p>
+<p>這個發現相當重要。適當地排列組合感知器，就擁有辨識能力。大腦的辨識能力很可能源自於此！</p>
+<img src="ArtificialNeuralNetwork3.png">
+<p>數學家發現感知器可以算數學。一層可兜出邏輯運算NOT和AND和OR，兩層可兜出邏輯運算XOR和XNOR。進一步從邏輯運算兜出數值運算。進一步從數值運算兜出演算法。</p>
+<p>這個發現相當重要。適當地排列組合感知器，就擁有判斷能力、計算能力。大腦的判斷能力、計算能力很可能源自於此！</p>
+<img src="ArtificialNeuralNetwork4.png">
+<p>大腦擁有大量神經元，應該得以進行非常深奧的推理，甚至超越邏輯所能描述的現象。例如由愛生恨、愛之深責之切、愛到深處無怨尤，大腦經常產出超乎理性的結論。</p>
+<p>然而科學家迄今還不知道大腦的詳細結構。比如說「由愛生恨」的神經元如何連結呢？沒有人知道！科學家正在克服這個問題。</p>
+<p><a href="http://zhuanlan.zhihu.com/p/20561464">http://zhuanlan.zhihu.com/p/20561464</a></p>
+<p class="t">Artificial Neural Network</p>
+<p>「人工神經網路」、「類神經網路」。大量感知器串聯成網路，建立階層架構，模仿大腦！</p>
+<p>然而我們往往不知道人工神經網路該兜成什麼樣子。於是大家捨難取易──選擇特定款式，藉由調整權重，達到分類效果。人工神經網路的經典款式如：</p>
+<pre>
+Feedforward Neural Network
+Recurrent Neural Network
+Spiking Neural Network
+Convolutional Neural Network
+Restricted Boltzmann Machine
+</pre>
+<p>真實神經網路，神經元會增生、死亡、重新連結。人工神經網路，格式固定，感知器不會增生、死亡、重新連結，分類效果較差。</p>
+<p>為什麼不改成動態版本呢？因為時間複雜度。動態版本的計算量更加巨大，而現今計算機的計算力仍嫌不足。</p>
+<p class="t">近況</p>
+<p>人工神經網路的潛力，遠遠超越目前的演算法，遠遠超越我們以窮舉法、分治法、動態規劃、貪心法所設計出來的演算法。最近電腦打敗人類圍棋冠軍，正是使用人工神經網路，棋風宛如真人。</p>
+<p><a href="http://www.zhihu.com/question/39905662/answer/88895000">http://www.zhihu.com/question/39905662/answer/88895000</a></p>
+<p>學術單位正在研究人工神經網路的功效，公司行號正在製作人工神經網路的晶片。又由於分散式計算的崛起，計算機的計算力增加了，使得人工神經網路的研究略有進展。人工神經網路正夯。</p>
+<p><a href="http://www.zhihu.com/question/24825159/answer/29427405">http://www.zhihu.com/question/24825159/answer/29427405</a></p>
+<p>各個領域的專家，也開始關注神經系統。關鍵字如neuroscience、neural computing、neural engineering，請讀者自行研究。</p>
+<p class="t">遠景</p>
+<p>人工神經網路應該可以效仿編譯器自舉。我們總是用人腦設計演算法，既然人腦是神經元構成的網路、演算法是感知器構成的網路，理所當然我們能用人工神經網路設計人工神經網路。</p>
+<p>學以致用、神來之筆，這些抽象的心理概念，也許就是自舉。</p>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/jfB_lWZA4Qo"></iframe>--></div>
+<div class="z"><!--<iframe src="http://www.youtube.com/embed/QOCaacO8wus"></iframe>--></div>
+<p class="t">邏輯運算 → 數值運算 → 分類運算 → 算法</p>
+<p>古人發明了邏輯運算（藉由電路），再用邏輯運算兜出數值運算（藉由二進位），再用數值運算兜出演算法（藉由流程圖）。至此是地球人的最新進度。</p>
+<p>目前計算學家正在嘗試：用數值運算兜出分類運算（藉由數值方法），再用分類運算兜出演算法（藉由神經元）。讓我們拭目以待！</p>
+<p class="t">演算法（Feedforward Neural Network）</p>
+<p><a href="http://playground.tensorflow.org/">http://playground.tensorflow.org/</a></p>
+<p>一層一層鋪起，容易計算。</p>
+<img src="FeedforwardNeuralNetwork1.html">
+<pre>
+http://www4.rgu.ac.uk/files/chapter3%20-%20bp.pdf
+http://colah.github.io/posts/2015-08-Backprop/
+
+一、憑感覺設定層數、設定每一層的perceptron數量。
+　　沒人知道正確數量應該是多少。
+二、輸入一筆數據之後，更新每一個perceptron的所有入邊的權重：
+　　由於必須拿到output error才能更新，所以要從output層往回更新。
+　　（backpropagation名稱由此而來。）
+三、計算一個perceptron的output error：
+　　針對一個出邊，「出邊的權重」乘上「出邊的perception的output error」，
+　　然後所有出邊算得的，通通加起來。
+</pre>
+<p>不斷輸入資料、輸出結果，逐步調整每個perceptron的分界線，最後得到一個分類器。</p>
+<pre>
+http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
+1. 把每一層的功能想做是 representation
+2. sigmoid/tanh 的用途是讓 representation 有著形變效果
+3. 引入流形的相關知識，嘗試判斷是否可以找到分界線
+</pre>
+<pre>
+一種多層次的 sparse coding 的機制
+</pre>
+<p class="t">範例：分辨上下</p>
+<pre>
+000011 111100 000011 010111 101111 110110 111101 001111 000000 000110
+011110 000110 001110 011001 101001 110110 100111 011001 011100 001100
+110000 000001 111000 001111 111111 011100 111111 000000 000110 000000
+000000 000000 000000 000000 000000 000000 000000 000000 000000 000000
+000000 000000 000000 000000 000000 000000 000000 000000 000000 000000
+000000 000000 000000 000000 000000 000000 000000 000000 000000 000000
+</pre>
+<pre>
+000000 000000 000000 000000 000000 000000 000000 000000 000000 000000
+000000 000000 000000 000000 000000 000000 000000 000000 000000 000000
+000000 000000 000000 000000 000000 000000 000000 000000 000000 000000
+111000 011100 110000 011111 011110 011110 011110 011110 111110 111110
+001111 110111 111110 110001 111111 110011 010110 110011 101011 100111
+000001 000001 000011 110000 011111 000001 011110 111110 111001 111110
+</pre>
+<img src="ArtificialNeuralNetwork1.html">
+<pre>
+http://www.webpages.ttu.edu/dleverin/neural_network/neural_networks.html
+輸入值、初始值、層數會影響收斂結果
+輸入值太小、學習率太大  兩邊會分不開
+初始值一開始接近零  就會爆炸  原因不清楚
+
+第一層的perceptron有row個，每個perceptron的輸入變數有col個，輸入值是各個pixel。
+第二層只有一個perceptron，輸入變數col個，來自上一層
+</pre>
+<textarea>
+int n = 0;					// 圖片數量
+const int row = 6, col = 6;	// 圖片大小
+int image[20][row][col];	// 圖片
+int answer[20];				// 正確答案，上為0，下為1
+
+void read(const char filename[], int ans)
+{
+	ifstream fin(filename);
+	for (; true; n++)
+	{
+		answer[n] = ans;
+		for (int i=0; i<row; ++i)
+			for (int j=0; j<col; ++j)
+			{
+				char c; fin >> c;
+				if (!fin) return;
+				image[n][i][j] = c - '0';
+			}
+	}
+}
+
+const int num = row;	// input層的感知器數量
+const int input = col;	// 感知器的輸入變數數量
+
+struct Perceptron
+{
+	// weight, input, output, error
+	int weight[input+1], x[input], y, error;
+
+	int classify()
+	{
+		int sum = 0;
+		for (int i=0; i<input; ++i)
+			sum += weight[i] * x[i];
+		sum += weight[input];
+		return y = (sum > 0);
+	}
+
+	void learn()
+	{
+		if (error == 0) return;
+		for (int i=0; i<input; ++i)
+			weight[i] += error * x[i];
+		weight[input] += error;
+	}
+
+} in[num], out;
+
+void init()
+{
+	memset(in, 0, sizeof(in));
+	memset(out, 0, sizeof(out));
+	// avoid all-zeros
+	for (int i=0; i<num; ++i)
+		in[i].weight[input] = 2;
+	out.weight[input] = 2;
+}
+
+void feed(int image[row][col])	// input
+{
+	for (int i=0; i<row; ++i)
+		for (int j=0; j<col; ++j)
+			in[i].x[j] = image[i][j] * 10;
+			// scale 10x bcz learning rate = 1
+}
+
+int forward()					// classify
+{
+	for (int i=0; i<num; ++i)
+	{
+		int y = in[i].classify();
+		out.x[i] = y;
+	}
+	return out.classify();
+}
+
+void backward(int answer)		// learn
+{
+	int error = answer - out.y;
+	if (error == 0) return;
+
+	// set error
+	out.error = error;
+	for (int i=0; i<num; ++i)
+	{
+		int error = out.weight[i] * out.error;
+		in[i].error = error;
+	}
+
+	// update weight
+	out.learn();
+	for (int i=0; i<num; ++i)
+		in[i].learn();
+}
+
+const int loop = 100;	// 重複訓練回合數
+
+void train()
+{
+	for (int t=0; t<loop; ++t)
+		for (int k=0; k<n; ++k)
+		{
+			feed(image[k]);
+			forward();
+			backward(answer[k]);
+		}
+}
+
+void verify()
+{
+	for (int k=0; k<n; ++k)
+	{
+		feed(image[k]);
+		int y = forward();
+		cout << '[' << k << ']';
+		cout << (answer[k] == y ? "correct" : "wrong");
+		cout << '\n';
+	}
+}
+
+void neural_network()
+{
+	read("0.txt", 0);
+	read("1.txt", 1);
+	init();
+	train();
+	verify();
+}
+</textarea>
+<p class="t">範例：分辨數字</p>
+<pre>
+http://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits
+</pre>
+<p class="e">ICPC 4359</p>
+<p class="t">演算法（Recurrent Neural Network）</p>
+<p>製造迴圈。好處是建立餘韻，壞處是難以調整權重。</p>
+<p>知名版本如LSTM Neural Network。</p>
+<p class="t">演算法（Convolutional Neural Network）</p>
+<p>請先參考本站文件「<a href="Image.html">Image Filtering</a>」。</p>
+<pre>
+http://cs231n.stanford.edu/syllabus.html
+http://www.vision.rwth-aachen.de/media/course/WS/2015/computer-vision/cv15-part16-categorization4.pdf
+http://people.eecs.berkeley.edu/~rbg/index.html
+http://girlswhocode.thenew123.com/news_748240.htm
+</pre>
+<pre>
+dropout 去掉一些沒用的點
+pooling 取總和或最大值
+</pre>
+<p class="t">備忘</p>
+<p>個人推測ReLU的主要功能是改變最佳化演算法的細節，而非數據的Representation。也就是說，只要調整最佳化演算法，就不需要ReLU。</p>
+<p>另一方面，由於我們無法預測數據分布，因此任何事先指定的Representation（例如sigmoid和kernel trick）都是沒有意義的。添加機率（例如貝氏學習）也是同樣沒有意義的。</p>
+<p>個人推測正確的解法是：改變函數之間的輸入輸出連接方式。從最簡單的函數開始（例如線性變換），以函數的複合來得到各種特別的函數，或說是特別的Representation。</p>
+<p>一個值得關注的地方是將各種Representation視作模組，經過適當突變（改變單一函數）、適當排列組合（改變階層架構）之後，可以得到更有用的模組。就好比人類發明機器的歷史過程。人類的智力架構可能也類似於此。</p>
+<p>一個函數的輸出的重新排列組合，可以視作鏡射變換，鏡射變換是一個線性變換。至於函數之間的輸入輸出連接方式的重新排列組合，可以視作函數們複合一個線性變換。反過來說，函數的複合具備了重新排列組合的功效，而階層最佳化自然能找到適當的排列組合。</p>
+<p>我就一介民科。以上僅供參考。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Bayesian Classification（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Bayesian Classification</p>
+<p>迄今都是假定一筆數據只有唯一一種類別。</p>
+<p>現在推廣成一筆數據有多種類別，類別是浮動數字，每種類別的機率高低都不同。</p>
+<p>對調主角與配角，切換視角，一種類別也就有多筆數據，數據是浮動數字，每種數據的機率高低都不同。</p>
+<p>貝式定理可以用來切換視角。</p>
+<p class="t">Linear Discriminative Analysis</p>
+<p>援引「<a href="Representation.html">Principal Component Analysis</a>」的精神，用於分類。</p>
+<p>尋找一組新座標軸，讓數據投影到座標軸之後，各類數據的平均值的變異數盡量大（異類盡量散開），各類數據各自的變異數盡量小（同類盡量聚集）。</p>
+</p>
+<p>個人推測kernel trick (representer theorem)、spectral transform、Ax² optimization有著某種關聯。數據有了類別。</p>
+<p class="t">Neighborhood Component Analysis</p>
+<p>援引「<a href="Representation.html">Principal Component Analysis</a>」的精神，用於分類。</p>
+<p>找到一個轉換矩陣，讓新數據同類相聚。統計同類數據之間的兩兩距離總和，令距離越近越好。距離定義成有向距離：相離最近的K個鄰居所構成的softmax函數的平方。因為難以預測新數據的鄰居關係，所以姑且採用原數據的鄰居關係。</p>
+<p><a href="https://en.wikipedia.org/wiki/Neighbourhood_components_analysis" class="l">https://en.wikipedia.org/wiki/Neighbourhood_components_analysis</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Classification.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:13:22 GMT -->
+</html>

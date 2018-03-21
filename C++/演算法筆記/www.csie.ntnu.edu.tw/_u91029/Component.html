@@ -1,0 +1,1214 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Component.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:01:13 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Component</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Articulation Vertex / Bridge</p>
+<p class="w">我可以往，彼可以來，曰通；通形者，先居高陽，利糧道以戰，則利。《孫子》</p>
+</div><div class="c">
+<p class="t">Articulation Vertex（Articulation Point）（Cut-vertex）</p>
+<p>Articulation乃「關節」之意，骨骼與骨骼銜接的地方就是關節。關節一旦被拆開，肢體之間的連繫就被切斷了。</p>
+<img src="ArticulationVertex1.png">
+<p>「關節點」是讓一張無向圖維持連通，不可或缺的點。只要從一張無向圖上移除了關節點（以及與之相連的邊），就會讓這張圖分離成更多部分，呈現不連通的狀態。</p>
+<img src="ArticulationVertex2.png">
+<p class="t">Bridge（Cut-edge）</p>
+<p>中文稱作「橋」。只要從一張無向圖上移除了橋，就會讓這張圖分離成更多部分，呈現不連通的狀態。</p>
+<img src="Bridge1.png">
+<p class="t">無向圖，尋找所有的Articulation Vertex</p>
+<p>要判斷一個點是不是關節點，只要從圖上移除此點，再看看圖是否連通就好了；要判斷連通，可以使用任何一種Graph Traversal演算法。</p>
+<p>每一個點都用一次Graph Traversal來判斷是不是關節點，逐一試驗圖上每一個點，總共執行V次的Graph Traversal就可以找出全部的關節點了。V為圖上的點數。</p>
+<p>這個演算法簡單易懂又容易實作。不過接下來要介紹更快的方法。</p>
+<p class="t">原本路線＋替代路線＝環</p>
+<p>移除一個點之後，經過此點的路線被截斷了。要是沒有替代路線，無法繞過點，就會不連通，此點就是關節點。反過來說，如果有替代路線，此點就不是關節點。</p>
+<img src="ArticulationVertex3.png">
+<p>原本路線和替代路線，併在一起看，又可以想做是一個環。也就是說：找的到環，就找的到替代路線，可以繞過關節點；找不到環，就找不到替代路線，繞不過關節點。</p>
+<img src="ArticulationVertex4.png">
+<p>要在一張圖上找替代路線不太直覺，但是找環就比較直覺了──把圖重新畫成樹的形狀，就容易找環了！要把圖重新畫成樹的形狀，利用Graph Traversal就行了。這裡就利用一下DFS tree吧！</p>
+<img src="ArticulationVertex5.png">
+<p class="t">利用DFS tree</p>
+<p>任取樹上的一個點。當此點的祖先、此點的子孫想要互通有無，利用tree edge的話，顯然會經過此點；不想利用tree edge的話、不想經過此點的話，就必須利用back edge了。</p>
+<p>另外，在DFS tree之中，此點的子樹們之間沒有邊。因此只需要考慮祖先與每一棵子樹之間有沒有back edge。</p>
+<p>祖先與每一棵子樹之間都有back edge，則此點不是關節點；祖先與其中一棵子樹之間缺少back edge，則此點就是關節點。</p>
+<img src="ArticulationVertex6.png">
+<p>樹根不能套用上述規則，因為樹根沒有祖先。然而樹根更容易判斷是不是關節點。</p>
+<p>樹根的子樹們想要互通有無，只能經過樹根。因此當樹根有兩棵以上的子樹，或者說，有兩個以上的小孩，則樹根一定是關節點。</p>
+<img src="ArticulationVertex7.png">
+<p>實作時，想要判斷祖先與子孫，可以運用DFS的遍歷時刻。</p>
+<p class="t">無向圖，尋找所有的Articulation Vertex</p>
+<img src="ArticulationVertex8.png">
+<p>時間複雜度為遍歷的時間複雜度。圖的資料結構為adjacency matrix，便是O(V^2)；圖的資料結構為adjacency lists，便是O(V+E)。</p>
+<textarea>
+bool adj[9][9];	// 無向圖，adjacency matrix。
+int parent[9];	// 記錄DFS forest
+int visit[9];	// 記錄每一點的DFS遍歷時刻，以判斷祖先與子孫。
+int order[9];	// 記錄DFS遍歷順序
+int trace[9];	// 記錄自身與子孫們用back edge連到的最高祖先
+int ap[9];		// 記錄每一點是不是關節點
+
+void articulation_vertex()
+{
+	/* DFS。計算visit、parent、order。 */
+
+	memset(visit, 0, sizeof(visit));
+	int t = 0;	// 時刻
+
+	stack<int> stk;
+	for (int r=0; r<9; ++r)
+		if (!visit[r])
+		{
+			stk.push(r);
+			parent[r] = r;
+
+			while (!stk.empty())
+			{
+				int i = stk.top(); stk.pop();
+				if (visit[i]) continue;
+
+				visit[i] = t+1;
+				order[t] = i;
+				t++;
+
+				for (int j=0; j<9; ++j)
+					if (adj[i][j] && !visit[j])
+					{
+						stk.push(j);
+						parent[j] = i;
+					}
+			}
+		}
+
+	/* 計算trace：自身與子孫們用back edge連到的最高祖先。 */
+
+	for (int t=9-1; t>=0; --t)	// DFS逆序，先算子孫才算祖先
+	{
+		int i = order[t];
+		trace[i] = i;
+		for (int j=0; j<9; ++j)
+			if (adj[i][j])
+				// tree edge
+				if (visit[i] < visit[j] && i == parent[j])
+				{
+					if (visit[trace[j]] < visit[trace[i]])
+						trace[i] = trace[j];
+				}
+				// back edge
+				else if (visit[i] > visit[j] && parent[i] != j)
+				{
+					if (visit[j] < visit[trace[i]])
+						trace[i] = j;
+				}
+	}
+
+	/* 計算ap：判斷關節點 */
+
+	for (int i=0; i<9; ++i)
+		// 樹根
+		if (i == parent[i])
+		{
+			int child = 0;
+			for (int j=0; j<9; ++j)
+				if (adj[i][j] && i != j && i == parent[j])
+					child++;
+			ap[i] = (child > 1);
+		}
+		// 其他節點
+		else
+		{
+			ap[i] = false;
+			for (int j=0; j<9; ++j)
+				if (adj[i][j] && i == parent[j])
+					if (visit[trace[j]] >= visit[i])
+					{
+						ap[i] = true;
+						break;
+					}
+		}
+
+	for (int i=0; i<9; ++i)
+		if (ap[i])
+			cout << "第" << i << "點是關節點";
+}
+</textarea>
+<p>運用遞迴實作，整合程式碼。</p>
+<textarea>
+bool adj[9][9];	// 無向圖，adjacency matrix。
+int visit[9];	// 記錄每一點的DFS遍歷時刻，以判斷祖先與子孫。
+int trace[9];	// 記錄自身與子孫們用back edge連到的最高祖先
+int t = 0;		// 時刻
+
+void DFS(int p, int i)	// 第p點是第i點的父親
+{
+	visit[i] = ++t;		// 記錄遍歷時刻
+	trace[i] = i;		// 最高祖先預設為自己
+						// 尚未發現任何back edge
+	int child = 0;		// 記錄第i點有幾個小孩
+	bool ap = false;	// 記錄第i點是不是關節點
+
+	for (int j=0; j<9; ++j)			// 進行DFS
+		if (adj[i][j] && j != p)	// 避免回頭路
+			if (visit[j])			// back edge
+			{
+				// 記錄第i點自身用back edge連到的最高祖先
+				if (visit[j] < visit[trace[i]])
+					trace[i] = j;
+			}
+			else					// tree edge
+			{
+				child++;
+				DFS(i, j);
+
+				// 記錄第i點的子孫們用back edge連到的最高祖先
+				if (visit[trace[j]] < visit[trace[i]])
+					trace[i] = trace[j];
+
+				// 第i點的祖先、第i點的其中一棵子樹（樹根為第j點）
+				// 兩者之間缺少back edge，因此第i點為關節點。
+				if (visit[trace[j]] >= visit[i])
+					ap = true;
+			}
+
+	// 判斷是不是關節點。樹根和非樹根分開判斷。
+	if ((i == p && child > 1) || (i != p && ap))
+		cout << "第" << i << "點是關節點";
+}
+
+void articulation_vertex()
+{
+	// DFS forest
+	memset(visit, 0, sizeof(visit));
+	t = 0;
+
+	for (int i=0; i<9; ++i)
+		if (!visit[i])
+			DFS(i, i);
+}
+</textarea>
+<p>方才的程式碼，如果讓trace[]改為存入遍歷時刻，而不是點的編號，那麼程式碼可以再縮短一點點。</p>
+<textarea>
+bool adj[9][9];
+int visit[9];
+int low[9];	// 記錄自身與子孫們
+			// 用back edge連到的最高祖先（的遍歷時刻）。
+			// 由於遍歷時刻要盡量小，故大家習慣取名為low。
+int t = 0;
+
+void DFS(int p, int i)
+{
+	visit[i] = low[i] = ++t;
+
+	int child = 0;
+	bool ap = false;
+
+	for (int j=0; j<9; ++j)
+		if (adj[i][j] && j != p)
+			if (visit[j])	// back edge
+			{
+				// 遍歷時刻較小者，即是較高祖先。
+				low[i] = min(low[i], visit[j]);
+			}
+			else			// tree edge
+			{
+				child++;
+				DFS(i, j);
+
+				// 遍歷時刻較小者，即是較高祖先。
+				low[i] = min(low[i], low[j]);
+				if (low[j] >= visit[i]) ap = true;
+			}
+
+	if ((i == p && child > 1) || (i != p && ap))
+		cout << "第" << i << "點是關節點";
+}
+</textarea>
+<p class="e">UVa 315 10199</p>
+<p class="t">low的意義</p>
+<img src="Bridge2.png">
+<p>low的意義是：不斷往下走tree edge，最後走一次back edge，所能觸及的最高祖先。</p>
+<p>low也可以修改成：不斷往下走tree edge、往上走back edge，所能觸及的最高祖先。修改不會影響結果，而且可以精簡程式碼！</p>
+<p class="t">無向圖，尋找所有的Bridge</p>
+<p>方法類似於尋找關節點。只需要特別當心兩點之間有多條邊的情況。多重邊當中，有一條是tree edge，其餘都是back edge。</p>
+<textarea>
+int adj[9][9];	// 記錄邊數，支援多重邊
+int visit[9];
+int low[9];	// 記錄自身與子孫們
+			// 不斷往下走tree edge、往上走back edge，
+			// 所能觸及的最高祖先（的遍歷時刻）
+int t = 0;
+
+void DFS(int p, int i)
+{
+	visit[i] = low[i] = ++t;
+
+	for (int j=0; j<9; ++j)
+		if (adj[i][j])
+			if (!visit[j])	// tree edge
+			{
+				DFS(i, j);
+				// 遍歷時刻較小者，即是較高祖先。
+				low[i] = min(low[i], low[j]);
+				if (low[j] > visit[i])
+					cout << "bridge: " << i << j;
+			}
+			// back edge
+			else if (j != p || (j == p && adj[i][j] >= 2))
+			{
+				// 遍歷時刻較小者，即是較高祖先。
+//				low[i] = min(low[i], visit[j]);
+				// 也可以改為不斷走tree edge與back edge
+				low[i] = min(low[i], low[j]);
+			}
+}
+
+void bridge()
+{
+	memset(visit, 0, sizeof(visit));
+	t = 0;
+
+	for (int i=0; i<9; ++i)
+		if (!visit[i])
+			DFS(i, i);
+}
+</textarea>
+<textarea>
+int adj[9][9];
+int visit[9], parent[9], low[9], t = 0;
+
+void DFS(int i)
+{
+	visit[i] = low[i] = ++t;
+
+	for (int j=0; j<9; ++j)
+		if (adj[i][j])
+		{
+			// tree edge
+			if (!visit[j])
+			{
+				parent[j] = i;
+				DFS(j);
+			}
+
+			// tree/back edge
+			// 要避免反著走tree edge、避免回頭路
+			if (!(j == parent[i] && adj[i][j] == 1))
+				low[i] = min(low[i], low[j]);
+		}
+}
+
+void bridge()
+{
+	// DFS forest
+	memset(visit, 0, sizeof(visit));
+	t = 0;
+
+	for (int i=0; i<9; ++i)
+		if (visit[i])
+		{
+			parent[i] = i;
+			DFS(i);
+		}
+
+	// 尋找所有橋
+	for (int i=0; i<9; ++i)
+		if (visit[i] == low[i] && parent[i] != i)
+			cout << "bridge:" << parent[i] << i;
+}
+</textarea>
+<p class="e">UVa 796 610 12783</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Dominator</p>
+<p class="w">天下何思何慮？天下同歸而殊塗，一致而百慮。天下何思何慮？《易傳．繫辭》</p>
+</div><div class="c">
+<p class="t">Dominator</p>
+<p>一張有向圖，選定一個起點、一個終點。由起點到終點，途中的必經之點、沒有替代路線的點，稱作「支配點」；起點與終點本身也是支配點。途中的必經之邊，則尚未命名。</p>
+<img src="Dominator1.png">
+<p>只要移除了支配點，起點到終點的連繫就被切斷了，呈現不連通的狀態。</p>
+<p>想要判斷一個點不是支配點，只要從圖上移除此點，再看看起點到終點是否連通就好了。</p>
+<p>支配點就像是交通要衝、軍事要津。守塔遊戲當中，最理想的禦敵之處，通常正是支配點：<a href="http://www.kingdomrush.com/">http://www.kingdomrush.com/</a>。</p>
+<p class="t">有向圖，給定起點，尋找所有的Dominator</p>
+<p>從起點實施Graph Traversal。接下來，移除圖上一個點，再實施一次。原本走得到、這次卻走不到的點，就是被支配的點。反過來說，走不到的點的支配點，就是移除的點。</p>
+<p>每一個點都用一次Graph Traversal來判斷是誰的支配點，逐一試驗圖上每一個點，總共執行V+1次的Graph Traversal就可以找出每個點的全部支配點了。</p>
+<p>這個演算法簡單易懂又容易實作。不過接下來要介紹更快的方法。</p>
+<p class="t">原本路線＋替代路線</p>
+<p>如果有替代路線，那麼交叉路口之間的點，一定不是支配點！</p>
+<p>以下我們考慮抵達終點的情況：原本路線與替代路線，點邊皆異，除了分岔點與終點。分岔點到終點之間的點，一定不是支配點。</p>
+<img src="Dominator2.png">
+<p>給定起點與終點，找到所有「分岔點」，可能有許多個，包含了終點。離起點最近的分岔點，稱作「最高分岔點」。</p>
+<img src="Dominator3.png">
+<p>給定起點與終點，找到所有「支配點」，可能有許多個，包含了起點與終點。離終點次近的支配點，稱作「次低支配點」。</p>
+<img src="Dominator4.png">
+<p>最高分岔點、次低支配點，不見得相同。尤其是麻花辮。</p>
+<p>從最高分岔點到終點，尋找路線上每個點的最高分岔點，不斷遞迴，排除所有不是支配點的情況，得到次低支配點。</p>
+<p>遞迴窮舉最高分岔點，逼近次低支配點！很特別的對偶。</p>
+<p>但是有一個例外：抵達終點的路線只有唯一一條，此時最高分岔點（終點）的父親才是次低支配點。為了應付這個例外，最高分岔點必須強制改成終點的父親。</p>
+<img src="Dominator5.png">
+<p>支配點的支配點，也是支配點。次低支配點的次低支配點，不斷遞迴，得到所有支配點。</p>
+<img src="Dominator6.png">
+<p>【註：最高分岔點，原論文稱作semidominator。次低支配點，原論文稱作immediate dominator。】</p>
+<p class="t">利用DFS tree</p>
+<p>把圖重新畫成樹的形狀，就容易觀察替代路線了，這裡就利用一下DFS tree吧！</p>
+<p>根據DFS的特性，針對一個分岔點，原本路線會在樹上，替代路線不會經過時刻更小的點、只會經過時刻更大的點。</p>
+<p>因此，各種路線上，時刻最小的點，就是最高分岔點。時刻大小，代表高低。</p>
+<img src="Dominator7.png">
+<p>我們可以將計算順序定為「時刻從大到小」。DFS樹的後半段（以及父親），涵蓋了所有替代路線！</p>
+<img src="Dominator8.png">
+<p class="t">有向圖，給定起點，尋找所有的最高分岔點</p>
+<p>時刻從大到小，每個點依序作為終點，計算最高分岔點sdom。</p>
+<p>窮舉所有入邊，從DFS樹的後半段，檢查所有替代路線上的點，從中找到sdom最小者。</p>
+<p>sdom是遞推計算的。針對一條入邊，只需沿著DFS樹逆行到頂，檢查一條路徑上的點，從中找到sdom最小者。這一條路徑上的sdom，已經包含了各種替代路線的最高分岔點了。</p>
+<p>窮舉所有入邊，也包括了父親。一方面涵蓋替代路線，一方面應付例外。時間複雜度為O(EV)。</p>
+<textarea>
+bool adj[9][9];	// adjacency matrix
+int parent[9];	// DFS tree
+int visit[9];	// 記錄每一點的DFS遍歷時刻
+int order[9];	// 記錄DFS遍歷順序
+int p[9];		// DFS tree後半段
+int sdom[9];	// semidominator
+
+// 計算路徑sdom最小值（位於哪個點）
+int find(int x)
+{
+    int best = x;
+    for (x = p[x]; x != -1; x = p[x])
+        if (visit[sdom[x]] < visit[sdom[best]])
+            best = x;
+    return best;
+}
+
+void semidominator(int r)
+{
+	// dfs(r)
+	......;
+
+	// 初始化
+	for (int i=0; i<9; ++i) p[i] = -1;
+	for (int i=0; i<9; ++i) sdom[i] = i;
+
+	// 時刻從大到小、從孫到祖
+	for (int k=t-1; k>0; --k)	// 不必做樹根order[0]
+	{
+		// 取出該時刻的節點
+		int i = order[k];
+
+		// 抵達i點的所有路線，檢查sdom：窮舉入邊，求路徑最小值。
+		for (int j=0; j<9; ++j)
+			if (adj[j][i] && visit[j])
+			{
+				int best = find(j);	// 路徑最小值（位於哪個點）
+				if (visit[sdom[best]] < visit[sdom[i]])
+					sdom[i] = sdom[best];
+			}
+
+		// i點加入森林：窮舉出邊，讓i點小孩接上i點。
+		for (int j=0; j<9; ++j)
+			if (adj[i][j] && parent[j] == i)
+				p[j] = i;	// union
+	}
+}
+</textarea>
+<p>找到替代路線上的sdom最小值之後，仿效disjoint-sets forest的精神，順手將路線上每一個點直接連向開頭，減少森林高度。隨著森林的增長，最小值只會越來越小，答案保持正確。原作者宣稱時間複雜度降至O(ElogV)。</p>
+<textarea>
+int best[9];	// 每個點隨時記錄路徑最小值（位於哪個點）
+				// 每當需要使用，就呼叫一下find，更新資訊。
+
+// 更新路徑上每個點的最小值（位於哪個點）
+// 順便將路徑上每個點直接連向樹根，減少森林高度。
+int find(int x)
+{
+	if (x == p[x]) return x;
+	int y = find(p[x]);
+	if (visit[sdom[best[p[x]]]] < visit[sdom[best[x]]])
+		best[x] = best[p[x]];
+	return p[x] = y;
+}
+
+void semidominator(int r)
+{
+	// dfs(r)
+	......;
+
+	for (int i=0; i<9; ++i)
+		p[i] = best[i] = sdom[i] = i;
+
+	for (int k=t-1; k>0; --k)
+	{
+		int i = order[k];
+		for (int j=0; j<9; ++j)
+			if (adj[j][i] && visit[j])
+			{
+				find(j);	// 更新路徑最小值（位於哪個點）
+				if (visit[sdom[best[j]]] < visit[sdom[i]])
+					sdom[i] = sdom[best[j]];
+			}
+
+		for (int j=0; j<9; ++j)
+			if (adj[i][j] && parent[j] == i)
+				p[j] = i;
+	}
+}
+</textarea>
+<p>原作者進一步降至O(E*alpha(E,V))，此處省略。</p>
+<p>利用特殊資料結構Micro Tree甚至可達O(V+E)，但是不實用，只有理論上的價值。</p>
+<p>另外，原作者想到了一個奇技淫巧：維護森林時，本來是i點與小孩聯集，改為了i點預先與父親聯集！父親尚未處理，sdom值預設為自己。i點的sdom值小於等於父親。尋找路徑最小值，比較大小是以小孩為主、父親為輔，最小值恰巧不受影響。</p>
+<textarea>
+void semidominator(int r)
+{
+	// dfs(r)
+	......;
+
+	for (int i=0; i<9; ++i)
+		p[i] = best[i] = sdom[i] = i;
+
+	for (int k=t-1; k>0; --k)
+	{
+		int i = order[k];
+		for (int j=0; j<9; ++j)
+			if (adj[j][i] && visit[j])
+			{
+				// 最小值（位於哪個點）恰巧不受影響
+				find(j);
+				if (visit[sdom[best[j]]] < visit[sdom[i]])
+					sdom[i] = sdom[best[j]];
+			}
+
+		// 奇技淫巧：讓i點預先接上父親。程式碼減少了。
+		p[i] = parent[i];	// union
+	}
+}
+</textarea>
+<p class="t">有向圖，給定起點，尋找所有的次低支配點</p>
+<p>求得最低支配點：從最高分岔點出發的所有路線，找到路線上每個點的最高分岔點，判斷是不是麻花辮。若否，原本的最高分岔點就是次低支配點。若是，則必須遞迴引用路線上每個點的次低支配點。</p>
+<p>第一波，時刻從大到小，從DFS樹後半段，找到需要遞迴引用的點。第二波，時刻從小到大，完成引用。時間複雜度同前。</p>
+<textarea>
+bool adj[9][9];			// adjacency matrix
+int visit[9], order[9];	// DFS
+int parent[9];			// DFS tree
+int p[9], best[9];		// DFS tree後半段
+int sdom[9];			// semidominator
+int idom[9];			// dominator tree
+
+void immediate_dominator(int r)
+{
+	// dfs(r)
+	......;
+
+	vector<int> revsdom[9];	// semidominator mapping
+
+	for (int i=0; i<9; ++i)
+		p[i] = best[i] = sdom[i] = idom[i] = i;
+
+	for (int k=t-1; k>0; --k)
+	{
+		int i = order[k];
+		for (int j=0; j<9; ++j)
+			if (adj[j][i] && visit[j])
+			{
+				find(j);
+				if (visit[sdom[best[j]]] < visit[sdom[i]])
+					sdom[i] = sdom[best[j]];
+			}
+
+		// 記錄本次算得的sdom，方便找到對應。
+		revsdom[sdom[i]].push_back(i);
+
+		// 利用當下的森林，順便計算idom。
+		for (auto j: revsdom[i])
+		{
+			find(j);
+			idom[j] = visit[sdom[best[j]]] < visit[i]
+					? best[j] : i;
+		}
+
+		for (int j=0; j<9; ++j)
+			if (adj[i][j] && parent[j] == i)
+				p[j] = i;
+	}
+
+	// 補做樹根
+	for (auto j: revsdom[r])
+	{
+		find(j);
+		idom[j] = visit[sdom[best[j]]] < visit[r]
+				? best[j] : r;
+	}
+
+	// 時刻從小到大，依序完成idom[best[j]]
+//	idom[order[0]] = order[0];	// 樹根
+	for (int k=1; k<t; ++k)
+	{
+		int i = order[k];
+		if (idom[i] != sdom[i]) idom[i] = idom[idom[i]];
+	}
+}
+</textarea>
+<p>奇技淫巧，可以精簡程式碼。</p>
+<textarea>
+void immediate_dominator(int r)
+{
+	// dfs(r)
+	......;
+
+	vector<int> revsdom[9];
+
+	for (int i=0; i<9; ++i)
+		p[i] = best[i] = sdom[i] = idom[i] = i;
+
+	for (int k=t-1; k>0; --k)
+	{
+		int i = order[k];
+
+		for (int j=0; j<9; ++j)
+			if (adj[j][i] && visit[j])
+			{
+				find(j);
+				if (visit[sdom[best[j]]] < visit[sdom[i]])
+					sdom[i] = sdom[best[j]];
+			}
+
+		// 奇技淫巧：先連父親，節省程式碼。
+		p[i] = parent[i];	// union
+
+		revsdom[sdom[i]].push_back(i);
+
+		// 奇技淫巧：改成檢查父親。好處是不必補做樹根。
+		int x = parent[i];
+		for (auto j: revsdom[x])
+		{
+			find(j);
+			idom[j] = visit[sdom[best[j]]] < visit[x]
+					? best[j] : x;
+		}
+		revsdom[x].clear();	// 清空已經處理過的路徑
+	}
+
+	for (int k=1; k<t; ++k)
+	{
+		int i = order[k];
+		if (idom[i] != sdom[i]) idom[i] = idom[idom[i]];
+	}
+}
+</textarea>
+<p>陣列索引值、陣列數值，從節點編號改成時刻。</p>
+<textarea>
+http://sunmoon-template.blogspot.tw/2016/12/dominator-tree.html
+</textarea>
+<p class="t">Dominator Tree</p>
+<p>一張有向圖，選定一個起點，由起點到圖上各點的支配點們，疊合成一棵有向樹，稱作「支配樹」，只有唯一一種。</p>
+<p>圖上各點各自連向次低支配點。</p>
+<img src="Dominator9.png">
+<p>學過最短路徑的讀者，可以將支配樹類比為最短路徑樹。疊合所有支配點，成為支配樹；疊合所有最短路徑，成為最短路徑樹。支配點的支配點，也是支配點；最短路徑從頭截下一段，也是最短路徑。</p>
+<p class="t">延伸閱讀：遞推演算法</p>
+<pre>
+dom(s, t) = { dom(s, from1(t)) ∩ dom(s, from2(t)) ∩ ... } ∪ t
+</pre>
+<p>採用遞歸法，計算起點到終點的所有支配點：窮舉起點到終點的所有路線，計算起點到「終點的前一點」的所有支配點；各種路線的支配點們取交集，再補上終點。</p>
+<p>以遞推方式，從起點開始，依序計算圖上各點的支配點。然而不幸的是：我們不明白計算順序！</p>
+<p>當圖上無環，可以採用拓撲順序，只需遍歷一次。當圖上有環，只好採用偽拓樸順序：「DFS離開點的逆序」，反覆實施數次，趨近正確答案，直到答案不再變動，即是正確答案。</p>
+<p>學過最短路徑的讀者，可以將此類比為「<a href="Path2.html">Label Correcting Algorithm</a>」。重複遍歷的過程當中，儘管無法確定支配樹的長相，但是可以確定支配樹正在一層一層生長。</p>
+<p>最多遍歷V次，每個點最多有V個「終點的前一點」，每一點最多有V個祖先、V個支配點，時間複雜度為O(V^3)。</p>
+<p>如果只想求支配樹，按理應該可以改成計算起點到終點的次低支配點：窮舉起點到終點的所有路線，計算起點到「終點的前一點」的所有次低支配點的最低共同祖先LCA（取交集），再將終點連上LCA（補上終點）。</p>
+<p>但是有向圖的LCA究竟如何定義高低呢？似乎還沒有人研究。</p>
+<p class="t">有向圖的關節點</p>
+<p><a href="http://verona.dei.unipd.it/~prin08/kickoff/laura.pdf">http://verona.dei.unipd.it/~prin08/kickoff/laura.pdf</a></p>
+<p>有向圖的關節點，有兩種定義方式：移除關節點之後，強連通分量變多（雙通變單通、不通）、弱連通分量變多（有通變不通）。</p>
+<p>尋找所有的強連通關節點：圖上任選一點，找出此點出發的支配樹、以及抵達此點的支配樹。這兩棵樹，除去樹根與樹葉之後所剩下的節點，取聯集，即是強連通關節點──但是不包含樹根。樹根必須另行判斷是否為關節點。</p>
+<p>尋找所有的弱連通關節點：改為取交集。</p>
+<p class="e">UVa 11902 Sphere EN BIA</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Component</p>
+</div><div class="c">
+<p class="t">Connected Graph</p>
+<p>一張圖，如果所有兩點之間皆得以邊相通，這張圖就是一張連通的圖。例如一棵樹就是一張連通的圖。</p>
+<img src="ConnectedComponent1.png">
+<p class="t">Connected Component（Component）<br>（1-connected component in undirected graph）</p>
+<p>譯作「連通分量」、「連通成分」、「連通元件」、「連通單元」等等，也有人簡稱為「分量」，沒有正式翻譯。</p>
+<p>當一張無向圖不連通、分隔成幾個區塊的時候，每一個區塊都是一個「連通分量」。一個獨立的點也是一個連通分量。</p>
+<img src="ConnectedComponent2.png">
+<p>一張無向圖的連通分量們，不可能互相重疊。一個連通分量是指在連通的情況下，點數盡量最多、擴展範圍最大的一個子圖；因此，從一個連通分量當中，切下一小塊仍舊連通的子圖，並不能叫做連通分量。</p>
+<p>運用Graph Traversal就能找到一張無向圖的所有連通分量。</p>
+<p class="e">UVa 459 10765</p>
+<p class="t">Biconnected Component（Block）<br>（2-vertex-connected component in undirected graph）</p>
+<p>一張無向圖上，不會產生關節點的連通分量，稱作「雙連通分量」。一張無向圖的雙連通分量們，通常會互相重疊，重疊的部分都是原圖的關節點。</p>
+<img src="ConnectedComponent3.png">
+<p>把一個雙連通分量視作一個點，把一個關節點也視作一個點，凡有接觸就添上一條邊，如此可以建立出一棵樹，通常稱作BCC Tree或Block Tree。</p>
+<p class="t">Bridge-connected Component<br>（2-edge-connected component in undirected graph）</p>
+<p>一張無向圖上，不會產生橋的連通分量，稱作「橋連通分量」。</p>
+<img src="ConnectedComponent4.png">
+<p>兩個點之間沒有橋，就至少有兩條不同的路徑。這兩條路徑勢必形成一只環。一個橋連通分量，想必是由很多環交疊而成的。</p>
+<p>把一個這樣的連通分量視作一個點，凡有接觸就添上一條邊，如此可以建立出一棵樹。</p>
+<p class="e">ICPC 5135 4839 7605</p>
+<p class="t">Strongly Connected Component<br>（1-connected component in directed graph）</p>
+<p>在無向圖當中，只要邊邊相連，即形成連通，不必在意方向。在有向圖當中，由於有了方向限制，因此細分為「強連通」和「弱連通」：所有兩點之間，雙向都有路可通，則是「強連通」；所有兩點之間，至少單向有路可通，則是「弱連通」。</p>
+<p>一張有向圖的「強連通分量」，是所有兩點之間，雙向皆有路可通的連通分量。一張有向圖的強連通分量們，不可能互相重疊。</p>
+<img src="ConnectedComponent5.png">
+<p>兩個點來回都有路徑，這兩條路徑勢必形成一只有向環。一個強連通分量，想必是由很多有向環交疊而成的。</p>
+<p>要是把一張圖的各個強連通分量，各自收縮成一個點，如此圖上就沒有環，形成有向無環圖（DAG）。這個手法很有用處──沒有環的圖，常常會有效率極佳、令人眼睛一亮的演算法。當遇到一張有環的圖，不妨先把每個強連通分量統統收縮，簡化問題的複雜程度。</p>
+<p class="e">UVa 11504 11709 11770 11838</p>
+<p class="t">Weakly Connected Component</p>
+<p>一張有向圖的「弱連通分量」，是所有兩點之間，至少單向有路可通的連通分量。一張有向圖的弱連通分量們，通常會互相重疊。</p>
+<img src="ConnectedComponent6.png">
+<p>一個弱連通分量，可以看作是強連通分量的縮圖當中的一條有向路徑。要找最大的弱連通分量，即是縮圖當中，涵蓋最多原點的一條有向路徑。</p>
+<p class="e">UVa 11324</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Component: Tarjan's Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>一張無向圖，找到所有的Bridge-connected Component。亦可進一步收縮所有的BCC、收縮所有的環，讓原圖變成一棵樹。</p>
+<p>一張有向圖，找到所有的Strongly Connected Component。亦可進一步收縮所有的SCC、收縮所有的環，讓原圖變成一張有向無環圖。</p>
+<p>為什麼要收縮呢？當圖上有環，難以設計有效率的演算法。收縮所有的環，讓圖變成樹、有向無環圖，就容易解決問題了！</p>
+<p class="t">無向圖：<br>尋找所有的Bridge-connected Component、收縮所有的環</p>
+<p>利用尋找所有橋的演算法，輔以堆疊，找到所有的BCC。</p>
+<img src="Tarjan%27sAlgorithm1.png">
+<pre>
+一、實施DFS。
+二、拜訪階段，
+　　針對每一個點，計算自身與子孫所能觸及的最高祖先。
+　　（觸及是指：不斷往下走tree edge、往上走back edge。）
+三、回溯階段，
+　　每當發現某一點恰是最高祖先，即表示此點與子孫已經形成BCC。
+　　從堆疊之中刪除BCC，避免再次處理。
+</pre>
+<p>時間複雜度等於一次DFS的時間。圖的資料結構為adjacency matrix，便是O(V^2)；圖的資料結構為adjacency lists，便是O(V+E)。</p>
+<textarea>
+int adj[9][9];			// 記錄邊數，支援多重邊
+int visit[9], low[9], t = 0;
+int stack[9], top = 0;	// 堆疊
+int contract[9];		// 每個點收縮到的點
+
+void DFS(int i, int p)
+{
+	visit[i] = low[i] = ++t;
+	stack[top++] = i;	// push i
+
+	for (int j=0; j<9; ++j)
+		if (adj[i][j])
+		{
+			// tree edge
+			if (!visit[j])
+				DFS(j, i);
+
+			// tree/back edge
+			if (!(j == p && adj[i][j] == 1))
+				low[i] = min(low[i], low[j]);
+		}
+
+	// 形成BCC。
+	// i點會是BCC裡面，最早拜訪的點。
+	if (visit[i] == low[i])
+	{
+//		cout << "block:";
+		int j;
+		do {
+			j = stack[--top];	// pop j
+//			cout << j;
+			contract[j] = i;
+		} while (i != j);
+	}
+}
+
+void tarjan()
+{
+	memset(visit, 0, sizeof(visit));
+	t = 0;
+
+	for (int i=0; i<9; ++i)
+		if (!visit[i])
+			DFS(i, i);
+}
+</textarea>
+<p class="t">有向圖：<br>尋找所有的Strongly Connected Component、收縮所有的環</p>
+<p>與無向圖幾乎相同。不必擔心多重邊的問題，但是要小心處理forward edge和cross edge。</p>
+<img src="Tarjan%27sAlgorithm2.png">
+<pre>
+一、實施DFS。
+二、拜訪階段，
+　　針對每一個點，計算自身與子孫所能觸及的最高祖先。
+　　觸及是指：不斷走任意邊，但是不能走到曾經形成的SCC。
+　　（forward edge和cross edge可能連往已經移除的SCC，不得計算。）
+三、回溯階段，
+　　每當發現某一點恰是最高祖先，即表示此點與子孫已經形成SCC。
+　　從堆疊之中刪除SCC，避免再次處理。
+</pre>
+<textarea>
+bool adj[9][9];
+int visit[9], low[9], t = 0;
+int stack[9], top = 0;	// 堆疊
+bool instack[9];		// 記錄DFS forest目前尚存哪些點
+int contract[9];		// 每個點收縮到的點
+
+void DFS(int i)
+{
+	visit[i] = low[i] = ++t;
+	stack[top++] = i;
+	instack[i] = true;
+
+	for (int j=0; j<9; ++j)
+		if (adj[i][j])
+		{
+			// tree edge
+			if (!visit[j])
+				DFS(j);
+
+			// tree/back/forward/cross edge
+			// 已經遍歷過、但是尚未形成SCC的點
+			if (instack[j])
+				low[i] = min(low[i], low[j]);
+		}
+
+	// 形成SCC，從目前的DFS forest移除它。
+	// i點會是SCC裡面，最早拜訪的點。
+	if (visit[i] == low[i])
+	{
+		int j;
+		do
+		{
+			j = stack[--top];
+			instack[j] = false;
+			contract[j] = i;
+		} while (j != i);
+	}
+}
+
+void tarjan()
+{
+	memset(visit, 0, sizeof(visit));
+	t = 0;
+
+	for (int i=0; i<9; ++i)
+		if (!visit[i])
+			DFS(i);
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Component: Kosaraju's Algorithm</p>
+</div><div class="c">
+<p class="t">演算法</p>
+<p>一張有向圖，找到所有的Strongly Connected Component；亦可進一步收縮所有的SCC、收縮所有的環，讓原圖變成一張有向無環圖。</p>
+<p>原圖，顛倒每一條邊的方向，得到新圖。所有SCC的位置依舊相同！</p>
+<img src="Kosaraju%27sAlgorithm1.png">
+<p>縮圖亦如是！原縮圖、新縮圖都是有向無環圖。以原縮圖的拓樸順序，遍歷新縮圖，依序摘下每個點，每個點都是一個SCC。而且只有入邊、沒有出邊！</p>
+<img src="Kosaraju%27sAlgorithm2.png">
+<p>以尚未收縮的原圖、新圖來詮釋。以原圖的偽拓樸順序，遍歷新圖，依序摘下每個連通分量，每個連通分量都是一個SCC。而且SCC沒有出邊，不怕走過頭！</p>
+<img src="Kosaraju%27sAlgorithm3.png">
+<pre>
+一、原圖找偽拓樸順序。
+　　DFS離開點的順序，顛倒之後，得到偽拓樸順序（原圖有環，故稱之偽）。
+二、以原圖的偽拓撲順序，遍歷新圖的每一個點，
+　　每一個點求得連通分量，摘下連通分量。
+　　換句話說，
+　　依照原圖的偽拓樸順序，新圖實施DFS/BFS。
+　　每一棵DFS tree/BFS tree，對應到每一個SCC。
+</pre>
+<p>總結一下。原圖實施DFS，找偽拓樸順序：每一棵SCC子樹，必然連續遍歷。新圖實施DFS，以偽拓樸順序找連通分量：確認哪些點是同一個SCC。</p>
+<p>時間複雜度為兩次DFS的時間，以及顛倒所有邊的時間。</p>
+<p>資料結構是adjacency matrix，不必變動資料結構就可以達到顛倒所有邊的效果，總時間複雜度O(V^2)；資料結構是adjacency lists，需要顛倒所有邊，總時間複雜度O(V+E)。</p>
+<textarea>
+int adj[9][9];			// adjacency matrix
+bool visit[9];			// DFS visit record
+vector<int> finish[9];	// DFS的離開順序
+int scc[9];				// 每個點的強連通分量編號
+
+void DFS1(int i)
+{
+	visit[i] = true;
+	for (int j=0; j<9; ++j)
+		if (adj[i][j] && !visit[j])
+			DFS1(j);
+
+	finish.push_back(i);
+}
+
+void DFS2(int i, int c)
+{
+	cout << "第" << c << "個強連通分量";
+	cout << "包含第" << i << "點";
+	scc[i] = c;	// 設定第i點屬於第c個強連通分量
+
+	visit[i] = true;
+	for (int j=0; j<9; ++j)
+		if (adj[j][i] && !visit[j])	// 顛倒所有邊的方向
+			DFS2(j, c);
+}
+
+void kosaraju()
+{
+	finish.clear();
+	memset(visit, false, sizeof(visit));
+	for (int i=0; i<9; ++i)
+		if (!visit[i])
+			DFS1(i);
+
+	memset(visit, false, sizeof(visit));
+	for (int i=9-1; i>=0; --i)
+		if (!visit[finish[i]])		// 原圖的拓撲順序
+			DFS2(finish[i], c++);	// 找到一個強連通分量
+}
+</textarea>
+<textarea>
+int adj[9][9];
+bool visit[9];
+vector<int> finish[9];	// 依照離開順序排好所有點
+int contract[9];		// 每個點收縮到的點
+
+void DFS1(int i)
+{
+	if (visit[i]) return;
+	visit[i] = true;
+	for (int j=0; j<9; ++j)
+		if (adj[i][j])
+			DFS1(j);
+	finish.push_back(i);
+}
+
+void DFS2(int i, int p)
+{
+	if (visit[i]) return;
+	visit[i] = true;
+	for (int j=0; j<9; ++j)
+		if (adj[j][i])	// 顛倒所有邊的方向
+			DFS2(j, n);
+	contract[i] = p;	// 收縮至第p點
+}
+
+void kosaraju()
+{
+	finish.clear();
+	memset(visit, false, sizeof(visit));
+	for (int i=0; i<9; ++i) DFS1(i);
+	memset(visit, false, sizeof(visit));
+	for (int i=9-1; i>=0; --i) DFS2(finish[i], finish[i]);
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">2-Satisfiability</p>
+</div><div class="c">
+<p class="t">兩個至少選一個</p>
+<p>首先介紹嘮叨媽媽和偏食小孩的討價還價問題：</p>
+<img src="2-Satisfiability1.png">
+<p>青椒、菠菜至少選一個。青椒、番茄至少選一個。番茄、苦瓜至少選一個。苦瓜、菠菜至少選一個。不吃苦瓜、不吃青椒，至少選一個。選擇哪些菜色，才能成全媽媽的愛心，滿足小孩的任性？</p>
+<p class="t">2-Satisfiability（2-SAT）</p>
+<p>邏輯學有一個相似的問題。</p>
+<img src="2-Satisfiability2.png">
+<p>X₀、X₁、……是變數，變數值是true或false。變數可以重複出現。變數可以加上not。括號之間是and，括號裡面是or，格式是固定的。</p>
+<p>括號之間是and：每個括號都是true，整個式子才是true。</p>
+<p>括號裡面是or：「左右皆true」或者「左true右false」或者「右true左false」，整個括號才是true。</p>
+<p>如何設定變數值，讓整個式子成為true呢？</p>
+<img src="2-Satisfiability3.png">
+<p class="t">2-Satisfiability另一種觀點</p>
+<p>N個變數。每個變數都要設定數值為true或false。</p>
+<p>一個變數X，要嘛X = true，要嘛X = false。換句話說，要嘛X = true，要嘛¬X = true。兩個元件X與¬X二選一。</p>
+<p>N個變數，一共2N個元件。最後選出N個元件。</p>
+<img src="2-Satisfiability4.png">
+<p>一個括號裡面有兩個元件，括號必須成為true。</p>
+<p>正向思考：左右皆選、左選右不選、左不選右選。</p>
+<p>可選可不選。這樹立了模稜兩可的規則，難以設計演算法。</p>
+<p>逆向思考：不選這個，就必須選另外一個。</p>
+<p>一定要選。這樹立了一定要遵守的規則，容易設計演算法。</p>
+<img src="2-Satisfiability5.png">
+<p class="t">以有向圖做為模型</p>
+<p>把元件之間的「依賴關係」建立成有向圖。</p>
+<pre>
+一、依序處理每個括號。
+　甲、變數不同。例如(X or Y)。
+　　回、不選X（選了¬X），就一定要選Y：建立一條有向邊¬X → Y。
+　　回、不選Y（選了¬Y），就一定要選X：建立一條有向邊¬Y → X。
+　乙、變數相同。例如(X or X)。
+　　回、一定要選X，一定不能選¬X：建立一條有向邊¬X → X。
+　　　　（一旦選¬X，就連帶選X，產生矛盾。只好選X。） 
+　丙、變數相同，一正一反。例如(X or ¬X)。
+　　回、無論選X或選¬X都行：不必建立邊。
+</pre>
+<img src="2-Satisfiability6.png">
+<p class="t">判斷是否有解</p>
+<p>凡無解，必有一個環同時穿過X與¬X。</p>
+<p>證明若右則左：</p>
+<p>X與¬X必須二選一。選了一個點，點可及之處也得選。當X與¬X同屬一環，無論選哪一個，都會連帶選到對方，導致矛盾、導致無解。</p>
+<img src="2-Satisfiability7.png">
+<p>證明若左則右：</p>
+<p>引發矛盾無解的情況是X必選，X同時連向Y與¬Y。（可以推廣成有中繼點。可以推廣成Y與¬Y是祖孫關係。）</p>
+<p>既然存在X→Y，就表示某一個括號是¬X與Y，也一定存在¬Y→¬X。同理，既然存在X→¬Y，也一定存在Y→¬X。</p>
+<p>補上新邊，可以發現，如果有任何引發矛盾無解的情況，那麼X和¬X必同屬一環。</p>
+<img src="2-Satisfiability8.png">
+<p>實作時，判斷X與¬X是否在同一個SCC即可。SCC裡面是一群交織的環，SCC之間沒有環。</p>
+<p class="t">找出其中一組解</p>
+<p>依序設定每一對元件X與¬X。若是祖孫，則選擇孫，避免矛盾；若不是祖孫，則任一皆可。另外也必須確認先前設定的元件，是否產生衝突。</p>
+<p>可以找出字典順序最小的解。時間複雜度為O(VE)。</p>
+<img src="2-Satisfiability9.png">
+<pre>
+一、建立有向圖。
+二、依序判斷每一對元件X與¬X何者為解：
+　甲、嘗試X作為解：若X可及之處存在非解者，則X非解。
+　乙、嘗試¬X作為解：若¬X可及之處存在非解者，則¬X非解。
+　丙、確認X與¬X何者為解之後，將其可及之處全數標記為解。
+</pre>
+<textarea>
+const int N = 10;	// 變數數量
+bool adj[20][20];	// adjacency matrix
+int visit[20];		// DFS visit record
+int sat[20];		// 解
+
+int not(int a) {return a<N ? a+N : a-N;}
+
+// 另外一種方式
+/*
+int not(int a) {return a&1 ? a : a+1;}
+int not(int a) {return a^1;}
+*/
+
+bool dfs_try(int i)
+{
+	if (visit[i] == 1 || sat[i] == 1) return true;
+	if (visit[i] == 2 || sat[i] == 2) return false;
+	visit[i] = 1;
+	visit[not(i)] = 2;
+	for (int j=0; j<N+N; ++j)
+		if (adj[i][j] && !dfs_try(j))
+			return false;
+	return true;
+}
+
+void dfs_mark(int i)
+{
+	if (sat[i] == 1) return;
+	sat[i] = 1;
+	sat[not(i)] = 2;
+	for (int j=0; j<N+N; ++j)
+		if (adj[i][j])
+			dfs_mark(j);
+}
+
+void two_satisfiability()
+{
+	// 一次輸入一個括號
+	memset(adj, false, sizeof(adj));
+	int a, b;
+	while (cin >> a >> b)
+	{
+		map[not(a)][b] = true;
+		map[not(b)][a] = true;
+	}
+
+	// 找出一組解
+	for (int i=0; i<N; ++i)
+	{
+		memset(visit, 0, sizeof(visit));
+		if (dfs_try(i)) {dfs_mark(i); continue;}
+
+		memset(visit, 0, sizeof(visit));
+		if (dfs_try(not(i))) {dfs_mark(not(i)); continue;}
+
+		// 無解則立即結束。
+		return;
+	}
+
+	// 印出一組解。
+	for (int i=1; i<N; ++i)
+		if (sat[i] == 1)
+			cout << i;
+		else /*if (sat[i] == 2)*/
+			cout << "not" << i;
+}
+</textarea>
+<p>採用逆向拓樸順序。時間複雜度為O(V+E)。</p>
+<pre>
+一、建立有向圖。
+二、尋找所有Strongly Connected Component。
+三、收縮每個Strongly Connected Component，成為有向無環圖DAG。
+　　（同一個SCC裡面的點，必須同進退；要嘛全選，要嘛全不選。）
+四、尋找縮圖的Topological Ordering。
+五、在縮圖上，以Topological Ordering的反序，設定解。
+</pre>
+<img src="2-Satisfiability10.png">
+<textarea>
+const int N = 10;
+bool adj[20][20];
+int visit[20];
+int sat[20];
+int finish[20], scc[20], n = 0;
+
+void DFS1(int i)
+{
+	visit[i] = true;
+	for (int j=0; j<N+N; ++j)
+		if (map[i][j] && !visit[j])
+			DFS1(j);
+	finish[n++] = i;
+}
+
+void DFS2(int i)
+{
+	scc[i] = n;
+	visit[i] = true;
+	for (int j=0; j<N+N; ++j)
+		if (map[j][i] && !visit[j])
+			DFS2(j);
+}
+
+void two_satisfiability()
+{
+	// 一次輸入一個括號
+	memset(adj, false, sizeof(adj));
+	int a, b;
+	while (cin >> a >> b)
+	{
+		map[not(a)][b] = true;
+		map[not(b)][a] = true;
+	}
+
+	// Kosaraju's Algorithm：尋找拓撲順序。
+	n = 0;	// 時刻
+	memset(visit, false, sizeof(visit));
+	for (int i=0; i<N+N; ++i)
+		if (!visit[i])
+			DFS1(i);
+
+	// Kosaraju's Algorithm：找出強連通分量。
+	n = 0;	// 強連通分量的編號
+	memset(visit, false, sizeof(visit));
+	for (int k=N+N-1; k>=0; --k)
+	{
+		int i = finish[k];
+		if (!visit[i])
+			DFS2(i), n++;
+	}
+
+	// 檢查是否有解，無解則立即結束。
+	for (int i=0; i<N; ++i)
+		if (scc[i] == scc[inv(i)])
+			return;
+
+	// 找出一組解
+	memset(sat, 0, sizeof(sat));
+	for (int k=0; k<N+N; ++k)
+	{
+		int i = finish[k];
+		if (!sat[scc[i]])
+		{
+			sat[scc[i]] = 1;
+			sat[scc[not(i)]] = 2;
+		}
+	}
+
+	// 印出一組解
+	for (int i=1; i<N; ++i)
+		if (sat[scc[i]] == 1)
+			cout << i;
+		else /*if (sat[scc[i]] == 2)*/
+			cout << "not" << i;
+}
+</textarea>
+<p class="t">兩個只能選一個</p>
+<p>把or改成xor。留給讀者解決。</p>
+<p class="t">三個至少選一個</p>
+<p>括號裡面改成三個變數，稱作3-SAT。NP-complete。沒有快速的演算法。</p>
+<p>3-SAT被認為是最根本的NP-complete問題。所有NP-complete問題都可以重新改寫成3-SAT問題，然後用3-SAT演算法求解。然而式子繁雜冗長，實務上沒有人這麼做。但是理論上還是有人這麼做，請參考TAOCP 4B（目前只有草稿Volume 4 Fascicle 6）。</p>
+<p class="e">UVa 10319 11294 11861 11930 ICPC 3211 3713 4452 4849</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Cactus Graph</p>
+</div><div class="c">
+<p class="t">Cactus Graph</p>
+<p><a href="http://en.wikipedia.org/wiki/Cactus_graph">http://en.wikipedia.org/wiki/Cactus_graph</a></p>
+<p><a href="http://tmtacm.blogspot.tw/2013/05/blog-post.html">http://tmtacm.blogspot.tw/2013/05/blog-post.html</a></p>
+<p class="t">Directed Cactus Graph</p>
+<img src="DirectedCactus1.png">
+<p>有向圖上，每條邊隸屬於恰好一個有向簡單環。另一種說法：許多有向環，相互銜接成樹狀，接縫恰好是一點。</p>
+<p>要判斷一張有向圖是不是仙人掌，原理就跟判斷關節點的方法相同。</p>
+<pre>
+使用 DFS ，會遇到三種情形：
+
+一、 (i, j) 是 cross edge 或 forward edge：
+
+    tree edge 和 back edge 剛好構成仙人掌全部的邊，
+    所以不會有 cross edge 與 forward edge。
+    如果有的話，就表示不是仙人掌。
+
+    實作時，可利用 DFS stack 判斷，
+    如果 j 不在 stack 又已經拜訪過（也就是 j 已經從 stack 彈出來了），
+    則表示 (i, j) 一定是 cross edge 或 forward edge。
+
+二、 (i, j) 是 back edge：
+
+    如果從 i 就已經有路可以走回到 i 的祖先（也是會經過其他的back edge），
+    此時 j 又走回到 i 的祖先，表示環重疊，不是仙人掌。
+
+    範例一：12 23 34 45 56 62 53!       // i = 5 and j = 3
+    範例二：12 23 34 45 51! 53!         // 怎麼好像在寫棋譜...
+
+    實作時，累加 i 回到祖先的路有幾條，只能是恰好一條。
+    可利用關節點演算法的原理，記錄 i 可到達的最高祖先。
+
+三、 (i, j) 是 tree edge：
+
+    與 2. 的概念很像，不過要在 DFS 的回溯階段才能判斷。
+    如果從 i 就已經有路可以走回到 i 的祖先，
+    此時 j 又有路走回到 i 的祖先，表示環重疊，不是仙人掌。
+
+    範例一：12 23 34 45 56! 67! 72! 58! 89! 91!     // i = 5 and j = 8
+    範例二：12 23 34 45 51! 58! 89! 91!             // 同上
+
+    實作時，累加 i 回到祖先的路有幾條，只能是恰好一條。和（二）一起累加。
+    可利用關節點演算法的原理，記錄 i 可到達的最高祖先。
+
+DFS 結束之後，
+最後要判斷 DFS 是否能順利走到圖上所有點。
+
+附註：樹根不必走到祖先，要當作例外處理。可以選定任何一點作為樹根。
+</pre>
+<textarea>
+int adj[9][9];
+int visit[9], low[9], t = 0;
+bool leave[9];	// 已經結束拜訪的節點
+
+bool DFS(int p, int i)
+{
+	visit[i] = low[i] = ++t;
+
+	int c = 0;
+	for (int j=0; j<9; ++j)
+		if (!visit[j])	// tree edge
+		{
+			// 一旦發現不是仙人掌就可以馬上結束
+			if (!DFS(i, j)) return false;
+
+			// 找到一條走回到i點祖先的路
+			if (low[j] < visit[i]) if (++c > 1) return false;
+
+			// 更新i點可走到的最高祖先
+			low[i] = min(low[i], low[j]);
+		}
+		else			// back edge
+		{
+			// 排除 forward edge 與 cross edge 的情況
+			if (leave[j]) return false;
+
+			// 找到一條走回到i點祖先的路
+			if (visit[j] < low[i]) if (++c > 1) return false;
+
+			// 更新i點可走到的最高祖先
+			low[i] = min(low[i], visit[j]);
+		}
+
+	leave[i] = true;
+	return p == -1 ? true : c == 1;
+}
+
+bool directed_cactus()
+{
+	memset(d, 0, sizeof(d));
+	memset(v, false, sizeof(v));
+	t = 0;
+
+	// 也要確認DFS是否有走到圖上所有點
+	return DFS(-1, 0) && t == V;
+}
+</textarea>
+<p class="e">UVa 10510 ICPC 3514 4045</p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Component.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:03 GMT -->
+</html>

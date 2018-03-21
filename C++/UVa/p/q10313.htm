@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10313: Pay the Price</h1>            
+<p>從前有一個國家那裡的人民有非常有趣的習慣。有些人懶惰，有些人富有。有些人非常平窮，有些人小氣。明顯的有些有錢人小氣（貧窮人絕不會小氣，因為他本來就沒多少東西）並且懶惰，但是貧窮人也都懶惰（這也是他們永遠都貧窮的原因）。以下的事在這個國家都是真實的：</p>
+<ol type="a">
+  <li>由於有錢人小氣，沒有任何東西的價格會超過300元。</li>
+  <li>由於貧窮人懶惰，每件東西的價格都是整數。（連乞丐要錢都至少要1元）</li>
+  <li>硬幣的面值從1到300元，所以那些懶惰的有錢人可以只用一個硬幣付任何的價錢。</li>
+</ol>
+<p>你的任務是找出一個人要付一個價錢有多少種方法，條件是使用硬幣的數目是被限定的。例如：要用3個硬幣來付6元有3種方法：1+1+4、1+2+3、2+2+2。依此類推，一個人付6元最多使用6個硬幣的方法有11種。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料1列，每列可能含有1或2或3個整數。其中第一個整數一定是N（0     
+&lt;= N &lt;= 300），代表要付的錢是多少。其他的數均大於等於0，小於等於1000。</p>        
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                    
+<p>對每組測試資料輸出一列，代表付N元有多少種方法，分為以下三種：</p>     
+<ol>    
+  <li>如果該組測試資料僅有1個整數，請輸出付N元的方法有多少種（用多少個硬幣不拘）。</li>    
+  <li>如果該組測試資料有2個整數N、L1，請輸出付N元且最多用L1個硬幣的方法有多少種。</li>    
+  <li>如果該組測試資料有3個整數N、L1、L2，請輸出付N元且最少用L1個硬幣，最多用L2個硬幣的方法有多少種。在這裡L1一定小於等於L2。</li>    
+</ol>    
+<table border="1" width="100%" cellpadding="5">    
+  <tr>    
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>    
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>   
+  </tr>   
+  <tr>   
+    <td width="50%"><pre>6
+6 3
+6 2 5
+6 1 6
+0 
+0 0 
+0 1 
+0 0 0 
+0 0 1 
+0 1 1 
+0 1 2 
+200 30 75  </pre></td>   
+    <td width="50%"><pre>11
+7
+9
+11
+1
+1
+1
+1
+1
+0
+0
+2347163627458   </pre></td>   
+  </tr>   
+</table>   
+                                     
+</body>                                     
+                                     
+</html>                                     

@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q355: The Bases Are Loaded</h1>          
+<p>寫一個程式做進位制之間的轉換（2進位到16進位）。其中A代表10，B代表11......，F代表15。
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+每組測試資料一列，有3個值。第一個值為一個正整數m，代表要轉換的這個數是幾進位的數。第二個值為一個正整數n，代表要把這個數轉換成幾進位的數。第三個值就是要轉換的數（m進位），這個值最長不會超過10個字元的長度，且有可能在m進位之下是不正確的（例如Sample 
+Input中的第二列，126不是一個正確的5進位數）。
+<p>以Sample Input的第一列為例說明：要把2進位表示法的10101轉換成10進位的表示法。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                          
+每組測試資料輸出一列，把m進位的數轉換成n進位的數。格式請參考Sample 
+Output。
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                        
+Input</b></span></p>                                               
+<pre>2 10 10101
+5 3 126
+15 11 A4C
+5 15 0</pre>    
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                                 
+Output</b></span></p>                                               
+<pre>10101 base 2 = 21 base 10 
+126 is an illegal base 5 number 
+A4C base 15 = 1821 base 11
+0 base 5 = 0 base 15</pre>
+                                             
+</body>                                             
+                                             
+</html>                                             

@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q146: ID Codes</h1>          
+<p>雖然慢了一個世紀，在2048年的時候，老大時代終究還是來了！為了管理這許多的公民，而且為了可以在法律上的長期計數。所以政府決定了一個極端的方法---所有居民都有一個超微小電腦晶片殖在他們的左手脕上。這個電腦將包含這個居民的所有個人資訊並且它也是一個小型發射機，將人們的行動記錄在一個中央電腦中。</p>   
+<p>每台電腦的本質元件上都將有一個唯一的識別碼。包含有最多50個字元的26個小寫字母。對任一個字元的選擇都是隨意的。為了使壓印這些識別碼到晶片中的複雜方法簡化一些，所以對不同製造者都將分配到不同區段的英文字，並用來產生新碼。因此每選擇一組英文字，在他換到其他組英文字之前，是可以推論出所有可能的碼。例如，如果決定的一組英文字剛好包含3個a，2個b, 1個c, 那麼在允許的60個可能的編碼中的三個如下所示：</p>    
+<pre>      abaabc
+      abaacb
+      ababac</pre>
+<p>這三個碼按英文字母順序依序印出，而且在全部可能產生的碼當中是連續的。</p>   
+<p>現在你的任務就是要寫一個程序來幫忙識別碼的發行。你的程式將接受一系列不超50個小寫字母（有可能會重覆）而且印出他的下一個碼。假如是最後一個碼，也就是沒有下一個，就要印出"No Successor"</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料1列，有1個識別碼字串。字串&quot;#&quot;代表輸入結束。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料輸出一個字串，代表輸入識別碼的下一個識別碼字串。如果此字串不存在，請輸出&quot;No 
+Successor&quot;</p>  
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                        
+Input</b></span></p>                              
+<pre>abaacb
+cbbaa
+a
+cab
+abcd
+acbb
+azyxwvutsrqpppooonnnmmmlllkkkjjjiiihhhgfedcccbbaaa
+#</pre>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>ababac
+No Successor
+No Successor
+cba
+abdc
+babc
+baaaabcccdefghhhiiijjjkkklllmmmnnnooopppqrstuvwxyz</pre> 
+                            
+</body>                            
+                            
+</html>                            

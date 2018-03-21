@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10518: How Many Calls?</h1>             
+<p>費費伯那西數列（fibonacci number）定義如下：</p>     
+<ul>
+  <li><b>fib(0) = 0</b></li>
+  <li><b>fib(1) = 1</b></li>
+  <li><b>fib(n) = fib(n-1) + fib(n-2)</b></li>
+</ul>
+<p>但是我們現在並沒有興趣去求第 n 
+個費伯那西數是多少。我們想要知道當我們要求第 <b><font color="#FF0000">n</font></b> 
+個費伯那西數時，要呼叫以上的遞迴多少次。由於這個數可能會很大，我們想讓你的任務簡單一些。我們僅僅需要知道最後一個數字是多少就可以了，在這裡這個數是以 
+<b><font color="#FF0000">b</font></b> 進位來表示。</p>      
+<p>例如：要求出 fib(10) 必須呼叫以上的遞迴 177 
+次（十進位），若 b=10的話，那你的答案應該是 7。但是若b=8的話，那你的答案應該是 
+1。但是若b=99的話，那你的答案應該是 78。</p>      
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                       
+<p>輸入含有多組測試資料。每組測試資料一列含有2個整數 n（0 
+&lt;= n &lt;2<sup>63</sup>-1）和 b（0 &lt; b &lt;= 10000）。</p>                  
+<p>若 n=0 且 b=0，代表輸入結束。</p>                   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                                    
+<p>對每組測試資料輸出一列，先輸出這是第幾組測試資料，然後輸出 
+n 和 b，最後輸出總共要呼叫遞迴多少次（只要輸出以 b 
+進位表示的最後一位的數字）。輸出格式請參考Sample Output。</p>                
+<table border="1" width="100%" cellpadding="5">                   
+  <tr>                   
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                                   
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                                  
+  </tr>                                  
+  <tr>                                  
+    <td width="50%">                      
+      <pre>0 100
+1 100
+2 100
+3 100
+10 1000
+10 10
+10 99
+10 8
+123456789 9999 
+0 0
+</pre> 
+    </td>                               
+    <td width="50%">                         
+      <pre>Case 1: 0 100 1
+Case 2: 1 100 1
+Case 3: 2 100 3
+Case 4: 3 100 5
+Case 5: 10 1000 177
+Case 6: 10 10 7
+Case 7: 10 99 78
+Case 8: 10 8 1
+Case 9: 123456789 9999 9888
+</pre> 
+    </td>                              
+  </tr>                              
+</table>                              
+                                                                
+</body>                                                                
+                                                                
+</html>                                                                

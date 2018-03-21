@@ -1,0 +1,902 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Curve.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:46 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Curve</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Curve</p>
+</div><div class="c">
+<p class="t">Curve</p>
+<img src="Curve1.png">
+<p>想要建立曲線，可以使用多項式函數，平滑柔順。</p>
+<p>這種方式有個嚴重的問題：曲線是一個函數，每個X值只對應一個Y值；曲線不能到處亂繞，只能左右伸展。</p>
+<p>要解決這個問題，最簡單的方法，就是分別處理X軸與Y軸。用一個多項式專門處理X座標，用另一個多項式專門處理Y座標。</p>
+<img src="Curve2.png">
+<pre>
+例如
+x(t) = 1 + 2t¹ + 3t² - t³
+y(t) = 2 - t¹ + t² - t³
+
+t代入-0.1，得到一個座標(x(-0.1), y(-0.1)) = (0.831, 2.111)
+t代入   0，得到一個座標(x(0)   , y(0)   ) = (1, 2)
+t代入 0.1，得到一個座標(x(0.1) , y(0.1) ) = (1.229, 1.909)
+</pre>
+<p>這個手法叫做「參數式Parametric Equation」，t就是參數。高中數學、微積分、線性代數課程都有提到，既基礎又常見，不是什麼艱深晦澀的玩意。</p>
+<p class="t">引入Control Point以操控曲線</p>
+<img src="Curve3.png">
+<p>想要操控曲線，最便捷的方式，就是點上幾個點，然後運用「<a href="Interpolation.html">多項式內插</a>」，得到一條穿過這些點的曲線。操控點的位置，就操控了曲線的位置。</p>
+<p>電腦擅於處理大量資料。我們可以製作非常多條曲線，讓曲線銜接曲線，就得到各式各樣的形狀了。因此，通常我們不會製作無限長的曲線，其實製作一小段曲線就夠了。</p>
+<p>我們習慣讓t值的範圍是0到1。設定三個點、用二次多項式實施內插，三個點的t值分別是0、0.5、1。或者設定四個點、用三次多項式實施內插，四個點的t值分別是0、1/3、2/3、1。</p>
+<p>一次多項式只能產生直線，二次以上的多項式就足以產生曲線。</p>
+<style>canvas {border: 1px solid black;}</style>
+<canvas id="Curve" width="500" height="300"></canvas>
+<p class="t">引入Knot Point以微調曲線</p>
+<img src="Curve4.png">
+<p>自由調整控制點的參數t，不一定要等分。曲線仍然穿過所有控制點，但是曲線形狀會改變。</p>
+<p>額外建立一條數線，範圍是t = 0到t = 1。在數線上放置四個樞紐點，分別調控四個控制點的參數t。第一個樞紐點固定於t = 0，最後一個樞紐點固定於t = 1。</p>
+<p>簡單起見，以下暫不考慮樞紐點。</p>
+<p class="t">採用Vandermonde Matrix演算法，進行多項式內插。</p>
+<p>一、設定內插多項式。</p>
+<pre>
+平面上四個點 (1,3) (1,0) (2,2) (3,4)
+X座標、Y座標分別處理，採用三次（四項）多項式。
+x(t) = a₀t⁰ + a₁t¹ + a₂t² + a₃t³
+y(t) = b₀t⁰ + b₁t¹ + b₂t² + b₃t³
+</pre>
+<p>二、求得內插多項式的係數。</p>
+<pre>
+首先處理X座標！
+令四個點對應的t值是 t = 0, 1/3, 2/3, 1。
+也就是說 x(0) = 1 , x(1/3) = 1 , x(2/3) = 2 , x(1) = 3
+
+[     0⁰     0¹     0²     0³ ] [ a₀ ]   [ 1 ]
+[ (1/3)⁰ (1/3)¹ (1/3)² (1/3)³ ] [ a₁ ] = [ 1 ]
+[ (2/3)⁰ (2/3)¹ (2/3)² (2/3)³ ] [ a₂ ]   [ 2 ]
+[     1⁰     1¹     1²     1³ ] [ a₃ ]   [ 3 ]
+                                       -1
+[ a₀ ]   [     0⁰     0¹     0²     0³ ] [ 1 ]
+[ a₁ ] = [ (1/3)⁰ (1/3)¹ (1/3)² (1/3)³ ] [ 1 ]
+[ a₂ ]   [ (2/3)⁰ (2/3)¹ (2/3)² (2/3)³ ] [ 2 ]
+[ a₃ ]   [     1⁰     1¹     1²     1³ ] [ 3 ]
+
+[ a₀ ]   [    1     0     0     0 ] [ 1 ]
+[ a₁ ] = [ -5.5     9  -4.5     1 ] [ 1 ]
+[ a₂ ]   [    9 -22.5    18  -4.5 ] [ 2 ]
+[ a₃ ]   [ -4.5  13.5 -13.5   4.5 ] [ 3 ]
+
+無論一開始給定哪四個點，矩陣都是固定不變的。
+無論一開始給定哪四個點，往後都可以直接套用公式，求得多項式係數。
+
+[ a₀ ]   [    1     0     0     0 ] [ x₀ ]
+[ a₁ ] = [ -5.5     9  -4.5     1 ] [ x₁ ]
+[ a₂ ]   [    9 -22.5    18  -4.5 ] [ x₂ ]
+[ a₃ ]   [ -4.5  13.5 -13.5   4.5 ] [ x₃ ]
+
+a₀ =    1 x₀ +     0 x₁ +     0 x₂ +    0 x₃
+a₁ = -5.5 x₀ +     9 x₁ +  -4.5 x₂ +    1 x₃
+a₂ =    9 x₀ + -22.5 x₁ +    18 x₂ + -4.5 x₃
+a₃ = -4.5 x₀ +  13.5 x₁ + -13.5 x₂ +  4.5 x₃
+</pre>
+<p>三、曲線座標的公式。</p>
+<pre>
+內插多項式的係數公式
+a₀ =    1 x₀ +     0 x₁ +     0 x₂ +    0 x₃
+a₁ = -5.5 x₀ +     9 x₁ +  -4.5 x₂ +    1 x₃
+a₂ =    9 x₀ + -22.5 x₁ +    18 x₂ + -4.5 x₃
+a₃ = -4.5 x₀ +  13.5 x₁ + -13.5 x₂ +  4.5 x₃
+
+代回到內插多項式
+x(t) = a₀t⁰ + a₁t¹ + a₂t² + a₃t³
+
+得到曲線座標的公式
+x(t) =  -4.5       (t-1/3) (t-2/3) (t-1) x₀
+     +  13.5 (t-0)         (t-2/3) (t-1) x₁
+     + -13.5 (t-0) (t-1/3)         (t-1) x₂
+     +   4.5 (t-0) (t-1/3) (t-2/3)       x₃
+
+代入各種t值（範圍是0≤t≤1），得到曲線上每個點的X座標。
+</pre>
+<pre>
+保持矩陣模樣的推導方式。教科書喜歡這樣推導。
+x(t) = a₀t⁰ + a₁t¹ + a₂t² + a₃t³
+
+                       [ a₀ ]
+     = [ t⁰ t¹ t² t³ ] [ a₁ ]   寫成點積
+                       [ a₂ ]
+                       [ a₃ ]
+
+                       [    1     0     0     0 ] [ x₀ ]
+     = [ t⁰ t¹ t² t³ ] [ -5.5     9  -4.5     1 ] [ x₁ ]   內插多項式的係數
+                       [    9 -22.5    18  -4.5 ] [ x₂ ]
+                       [ -4.5  13.5 -13.5   4.5 ] [ x₃ ]
+
+                                   [ x₀ ]
+     = [ a₀(t) a₁(t) a₂(t) a₃(t) ] [ x₁ ]   前面兩個矩陣先相乘
+                                   [ x₂ ]
+                                   [ x₃ ]
+其中
+a₀(t) =  -4.5       (t-1/3) (t-2/3) (t-1)
+a₁(t) =  13.5 (t-0)         (t-2/3) (t-1)
+a₂(t) = -13.5 (t-0) (t-1/3)         (t-1)
+a₃(t) =   4.5 (t-0) (t-1/3) (t-2/3)
+</pre>
+<p>四、X座標、Y座標分別處理，如法炮製。</p>
+<pre>
+x(t) =  -4.5       (t-1/3) (t-2/3) (t-1) x₀
+     +  13.5 (t-0)         (t-2/3) (t-1) x₁
+     + -13.5 (t-0) (t-1/3)         (t-1) x₂
+     +   4.5 (t-0) (t-1/3) (t-2/3)       x₃
+
+y(t) =  -4.5       (t-1/3) (t-2/3) (t-1) y₀
+     +  13.5 (t-0)         (t-2/3) (t-1) y₁
+     + -13.5 (t-0) (t-1/3)         (t-1) y₂
+     +   4.5 (t-0) (t-1/3) (t-2/3)       y₃
+</pre>
+<p>五、代入各種t，得到曲線座標。</p>
+<textarea>
+struct Point {float x, y;};
+Point p0 = {1,3}, p1 = {1,0}, p2 = {2,2}, p3 = {3,4};
+
+void curve()
+{
+	for (float t = 0.0; t <= 1.0; t += 0.01)
+	{
+		float x = -4.5*(t-1/3)*(t-2/3)*(t-1) * p0.x
+				+ 13.5*t*(t-2/3)*(t-1)       * p1.x
+				+ -13.5*t*(t-1/3)*(t-1)      * p2.x
+				+ 4.5*t*(t-1/3)*(t-2/3)      * p3.x;
+		float y = -4.5*(t-1/3)*(t-2/3)*(t-1) * p0.y
+				+ 13.5*t*(t-2/3)*(t-1)       * p1.y
+				+ -13.5*t*(t-1/3)*(t-1)      * p2.y
+				+ 4.5*t*(t-1/3)*(t-2/3)      * p3.y;
+		cout << '(' << x << ',' << y << ')';
+	}
+}
+</textarea>
+<p>快速回顧。</p>
+<pre>
+一、欲使曲線平滑，採用多項式。
+二、欲建立二維平面的曲線，X座標、Y座標分開處理，採用兩個多項式。
+三、欲穿過四個點，採用三次多項式。
+四、代入0≤t≤1，畫出一條曲線。
+五、挪動四個控制點，畫出各種曲線。
+</pre>
+<p class="t">採用Lagrange Interpolation演算法，進行多項式內插。</p>
+<img src="Curve5.png">
+<p>不必算得要死不活，輕鬆得到曲線座標公式：四個多項式a₀(t) a₁(t) a₂(t) a₃(t)的加權平均值，權重是四個控制點的座標。</p>
+<pre>
+x(t) = a₀(t) x₀ + a₁(t) x₁ + a₂(t) x₂ + a₃(t) x₃
+
+a₀(t) =  -4.5       (t-1/3) (t-2/3) (t-1)
+a₁(t) =  13.5 (t-0)         (t-2/3) (t-1)
+a₂(t) = -13.5 (t-0) (t-1/3)         (t-1)
+a₃(t) =   4.5 (t-0) (t-1/3) (t-2/3)
+</pre>
+<p class="t">Hermite Curve</p>
+<p>改用兩個點以及這兩個點的斜率來建立曲線。特色是：曲線與曲線之間，得共用端點、共用斜率，平順銜接，讓銜接點一次可微。</p>
+<canvas id="HermiteCurve" width="500" height="300"></canvas>
+<pre>
+平面上有兩個點 (x₀,y₀) (x₁,y₁) 以及這兩個點的斜率 (dx₀,dy₀) (dx₁,dy₁)
+使用三次多項式（四項）作為內插多項式，製作依序穿過這兩點的曲線。
+x (t) = a₀t⁰ +  a₁t¹ +  a₂t² + a₃t³
+y (t) = b₀t⁰ +  b₁t¹ +  b₂t² + b₃t³
+x'(t) = a₁t⁰ + 2a₂t¹ + 3a₃t²
+y'(t) = b₁t⁰ + 2b₂t¹ + 3b₃t²
+
+處理X座標
+這兩點對應的t值分別是 t = 0, 1
+也就是說 x(0) = x₀ , x(1) = x₁ , x'(0) = dx₀ , x'(1) = dx₁
+
+x (0) =  x₀ = a₀0⁰ +  a₁0¹ +  a₂0² + a₃0³
+x (1) =  x₁ = a₀1⁰ +  a₁1¹ +  a₂1² + a₃1³
+x'(0) = dx₀ = a₁0⁰ + 2a₂0¹ + 3a₃0²
+x'(1) = dx₁ = a₁1⁰ + 2a₂1¹ + 3a₃1²
+
+[  1  0  0  0 ] [ a₀ ]   [  x₀ ]
+[  1  1  1  1 ] [ a₁ ] = [  x₁ ]
+[  0  1  0  0 ] [ a₂ ]   [ dx₀ ]
+[  0  1  2  3 ] [ a₃ ]   [ dx₁ ]
+
+[ a₀ ]   [  1  0  0  0 ] [  x₀ ]
+[ a₁ ] = [  0  0  1  0 ] [  x₁ ]
+[ a₂ ]   [ -3  3 -2 -1 ] [ dx₀ ]
+[ a₃ ]   [  2 -2  1  1 ] [ dx₁ ]
+
+a₀ = x₀
+a₁ = dx₀
+a₂ = -3x₀ + 3x₁ - 2dx₀ - dx₁
+a₃ = 2x₀ + -2x₁ + dx₀ + dx₁
+
+x(t) = (2t³ - 3t² + 1) * x₀
+     + (t³ - 2t² + t) * dx₀
+     + (-2t³ + 3t²) * x₁
+     + (t³ - t²) * dx₁
+</pre>
+<textarea>
+struct Point {float x, y;};
+Point p0 = {1,3}, p1 = {3,4};
+Point m0 = {0,9}, m1 = {-3,-6};
+
+void hermite_curve()
+{
+	for (float t = 0.0; t <= 1.0; t += 0.01)
+	{
+		float x = (2*t*t*t - 3*t*t + 1) * p0.x
+				+ (t*t*t - 2*t*t + t)   * m0.x
+				+ (-2*t*t*t + 3*t*t)    * p1.x
+				+ (t*t*t - t*t)         * m1.x;
+		float y = (2*t*t*t - 3*t*t + 1) * p0.y
+				+ (t*t*t - 2*t*t + t)   * m0.y
+				+ (-2*t*t*t + 3*t*t)    * p1.y
+				+ (t*t*t - t*t)         * m1.y;
+		cout << '(' << x << ',' << y << ')';
+	}
+}
+</textarea>
+<p class="t">Bézier Curve四個點的版本</p>
+<p>使用四個點，推導出兩個點與兩個點的斜率。特色是：在使用者介面當中，控制點的位置，比起控制斜率大小來得直覺多了。</p>
+<p>Bézier Curve應用廣泛。例如Microsoft PowerPoint的曲線：<a href="http://kentingmylove.blogspot.tw/2013/11/curve.html">http://kentingmylove.blogspot.tw/2013/11/curve.html</a>。例如字體設計：<a href="http://shape.method.ac/">http://shape.method.ac/</a>。</p>
+<canvas id="BézierCurve" width="500" height="300"></canvas>
+<pre>
+平面上有四個點 (1,3) (1,0) (2,2) (3,4)
+(1,3) (3,4) 是曲線穿過的點，對應的t值分別是 t = 0 , 1
+(1,0) (2,2) 用來計算斜率，對應的t值分別是 t = 1/3 , 2/3
+[(1,0) - (1,3)] ÷ 1/3 , [(3,4) - (2,2)] ÷ 1/3 是這兩個點的斜率。
+
+[ a₀ ]   [  1  0  0  0 ] [ x₀ ]
+[ a₁ ] = [ -3  3  0  0 ] [ x₁ ]
+[ a₂ ]   [  3 -6  3  0 ] [ x₂ ]
+[ a₃ ]   [ -1  3 -3  1 ] [ x₃ ]
+
+x(t) = (-t³ + 3t² - 3t + 1) * x₀
+     + (3t³ - 6t² + 3t) * x₁
+     + (-3t³ + 3t²) * x₂
+     + (t³) * x₃
+</pre>
+<textarea>
+struct Point {float x, y;};
+Point p0 = {1,3}, p1 = {1,0};
+Point p2 = {2,2}, p3 = {3,4};
+
+void bézier_curve()
+{
+	for (float t = 0.0; t <= 1.0; t += 0.01)
+	{
+		float x = (-t*t*t + 3*t*t - 3*t + 1) * p0.x
+				+ (3*t*t*t - 6*t*t + 3*t)    * p1.x
+				+ (-3*t*t*t + 3*t*t)         * p2.x
+				+ (t*t*t)                    * p3.x;
+		float y = (-t*t*t + 3*t*t - 3*t + 1) * p0.y
+				+ (3*t*t*t - 6*t*t + 3*t)    * p1.y
+				+ (-3*t*t*t + 3*t*t)         * p2.y
+				+ (t*t*t)                    * p3.y;
+		cout << '(' << x << ',' << y << ')';
+	}
+}
+</textarea>
+<script>
+var Curve = function(){
+var Normal = 0, Bézier = 1, Hermite = 2;	// type
+
+	// curve
+	var f1 = [
+		function(t){return -4.5*(t-1/3)*(t-2/3)*(t-1);},
+		function(t){return 13.5*t*(t-2/3)*(t-1);},
+		function(t){return -13.5*t*(t-1/3)*(t-1);},
+		function(t){return 4.5*t*(t-1/3)*(t-2/3);}
+	];
+
+	// Hermite curve
+	var f2 = [
+		function(t){return 2*t*t*t - 3*t*t + 1;},
+		function(t){return t*t*t - 2*t*t + t;},
+		function(t){return -2*t*t*t + 3*t*t;},
+		function(t){return t*t*t - t*t;}
+	];
+
+	// Bézier curve
+	var f3 = [
+		function(t){return -t*t*t + 3*t*t - 3*t + 1;},
+		function(t){return 3*t*t*t - 6*t*t + 3*t;},
+		function(t){return -3*t*t*t + 3*t*t;},
+		function(t){return t*t*t;}
+	];
+
+var move = 50, s = 10;
+function coordinate(canvas, x, y) {
+	x -= move; y -= canvas.height - move; y = -y;
+	x /= s; y /= s;
+	return {x: Math.round(x), y: Math.round(y)};
+}
+function touch(x, y, mousex, mousey) {
+	return x - 2 <= mousex && x + 2 >= mousex
+		&& y - 2 <= mousey && y + 2 >= mousey;
+}
+
+Curve('Curve', Normal, f1, [0,10,10,30], [1,0,10,20]);
+Curve('HermiteCurve', Hermite, f2, [28,17,34,18], [4,2,18,7]);
+Curve('BézierCurve', Bézier, f3, [15,10,25,30], [0,10,20,7]);
+function Curve(id, type, f, px, py) {
+	var canvas = document.getElementById(id);
+	var ctx = canvas.getContext('2d');
+
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+
+	var hit = -1;
+	canvas.onmousedown = function(e){
+		var pos = coordinate(canvas, e.layerX, e.layerY);
+		hit = -1;
+		for (var i=0; i<4; ++i)
+			if (touch(px[i], py[i], pos.x, pos.y))
+				hit = i;
+	};
+
+	canvas.onmousemove = function(e){
+		if (hit == -1) return;
+		var pos = coordinate(canvas, e.layerX, e.layerY);
+		px[hit] = pos.x;
+		py[hit] = pos.y;
+		Draw(canvas, ctx, type, f, px, py);
+	};
+
+	canvas.onmouseup = function(e){
+		hit = -1;
+	};
+
+	Draw(canvas, ctx, type, f, px, py);
+}
+
+function Draw(canvas, ctx, type, f, px, py) {
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	DrawTitle(canvas, ctx);
+
+	ctx.translate(move, canvas.height - move);
+	ctx.scale(1, -1);
+
+	DrawXY(ctx, 400, 200);
+	if      (type == Hermite) DrawHermiteSupport(ctx, px, py);
+	else if (type == Bézier) DrawBézierSupport(ctx, px, py);
+	DrawCurve(ctx, f, px, py);
+	for (var i=0; i<4; ++i) {
+		var str = "p"+i+"("+px[i]+","+py[i]+")";
+		if (type == Hermite) {
+			if      (i == 0 || i == 2) str = "p"+Math.floor(i/2)+"("+px[i]+","+py[i]+")";
+			else if (i == 1 || i == 3) str = "m"+Math.floor(i/2)+"("+px[i]+","+py[i]+")";
+		}
+		DrawPoint(ctx, px[i] * s, py[i] * s, str);
+	}
+}
+
+function DrawTitle(canvas, ctx) {
+	ctx.font = "24pt Arial";
+	ctx.textAlign = "right";
+	ctx.textBaseline = "top";
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = "rgb(0,127,0)";
+	ctx.strokeText("Drag the Point !", canvas.width, 0);
+}
+
+function DrawCurve(ctx, f, px, py) {
+	for (var t = 0.0, cc = 0; t < +1.01; t += 0.01) {
+		var x = 0.0, y = 0.0;
+		for (var i=0; i<4; ++i) {
+			var c = f[i](t);
+			x += c * px[i];
+			y += c * py[i];
+		}
+		if (!cc++) {
+			ctx.beginPath();
+			ctx.moveTo(x * s, y * s);
+		} else {
+			ctx.lineTo(x * s, y * s);
+		}
+	}
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgb(198,24,24)";
+	ctx.stroke();
+}
+
+function DrawBézierSupport(ctx, px, py) {
+	ctx.beginPath();
+	ctx.moveTo(px[0] * s, py[0] * s);
+	ctx.lineTo(px[1] * s, py[1] * s);
+	ctx.moveTo(px[2] * s, py[2] * s);
+	ctx.lineTo(px[3] * s, py[3] * s);
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = "blue";
+	ctx.stroke();
+}
+
+function DrawHermiteSupport(ctx, px, py) {
+	var n0 = Math.sqrt(px[1] * px[1] + py[1] * py[1]);
+	m0 = {x: px[1] / n0 * 5, y: py[1] / n0 * 5};
+	var n1 = Math.sqrt(px[3] * px[3] + py[3] * py[3]);
+	m1 = {x: px[3] / n1 * 5, y: py[3] / n1 * 5};
+
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = "blue";
+	DrawArrow(ctx, 0, 0, px[1]*s, py[1]*s, 8, Math.PI / 5, 0);
+	DrawArrow(ctx, 0, 0, px[3]*s, py[3]*s, 8, Math.PI / 5, 0);
+	DrawArrow(ctx, px[0]*s, py[0]*s, (px[0]+m0.x)*s, (py[0]+m0.y)*s, 8, Math.PI / 5, 0);
+	DrawArrow(ctx, px[2]*s, py[2]*s, (px[2]+m1.x)*s, (py[2]+m1.y)*s, 8, Math.PI / 5, 0);
+}
+
+function DrawArrow(ctx, x1, y1, x2, y2, len, angle, gap) {
+	var slope = Math.atan2(y2 - y1, x2 - x1);
+	x1 += gap * Math.cos(slope);
+	y1 += gap * Math.sin(slope);
+	x2 -= gap * Math.cos(slope);
+	y2 -= gap * Math.sin(slope);
+
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.lineTo(x2 - len * Math.cos(slope-angle), y2 - len * Math.sin(slope-angle));
+	ctx.moveTo(x2, y2);
+	ctx.lineTo(x2 - len * Math.cos(slope+angle), y2 - len * Math.sin(slope+angle));
+	ctx.stroke();
+}
+
+function DrawXY(ctx, scalarX, scalarY) {
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = "gray";
+	DrawArrow(ctx, -scalarX, 0, +scalarX, 0, 8, Math.PI / 5, 0);
+	DrawArrow(ctx, 0, -scalarY, 0, +scalarY, 8, Math.PI / 5, 0);
+
+	ctx.save();
+	ctx.font = "16pt Arial";
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillStyle = "black";
+	ctx.fillText("x", +scalarX+8, 0);
+	ctx.textBaseline = "bottom";
+	ctx.scale(1, -1);
+	ctx.fillText("y", 0, -scalarY-8);
+	ctx.scale(1, -1);
+	ctx.restore();
+}
+
+function DrawPoint(ctx, x, y, str) {
+	var gapx = -24, gapy = 24;
+
+	ctx.beginPath();
+	ctx.arc(x, y, 4, 0, 2 * Math.PI);
+	ctx.fillStyle = "black";
+	ctx.fill();
+
+	ctx.save();
+	ctx.translate(x,y);
+	ctx.scale(1,-1);
+	ctx.font = "11pt Arial";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "bottom";
+	ctx.fillStyle = "black";
+	ctx.fillText(str, gapx, gapy);
+	ctx.restore();
+}
+}();
+</script>
+<p class="t">Bézier Curve</p>
+<p>相鄰的兩個控制點求加權平均值，遞推下去。</p>
+<p>給定t，0≤t≤1，每條線段在t:(1-t)的地方取點，依序連線；遞推下去，得到一點，做為曲線上一點。窮舉各種t，得到一條曲線。</p>
+<canvas id="BézierCurve2" width="500" height="300"></canvas>
+<script>
+var BézierCurve2 = function() {
+var p = [{x:3,y:25},{x:5,y:5},{x:35,y:5},{x:45,y:15},{x:30,y:25},{x:35,y:10},{x:45,y:5}];
+var tick = 0.3;		// curve parameter
+var support = true;	// kinect
+var point = 4;		// point number
+var degree = 3;		// continuity
+var s = 10;			// coordinate scalar
+
+function coordinate(x, y) {
+	return {x: Math.round(x/s), y: Math.round(y/s)};
+}
+function touch(x, y, mousex, mousey) {
+	return x - 2 <= mousex && x + 2 >= mousex
+		&& y - 2 <= mousey && y + 2 >= mousey;
+}
+
+BézierCurve2();
+function BézierCurve2() {
+	var canvas = document.getElementById('BézierCurve2');
+	var ctx    = canvas.getContext('2d');
+
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+
+	var hit = -1;
+	canvas.onmousedown = function(e){
+		var mouse = coordinate(e.layerX, e.layerY);
+		hit = -1;
+		for (var i=0; i<point; ++i)
+			if (touch(p[i].x, p[i].y, mouse.x, mouse.y))
+				hit = i;
+	};
+
+	canvas.onmousemove = function(e){
+		if (hit == -1) return;
+		p[hit] = coordinate(e.layerX, e.layerY);
+		Draw(canvas, ctx, p);
+	};
+
+	canvas.onmouseup = function(e){
+		hit = -1;
+	};
+
+	canvas.onkeydown = function(e) {
+		if (e.keyCode == 90)	// z
+			tick = Math.max(0, tick - 0.01);
+		else if (e.keyCode == 88)	// x
+			tick = Math.min(1, tick + 0.01);
+		else if (e.keyCode == 83)	// s
+			support = !support;
+		else if (e.keyCode >= 49 && e.keyCode < 58)	// 1~9
+			point = Math.min(p.length, e.keyCode - 48);
+		Draw(canvas, ctx, p);
+	};
+
+	Draw(canvas, ctx, p);
+}
+
+function Draw(canvas, ctx, p) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	if (support) DrawSupport(ctx, p, point, tick);
+
+	for (var t = 0.0; t < +1.01; t += 0.01)
+		DrawCurve(ctx, p, point, t);
+
+	for (var i=0; i<point; ++i)
+		DrawPoint(ctx, p[i].x * s, p[i].y * s, "p"+i);
+
+	DrawTitle(canvas, ctx);
+}
+
+function DrawSupport(ctx, p, n, t) {
+	if (n == 0) return;
+
+	// segment
+	var c = 191 - n * 16;
+	var q = [];
+	for (var i=0; i<n-1; ++i) {
+		var x1 = p[i].x, x2 = p[i+1].x;
+		var y1 = p[i].y, y2 = p[i+1].y;
+
+		ctx.beginPath();
+		ctx.moveTo(x1 * s, y1 * s);
+		ctx.lineTo(x2 * s, y2 * s);
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "rgb("+c+","+(c+32)+","+(c+64)+")";
+		ctx.stroke();
+
+		// linear interpolation
+		q[i] = {x: x1*(1.0-t) + x2*t,
+		        y: y1*(1.0-t) + y2*t};
+	}
+
+	// knot
+	for (var i=0; i<n; ++i)
+		DrawKnot(ctx, p[i].x * s, p[i].y * s, "p"+i);
+
+	DrawSupport(ctx, q, n-1, t);
+}
+
+function DrawCurve(ctx, p, n, t) {
+	for (var j=n; j>1; --j) {
+		var q = [];
+		for (var i=0; i<j-1; ++i)
+			q[i] = {x: p[i].x*(1.0-t) + p[i+1].x*t,
+					y: p[i].y*(1.0-t) + p[i+1].y*t};
+		p = q;
+	}
+
+	ctx.beginPath();
+	ctx.arc(p[0].x * s, p[0].y * s, 1, 0, 2 * Math.PI);
+	ctx.fillStyle = "rgb(198,24,24)";
+	ctx.fill();
+}
+
+function DrawPoint(ctx, x, y, str) {
+	var gapx = -24, gapy = 24;
+
+	ctx.beginPath();
+	ctx.arc(x, y, 4, 0, 2 * Math.PI);
+	ctx.fillStyle = "black";
+	ctx.fill();
+
+	ctx.save();
+	ctx.translate(x,y);
+	ctx.font = "11pt Arial";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "bottom";
+	ctx.fillStyle = "red";
+	ctx.fillText(str, gapx, gapy);
+	ctx.restore();
+}
+
+function DrawKnot(ctx, x, y) {
+	ctx.beginPath();
+	ctx.arc(x, y, 3, 0, 2 * Math.PI);
+	ctx.lineWidth = 1;
+	ctx.fillStyle = "white";
+	ctx.fill();
+	ctx.strokeStyle = "black";
+	ctx.stroke();
+}
+
+function DrawTitle(canvas, ctx) {
+	ctx.font = "12pt Verdana";
+	ctx.textBaseline = "top";
+	ctx.textAlign = "center";
+	ctx.fillStyle = 'green';
+	ctx.fillText("[s] support [z] t -= 0.01 [x] t += 0.01 [1234567] point", canvas.width/2, 0);
+}
+}();
+</script>
+<p>順便介紹幾個重要的數學性質。</p>
+<p>凸包：曲線永遠在控制點的「<a href="ConvexHull.html">凸包</a>」內部。</p>
+<img src="Curve6.png">
+<p>碎形：從切點切開，兩段曲線都是Bézier Curve；左曲線的控制點，即是每一層的最左線段的中繼點。右曲線亦如是。</p>
+<img src="Curve7.png">
+<p>平滑：嘗試推導曲線公式。以加權平均值，得到中繼點。不斷遞推，最後證明曲線公式是多項式函數，恰好符合二項式定理、巴斯卡三角形，稱做「<a href="https://en.wikipedia.org/wiki/Bernstein_polynomial">Bernstein Polynomials</a>」。多項式的最高次方（平滑程度），等於控制點的數目減一。</p>
+<pre>
+4 points, layer0:
+p₀ p₁ p₂ p₃
+
+layer1:
+q₀ = p₀(1-t) + p₁t
+q₁ = p₁(1-t) + p₂t
+q₂ = p₂(1-t) + p₃t
+
+layer2:
+r₀ = q₀(1-t) + q₁t
+   = (p₀(1-t) + p₁t)(1-t) + (p₁(1-t) + p₂t)t
+   = p₀(1-t)(1-t) + p₁2(1-t)t + p₂tt
+r₁ = p₁(1-t)(1-t) + p₂2(1-t)t + p₃tt
+
+layer3:
+s₀ = r₀(1-t) + r₁t
+   = (p₀(1-t)(1-t) + p₁2(1-t)t + p₂tt)(1-t)
+   + (p₁(1-t)(1-t) + p₂2(1-t)t + p₃tt)t
+   = p₀(1-t)(1-t)(1-t) + p₁3(1-t)(1-t)t + p₂3(1-t)tt + p₃tt
+</pre>
+<p>(1-t)和t乘開，即是上個小節的格式。</p>
+<pre>
+s₀ = (-t³ + 3t² - 3t + 1) * p₀
+   + (3t³ - 6t² + 3t) * p₁
+   + (-3t³ + 3t²) * p₂
+   + (t³) * p₃
+
+此例當中，四個控制點的曲線公式，是三次多項式函數（對t而言）。
+</pre>
+<p>有興趣的讀者請繼續學習其他相關主題：</p>
+<p><a href="http://pomax.github.io/bezierinfo/">http://pomax.github.io/bezierinfo/</a></p>
+<p class="t">B-spline Curve</p>
+<p>每條線段取點時，改以樞紐點的間距當作權重。樞紐點多於控制點，微調曲線形狀。詳情請見：</p>
+<pre>
+http://www.enseignement.polytechnique.fr/informatique/INF555/Slides/lecture3.pdf
+http://www.cad.zju.edu.cn/home/zhx/GM/006/00-bscs1.pdf
+http://www.cad.zju.edu.cn/home/zhx/GM/007/00-bscs2.pdf
+</pre>
+<p>basis functions皆是spline：數個多項式函數銜接而成的函數。有人改稱basis splines，簡稱B-splines。這是曲線名稱的由來。</p>
+<p class="t">Non-uniform Rational B-spline（NURBS）</p>
+<p>B-spline Curve的每個控制點擁有權重；權重越大，曲線越靠近控制點。請讀者自行鑽研。</p>
+<p>形容詞uniform，意思是樞紐點皆等距。</p>
+<p>形容詞rational，意思是basis functions取加權平均值。也有人解釋成「齊次座標」的加法。</p>
+<p class="e">UVa 12565</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Surface</p>
+</div><div class="c">
+<p class="t">Surface</p>
+<img src="Surface1.png">
+<p>曲線從一維推廣到二維，參數t推廣到參數u和v。</p>
+<p>大家習慣採用4x4個控制點。欲得到參數u和v所對應的點，先算橫向：每四點以參數u求得曲線上一點；再算縱向：方才得到的四個點以參數v求得曲線上一點。</p>
+<p>也可以改成先縱再橫，結果相同。</p>
+<p class="t">Bézier Surface</p>
+<img src="Surface2.png">
+<p>大家習慣採用4x4個控制點。計算方式與前面小節相同。</p>
+<p><a href="http://www.scratchapixel.com/lessons/advanced-rendering/bezier-curve-rendering-utah-teapot/bezier-surface">http://www.scratchapixel.com/lessons/advanced-rendering/bezier-curve-rendering-utah-teapot/bezier-surface</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Polyline</p>
+</div><div class="c">
+<p class="t">Polyline</p>
+<img src="Curve8.png">
+<p>電腦擅於處理大量資料。與其處心積慮、用少量控制點製造曲線，不如直截了當、用大量控制點製造折線。法理上，根據微積分的極限概念，極短的、綿密的、大量的直線，可以逼近曲線。情理上，只要點數夠多，折線就足夠耐看了。</p>
+<p>Polyline應用廣泛。例如Microsoft PowerPoint的徒手畫。寫程式實作時，不斷擷取當前滑鼠座標，自然而然形成polyline。</p>
+<p class="t">Polyline Simplification（Polyline Decimation）</p>
+<p>當折線太亂，我們可以減少點數、截彎取直。</p>
+<p>知名演算法如Ramer-Douglas-Peucker Algorithm。</p>
+<p><a href="http://geomalgorithms.com/a16-_decimate-1.html">http://geomalgorithms.com/a16-_decimate-1.html</a></p>
+<p class="t">Polyline Smoothing</p>
+<img src="Curve9.png">
+<p>當折線太亂，我們可以截彎取直。</p>
+<p>每個線段取中點。實施越多次，折線越平滑。</p>
+<p>每個線段取中點，可以化作矩陣。</p>
+<pre>
+N = 4
+[ x₀']   [ ½ ½ 0 0 ] [ x₀ ]      [ y₀']   [ ½ ½ 0 0 ] [ y₀ ]
+[ x₁'] = [ 0 ½ ½ 0 ] [ x₁ ]      [ y₁'] = [ 0 ½ ½ 0 ] [ y₁ ]
+[ x₂']   [ 0 0 ½ ½ ] [ x₂ ]      [ y₂']   [ 0 0 ½ ½ ] [ y₂ ]
+[ x₃']   [ 0 0 0 0 ] [ x₃ ]      [ y₃']   [ 0 0 0 0 ] [ y₃ ]
+這一點與下一點的加權平均值，權重都是0.5，得到中點。
+</pre>
+<p>還可進一步實施特徵分解（轉換到頻域）。折線平滑K次，即是特徵值的K次方。</p>
+<p>因為實數對稱矩陣保證有實數特徵基底（而且是正交基底），所以大家習慣採用封閉折線、以平滑兩次的矩陣實施特徵分解。</p>
+<p>時間複雜度，原先為O(NK)。化作矩陣，O(N^3 * logK)。特徵分解，而且預先計算特徵基底，O(N^2 * logK)。</p>
+<pre>
+[ ½ ½ 0 0 ]   [ ½ ½ 0 0 ]   [ ¼ ½ 0 ½ ]
+[ 0 ½ ½ 0 ]   [ 0 ½ ½ 0 ]   [ ½ ¼ ½ 0 ]
+[ 0 0 ½ ½ ]   [ 0 0 ½ ½ ]   [ 0 ½ ¼ ½ ]
+[ 0 0 0 0 ]   [ ½ 0 0 ½ ]   [ ½ 0 ½ ¼ ]
+平滑一次      平滑一次      平滑兩次
+開放折線      封閉折線      封閉折線
+</pre>
+<style>canvas {border: 1px solid gray;}</style>
+<script src="jsfeat-min.js"></script>
+<canvas id="polyline" width="300" height="200"></canvas>
+<script>
+var polyline = function(){
+	var canvas = document.getElementById('polyline');
+	var ctx = canvas.getContext('2d');
+	ctx.lineWidth = 2;	// stroke style
+
+	// mouse
+	var x, y;	// Array
+	var k = 0;	// smooth factor
+	var pressed = false;
+	canvas.tabIndex = 1;
+	canvas.style.position = "relative";
+	canvas.onmousedown = function(e) {
+		pressed = true;
+		x = new Array();
+		y = new Array();
+		x.push(e.layerX);
+		y.push(e.layerY);
+		ctx.strokeStyle = 'lightgray';
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		text();
+		ctx.beginPath();
+		ctx.moveTo(e.layerX, e.layerY);
+	};
+	canvas.onmousemove = function(e) {
+		if (!pressed) return;
+		x.push(e.layerX);
+		y.push(e.layerY);
+		ctx.lineTo(e.layerX, e.layerY);
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(e.layerX, e.layerY);
+	}
+	canvas.onmouseup = function() {
+		pressed = false;
+		ctx.lineTo(x[0], y[0]);
+		ctx.stroke();
+		eigen();
+		smooth(k);
+	};
+
+	// keyboard
+	canvas.onmouseover = canvas.focus;
+//	canvas.onmouseout = canvas.blur;
+	canvas.onkeydown = function(e) {
+		if (pressed) return;
+		if      (e.keyCode == 90) k = Math.max(0, k - 2);	// z
+		else if (e.keyCode == 88) k = Math.min(250, k + 2);	// x
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		draw(x, y, 'lightgray');
+		smooth(k);
+		text();
+	};
+
+	text();
+	function text() {
+		ctx.fillStyle = "green";
+		ctx.font = "12pt Verdana";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "top";
+		ctx.fillText("draw closed curve!", canvas.width/2, 0);
+		ctx.textBaseline = "bottom";
+		ctx.fillText("smooth " + (k*2) + " times   [z] -4  [x] +4", canvas.width/2, canvas.height);
+	}
+
+	var n;
+	var matrix;
+	var evectors;
+	var evalues;
+	var xo, xc, xc2;
+	var yo, yc, yc2;
+
+	function eigen() {
+		n = x.length;
+		matrix = new jsfeat.matrix_t(n, n, jsfeat.F64_t | jsfeat.C1_t);
+		for (var i=0; i<n; ++i) {
+			matrix.data[i * n + (i-1+n)%n] = 0.25;
+			matrix.data[i * n + i        ] = 0.5;
+			matrix.data[i * n + (i+1)%n  ] = 0.25;
+		}
+		// eigenvector is filled row by row
+		evectors = new jsfeat.matrix_t(n, n, jsfeat.F64_t | jsfeat.C1_t);
+		evalues  = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		jsfeat.linalg.eigenVV(matrix, evectors, evalues);
+
+		xo  = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		yo  = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		xc  = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		yc  = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		xc2 = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		yc2 = new jsfeat.matrix_t(1, n, jsfeat.F64_t | jsfeat.C1_t);
+		for (var i=0; i<n; ++i) xo.data[i] = x[i];
+		for (var i=0; i<n; ++i) yo.data[i] = y[i];
+		jsfeat.matmath.multiply(xc, evectors, xo);
+		jsfeat.matmath.multiply(yc, evectors, yo);
+	}
+
+	function smooth(k) {
+		for (var i=0; i<n; ++i) {
+			var scalar = Math.pow(evalues.data[i], k);
+			xc2.data[i] = xc.data[i] * scalar;
+			yc2.data[i] = yc.data[i] * scalar;
+		}
+		jsfeat.matmath.multiply_AtB(xo, evectors, xc2);
+		jsfeat.matmath.multiply_AtB(yo, evectors, yc2);
+		draw(xo.data, yo.data, 'red');
+	}
+
+	function draw(x, y, color) {
+		var n = x.length;
+		ctx.strokeStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(x[n-1], y[n-1]);
+		for (var i=0; i<n; ++i) ctx.lineTo(x[i], y[i]);
+		ctx.stroke();
+	}
+}();
+</script>
+<p>還可進一步連結到圖論的Laplacian Matrix：</p>
+<p><a href="https://books.google.com.tw/books?id=NeA_CQAAQBAJ&amp;pg=PA63">https://books.google.com.tw/books?id=NeA_CQAAQBAJ&pg=PA63</a></p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Mesh（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Mesh</p>
+<p class="t">Mesh Subdivision</p>
+<p>分割。增加點數。內插。</p>
+<pre>
+https://en.wikipedia.org/wiki/Subdivision_surface
+http://www.cs.kent.edu/~zhao/acg13/lectures/Subdivision.pdf
+</pre>
+<pre>
+Loop subdivision
+Catmull-Clark subdivision
+Doo-Sabin subdivision
+Butterfly subdivision
+sqrt(3) subdivision
+</pre>
+<iframe src="http://player.vimeo.com/video/122296034"></iframe>
+<p class="t">Mesh Simplification</p>
+<p>簡化。減少點數。縮邊。</p>
+<pre>
+Garland–Heckbert method
+</pre>
+<p class="t">Mesh Smoothing</p>
+<p>平滑。移動點。</p>
+<pre>
+http://www.cin.ufpe.br/~tlam/detail%20preserving%20mesh%20edition.pdf
+</pre>
+<pre>
+Taubin smoothing
+FVM smoothing
+</pre>
+<p class="t">Mesh Parameterization</p>
+<p>參數化。給定一點找到參數（座標）。</p>
+<p class="t">PN Triangles</p>
+
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/Curve.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:12:50 GMT -->
+</html>

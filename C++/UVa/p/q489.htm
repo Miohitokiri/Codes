@@ -1,0 +1,64 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q489: Hangman Judge</h1>         
+<p align="left">Hangman Judge是一個猜英文單字的小遊戲（在電子字典中常會看到），遊戲規則如下：<br>   
+<ol>  
+<li>答案單字寫在紙上（每個字元一張紙），並且被蓋起來，玩家每次猜一個英文字元（letter）。<br>   
+<li>如果這個英文字元猜中（在答案的英文單字中有出現），被猜中的字元就被翻開。例如：答案是book，如果你猜o，book中的兩個o就會被視為已猜中。<br>   
+<li>如果這個英文字元未出現在答案的單字中，就會在hangman的圖中多加一劃。要完成hangman圖共需7劃，如下圖。注意：同一個猜錯的字元只能再圖上畫一劃，例如：答案是book，第一次你猜a（未猜中）會在圖上畫一劃，但第二次以後再猜a並不會再多畫。<br>   
+<li>如果在hangman圖完成之前，玩家已猜中所有答案中的字元，則玩家贏（win）。<br>   
+<li>如果玩家尚未猜中所有答案中的字元而hangman圖完成了，，則玩家輸（lose）。<br>   
+<li>如果玩家在還沒輸贏的情況之下就不玩了，那我們說玩家膽小放棄了（chicken out）.   
+</ol>  
+<pre>   ______   
+   |  |     
+   |  O     
+   | /|\    
+   |  |     
+   | / \    
+ __|_       
+ |   |______
+ |_________|</pre>  
+<p align="left">你的任務就是要寫一個程式根據答案及玩家輸入的猜測來判斷玩家是贏、輸、或放棄。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>             
+<p align="left">會有好幾組測試資料，每一組有3列。第一列為一個數字n，代表第幾回合，第二列為這一回合的答案，第三列為這一回合玩家輸入的猜測。如果 
+n = -1代表輸入結束。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>            
+<p align="left">請輸出每一回合及遊戲結果。遊戲結果只有三種可能：<br>
+You win.<br> 
+You lose.<br> 
+You chickened out.</p> 
+<p align="left">請參考sample output。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample          
+input</b></span></p>                      
+<pre>1
+cheese
+chese
+2
+cheese
+abcdefg
+3
+cheese
+abcdefgij
+-1</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                        
+Output</b></span></p>                       
+<pre>Round 1
+You win.
+Round 2
+You chickened out.
+Round 3
+You lose.</pre>
+                      
+</body>                      
+                      
+</html>                      

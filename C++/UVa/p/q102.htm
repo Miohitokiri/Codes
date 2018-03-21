@@ -1,0 +1,38 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q102: Ecological Bin Packing</h1>       
+<p>有3個桶子用來裝回收的玻璃瓶，玻璃瓶的顏色有三種：棕色（Brown）、綠色（Green）、透明色（Clear）。在這個問題裡我們會告訴你每個桶子裏的玻璃瓶的顏色及數量，現在要搬移桶子裏的玻璃瓶使得最後每個桶子裡都只有單一顏色的玻璃瓶，以方便回收。你的任務就是要算出最小搬移的瓶子數。你可以假設每個桶子的容量無限大，並且總共搬移的瓶子數不會超過2<sup>31</sup>。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>          
+<p align="left">每筆測試資料一行，每行有9個整數.前3個代表第1個桶子裡Brown,  
+Green, Clear顏色的瓶子數。接下來的3個數代表 第2個桶子裡Brown,  
+Green, Clear顏色的瓶子數。最後的3個數代表第3個桶子裡Brown,  
+Green, Clear顏色的瓶子數。</p>           
+<p align="left">例如：10 15 20 30 12 8 15 8 31&nbsp;<br> 
+表示有20個Clear色的玻璃瓶在第1個桶子裏，12個Green色的玻璃瓶在第2個桶子裏，15個Brown色的玻璃瓶在第3個桶子裏。</p>          
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>          
+<p align="left">對每一筆測試資料，輸出3個桶子內最後存放之玻璃瓶顏色，以及最小搬移的瓶子數。請以大寫的'G'、  
+'B'、 'C' 分別代表綠色（Green）、棕色（Brown）、透明色（Clear）。</p> 
+<p align="left">例如：BCG 30<br> 
+代表最後搬移的結果第1個桶子內的玻璃瓶顏色為Brown，第2個桶子內的玻璃瓶顏色為Clear，第3個桶子內的玻璃瓶顏色為Green.並且總共搬移了30個玻璃瓶。</p>
+<p align="left">如果最小搬移瓶子數有一組以上的組合，請輸出字典順序最小的那一組答案。</p>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample      
+input</b></span></p>                 
+<pre>1 2 3 4 5 6 7 8 9
+5 10 5 20 10 5 10 20 10</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                   
+Output</b></span></p>                  
+<pre>BCG 30
+CBG 50</pre>
+                  
+</body>                  
+                  
+</html>                  

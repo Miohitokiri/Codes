@@ -1,0 +1,36 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10409: Die Game</h1>          
+<p>有玩過骰子吧！就是那種正立方體，打麻將或在路邊攤跟老闆賭香腸時會用到的小玩意兒（也許有人考試時會用到）。現在要請你來模擬一個骰子的遊戲。</p>
+<p>當遊戲開始時，一顆骰子被放在桌子上。在遊戲的過程中，這骰子會被莊家翻轉。當這骰子停止翻轉的時候，如果你可以猜中朝上那一面的點數的話，你就贏得這次的遊戲。</p>
+<p>現在你被要求寫一個程式來模擬這個遊戲。為了簡單起見，我們假設這顆骰子不會滑動也不會跳動，他只能在桌面上以東南西北等4個方向滾動。在遊戲一開始時，莊家把骰子按照一定的方向放置於桌面中央，使得1,2,3三面分別為朝上，朝北，及朝西。至於另外三面（4、5、6）朝何方，我並不想多說。但是你應該要知道一個定律：對一顆骰子而言，相對的2面上的點數和總是等於7.</p>
+<p>你的程式應該要接收一連串的命令（north, east, south, west），代表骰子如何滾動。例如：north代表骰子朝北滾動，也就是說本來朝上的一面會變成朝北，本來朝北的一面變成朝下，依此類推。你可以假設桌子無限大，所以在遊戲的過程中骰子都不會掉到桌下。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>輸入含有多組測試資料。每一組測試資料的第1列有一個正整數n（n 
+&lt;= 1024），代表接下來有多少個轉動的命令。接下來的n列，每列有一個動作（north, 
+east, south, west其中一個）。n=0時代表輸入結束。請參考Sample 
+Input。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>每組測試資料輸出骰子動作結束時，朝上的那一面點數是多少？</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>1
+north
+3
+north
+east
+south
+0</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                   
+Output</b></span></p>                              
+<pre>5
+1</pre>
+                            
+</body>                            
+                            
+</html>                            

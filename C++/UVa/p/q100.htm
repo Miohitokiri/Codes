@@ -1,0 +1,52 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q100: The 3n + 1 problem</h1> 
+<p>考慮以下的演算法：<br>
+<br>
+1.&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 輸入 n<br>   
+2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 印出 n<br>    
+3.&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; 如果 n = 1 結束<br>    
+4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果 n 是奇數 那麼 n=3*n+1<br>    
+5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 否則 n=n/2<br>    
+6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GOTO 2<br>    
+<br>  
+例如輸入 22, 得到的數列： 22 11 34 17 52 26 13 40 20 10 5 16 8 4 2 1&nbsp;<br>   
+<br> 
+據推測此演算法對任何整數而言會終止 (當列印出 1 的時候)。雖然此演算法很簡單，但以上的推測是否真實卻無法知道。然而對所有的n ( 0 &lt; n &lt; 1,000,000 )來說，以上的推測已經被驗證是正確的。&nbsp;<br>   
+<br> 
+給一個輸入 n ,透過以上的演算法我們可以得到一個數列（1作為結尾）。此數列的長度稱為n的cycle-length。上面提到的例子, 22的 cycle length為 16.&nbsp;<br>   
+<br> 
+問題來了：對任2個整數i，j我們想要知道介於i，j（包含i，j）之間的數所產生的數列中最大的cycle length是多少。<br>    
+</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>     
+<p align="left">輸入可能包含了好幾列測試資料，每一列有一對整數資料   
+i，j 。&nbsp;  
+</p>
+<p align="left">0&lt; i，j &lt; 10000  
+</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>  
+<p align="left">對每一對輸入 i , j你應該要輸出 i, j和介於i, j之間的數所產生的數列中最大的cycle length。</p>   
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample       
+Input</b></span></p>    
+<pre>1 10
+10 1
+100 200
+201 210
+900 1000</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample     
+Output</b></span></p>    
+<pre>1 10 20
+10 1 20
+100 200 125
+201 210 89
+900 1000 174</pre>
+    
+</body>    
+    
+</html>    

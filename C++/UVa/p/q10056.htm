@@ -1,0 +1,28 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<h1 align="center">Q10056: What is the Probability?</h1>          
+<p>這是一個計算機率的問題：有一群人玩擲骰子的遊戲（一般的骰子有6面，但是你不可以假設本問題的骰子一定是一般的骰子。）假如某一個人擲出一個骰子出現某一個事件（比如說得到3或者綠色面朝上......等等），我們就說這一個人贏了。</p>
+<p>可能有N個人參與此遊戲，所以首先由第1個人先擲骰子，再來是第2個人，第3個人，.....然後輪到第N個人，接著又輪回第1個人。當有某一個人擲出某一特定事件時，他就贏了遊戲，並且遊戲結束。你的任務就是要求出某一個人（第I個人）贏得遊戲的機率。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>              
+<p align="left">輸入的第1列有一個整數S（S&lt;=1000），代表以下有幾組測試資料。接下來的S列每列一組測試資料，包含有3個數。第1個數為一個整數N（N&lt;=1000），代表參加遊戲的人數。第2個數是一個浮點數p，代表擲一次骰子會出現該特定事件的機率（例如我們規定擲出3代表此特定事件，那p就是擲出3的機率，以一顆一般的骰子來說，p=1/6=0.166666）。第3個數為一個整數I（I&lt;=N），代表要你求的是第I個人。</p> 
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>             
+<p align="left">對於每組測試資料，請輸出第I個人贏得遊戲的機率。請準確到小數點後4位。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                 
+input</b></span></p>                           
+<pre><font size="3">2
+2 0.166666 1
+2 0.166666 2</font></pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Output</b></span></p>                           
+<pre><font size="3">0.5455
+0.4545</font></pre>
+                          
+</body>                          
+                          
+</html>                          

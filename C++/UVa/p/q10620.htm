@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0046)http://www2.dmhs.kh.edu.tw/homework/q10706.htm -->
+<HTML><HEAD><TITLE></TITLE>
+<META http-equiv=Content-Type content="text/html; charset=big5">
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1 align=center>Q10620: A flea on a chessboard</H1>
+<p>有一塊無限大的西洋棋盤（黑白相間棋格），左下角那格為黑色且每個格子的邊長為 
+S （0 &lt; S &lt; 1000）公分，另外我們訂左下角的座標訂為 (0,0)。有一隻跳蚤位於棋盤上的某個座標位置 
+(x, y)，他每次跳一定是往上 dx 公分，往右 dy 公分（0 &lt; dx, 
+dy），也就是說，跳蚤跳一次後的座標位置為 ( x+dx, y+dy )。</p>  
+<p>給你跳蚤一開始在棋盤上的座標，你的任務是算出跳蚤要跳多少次後，會到達白色的格子。請注意：假如跳蚤落在兩格之間的格線上，並<b>不</b>算落在白色格子中。也請注意，跳蚤有可能永遠也達不到白色格子</p>  
+<P style="BACKGROUND-COLOR: #ffff00" align=left><SPAN    
+style="BACKGROUND-COLOR: #ffff00"><B>Input</B></SPAN></P>   
+<P>每組測試資料一列。含有 5 個不為負數的整數&nbsp; S, x, y, 
+dx, dy。其意義如題目所述。</P>    
+<P>若這5個數均為 0 代表輸入結束。</P>    
+<P style="BACKGROUND-COLOR: #ffff00" align=left><SPAN     
+style="BACKGROUND-COLOR: #ffff00"><B>Output</B></SPAN></P>    
+<P>對每組測試資料輸出一列，輸出內容及格式請參考Sample Output。</P>    
+<TABLE cellPadding=5 width="100%" border=1>    
+  <TBODY>    
+  <TR>    
+    <TD width="35%" bgColor=#00ff00><B>Sample Input</B></TD>        
+    <TD width="65%" bgColor=#00ff00><B>Sample Output</B></TD></TR>        
+  <TR>        
+    <TD width="35%">        
+      <pre>10 2 3 3 2
+100 49 73 214 38
+25 0 0 5 25
+407 1270 1323 1 1
+18 72 6 18 6
+407 1270 1170 100 114
+0 0 0 0 0</pre>   
+    </TD>     
+    <TD width="65%">     
+        
+      <pre>After 3 jumps the flea lands at (11, 9).
+After 1 jumps the flea lands at (263, 111).
+The flea cannot escape from black squares.
+After 306 jumps the flea lands at (1576, 1629).
+The flea cannot escape from black squares.
+After 0 jumps the flea lands at (1270, 1170).
+
+</pre>   
+    </TD></TR></TBODY></TABLE></BODY></HTML>      

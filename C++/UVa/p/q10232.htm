@@ -1,0 +1,124 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q10232: Bit-wise Sequence</h1>              
+<p><span lang="zh-tw">Dolots博士是一位數論專家，他現在正在研究質數。</span>事實上有人說他已經有公式可以以遞增的順序產生質數了。但是他的公式需要根據數的二進位表示式中  
+1 出現的次數來排序。也就是說，所有不為負的整數中含有m個1的（在他們的二進位表示式中）應該要被排在含有m+1個1的數之前。</p>    
+<p>正式一點來說，我們定義不為負的整數序列B，B<sub>n</sub>，B<sub>m</sub>分別代表序列中第n個數及第m個數。B<sub>n</sub>若要排在B<sub>m</sub>之前必須符合下列兩個條件之一：</p>    
+<ol> 
+  <li>O(B<sub>n</sub>) &lt; O(B<sub>m)</sub></li> 
+  <li>&nbsp;O(B<sub>n</sub>) = O(B<sub>m)</sub><sub>，</sub>並且B<sub>n</sub>  
+    &lt; B<sub>m</sub></li> 
+</ol> 
+<p>在此O(n)代表n的二進位表示式中1的個數。</p>    
+<p>為了簡化起見，我們只考慮  
+0 &lt;= n &lt;= 2147483647的範圍。說明白一點，B序列應該是這個樣子：</p>   
+<table border="1" width="100%">
+  <tr>
+    <td width="19%" align="center" bgcolor="#99CCFF">n</td>
+    <td width="23%" align="center" bgcolor="#99CCFF">B<sub>n</sub></td>
+    <td width="58%" align="center" bgcolor="#99CCFF">B<sub>n</sub>的二進位表示式</td>
+  </tr>
+  <tr>
+    <td width="19%" bgcolor="#FFCCFF" align="right">0<br>
+      1<br>
+      2<br>
+      3<br>
+      4<br>
+      5<br>
+      6<br>
+      .<br>
+      .<br>
+      .<br>
+      31<br>
+      32<br>
+      33<br>
+      34<br>
+      35<br>
+      .<br>
+      .<br>
+      2147483646<br>
+      2147483647</td>
+    <td width="23%" bgcolor="#FFCCFF" align="right">0<br>
+      1<br>
+      2<br>
+      4<br>
+      8<br>
+      16<br>
+      32<br>
+      .<br>
+      .<br>
+      .<br>
+      1073741824<br>
+      3<br>
+      5<br>
+      6<br>
+      9<br>
+      .<br>
+      .<br>
+      2147483646<br>
+      2147483647</td>
+    <td width="58%" bgcolor="#FFCCFF" align="right">
+      <p align="center">0000000000000000000000000000000<br>
+      0000000000000000000000000000001<br>
+      0000000000000000000000000000010<br>
+      0000000000000000000000000000100<br>
+      0000000000000000000000000001000<br>
+      0000000000000000000000000010000<br>
+      0000000000000000000000000100000<br>
+      .<br>
+      .<br>
+      .<br>
+      1000000000000000000000000000000<br>
+      0000000000000000000000000000011<br>
+      0000000000000000000000000000101<br>
+      0000000000000000000000000000110<br>
+      0000000000000000000000000001001<br>
+      .<br>
+      .<br>
+      1111111111111111111111111111110<br>
+      1111111111111111111111111111111</p>
+    </td>
+  </tr>
+</table>
+<p>Dolots博士需要你寫一個程式來幫他算出B序列中的第n個數。你也許會問為何Dolots博士不自己寫程式？他說因為他很忙，所以必須把時間花在更重要的事情上。（事實上是他有點懶惰，不過你可以幫助他，不是嗎？）</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>                  
+<p>每組測試資料一列，有1個整數 n<span lang="zh-tw">。</span></p>             
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                           
+<p>對每組測試資料請輸出 B<sub>n</sub>。</p>           
+<table border="1" width="100%" cellpadding="5">            
+  <tr>            
+    <td width="50%" bgcolor="#00FF00"><b>Sample Input</b></td>                  
+    <td width="50%" bgcolor="#00FF00"><b>Sample Output</b></td>                 
+  </tr>                 
+  <tr>                 
+    <td width="50%"><pre>0
+1
+2
+31
+32
+35
+6123512
+2147483646
+2147483647</pre></td>                 
+    <td width="50%">           
+      <pre>0
+1
+2
+1073741824
+3
+9
+147227152
+2147483646
+2147483647</pre>          
+    </td>                
+  </tr>                
+</table>                
+                                                  
+</body>                                                  
+                                                  
+</html>

@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q536: Tree Recovery</h1>           
+<p>小Valentine非常喜歡2元樹，她常常隨意的以大寫英文字母來建構2元樹。以下就是其中之一：</p>          
+<PRE>                                    D
+                                   / \
+                                  /   \
+                                 B     E
+                                / \     \
+                               /   \     \ 
+                              A     C     G
+                                         /
+                                        /
+                                       F</PRE>
+
+為了把這2元樹保留起來，對每一2元樹她寫下2種字串。前序搜尋 
+preorder traversal（樹根，左子樹，右子樹）和中序搜尋（左子樹，樹根，右子樹）。所以上面那棵2元樹，她分別寫下了前序搜尋字串： 
+<b>DBACEGF</b> 和中序搜尋字串： <b>ABCDEFG</b>。
+<p>現在你的任務就是要把小Valentine當年寫的這些字串還原成原來的2元樹，並且以後續搜尋 
+postorder traversal（左子樹，右子數，樹根）的方式列印出來。</p>
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每筆測試資料一列。每列有2個字串，分別代表某一棵2元樹的前序及中序搜尋結果。2個字串都只包含大寫英文字母，而且不會有重複的字母出現。所以最大長度都不會超過26。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一列輸入，請輸出該2元樹以後序搜尋的結果。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                       
+Input</b></span></p>                              
+<pre>DBACEGF ABCDEFG
+BCAD CBAD</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                
+Output</b></span></p>                              
+<pre>ACBFGED
+CDAB</pre> 
+                            
+</body>                            
+                            
+</html>                            

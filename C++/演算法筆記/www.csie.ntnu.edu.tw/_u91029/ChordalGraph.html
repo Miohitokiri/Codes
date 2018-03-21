@@ -1,0 +1,391 @@
+﻿<html lang="zh-TW">
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/ChordalGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=big5" /><!-- /Added by HTTrack -->
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="style.css" />
+<title>演算法筆記 - Chordal Graph</title></head><body>
+<div class="a"><div class="h">
+<p class="b">Clique（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Clique</p>
+<p>「團」。</p>
+<p class="t">Maximal Clique / Maximum Clique</p>
+<p>Minimal、Maximal是區域極值，Minimum、Maximum是全域極值。遣詞用字請特別小心！</p>
+<p>「極大團Maximal Clique」是無法直接增加頂點數目的團，可能有許多個。</p>
+<p>「最大團Maximum Clique」是頂點數目最多的團，可能有許多個。最大團是所有極大團當中最大的；最大團也是極大團。</p>
+<img src="Clique3.png">
+<p class="t">列舉Maximal Clique（Bron-Kerbosch Algorithm）</p>
+<p>尋找最大團是NP-complete問題，沒有快速的演算法。因此，列舉所有的Maximal Clique，從中找到Maximum Clique，不失為一個務實的方法。</p>
+<p><a href="http://en.wikipedia.org/wiki/Bron?erbosch_algorithm">http://en.wikipedia.org/wiki/Bron–Kerbosch_algorithm</a></p>
+<pre>
+R: 目前的clique。
+P: 可以增大目前clique的點集合。接下來要列舉的點。
+　（與目前clique上所有點皆相鄰的點，構成的集合）
+X: 可以增大目前clique的點集合，但是先前已經列舉過。用來避免重複列舉。
+</pre>
+<p>此演算法採用backtracking。改變列舉順序、調整pruning方式，就會得到不同的時間複雜度。</p>
+<p>陽春版本的時間複雜度是O(n*3^(n/3))。</p>
+<p>選擇適當的pivot，讓各階段列舉的點都是最少，時間複雜度加速為O(3^(n/3))。</p>
+<p>點的列舉順序採用degeneracy order，時間複雜度加速為O(d*n*3^(d/3))，其中d是原圖的degeneracy。</p>
+<p>下面提供的實作是隨意選擇pivot，稍微減少列舉的點。</p>
+<textarea>
+const int V = 30;
+bool adj[V][V];	// adjacency matrix
+struct Set {bool s[30]; int size;};
+int maximal_clique = 0;
+
+Set intersect(Set S, int p)
+{
+	for (int i=0; i<V; ++i)
+		if (S.s[i] && !adj[p][i])
+		{
+			S.s[i] = false;
+			S.size--;
+		}
+	return S;
+}
+
+void backtrack(Set R, Set P , Set X)
+{
+	if (P.size == 0)
+	{
+		if (X.size == 0)
+		{
+			maximal_clique++;
+			for (int i=0; i<V; ++i)
+				if (R[i])
+					cout << i;
+		}
+		return;
+	}
+
+	int pivot;
+	for (pivot=0; pivot<V; ++pivot)
+		if (P.s[pivot] || X.s[pivot])
+			break;
+//	if (p == V) return;
+
+	for (int i=0; i<V; ++i)
+		if (P.s[i] && !adj[pivot][i])
+		{
+			R.s[i] = true; R.size++;
+			backtrack(R, intersect(P,i), intersect(X,i));
+			R.s[i] = false; R.size--;
+			P.s[i] = false; P.size--;
+			if (!X.s[i]) {X.s[i] = true; X.size++;}
+		}
+}
+
+void Bron_Kerbosch()
+{
+	// 刪除自環
+	for (int i=0; i<V; ++i) adj[i][i] = false;
+
+	Set R, P, X;
+	for (int i=0; i<V; ++i) R.s[i] = false;
+	for (int i=0; i<V; ++i) P.s[i] = true;
+	for (int i=0; i<V; ++i) X.s[i] = false;
+	R.size = 0;
+	P.size = V;
+	X.size = 0;
+	backtrack(R, P, X);
+}
+</textarea>
+<textarea>
+int adj[30];	// adjacency matrix
+int c = 0;		// count maximal clique
+
+void backtrack(int P, int X)
+{
+	if (P == 0 && X == 0) {c++; return;}
+
+	int p = __builtin_ctz(P | X);
+	int Q = P & ~adj[p];
+
+	while (Q)
+	{
+		int i = __builtin_ctz(Q);
+		backtrack(P & adj[i], X & adj[i]);
+		Q &= ~(1<<i);
+		P &= ~(1<<i);
+		X |= (1<<i);
+	}
+}
+
+void Bron_Kerbosch()
+{
+	// remove loop
+	for (int i=0; i<N; ++i)
+		adj[i] &= ~(1<<i);
+
+	c = 0;
+	backtrack((1<<N)-1, 0);
+	cout << "極大團總共" << c << "個";
+}
+</textarea>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Chordal Graph（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Hole</p>
+<p>「環」是串成一圈的路線，沒有重複的點。</p>
+<img src="ChordalGraph1.html">
+<p>「洞」是一種特別的「環」，沒有「弦」。</p>
+<img src="ChordalGraph2.html">
+<p>「弦」可以想成是環上的捷徑，用來找到長度更小的環。「洞」可以想成是區域極小值、區域極小環。</p>
+<p class="e">ICPC 7661</p>
+<p class="t">Chordal Graph</p>
+<p>「弦圖」。多於三條邊的環，必有一條弦。換句話說，沒有多於三條邊的洞。</p>
+<img src="ChordalGraph3.html">
+<p>弦圖的外觀是由很多三角形交錯疊合而成。順帶一提，學過「<a href="Triangulation.html">三角剖分</a>」的讀者要特別當心，三角剖分通常不是弦圖。</p>
+<img src="ChordalGraph4.html">
+<p>弦圖隨便刪除幾個點（以及連帶的邊），仍是弦圖。換句話說，弦圖的生成子圖是弦圖。</p>
+<p>森林、有向無環圖、二分圖、弦圖，都具有這種遞歸性質。</p>
+<img src="ChordalGraph5.html">
+<p>「森林」和「有向無環圖」沒有環，「二分圖」沒有奇環，「弦圖」沒有多於三條邊的洞。弦圖也是十分重要的特例，往往存在速度極快的演算法。至於現實生活中有哪些弦圖，沒人研究。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Perfect Elimination Ordering（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Perfect Elimination Ordering</p>
+<p>有向無環圖擁有「拓樸順序」。弦圖擁有「最佳消除順序」。</p>
+<img src="PerfectEliminationOrdering1.html">
+<p>弦圖邊數很多、密度很高。弦圖至少有一個點，此點暨所有鄰居，形成「極大團Maximal Clique」。【待補證明】</p>
+<img src="PerfectEliminationOrdering2.html">
+<p>舉例來說，連接零條邊、一條邊的點，一定是這樣一個點。關節點，一定不是這樣一個點。</p>
+<img src="PerfectEliminationOrdering3.html">
+<p>刪除這樣一個點，即是令其所屬的極大團的大小減一。</p>
+<img src="PerfectEliminationOrdering4.html">
+<p>弦圖刪除任何一點之後仍是弦圖，可以遞迴下去。「最佳消除順序」就是逐次刪除這樣一個點，所得到的順序，通常有許多種。</p>
+<img src="PerfectEliminationOrdering5.html">
+<p>有向無環圖必有拓樸順序，反之亦然。弦圖必有最佳消除順序，反之亦然。</p>
+<pre>
+chordal <=> 存在隨便一個 PEO （其實是一大堆PEO，通常不只一個PEO）
+
+ (=>) 前面提到的。
+ (<=) 假設有個環>=4  然後PEO最早出現在環上的點是v。
+      因為N(v)是clique，所以N(v)都有邊，所以這環必有弦。
+</pre>
+<img src="PerfectEliminationOrdering6.html">
+<p>「拓樸順序」可以想成先後次序。「最佳消除順序」意義不明，尚待各位賦予意義。說實在話，這個名稱，詞不達意。</p>
+<p class="e">ICPC 2424 6308</p>
+<p class="t">找出一個最佳消除順序</p>
+<p>有向無環圖，特殊BFS順序、DFS逆序，都是其中一種拓樸順序。</p>
+<p>弦圖，MCS逆序、LexBFS逆序、LexDFS逆序，都是其中一種最佳消除順序。證明分為兩步驟：</p>
+<p>一、遍歷過程當中，凡是遇到團、必是連續拜訪。因此，最後拜訪的點，必是極大團的點，該點暨所有鄰居必是極大團。</p>
+<p>二、遍歷過程當中，不受未拜訪點的影響。換句話說，一張圖刪除最後一個拜訪的點，重新實施遍歷演算法，遍歷順序依然相同。刪除最後一個拜訪的點，遞迴下去，證明完畢。</p>
+<p class="t">Chordal Graph Recognition<br>= Perfect Elimination Ordering Verification</p>
+<p>檢查一張圖是不是弦圖，方法很簡單：弦圖必有最佳消除順序！</p>
+<p>更進一步來說，弦圖的MCS逆序、LexBFS逆序、LexDFS逆序必是最佳消除順序。挑其中一個檢查即可。【待補證明】。時間複雜度O(V+E)。</p>
+<pre>
+逆跑 PEO ，當前點v的上一點w。
+在已拜訪點之中，檢查w的鄰點是否連到所有v的鄰點。
+如此一來N(v)可以形成clique。
+遞推，數學歸納法。
+</pre>
+<p>檢查過程可以併入MCS、LexBFS、LexDFS當中，一邊遍歷一邊檢查。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Graph Traversal（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Graph Traversal</p>
+<p>除了BFS、DFS，再補充三個遍歷演算法MCS、LexBFS、LexDFS。這三個遍歷演算法，目前只用來找到團，尚未發掘其他功效。</p>
+<p class="t">Maximum Cardinality Search（MCS）</p>
+<p>每回合找到一個點，連往已拜訪點的邊數最多。如果很多點同時符合條件，則任選一點。</p>
+<p>時間複雜度O(V^2)。運用Binary Heap得壓至O(V+ElogV)。運用Fibonacci Heap得壓至O(E+VlogV)。</p>
+<img src="MaximumCardinalitySearch1.html">
+<p>邊數總是加一。藉由特殊的資料結構，迅速找到最大值。時間複雜度可以壓至O(V+E)。</p>
+<img src="MaximumCardinalitySearch2.html">
+<p class="t">Lexicographic Breadth-first Search（LexBFS）</p>
+<pre>
+i from v-1 to 0
+取字串最大的點。
+所有未拜訪鄰居，字串尾端添加i。
+</pre>
+<img src="LexBFS1.html">
+<p>新版BFS，仔細安排小孩的拜訪順序：凡是小孩形成團、必是連續拜訪。</p>
+<img src="LexBFS2.html">
+<p>時間複雜度O(V^2)。運用前述特殊資料結構得壓至O(V+E)。</p>
+<p>LexBFS-：當字串一樣大，優先拜訪索引值較小的點。</p>
+<p class="t">Lexicographic Depth-first Search（LexDFS）</p>
+<pre>
+i from 0 to v-1
+取字串最大的點。
+所有未拜訪鄰居，字串開頭添加i。
+</pre>
+<img src="LexDFS1.html">
+<p>新版DFS，仔細安排子孫的拜訪順序：凡是子孫形成團、必是連續拜訪。</p>
+<img src="LexBFS2.html">
+<p>時間複雜度O(V^2)。運用Binary Heap得壓至O(V+ElogV)。運用vEB Tree得壓至O(V+EloglogV)。</p>
+<p>LexDFS+：當字串一樣大，優先拜訪索引值較大的點。</p>
+<p class="t">各種遍歷演算法的關聯</p>
+<p><a href="http://www.lix.polytechnique.fr/~liberti/pretty_structures/pdf/habib-ps11.pdf">http://www.lix.polytechnique.fr/~liberti/pretty_structures/pdf/habib-ps11.pdf</a></p>
+<pre>
+       GEN
+      / | \
+   BFS MNS DFS
+    | / | \ |
+LexBFS MCS LexDFS
+</pre>
+<p>MNS系統可以找出一個最佳消除順序。</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Comparability Graph（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Comparability Graph</p>
+<p>「可比圖」，DAG的Transitive Closure的Oriented Graph，概念源自集合論的Poset。</p>
+<img src="ComparabilityGraph1.html">
+<p>可比圖邊數很多、密度很高。數學家常常用團的思維去看待可比圖。檢查一張圖是不是可比圖，LexDFS+，時間複雜度O(V+E)。</p>
+<p>《Linear Time LexDFS on Cocomparability Graphs》</p>
+<p class="t">延伸閱讀：Total Order / Partial Order</p>
+<p>集合論有兩個常見的概念「全序」和「偏序」。</p>
+<p>一個集合，擁有「全序」：所有元素，都可以兩兩互相比較。</p>
+<p>一個集合，擁有「偏序」：只有部分元素，可以兩兩互相比較，而且必須滿足一些性質：</p>
+<pre>
+1. a ≤ a                         (reflexivity)     [自己可以和自己比]
+2. if a ≤ b and b ≤ a then a = b (antisymmetry)
+3. if a ≤ b and b ≤ c then a ≤ c (transitivity)    [前三點建構出偏序]
+4. either a ≤ b or b ≤ a         (comparability)   [前四點建構出全序]
+</pre>
+<p>集合論的建構方式，圖論的建構方式，兩者思路完全不同，名詞意義也有衝突。圖論的觀點，全序是Complete Graph添上Loop，偏序是Comparability Graph添上Loop。</p>
+<img src="Poset1.html">
+<p>偏序可以精簡地畫成Hasse Diagram，一個DAG。</p>
+<img src="Poset2.html">
+<p class="t">延伸閱讀：Dominance</p>
+<p>所謂的「比較」可以是：是否大於（元素是數字）、是否覆蓋（元素是區間）、是否包含（元素是集合）。</p>
+<p>數學的名詞，經常是一個泛稱（抽象，抽取大致的模樣），實際內容可以抽換（具現，呈現具體的事物）。</p>
+<img src="Poset3.html">
+<p>既然可以比較，就可以分高下、定優劣。宏觀望去，就是「序order」。</p>
+<p>order和ordering意義不太一樣。order是兩兩關係，是一個graph。ordering是一條龍順序，是一個permutation，或者簡單想成一個數列。一個order通常可以擷取很多種ordering。</p>
+<img src="Poset4.html">
+<pre>
+LIS/LCS/凸包/maximal layer/interval coverage/排序/poset
+dominating point -> dominating inteval -> segment tree
+
+(x1,y1) dominates (x2,y2) iff x1 >= x2 and y1 >= y2
+
+variable change: let a = -x, b = y
+(a1,b1) covers    (a2,b2) iff a1 <= a2 and b1 >= b2
+
+variable change: let idx1 = a1, idx2 = b1, v1 = a2, v2 = b2
+(idx1,idx2) (v1,v2) are inversion pairs iff idx1 < idx2 and v1 > v2
+</pre>
+<p class="e">UVa 11020 Timus 1078</p>
+<p class="t">Dilworth's Theorem</p>
+<p>有向無環圖DAG有兩個特殊性質，在偏序集、可比圖才有顯著功用，因而挪到此處介紹。</p>
+<img src="Poset5.html">
+<pre>
+max length of chain = min cover of anti-chain
+[DFS depth]           [each BFS level is anti-chain]
+
+(=>) 一條DFS path，每一個點至少需要一條anti-chain。
+     一條anti-chain沒辦法同時穿過兩個點以上。
+(<=) 每一個level至少一條anti-chain。
+</pre>
+<p>實際應用，例如可比圖的Minimum Vertex Coloring：簡圖的一條路徑，經由Transitive Closure，其實是原圖的一個團──所有點互相連通，每一點顏色必須不同。因此簡圖的最長路徑長度，就是原圖的最小點著色的大小。</p>
+<img src="Poset6.html">
+<pre>
+min cover of chain = max length of anti-chain
+[# of DFS path]      [cross all path]
+</pre>
+<p>實際應用，例如可比圖的Maximum Independent Set：簡圖的一條路徑，經由Transitive Closure，其實是原圖的一個團──只夠塞入一點，塞入兩點就相鄰。因此簡圖的相異路徑數目，就是原圖的最大獨立集的大小。</p>
+<p class="e">Sphere DIVREL</p>
+<p class="t">Greene-Kleitman Theorem</p>
+<p>Dilworth's Theorem推廣版本，跟數論的「<a href="Partition.html">Partition</a>」有關。我沒有研究。</p>
+<p><a href="https://www.math.ku.edu/~jmartin/courses/math796-S08/notes0402.pdf">https://www.math.ku.edu/~jmartin/courses/math796-S08/notes0402.pdf</a></p>
+<p class="t">Permutation Graph</p>
+<pre>
+if (G == comparability && ~G == comparability) then (G == permutation)
+if (G == permutation) then (~G == permutation)
+</pre>
+<p class="e">ICPC 6508</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Interval Graph（Under Construction!）</p>
+
+</div><div class="c">
+<p class="t">Interval Graph</p>
+<pre>
+if (G == chordal && ~G == comparability) then (G == interval)
+
+[old-fashioned algorithm]
+for each vertex,
+find all maximal cliques containing the vertex,
+see if their id are consecutive.
+use PQ tree.
+
+[simple algorithm]
+http://www.cecm.sfu.ca/~cchauve/MATH445/PROJECTS/MATH445-TCS-234-59.pdf
+determine comparability -> O(V + ElogV)
+determine interval -> O(V + E)
+
+[newest algorithm]
+three special LexBFS
+http://math.sjtu.edu.cn/faculty/ykwu/data/Talk/20101030.pdf
+</pre>
+<p class="e">ICPC 2326</p>
+<p class="t">Circular-arc Graph</p>
+<p class="e">ICPC 4274</p>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Chain Graph（Under Construction!）</p>
+</div><div class="c">
+<p class="t">Chain Graph</p>
+<p>二分圖，X群（Y群）的一個節點順序，其中任何一點的鄰點，包含之後所有點的鄰點。</p>
+<p>《Computing the Minimum Fill-In is NP-Complete》</p>
+<pre>
+A bipartite graph is a chain graph if and only if
+it does not contain a pair of independent edges.
+
+Let G be a bipartite graph.
+C(G) is chordal if and only if G is a chain graph.
+C(G): make X and Y cliques
+</pre>
+<p class="t">Cograph</p>
+<p><a href="http://en.wikipedia.org/wiki/Cograph">http://en.wikipedia.org/wiki/Cograph</a></p>
+<p>《A Simple Linear Time LexBFS Cograph Recognition Algorithm》</p>
+<p class="e">ICPC 3666 7462</p>
+<p class="t">Probe Graph</p>
+<pre>
+Definition 2
+Let V be a vertex set of undirected graph, and P be a subset of V.
+Then G(V,P,E) denotes a probe graph if its edge set E ⊂ (P × V).
+The elements of P are called probes.
+
+P自由連  P到V-P自由連  V-P無邊  全部連滿有點像王冠
+</pre>
+
+</div></div><div class="a"><div class="h">
+<p class="b">Perfect Graph</p>
+</div><div class="c">
+<p class="t">Perfect Graph</p>
+<p>樹、森林、有向無環圖（不含環），二分圖（不含奇環），弦圖（不含長度大於3的洞），完美圖（不含長度大於3的奇洞）。這一路上的變化，就是盡量沒有環。</p>
+<pre>
+每一個導出子圖，最小著色數皆等於最大團點數，就是完美圖。 (1961)
+原圖和補圖要嘛同時是完美圖，要嘛同時不是完美圖。 (1972)
+原圖暨補圖都不含長度大於3的奇洞，就是完美圖。 (2002)
+</pre>
+<p>完美圖的補圖是完美圖。完美圖隨意刪去一些點（以及所有鄰邊），仍是完美圖，具有遞歸的性質。</p>
+<p class="t">Perfect Graph Recognition</p>
+<p>判斷一張圖是否是完美圖，2003年首次出現了多項式時間演算法，時間複雜度O(V^9)。尚在進化當中！</p>
+<p class="t">Minimum Vextex Coloring in Perfect Graph</p>
+<p>原圖的Vertex Coloring、補圖的Clique Cover，一一對應。</p>
+<p>原圖的Clique、補圖的Independent Set，一一對應。順帶一提Independent Set和Vertex Cover互補。</p>
+<p>一般圖的情況下，上述兩組東西沒有直接關聯。完美圖的情況下，這兩組東西被綁在一起了──但是只有極值而已：</p>
+<pre>
+  |Minimum Vertex Coloring in G| = |Minimum Clique Cover in <u>G</u>|
+= |Maximum Clique in G| = |Maximum Independent Set in <u>G</u>|
+</pre>
+<p>我只知道極值是相等的，但是不知道是如何相互對應的。</p>
+<p>要求出這五個東西，有著O(V+E)線性規劃演算法。目前還沒有純粹的圖論解法。</p>
+<p class="t">Perfectly Ordered Graph</p>
+<p>可以用greedy演算法進行點著色的圖。時間複雜度O(V+E)。</p>
+<pre>
+弦圖本身也有線性時間演算法可以求出  最小點著色/最小圖覆蓋/最大團/最大獨立集
+首先找出一個 PEO
+[Maffray 2003] 弦圖的任何一個PEO顛倒過來  用greedy著色  必定得到最小點著色
+</pre>
+<p class="t">Skew Partition</p>
+<p><a href="http://en.wikipedia.org/wiki/Skew_partition">http://en.wikipedia.org/wiki/Skew_partition</a></p>
+</div></div><script src="h.js"></script></body>
+<!-- Mirrored from www.csie.ntnu.edu.tw/~u91029/ChordalGraph.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 15:02:40 GMT -->
+</html>

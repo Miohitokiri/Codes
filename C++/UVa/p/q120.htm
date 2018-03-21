@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q120: Stacks of Flapjacks</h1>          
+<p>給你一疊薄煎餅，請你寫一個程式來指出要如何安排才能使這些薄煎餅由上到下依薄煎餅的半徑由小到大排好。所有的薄煎餅半徑均不相同。</p>  
+<p>要把薄煎餅排好序需要對這些薄煎餅做翻面（flip）的動作。方法是以一抹刀插入一疊薄煎餅中，然後做翻面的動作（也就是說在抹刀上面的薄煎餅經翻面後，會依相反的次序排列）。若一疊共有n個薄煎餅，我們定義最底下的薄煎餅的位置為1，最上面的薄煎餅位置為n。當抹刀插入位置為k時，代表從位置k到位置n的薄煎餅要做翻面的動作。</p>  
+<p>一開始時，這疊薄煎餅隨意堆放，並以半徑大小來表示。例如：以下3疊薄煎餅（最左邊那一疊8是最上面一個薄煎餅的半徑）</p>  
+<pre>         8           7           2
+         4           6           5
+         6           4           8
+         7           8           4
+         5           5           6
+         2           2           7</pre>
+<p>對最左邊那疊薄煎餅，如果我們把抹刀插在位置3（就是半徑為7的那塊薄煎餅的下面）的地方做翻面，就會得到中間那疊，如果我們再把抹刀插在位置1（就是半徑為2的那塊薄煎餅的下面）的地方做翻面，就會得到最右邊那疊。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，內容為這一疊薄煎餅一開始的狀態。每列開始的整數（介於1到100之間）代表位於最上方薄煎餅的半徑，依此類推。薄煎餅的數目介於1到30之間。請參考Sample 
+Input。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料輸出2列。第一列為原來那疊薄煎餅。第2列則為要使這疊薄煎餅由小到大排列所做的翻面的動作。數字代表抹刀所插入的位置。（0代表已完成）。如果已經排好了，則不需再有翻面的動作。請參考Sample 
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>1 2 3 4 5
+5 4 3 2 1
+5 1 2 3 4</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>1 2 3 4 5
+0
+5 4 3 2 1
+1 0
+5 1 2 3 4
+1 2 0</pre>
+                            
+</body>                            
+                            
+</html>                            

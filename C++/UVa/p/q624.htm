@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q624: CD</h1>          
+<p>你即將開車出遠門，當然希望在車上能聆聽一些美好的音樂。你的車上只有播放錄音帶的設備，但是你最喜歡的音樂卻都存放在CD上。所以你需要把CD上的音樂轉錄到錄音帶上。現在你必須解決的問題是：你的空白錄音帶長共N分鐘，你如何選擇CD上的歌使得盡可能的利用錄音帶的空間。以下是一些此問題的假設：</p>  
+<ul>
+  <li>CD上的歌最多不會超過20首。</li>
+  <li>沒有任何一首歌的長度超過N分鐘。</li>
+  <li>要錄在錄音帶上的歌不能重複。</li>
+  <li>每首歌的長度以一整數表達。</li>
+  <li>N也是一個整數。</li>
+</ul>
+<p>你的程式必須找出該放哪些CD上的歌到錄音帶上（按CD上的順序），使得錄音帶空白的空間最小。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料一列，第一個整數為N，代表空白錄音帶的長度。第二個整數T代表CD上共有多少首歌。接下來的T個整數分別代表CD上每首歌的長度。以Sample  
+Input中第一組測試資料為例說明：N=5, T=3, 第一首歌的長度為1分鐘，第二首歌的長度為3分鐘，第三首歌的長度為4分鐘。</p>     
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>對每一組測試資料，輸出一列。內容為要放到錄音帶的各首歌的長度（注意：此部分答案並非唯一，以第五組測試資料來說，43 
+2 
+也是正確的答案。本程式有特殊的檢驗程式，所以只要是正確答案都可被接受），以及總長度。請參考Sample  
+Output。</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                             
+Input</b></span></p>                              
+<pre>5 3 1 3 4
+10 4 9 8 4 2
+20 4 10 5 7 4
+90 8 10 23 1 2 3 4 5 7
+45 8 4 10 44 43 12 9 8 2</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>1 4 sum:5
+8 2 sum:10
+10 5 4 sum:19
+10 23 1 2 3 4 5 7 sum:55
+4 10 12 9 8 2 sum:45</pre>
+                            
+</body>                            
+                            
+</html>                            

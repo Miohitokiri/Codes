@@ -1,0 +1,38 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q200: Rare Order</h1>          
+<p>一位稀有書籍收藏家最近發現一本用一種不尋常的語言所寫的書。雖然這書看起來是用26個英文字母寫成的，但是其英文字母的順序卻跟我們所熟悉的英文字母不同。例如：在我們的觀念中英文字母的順序（由小到大）應該是A,B,C,......,X,Y,Z。所以我們的英文字典中字的順序可能是：APPLE 
+&lt; BALL &lt;BANANA &lt;&nbsp; BOX</p>  
+<p>這位收藏家在書中發現有索引的存在，所以他嘗試著從索引中去找出這種奇怪字母的排列順序。不久他就放棄了，因為實在是太繁瑣了。</p>  
+<p>你的任務是寫一個程式來完成收藏家的工作。也就是給你一些字（當然是根據這種奇怪字母的字典排列順序），請你找出各字母的排列順序。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>只有一組測試資料。每列有一個字（最多20個字元，都是大寫英文字母）。這些字代表在這本稀有書的索引中出現的字（字典順序由小到大）。當遇到僅含有一'#'的一列，代表輸入結束。請注意：在這些字中並非26個英文字母一定都會用到，但是從這些字當中一定存在唯一完整的字母排列順序。</p>    
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                
+<p>輸出一列各字母的排列順序。若以Sample Input為例說明：</p> 
+<ul>
+  <li>從第一列及第二列可以得到的資訊：X&lt;Z</li>
+  <li>從第二列及第三列可以得到的資訊：沒有</li>
+  <li>從第三列及第四列可以得到的資訊：Y&lt;W</li>
+  <li>從第四列及第五列可以得到的資訊：Z&lt;Y</li>
+</ul>
+<p>所以答案應該是XZYW</p> 
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                            
+Input</b></span></p>                              
+<pre>XWY
+ZX
+ZXY
+ZXW
+YWWX
+#</pre>
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                              
+<pre>XZYW</pre>
+                            
+</body>                            
+                            
+</html>                            

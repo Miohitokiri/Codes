@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title></title>
+</head>
+<body>
+
+<h1 align="center">Q402: M*A*S*H</h1>          
+<p>Corporal Klinger在韓戰期間服役於韓國第4077野戰醫院。他想盡辦法要離開那個鬼地方。正好美國陸軍下了一道命令要以樂透的方式讓一些幸運的傢伙（共有X個人）可以回美國休假。Klinger需要你的幫忙以離開那裡。</p>   
+<p>樂透的方式是這樣的：準備一副撲克牌，叫所有參加的人排成一列，然後翻開撲克牌中的第一張，假設該張撲克牌的點數是K，首先從第一個人算起，到第K個人那個人就被淘汰出列，然後下一個人又從1算起，第K個人又被淘汰出列，如此下去直到算到最後一人為止。當算完最後一人時（不管算到多少），翻開下一張撲克牌，然後依照上面的點數又從第一個人從1開始算，並且仿照前面的方式淘汰人。如此一直持續下去。當然，在淘汰的過程中，如果剩下的人數為X人，遊戲就結束了，這X人就是可以回美國休假的幸運者。</p>   
+<p>Klinger有辦法在撲克牌上面動手腳，所以他可以事先知道撲克牌的點數，但是在樂透開始之前一分鐘他都無法知道到底會有多少人會參加樂透。你的任務就是幫他寫一個程式，在最後一分鐘知道有多少人參加後，馬上為他算出他該站在哪一個位置，確保他可以回美國休假。</p>  
+<p>在此提供一個簡單的例子，若有10個人參加樂透，且只能有2幸運的傢伙，而撲克牌出現的點數依次是3,5,4,3,2的話，那麼Klinger應該要排在第1或第8個位置。</p>  
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Input</b></span></p>               
+<p>每組測試資料1列，每列固定有22個整數，第一個整數N（1  
+&lt;= N &lt;= 50）代表有多少人參加樂透。第二個整數X（1 &lt;= X  
+&lt;= N）代表有多少個幸運的傢伙可以回美國休假。接下來的20個整數依次為Klinger所提供的撲克牌出現的點數，這些點數為1到11的整數。</p>   
+<p align="left" style="background-color: #FFFF00"><span style="background-color: #FFFF00"><b>Output</b></span></p>                 
+<p>每組測試資料請輸出這是第幾組測試資料以及Klinger可以站的位置（由小到大排）。如果在20張撲克牌內，遊戲沒有結束，請將隊伍中還剩下的人印出。每組測試資料後空一列，請參考Sample  
+Output。</p>    
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                         
+Input</b></span></p>                               
+<pre>10 2 3 5 4 3 2 9 6 10 10 6 2 6 7 3 4 7 4 5 3 2
+47 6 11 2 7 3 4 8 5 10 7 8 3 7 4 2 3 9 10 2 5 3</pre>    
+<p align="left" style="background-color: #00FF00"><span style="background-color: #00FF00"><b>Sample                                 
+Output</b></span></p>                               
+<pre>Selection #1 
+1 8 
+ 
+Selection #2 
+1 3 16 23 31 47
+</pre>  
+                             
+</body>                             
+                             
+</html>                             
