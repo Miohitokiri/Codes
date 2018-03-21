@@ -1,7 +1,13 @@
 #include<bits/stdc++.h>
+
+#pragma GCC optimize ( "O3" )
+#pragma loop_pot ( on )
+
 using namespace std;
+
 int data[2000005], stop[2000005];
 long long ans;
+
 inline void mergeSort ( int l, int r ){
 	if ( l == r )
 		return ;

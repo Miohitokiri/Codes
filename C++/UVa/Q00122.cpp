@@ -8,7 +8,7 @@ struct node{
 };
 
 inline node *insert ( node *o, int k, string str );
-inline find find ( node *o, int k );
+inline int find ( node *o, int k );
 
 int main(){
 	ios::sync_with_stdio ( false );
