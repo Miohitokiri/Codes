@@ -68,32 +68,28 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
+inline string change ( string str ){
+	string res;
+	REPALL ( i, str ){
+		if ( 'A' <= i && i <= 'Z' )
+			res += i + 'a' - 'A';
+		else if ( 'a' <= i && i <= 'z' )
+			res += i;
+	}
+
+	return res;
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	string str1, str2, a, b;
-	int sza, szb;
-	bool ans;
-	while ( GL ( str1 ) ){
-		GL ( str2 );
-		a = b = "";
-		REPALL ( i, str1 ) if ( ( 'A' <= i && i <= 'Z' ) || ( 'a' <= i && i <= 'z' ) ) a += i;
-
-		REPALL ( i, str2 ) if ( ( 'A' <= i && i <= 'Z' ) || ( 'a' <= i && i <= 'z' ) ) b += i;
-
-		ans = false;
-		sza = SZ ( a ), szb = SZ ( b );
-		sza -= szb;
-		sza++;
-		for ( int i = 0 ; i < sza && !ans ; i++ )
-			if ( a[i] == b[0] ){
-				ans = true;
-				for ( int j = 1 ; j < szb && ans ; j++ )
-					ans = ( a[i + j] == b[j] );
-			}
-
-		cout << ( ans ? "Yes" : "No" ) << '\n';
+	string a, b;
+	while ( GL ( a ) ){
+		GL ( b );
+		a = change ( a );
+		b = change ( b );
+		cout << ( a.find ( b, 0 ) != -1 ? "Yes" : "No" ) << '\n';
 	}
 }

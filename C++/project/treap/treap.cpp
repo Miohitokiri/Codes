@@ -26,6 +26,7 @@ struct node{
 				leftSon -> rev = rev;
 			if ( rightSon )
 				rightSon -> rev = rev;
+			rev = false;
 		}
 	}
 };
@@ -34,7 +35,7 @@ inline int sz ( node *o ){
 	return o ? o -> sz : 0;
 }
 
-inline node *merge ( node *a, node * b ){
+inline node *merge ( node *a, node *b ){
 	if ( !a || !b )
 		return a ? a : b;
 	if ( a -> pri < b -> pri ){
@@ -108,19 +109,18 @@ inline int Rank ( node *&root, int k ){
 	return res;
 }
 
-inline void splitK ( ndoe *o, node *&a, node *&b, int k ){
+inline void splitK ( node *o, node *&a, node *&b, int k ){
 	if ( !o )
 		a = b = nullptr;
 	else{
 		o -> down();
 		if ( k >= sz ( o -> leftSon ) + 1 ){
 			a = o;
-			int newK = k - sz ( o -> leftSon ) - 1;
-			splitK ( o -> r, a -> r, b, newK );
+			splitK ( o -> rightSon, a -> rightSon, b, k - sz ( o -> leftSon ) - 1 );
 		}
 		else{
 			b = o;
-			splitK ( o -> l, a, b -> l, k );
+			splitK ( o -> leftSon, a, b -> leftSon, k );
 		}
 		o -> up();
 	}

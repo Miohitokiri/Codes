@@ -68,15 +68,17 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
-LL sum[maxN << 2];
-bitset < maxN << 2 > twoAndOne;
+LL sum[maxN << 2], dp[1000005];
+bool used[maxN << 2];
 vi prime;
-bitset < 100005 > lib;
+bitset < 1005 > lib;
 
 inline int D ( int n ){
+	if ( dp[n] != -1 )
+		return dp[n];
+	si res;
 	double www = sqrt ( n );
 	int ma = www;
-	si res;
 	REPALL ( i, prime ){
 		if ( i > ma )
 			break;
@@ -85,13 +87,13 @@ inline int D ( int n ){
 		res.insert ( i );
 	}
 
-	return SZ ( res ) * 2 + 2 - ( www == ma ? 1 : 0 );
+	return dp[n] = SZ ( res ) * 2 + 2 - ( www == ma ? 1 : 0 );
 }
 
 inline void build ( int l, int r, int n ){
 	if ( l == r ){
 		cin >> sum[n];
-		twoAndOne[n] = ( sum[n] != 1 && sum[n] != 2 );
+		used[n] = ( sum[n] > 2 );
 	}
 	else{
 		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
@@ -99,7 +101,7 @@ inline void build ( int l, int r, int n ){
 		build ( mid + 1, r, rightSon );
 
 		sum[n] = sum[leftSon] + sum[rightSon];
-		twoAndOne[n] = twoAndOne[leftSon] || twoAndOne[rightSon];
+		used[n] = ( used[leftSon] || used[rightSon] );
 	}
 }
 
@@ -115,11 +117,11 @@ inline LL query ( int l, int r, int nowL, int nowR, int n ){
 }
 
 inline void modify ( int l, int r, int nowL, int nowR, int n ){
-	if ( !twoAndOne[n] )
+	if ( !used[n] )
 		return;
 	if ( nowL == nowR ){
 		sum[n] = D ( sum[n] );
-		twoAndOne[n] = ( sum[n] != 1 && sum[n] != 2 );
+		used[n] = ( sum[n] > 2 );
 	}
 	else{
 		int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
@@ -133,7 +135,7 @@ inline void modify ( int l, int r, int nowL, int nowR, int n ){
 		}
 
 		sum[n] = sum[leftSon] + sum[rightSon];
-		twoAndOne[n] = twoAndOne[leftSon] || twoAndOne[rightSon];
+		used[n] = ( used[leftSon] || used[rightSon] );
 	}
 }
 
@@ -143,17 +145,17 @@ int main(){
 	cout.tie ( 0 );
 
 	lib[0] = lib[1] = true;
-	REPP ( i, 2, 100005 ){
+	REPP ( i, 2, 1005 ){
 		if ( !lib[i] ){
 			prime.pb ( i );
-			for ( int j = i << 1 ; j < 1000005 ; j += i )
+			for ( int j = i << 1 ; j < 1005 ; j += i )
 				lib[i] = true;
 		}
 	}
 
+	MEM ( dp, -1 );
 	int n, m, type, l, r, stop;
 	cin >> n >> m;
-	l = n + 1;
 	build ( 1, n, 1 );
 
 	while ( m-- ){

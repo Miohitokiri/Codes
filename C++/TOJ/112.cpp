@@ -62,41 +62,21 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 50005
+#define maxN 100005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
 
-int bit[maxN >> 1], in[maxN], out[maxN], size, cost[maxN];
-GRE ( int, data );
-
-inline void dfs ( int x ){
-	in[x] = ++size;
-	REPALL ( i, edge[x] )
-		if ( in[i] == -1 )
-			dfs ( i );
-	out[x] = ++size;
-}
-
-inline void add ( int i, int value ){
-	while ( i <= size ){
-		bit[i] += value;
-		i += i & -i;
-	}
-}
-
-inline int res ( int n ){
-	int res = 0;
-	while ( n ){
-		res += bit[n];
-		n -= n & -n;
-	}
-	return res;
-}
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+
+	vi data;
+	int n;
+	cin >> n;
+	GETDATA ( data, n );
+	REV ( ALL ( data ) );
+	REPALL ( i, data ) cout << i << '\n';
 }

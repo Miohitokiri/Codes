@@ -62,41 +62,67 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 50005
+#define maxN 100005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
 
-int bit[maxN >> 1], in[maxN], out[maxN], size, cost[maxN];
-GRE ( int, data );
+struct node{
+	node *fat, *nxt;
+	int value;
+	node ( node *o, int _value ){
+		fat = o;
+		value = _value;
+		nxt = nullptr;
+	}
+} *root;
+int sz;
 
-inline void dfs ( int x ){
-	in[x] = ++size;
-	REPALL ( i, edge[x] )
-		if ( in[i] == -1 )
-			dfs ( i );
-	out[x] = ++size;
+inline void push ( int value ){
+	node *o = new node ( root, value ), *q = root;
+	while ( q -> nxt ){
+		q = q -> nxt;
+	}
+	q -> nxt = o;
+	sz++;
 }
 
-inline void add ( int i, int value ){
-	while ( i <= size ){
-		bit[i] += value;
-		i += i & -i;
-	}
+inline void pop ( void ){
+	node *o = root;
+	root = root -> nxt;
+	delete o;
+	sz--;
 }
 
-inline int res ( int n ){
-	int res = 0;
-	while ( n ){
-		res += bit[n];
-		n -= n & -n;
-	}
-	return res;
+inline int front ( void ){
+	return root ? root -> value : -1;
 }
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+
+	root = nullptr;
+	int n, q, in, type;
+	cin >> n >> q >> in;
+	n--;
+	root = new node ( root, in );
+	while ( n-- ){
+		cin >> in;
+		push ( in );
+	}
+
+	while ( q-- ){
+		cin >> type;
+		if ( type == 1 ){
+			cin >> in;
+			push ( in );
+		}
+		else if ( type == 2 )
+			pop();
+		else
+			cout << front() << '\n';
+	}
 }

@@ -62,41 +62,64 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 50005
+#define maxN 100005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
 
-int bit[maxN >> 1], in[maxN], out[maxN], size, cost[maxN];
-GRE ( int, data );
-
-inline void dfs ( int x ){
-	in[x] = ++size;
-	REPALL ( i, edge[x] )
-		if ( in[i] == -1 )
-			dfs ( i );
-	out[x] = ++size;
-}
-
-inline void add ( int i, int value ){
-	while ( i <= size ){
-		bit[i] += value;
-		i += i & -i;
-	}
-}
-
-inline int res ( int n ){
-	int res = 0;
-	while ( n ){
-		res += bit[n];
-		n -= n & -n;
-	}
-	return res;
+inline int count ( int y, int m, int d ){
+	if ( m <= 2 )
+		m += 12, y--;
+	return ( d + 2 * m + 3 * ( m + 1 ) / 5 + y + y / 4 - y / 100 + y / 400 + 1 ) % 7;
 }
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	int y, m, d, t, limit;
+    bool flag;
+    char c;
+    while ( cin >> c >> y >> m >> d ){
+        flag = false;
+        switch ( c ){
+        	case 'Y': REPP ( i, 2001, 2101 ) if ( d == count ( i, y, m ) ){
+        		if ( flag )
+        			cout << ' ' << i;
+        		else{
+        			cout << i;
+        			flag = true;
+        		}
+        	}
+        	break;
+        	case 'M': REPP ( i, 1, 13 ) if ( d == count ( y, i, m ) ){
+        		if ( flag )
+        			cout << ' ' << i;
+        		else{
+        			flag = true;
+        			cout << i;
+        		}
+        	}
+        	break;
+        	case 'D': t = ( d - count ( y, m, 1 ) + 7 ) % 7;
+        	if ( m & 1 )
+        		limit = ( m < 8 ? 31 : 30 );
+        	else
+        		limit = ( m >= 8 ? 31 : 30 );
+        	if ( m == 2 ){
+        		limit = 28;
+        		if ( ( y % 4 == 0 && y % 100 ) || y % 400 == 0 )
+        			limit++;
+        	}
+
+        	cout << t + 1;
+        	for ( int i = t + 8 ; i <= limit ; i+= 7 )
+        		cout << ' ' << i;
+        	break;
+        	default: cout << count ( y, m, d );
+        }
+
+        cout << '\n';
+    }
 }
