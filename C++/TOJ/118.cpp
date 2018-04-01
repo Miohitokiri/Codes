@@ -1,19 +1,21 @@
-#include<bits/stdc++.h>
-using namespace std;
+#include<cstdio>
+#include<map>
+using std::map;
 int main(){
-	int n, a, b;
-	map < int, long long > data;
-	cin >> n;
-	for ( int i = 0 ; i < n ; i++ ){
-		cin >> a >> b;
+	int b;
+	short a, n;
+	map < short, int > data;
+	scanf ( "%hd", &n );
+	while ( n-- ){
+		scanf ( "%hd%d", &a, &b );
 		data[a] = a * b;
 	}
-	cin >> n;
-	for ( int i = 0 ; i < n ; i++ ){
-		cin >> a >> b;
+	scanf ( "%hd", &n );
+	while ( n-- ){
+		scanf ( "%hd%d", &a, &b );
 		if ( data[a] == b )
-			cout << "Thr shopkeeper is honest." << endl;
+			printf ("The shopkeeper is honest.\n" );
 		else
-			cout << b - data[a] << endl;
+			printf ( "%d\n", b - data[a] );
 	}
 }
