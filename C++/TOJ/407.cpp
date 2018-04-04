@@ -68,39 +68,34 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
-#define int LL
-
 GRE ( int, edge );
-bool used[maxN];
-int black, white;
+int match[maxN], visit[maxN], turn;
 
-inline void Init ( void ){
-	REPALL ( i, edge ) CLR ( i );
-	MEM ( used, 0 );
-}
-
-inline void dfs ( int n, int dep ){
-	dep++ & 1 ? black++ : white++; // rember
-	used[n] = true;
+inline bool dfs ( int n ){
+	visit[n] = turn;
 	REPALL ( i, edge[n] ){
-		if ( !used[i] )
-			dfs ( i, dep );
+		if ( match[i] == -1 || ( visit[match[i]] != turn && dfs ( match[i] ) ) ){
+			match[i] = n;
+			match[n] = i;
+			return true;
+		}
 	}
-}
 
-#undef int
+	return false;
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	#define int LL
 
-	int t, n, m, u, v, p, q, ans;
+	int t, m, u, v, p, q, ans;
 	cin >> t;
 	while ( t-- ){
 		ans = 0;
-		Init();
+		MEM ( match, -1 );
+		MEM ( visit, 0 );
+		REPALL ( i, edge ) CLR ( i );
 		cin >> p >> q >> m;
 		while ( m-- ){
 			cin >> u >> v;
@@ -109,11 +104,11 @@ int main(){
 		}
 
 		p += q + 1;
-		REPP ( i, 1, p ){
-			if ( !used[i] ){
-				black = white = 0;
-				dfs ( i, 0 );
-				ans += min ( black, white );
+		REPP ( i, 0, p ){
+			if ( match[i] == -1 ){
+				turn++;
+				if ( dfs ( i ) )
+					ans++;
 			}
 		}
 

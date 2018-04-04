@@ -76,18 +76,11 @@ bitset < 1005 > lib;
 inline int D ( int n ){
 	if ( dp[n] != -1 )
 		return dp[n];
-	si res;
 	double www = sqrt ( n );
-	int ma = www;
-	REPALL ( i, prime ){
-		if ( i > ma )
-			break;
-		if ( n % i )
-			continue;
-		res.insert ( i );
-	}
+	int ma = www, res = 0, maa = ma + 1;
+	REPP ( i, 1, maa ) n % i ? res : res++;
 
-	return dp[n] = SZ ( res ) * 2 + 2 - ( www == ma ? 1 : 0 );
+	return dp[n] = res * 2 - ( www == ma ? 1 : 0 );
 }
 
 inline void build ( int l, int r, int n ){
@@ -149,7 +142,7 @@ int main(){
 		if ( !lib[i] ){
 			prime.pb ( i );
 			for ( int j = i << 1 ; j < 1005 ; j += i )
-				lib[i] = true;
+				lib[j] = true;
 		}
 	}
 
