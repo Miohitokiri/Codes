@@ -71,7 +71,6 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 int m[maxN][maxN];
 
 inline int dfs ( int x, int y, int len ){
-	// cout << x << ' ' << y << '\n';
 	int a = 0, b = 0, c = 0, d = 0;
 
 	if ( m[x][y] > m[x + 1][y] )
