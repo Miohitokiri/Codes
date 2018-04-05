@@ -74,13 +74,13 @@ inline int dfs ( int x, int y, int len ){
 	// cout << x << ' ' << y << '\n';
 	int a = 0, b = 0, c = 0, d = 0;
 
-	if ( m[x][y] < m[x + 1][y] )
+	if ( m[x][y] > m[x + 1][y] )
 		a = dfs ( x + 1, y, len + 1 );
-	if ( m[x][y] < m[x][y + 1] )
+	if ( m[x][y] > m[x][y + 1] )
 		b = dfs ( x, y + 1, len + 1 );
-	if ( m[x][y] < m[x - 1][y] )
+	if ( m[x][y] > m[x - 1][y] )
 		c = dfs ( x - 1, y, len + 1 );
-	if ( m[x][y] < m[x][y - 1] )
+	if ( m[x][y] > m[x][y - 1] )
 		d = dfs ( x, y - 1, len + 1 );
 
 	if ( a || b || c || d )
