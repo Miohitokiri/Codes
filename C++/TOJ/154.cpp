@@ -81,7 +81,7 @@ int main(){
 
 	int t, n, stop;
 	LL ans;
-	vector < pii > work;
+	vec < pii > work;
 	cin >> t;
 	while ( t-- ){
 		work.clear();
