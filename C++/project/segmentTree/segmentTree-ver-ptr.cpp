@@ -72,12 +72,11 @@ struct node{
 	node *l, *r;
 	node ( int d ): data ( d ), l ( nullptr ), r ( nullptr ){}
 	inline void up ( void ){
-		if ( !l )
-			data = r -> data;
-		else if ( !r )
-			data = l -> data;
-		else
-			data = max ( l -> data, r -> data );
+		data = -1;
+		if ( l )
+			data = max ( data, l -> data );
+		if ( r )
+			data = max ( data, r -> data );
 	}
 } *root;
 
@@ -93,7 +92,7 @@ inline node *build ( int l, int r ){
 	return o;
 }
 
-inline void insert ( int l, int r, node *o ){
+inline void insert ( int l, int r, node *&o ){
 	if ( l == r )
 		o -> data = value;
 	else{
@@ -121,13 +120,21 @@ inline int query ( int l, int r, int nowL, int nowR, node *o ){
 		return max ( query ( l, nowMid, nowL, nowMid, o -> l ), query ( nowMid + 1, r, nowMid + 1, nowR, o -> r ) );
 }
 
+inline void dfs ( node *o ){ // del
+	cout << o -> data << ' ';
+	if ( o -> l )
+		dfs ( o -> l );
+	if ( o -> r )
+		dfs ( o -> r );
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
 	int n, q, l, r, type;
-	cin >> n;
+	cin >> n >> q;
 	n--;
 	root = build ( 0, n );
 	REPP ( i, 0, n + 1 ){
@@ -136,12 +143,16 @@ int main(){
 		Index++;
 	}
 
-	cin >> q;
+	// del
+	dfs ( root );
+	cout << '\n';
+	// del
+
 	while ( q-- ){
 		cin >> type >> Index >> value;
 		if ( type == 1 )
 			insert ( 0, n, root );
 		else
-			cout << query ( l, r, 0, n, root ) << '\n';
+			cout << query ( Index, value, 0, n, root ) << '\n';
 	}
 }
