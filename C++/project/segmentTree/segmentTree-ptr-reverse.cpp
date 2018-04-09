@@ -13,6 +13,7 @@ typedef long long LL;
 #define REPM(i,f,s) for ( int i = f ; i >= s ; i-- )
 #define REPALL(i,n) for ( auto &i: n )
 #define debuger cout << "111\n"
+#define SP(a,b) swap ( a, b )
 #define MEM(n,i) memset ( n, i, sizeof n )
 
 // define pair
@@ -28,7 +29,6 @@ typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
 #define ep emplace_back
-#define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
 #define BEG(n) n.begin()
@@ -37,14 +37,13 @@ typedef vec < LL > vl;
 #define RSZ(n,s) n.resize ( s )
 #define ALL(n) BEG ( n ), END ( n )
 #define PIO(n) REPALL ( i, n ) cout << i << ' '; cout << '\n'
-#define GETDATA(data,n) RSZ ( data, n ); REPALL ( i, data ) cin >> i
 
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
 #define FID(n,Index) n.find ( Index ) != n.end()
 
-// graph
+// greph
 #define GRE(T,edge) vec < T > edge[maxN]
 #define UNI(u,v,edge) edge[u].pb ( v ), edge[v].pb ( u )
 #define UNIw(u,v,w,edge) edge[u].pb ( mp ( v, w ) ), edge[v].pb ( mp ( u, w ) )
@@ -54,7 +53,7 @@ typedef set < LL > sl;
 
 // define stack, queue, pri-queue
 template < class T > using stack = stack < T, vec < T > >;
-template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
+template < class T > using MaxHeap = priority_queue < T >;
 template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
 
 // define stringstream
@@ -69,49 +68,93 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // I can solve this problem!
 
 struct node{
-	int value, sz;
+	int data, size;
 	node *l, *r;
-	node ( int _value ): value ( _value ), sz ( 1 ), l ( nullptr ), r ( nullptr ) {}
+	bool rev;
+	node ( int d ): data ( d ), l ( nullptr ), r ( nullptr ), size ( 1 ), rev ( false ){}
 
-	inline void up ( void ){
-		if ( !l )
-			value = l -> value;
-		else if ( !r )
-			value = r -> value;
-		else
-			value = min ( l -> value, r -> value );
+	inline void down ( void ){
+		if ( rev ){
+			swap ( l, r );
+			if ( l )
+				l -> rev ^= 1;
+			if ( r )
+				r -> rev ^= 1;
+			rev = false;
+		}
 	}
 } *root;
 
-int Index, value;
+inline int sz ( node *o ){
+	return o ? o -> size : 0;
+}
 
-inline void update ( int l, int r, node *o ){
+inline int val ( node *o ){
+	return o ? o -> data : 0;
+}
+
+inline void up ( node *&o ){
+	o -> data = val ( o -> l ) + val ( o -> r );
+	o -> size = sz ( o -> l ) + sz ( o -> r );
+}
+
+inline node *build ( int l, int r ){
+	node *o = new node ( 0 );
+	if ( l == r )
+		return o;
+	int mid = ( l + r ) >> 1;
+	o -> l = build ( l, mid );
+	o -> r = build ( mid + 1, r );
+	up ( o );
+	return o;
+}
+
+inline void insert ( int l, int r, int Index, int value, node *&o ){
 	if ( l == r )
 		o = new node ( value );
 	else{
-		int mid = ( l + o -> l -> sz );
+		o -> down();
+		int mid = l + sz ( o -> l );
 		if ( Index <= mid )
-			update ( l, mid, o -> l );
+			insert ( l, mid, Index, value, o -> l );
 		else
-			update ( mid + 1, r, o -> r );
+			insert ( mid + 1, r, Index, value, o -> r );
 
-		o -> up();
+		up ( o );
 	}
 }
 
 inline int query ( int l, int r, int nowL, int nowR, node *o ){
+	if ( !o )
+		return 0;
+	o -> down();
 	if ( l <= nowL && nowR <= r )
-		return o -> value;
-	int mid = nowL + o -> sz;
+		return o -> data;
+	int nowMid = nowL + sz ( o -> l );
+	if ( nowMid < l )
+		return query ( l, r, nowMid + 1, nowR, o -> r );
+	else if ( r <= nowMid )
+		return query ( l, r, nowL, nowMid, o -> l );
+	else
+		return query ( l, r, nowL, nowMid, o -> l )+ query ( l, r, nowMid + 1, nowR, o -> r );
 }
 
-inline void rev ( node *o ){
+inline void dfs ( node *o ){ // del
+	cout << o -> size << ' ';
+	if ( o -> l )
+		dfs ( o -> l );
+	if ( o -> r )
+		dfs ( o -> r );
+}
+
+inline void reverse ( int l, int r, int nowL, int nowR, node *&o ){
 	if ( !o )
 		return;
-	if ( !o -> l && o -> r )
-		rev ( o -> r );
-	else if ( !o -> r && o -> l )
-		rev ( o -> l );
+	if ( l <= nowL && nowR <= r )
+		o -> rev ^= 1;
+	else{
+		int mid = ( l + r ) >> 1;
+	}
 }
 
 int main(){
@@ -119,4 +162,29 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
+	int n, q, l, r, type, value;
+	cin >> n >> q;
+	n--;
+	root = build ( 0, n );
+	// del
+	dfs ( root );
+	cout << '\n';
+	// del
+	REPP ( i, 0, n + 1 ){
+		cin >> value;
+		insert ( 0, n, i, value, root );
+	}
+
+	while ( q-- ){
+		cin >> type >> l >> r;
+		if ( type == 1 )
+			insert ( 0, n, l, r, root );
+		else if ( type == 2 )
+			cout << query ( l, r, 0, n, root ) << '\n';
+		else
+			reverse ( l, r, 0, n, root );
+	}
+
+	dfs ( root );
+	cout << '\n';
 }
