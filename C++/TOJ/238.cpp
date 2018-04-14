@@ -62,16 +62,18 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define maxN 10005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
 
-GRE ( pii, edge );
+typedef pair < short, short > pss;
+
+GRE ( pss, edge );
 int mi, ma;
 
-inline bool dfs ( int n, int p, int sum ){
+inline bool dfs ( short n, short p, int sum ){
 	if ( mi <= sum && sum <= ma )
 		return true;
 	REPALL ( i, edge[n] ){
@@ -89,7 +91,7 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, u, v, w;
+	short n, u, v, w;
 	cin >> n >> mi >> ma;
 	REPP ( i, 1, n ){
 		cin >> u >> v >> w;
