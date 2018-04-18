@@ -68,67 +68,110 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
-vi data[6];
+inline LL gcd ( LL a, LL b ){
+	while ( a % b && b % a )
+		a > b ? a %= b : b %= a;
+	return min ( a, b );
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
 
-	int t, in, ans;
+	string str, stop;
 	bool check;
-	set < pii > used;
-	cin >> t;
-	while ( t-- ){
-		ans = 0;
-		REPP ( i, 0, 5 ){
-			REPP ( j, 0, 6 ){
-				cin >> in;
-				data[j].pb ( in );
+	LL son, mot, g;
+	vec < pll > data;
+	while ( GL ( str ) ){
+		if ( str == "" ){
+			cout << "1\n";
+			continue;
+		}
+		stop = "";
+		REPALL ( i, str ){
+			if ( i != '/' && '9' < i && i < '0' && i != ' ' )
+				continue;
+			if ( i == '/' || ( '0' <= i && i <= '9' ) ){
+				stop += i;
+				continue;
+			}
+
+			if ( stop == "" )
+				continue;
+			int j;
+			son = mot = 0;
+			for ( j = 0 ; j < SZ ( stop ) ; j++ ){
+				if ( stop[j] == '/' )
+					break;
+				son *= 10;
+				son += int ( stop[j] - '0' );
+			}
+
+			j++;
+			for ( j ; j < SZ ( stop ) ; j++ ){
+				mot *= 10;
+				mot += int ( stop[j] - '0' );
+			}
+
+			stop = "";
+			if ( !mot )
+				mot++;
+			if ( son ){
+				g = gcd ( son, mot );
+				son /= g, mot /= g;
+			}
+			if ( son != mot )
+				data.pb ( pll ( son, mot ) );
+		}
+
+
+		if ( stop != "" ){
+			int j;
+			son = mot = 0;
+			for ( j = 0 ; j < SZ ( stop ) ; j++ ){
+				if ( stop[j] == '/' )
+					break;
+				son *= 10;
+				son += int ( stop[j] - '0' );
+			}
+
+			j++;
+			for ( j ; j < SZ ( stop ) ; j++ ){
+				mot *= 10;
+				mot += int ( stop[j] - '0' );
+			}
+
+			stop = "";
+			if ( !mot )
+				mot++;
+			if ( son ){
+				g = gcd ( son, mot );
+				son /= g, mot /= g;
+			}
+			if ( son != mot )
+				data.pb ( pll ( son, mot ) );
+		}
+
+		son = mot = 1;
+		REPALL ( i, data ){
+			son *= i.F;
+			mot *= i.S;
+			if ( son ){
+				g = gcd ( son, mot );
+				mot /= g, son /= g;
 			}
 		}
 
-		REPP ( i, 0, 6 ){
-			REV ( ALL ( data[i] ) );
+		CLR ( data );
+		if ( !son ){
+			cout << "0\n";
+			continue;
 		}
-
-		do{
-			// debuger; // del
-			check = false;
-			REPP ( i, 0, 6 ) RSZ ( data[i], 5 );
-			REPP ( i, 0, 3 ){
-				REPP ( j, 0, 5 ){
-					if ( data[i][j] == data[i + 1][j] && data[i + 1][j] == data[i + 2][j] && data[i][j] ){
-						check = true;
-						if ( !( FID ( used, pii ( i, j ) ) || FID ( used, pii ( i + 1, j ) ) || FID ( used, pii ( i + 1, j ) ) ) )
-							ans++;
-						used.insert ( pii ( i, j ) );
-						used.insert ( pii ( i + 1, j ) );
-						used.insert ( pii ( i + 2, j ) );
-					}
-				}
-			}
-
-			REPP ( i, 0, 6 ){
-				REPP ( j, 0, 2 ){
-					if ( data[i][j] == data[i][j + 1] && data[i][j + 1] == data[i][j + 2] && data[i][j] ){
-						check = true;
-						if ( !( FID ( used, pii ( i, j ) ) || FID ( used, pii ( i, j + 1 ) ) || FID ( used, pii ( i, j + 2 ) ) ) )
-							ans++;
-						used.insert ( pii ( i, j ) );
-						used.insert ( pii ( i, j + 1 ) );
-						used.insert ( pii ( i, j + 2 ) );
-					}
-				}
-			}
-
-			for ( auto i = used.rbegin() ; i != used.rend() ; i++ ){
-				// cout << i -> F << ' ' << i -> S << '\n'; // del
-				data[i -> F].erase ( ( BEG ( data[i -> F] ) + i -> S ) );
-			}
-			CLR ( used );
-		} while ( check );
-
-		cout << ans << '\n';
+		cout << son;
+		if ( mot != 1 )
+			cout << '/' << mot;
+		cout << '\n';
 	}
 }
