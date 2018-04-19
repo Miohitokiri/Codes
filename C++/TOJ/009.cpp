@@ -140,15 +140,10 @@ int main(){
 			Union ( u, v );
 		}
 
-		REPP ( i, 0, n ){
-			if ( high[i] == mi )
-				data.pb ( i );
-		}
-		REPALL ( i, data ){
-			if ( same ( i, s ) ){
-				check = true;
-				break;
-			}
+		REPP ( i, 0, n ) if ( high[i] == mi ) data.pb ( i );
+		REPALL ( i, data ) if ( same ( i, s ) ){
+			check = true;
+			break;
 		}
 
 		if ( !check ){
@@ -167,13 +162,11 @@ int main(){
 			now = q.front();
 			q.pop();
 			inQ[now] = false;
-			REPALL ( i, edges[now] ){
-				if ( dis[i] > dis[now] + 1 ){
-					dis[i] = dis[now] + 1;
-					if ( !inQ[i] ){
-						inQ[i] = true;
-						q.push ( i );
-					}
+			REPALL ( i, edges[now] ) if ( dis[i] > dis[now] + 1 ){
+				dis[i] = dis[now] + 1;
+				if ( !inQ[i] ){
+					inQ[i] = true;
+					q.push ( i );
 				}
 			}
 		}
