@@ -62,14 +62,81 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define maxN 1000005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
 
+LL dp[maxN][3][2];
+
+const LL mod = 1000000007;
+
+struct martix{
+	LL mar[6][6] = {
+		{ 1, 1, 1, 0, 0, 0 },
+		{ 1, 0, 0, 0, 0, 0 },
+		{ 0, 1, 0, 0, 0, 0 },
+		{ 1, 1, 1, 1, 1, 1 },
+		{ 0, 0, 0, 1, 0, 0 },
+		{ 0, 0, 0, 0, 1, 0 }
+	};
+} basic;
+
+inline martix multi ( martix a, martix b ){
+	martix res;
+	MEM ( res.mar, 0 );
+	REPP ( i, 0, 6 ){
+		REPP ( j, 0, 6 ){
+			REPP ( k, 0, 6 ){
+				res.mar[i][j] += a.mar[i][k] * b.mar[k][j] % mod;
+				res.mar[i][j] %= mod;
+			}
+		}
+	}
+
+	return res;
+}
+
+inline martix fashPow ( int n ){
+	martix ans, base = basic;
+
+	MEM ( ans.mar, 0 );
+	REPP ( i, 0, 6 ) ans.mar[i][i] = 1;
+
+	while ( n ){
+		if ( n & 1 )
+			ans = multi ( ans, base );
+		base = multi ( base, base );
+		n >>= 1;
+	}
+
+	return ans;
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+
+	LL n, w, res;
+	dp[1][0][0] = 1;
+	dp[1][1][0] = 1;
+	dp[1][0][1] = 1;
+	martix ans;
+	while ( cin >> n ){
+		if ( n == 1 ){
+			cout << "3\n";
+			continue;
+		}
+
+		ans = fashPow ( n );
+		res = 0;
+		REPP ( i, 0, 6 ){
+			res += ans.mar[i][0];
+			res %= mod;
+		}
+
+		cout << res << '\n';
+	}
 }
