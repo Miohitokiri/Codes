@@ -10,7 +10,7 @@ typedef pair < int, int > pii;
 vector < pii > edges[maxN];
 int dis[maxN];
 
-inline void Bellman-Ford ( int start ){
+inline void BellmanFord ( int start ){
 	memset ( dis, 0x3f3f3f, sizeof dis );
 	queue < int > q;
 	q.push ( start );
