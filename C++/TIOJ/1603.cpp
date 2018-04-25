@@ -9,8 +9,6 @@ struct segmentTree{
 long long basic[100005];
 
 inline void build ( long long l, long long r, long long n );
-// inline void update ( long long l, long long r, long long index, long long n, long long value );
-
 inline long long query ( long long l, long long r, long long nowL, long long nowR, long long n );
 inline long long queryMax ( long long l, long long r, long long nowL, long long nowR, long long n );
 inline long long queryMin ( long long l, long long r, long long nowL, long long nowR, long long n );
@@ -30,16 +28,7 @@ int main(){
 	while ( q-- ){
 		cin >> l >> r;
 		cout << queryMax ( l, r, 1, n, 1 ) - queryMin ( l, r, 1, n, 1 ) << '\n';
-		// cout << queryMax ( l, r, 1, n, 1 ) << ' ' << queryMin ( l, r, 1, n, 1 ) << '\n';
 	}
-
-	// for ( long long i = 0 ; i < n * 4 ; i++ )
-	// 	cout << segMax[i] << ' ';
-	// cout << '\n';
-
-	// for ( long long i = 0 ; i < n * 4 ; i++ )
-	// 	cout << segMin[i] << ' ';
-	// cout << '\n';
 }
 
 inline void build ( long long l, long long r, long long n ){
@@ -53,21 +42,6 @@ inline void build ( long long l, long long r, long long n ){
 		seg[n].min = min ( seg[leftSon].min, seg[rightSon].min );
 	}
 }
-
-// inline void update ( long long l, long long r, long long index, long long n, long long value ){
-// 	if ( l == r ){
-// 		seg[n].max = seg[n].min = value;
-// 	}
-// 	else{
-// 		long long mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = n << 1 + 1;
-// 		if ( index <= mid )
-// 			update ( l, mid, index, leftSon, value );
-// 		else
-// 			update ( mid + 1, r, index, rightSon, value );
-// 		seg[n].max = max ( seg[leftSon].max, seg[rightSon].max );
-//		seg[n].min = min ( seg[leftSon].min, seg[rightSon].min );
-// 	}
-// }
 
 inline long long queryMax ( long long l, long long r, long long nowL, long long nowR, long long n ){
 	if ( l <= nowL && nowR <= r )
