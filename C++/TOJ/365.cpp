@@ -69,37 +69,32 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // I can solve this problem!
 
 struct piece{
-	int l, r, sz;
+	int f, s, sz;
 };
+
+inline bool same ( piece a, piece b ){
+	return a.f == b.f && a.s == b.s;
+}
 
 struct node{
 	piece fro, bck, ma;
 } seg[maxN << 2];
-int data[maxN];
 
-inline bool operator == ( piece a, piece b ){
-	return a.l == b.l && a.r == b.r;
-}
+int basic[maxN];
 
 inline node up ( node L, node R ){
 	node res;
+	res.fro = L.fro, res.bck = R.bck, res.ma = ( L.ma.sz > R.ma.sz ? L.ma : R.ma );
 
-	if ( L.fro == L.bck && R.fro == R.bck && data[L.bck.r] + 1 == data[R.fro.l] )
-		res.fro = res.bck = res.ma = piece { L.fro.l, R.fro.r, L.fro.sz + R.fro.sz };
-	else{
-		res.fro = L.fro;
-		res.bck = R.bck;
-		res.ma = ( L.ma.sz > R.ma.sz ? L.ma : R.ma );
+	if ( basic[L.bck.s] + 1 == basic[R.fro.f] ){
+		piece stop = piece { L.bck.f, R.fro.s, R.fro.s - L.bck.f + 1 };
 
-		if ( data[L.bck.r] + 1 == data[R.fro.l] ){
-			piece stop = piece { L.bck.l, R.fro.r, L.bck.sz + R.fro.sz };
-			if ( R.fro == R.bck )
-				res.bck = stop;
-			if ( L.fro == L.bck )
-				res.fro = stop;
+		if ( same ( L.fro, L.bck ) )
+			res.fro = stop;
+		if ( same ( R.fro, R.bck ) )
+			res.bck = stop;
 
-			res.ma = ( res.ma.sz > stop.sz ? res.ma : stop );
-		}
+		res.ma = ( stop.sz > res.ma.sz ? stop : res.ma );
 	}
 
 	return res;
@@ -107,7 +102,7 @@ inline node up ( node L, node R ){
 
 inline void build ( int l, int r, int n ){
 	if ( l == r )
-		seg[n].fro = seg[n].bck = seg[n].ma = piece { l, l, 1 };
+		seg[n].fro = seg[n].bck = seg[n].ma = piece { l, r, 1 };
 	else{
 		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 		build ( l, mid, leftSon );
@@ -117,14 +112,14 @@ inline void build ( int l, int r, int n ){
 	}
 }
 
-inline void update ( int l, int r, int n, int Index ){
+inline void update ( int l, int r, int Index, int n ){
 	if ( l == r )
 		return;
 	int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 	if ( Index <= mid )
-		update ( l, mid, leftSon, Index );
+		update ( l, mid, Index, leftSon );
 	else
-		update ( mid + 1, r, rightSon, Index );
+		update ( mid + 1, r, Index, rightSon );
 
 	seg[n] = up ( seg[leftSon], seg[rightSon] );
 }
@@ -137,7 +132,7 @@ inline node query ( int l, int r, int nowL, int nowR, int n ){
 		return query ( l, r, nowL, mid, leftSon );
 	if ( mid < l )
 		return query ( l, r, mid + 1, nowR, rightSon );
-	return up ( query ( l, mid, nowL, mid, leftSon ), query ( mid + 1, r, mid + 1, nowR, rightSon ) );
+	return up ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
 }
 
 int main(){
@@ -145,22 +140,20 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, type, l, r;
+	int n, q, l, r, type;
 	cin >> n;
-	REPP ( i, 1, n ) cin >> data[i];
-	cin >> data[n];
+	for ( int i = 1 ; i <= n ; i++ )
+		cin >> basic[i];
 	build ( 1, n, 1 );
 
 	cin >> q;
 	while ( q-- ){
-		cin >> type >> l;
+		cin >> type >> l >> r;
 		if ( type == 1 ){
-			cin >> data[l];
-			update ( 1, n, 1, l );
+			basic[l] = r;
+			update ( 1, n, l, 1 );
 		}
-		else{
-			cin >> r;
+		else
 			cout << query ( l, r, 1, n, 1 ).ma.sz << '\n';
-		}
 	}
 }
