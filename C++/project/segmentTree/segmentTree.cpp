@@ -30,8 +30,7 @@ inline void update ( int l, int r, int n ){
 	if ( l == r )
 		seg[n] = value;
 	else{
-		int mid = ( l + r ) >> 1, leftSon = n << 1;
-		int rightSon = leftSon + 1;
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 		if ( mid < Index )
 			update ( mid + 1, r, rightSon );
 		else
