@@ -1,18 +1,20 @@
 #include<bits/stdc++.h>
 #define maxN 5005
+typedef long long LL;
 
 using namespace std;
 
-long long graph[maxN][maxN];
+LL graph[maxN][maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
+	cout.tie ( 0 );
 
 	int n, m, u, v, w, q;
 	cin >> n >> m;
 
-	memset ( graph, 0x3f, sizeof graph );
+	memset ( graph, 0x3f3f3f, sizeof graph );
 	while ( m-- ){
 		cin >> u >> v >> w;
 		graph[u][v] = graph[v][u] = w;
