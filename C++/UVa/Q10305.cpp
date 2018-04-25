@@ -67,12 +67,49 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
+GRE ( int, edge );
+bool used[maxN];
+int rk[maxN], cnt[maxN];
+
+inline void dfs ( int n, int dep ){
+	used[n] = true;
+	rk[n] = max ( dep++, rk[n] );
+	REPALL ( i, edge[n] ) if ( !used[i] ) dfs ( i, dep );
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
 	int n, m, u, v;
-	while ( cin >> n >> m && n && m ){
+	vec < pii > lib;
+	while ( cin >> n >> m ){
+		if ( !n )
+			break;
+		REPP ( i, 0, n ) CLR ( edge[i] );
+		MEM ( rk, 0 );
+		MEM ( used, 0 );
+		MEM ( cnt, 0 );
+		while ( m-- ){
+			cin >> u >> v;
+			edge[u].pb ( v );
+			cnt[v]++;
+		}
+
+		for ( int i = 1 ; i <= n ; i++ ){
+			if ( !cnt[i] )
+				dfs ( i, 0 );
+		}
+
+		CLR ( lib );
+
+		for ( int i = 1 ; i <= n ; i++ )
+			lib.pb ( pii ( rk[i], i ) );
+
+		sort ( ALL ( lib ) );
+		cout << lib[0].S;
+		REPP ( i, 1, n ) cout << ' ' << lib[i].S;
+		cout << '\n';
 	}
 }
