@@ -156,10 +156,7 @@ int main(){
 		pa[1] = 1;
 		findMaxSon ( 1 );
 		dfs ( 1, 1 );
-		// return 0;
-		REPP ( i, 1, ( n << 1 ) ){
-			update ( 1, N, where[i], value[i], 1 );
-		}
+		REPP ( i, 1, ( n << 1 ) ) update ( 1, N, where[i], value[i], 1 );
 		while ( cin >> type ){
 			if ( type == "DONE" )
 				break;
@@ -167,16 +164,13 @@ int main(){
 			if ( type == "QUERY" ){
 				uPa = u, vPa = v;
 				ma = -1;
-				int ccc = 0;
 
 				while ( link[vPa] != link[uPa] ){
 					if ( D[link[vPa]] > D[link[uPa]] ){
-						// cout << query ( where[pa[link[vPa]]], where[vPa], 1, N, 1 ) << '\n';
 						ma = max ( ma, query ( where[link[vPa]], where[vPa], 1, N, 1 ) );
 						vPa = pa[link[vPa]];
 					}
 					else{
-						// cout << query ( where[pa[link[uPa]]], where[uPa], 1, N, 1 ) << '\n';
 						ma = max ( ma, query ( where[link[uPa]], where[uPa], 1, N, 1 ) );
 						uPa = pa[link[uPa]];
 					}
