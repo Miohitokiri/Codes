@@ -21,8 +21,8 @@ inline void dijkstra ( int start ){
 			continue;
 		for ( auto i: edges[node] ){ // 跑過所有可以被node連結到的點
 			if ( dis[i.first] > d + i.second ){ // 如果有更新，丟入當前路徑長以及點編號進入pq中
-				dis[i.second] = d + i.second;
-				pq.push ( pii ( dis[i.second], i.second ) );
+				dis[i.first] = d + i.second;
+				pq.push ( pii ( dis[i.first], i.first ) );
 			}
 		}
 	}
