@@ -23,7 +23,7 @@ inline void SPFA ( int start ){
 		inQueue[now] = false; // 紀錄已經取出
 		for ( auto i: edges[now] ){ // 跑過所有可以被now連結到的點
 			if ( dis[i.first] > dis[now] + i.second ){
-				dis[i.second] = dis[i.first] + i.second;
+				dis[i.first] = dis[now] + i.second;
 				if ( !inQueue[i.first] ){
 					// 如果點沒有在queue中，再加入queue，並記錄已經在queue中
 					inQueue[i.first] = true;
