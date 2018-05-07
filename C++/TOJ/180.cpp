@@ -62,26 +62,31 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 1000005
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-struct bri{
+struct node{
 	int u, v, w;
 };
 
-inline bool cmp ( bri a, bri b ){
+inline bool cmp ( node a, node b ){
 	return a.w < b.w;
 }
 
-vec < bri > edges;
-int dis[maxN];
+vec < node > edges;
+int dis[maxN], sum;
 
-inline void Init ( void ){
-	REPP ( i, 0, maxN ) dis[i] = i;
+inline void init ( int n ){
+	n++;
+	REPP ( i, 0, n ){
+		dis[i] = i;
+	}
 	CLR ( edges );
+	sum = 0;
 }
 
 inline int find ( int n ){
@@ -96,30 +101,37 @@ inline bool same ( int a, int b ){
 	return find ( a ) == find ( b );
 }
 
+inline void Kruskal ( void ){
+	sort ( ALL ( edges ), cmp );
+	REPALL ( i, edges ){
+		if ( same  ( i.u, i.v ) ){
+			if ( i.w < 0 )
+				sum += i.w;
+			continue;
+		}
+		Union ( i.u, i.v );
+		sum += i.w;
+	}
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, a, b, c, d, t, ans;
+	int n, m, t, u, v, w, d;
 	cin >> t;
 	while ( t-- ){
-		Init();
 		cin >> n >> m;
-		ans = 0;
+		init ( n );
 		while ( m-- ){
-			cin >> a >> b >> c >> d;
-			edges.pb ( bri { a, b, c - d } );
+			cin >> u >> v >> w >> d;
+			w -= d;
+			edges.pb ( node { u, v, w } );
 		}
 
-		sort ( ALL ( edges ), cmp );
-		REPALL ( i, edges ){
-			if ( same ( i.u, i.v ) )
-				continue;
-			ans += i.w;
-			Union ( i.u, i.v );
-		}
+		Kruskal();
 
-		cout << ans << '\n';
+		cout << sum << '\n';
 	}
 }
