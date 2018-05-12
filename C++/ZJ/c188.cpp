@@ -1,6 +1,9 @@
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
+#pragma GCC optimize ( "O3" )
+#pragma loop_opt ( on )
+
 using namespace std;
 
 typedef long long LL;
@@ -60,35 +63,26 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100000005
+#define maxN 100005
 
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
 
-bitset < maxN > lib;
-vi prime;
+LL dp[205];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
+	cout.tie ( 0 );
 
-	int a, b;
-	lib[0] = lib[1] = true;
-	REPP ( i, 0, maxN ){
-		if ( lib[i] )
-			continue;
-		prime.pb ( i );
-		for ( int j = i << 1 ; j < maxN ; j += i )
-			lib[j] = true;
-	}
+	int n;
+	dp[0] = 1;
+	for ( int i = 1 ; i <= 200 ; i++ )
+		for ( int j = i ; j <= 200 ; j++ )
+			dp[j] += dp[j - i];
 
-	while ( cin >> a >> b ){
-		if ( b > a )
-			swap ( a, b );
-		int ans = lower_bound ( ALL ( prime ), a ) - lower_bound ( ALL ( prime ), b );
-		if ( *lower_bound ( ALL ( prime ), a ) == a )
-			ans++;
-		cout << ans << '\n';
+	while ( cin >> n ){
+		cout << dp[n] << '\n';
 	}
 }
