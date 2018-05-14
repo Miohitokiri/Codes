@@ -114,17 +114,11 @@ int main(){
 		UNI ( u, v, edges );
 	}
 
-	// REPALL ( i, data ) cout << i.F << ' ' << i.S << '\n';
 	for ( int i = 0 ; i < n ; i++ ){
 		int idx = lower_bound ( ALL ( check ), data[i].F ) - BEG ( check );
 		ans[data[i].S] = sum ( idx );
 		add ( idx  + 1 );
 		lib[data[i].S] = true;
-		// int cnt = 1;
-		// while ( data[i].F == data[i - cnt].F && i - cnt >= 0 ){
-		// 	cnt++;
-		// 	ans[data[i].S]--;
-		// }
 		REPALL ( j, edges[data[i].S] ){
 			if ( lib[j] && value[j] != data[i].F )
 				ans[data[i].S]--;
