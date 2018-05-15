@@ -95,6 +95,5 @@ int main(){
 			REPP ( j, 0, data[i] ) cout << i << ' ';
 		}
 		cout << '\n';
-
 	}
 }
