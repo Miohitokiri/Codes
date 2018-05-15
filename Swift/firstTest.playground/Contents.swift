@@ -1,26 +1,7 @@
-import Cocoa
+//: Playground - noun: a place where people can play
 
-func gcd ( a:Int, b: Int ) -> Int{
-    var a = a, b = b
-    
-    while a % b != 0 && b % a != 0{
-        if a > b {
-            a %= b
-        }
-        else{
-            b %= a
-        }
-    }
-    
-    if a > b{
-        return b
-    }
-    else{
-        return a
-    }
-}
+import UIKit
 
+var str = "Hello, playground"
 
-let first = 1146, secound = 4569
-
-print ( "\(gcd(a: first, b: secound))")
+print ( str )
