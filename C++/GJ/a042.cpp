@@ -1,12 +1,25 @@
 #include<iostream>
+
 using namespace std;
-int main(){
-	long long n, ans = 1;
-	cin >> n;
-	for ( int i = 0 ; i < n ; i++ ){
-		ans *= 13;
-		ans %= 100;
+
+inline int pow ( int a, int b ){
+	int res = 1, base = a;
+	while ( b ){
+		if ( b & 1 ){
+			res *= base;
+			res %= 100;
+		}
+
+		base *= base;
+		base %= 100;
+		b >>= 1;
 	}
-	ans /= 10;
-	cout << ans << endl;
+
+	return res / 10;
+}
+
+int main(){
+	int n;
+	cin >> n;
+	cout << pow ( 13, n ) << '\n';
 }
