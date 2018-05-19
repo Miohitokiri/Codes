@@ -62,23 +62,68 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 1000005
 
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
+
+int seg[maxN << 4];
+
+void update ( int l, int r, int index, int value, int n ){
+	if ( l == r )
+		seg[n] += value;
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( index <= mid )
+			update ( l, mid, index, value, leftSon );
+		else
+			update ( mid + 1, r, index, value, rightSon );
+
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
+	}
+}
+
+void print ( int l, int r, int n ){
+	if ( l == r )
+		cout << seg[n] << '\n';
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		print ( l, mid, leftSon );
+		print ( mid + 1, r, rightSon );
+	}
+}
+
+void modify ( int l, int r, int value, int n ){
+	if ( l == r )
+		seg[n] -= value;
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( seg[n] == seg[leftSon] )
+			modify ( l, mid, value, leftSon );
+		else
+			modify ( mid + 1, r, value, rightSon );
+
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
+	}
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q;
+	int n, q, in, idx, type;
 	cin >> n >> q;
-	set < pii > lib;
-	n++;
-	REPP ( i, 1, n ) lib.insert ( pii ( 0, i ) );
 	while ( q-- ){
+		cin >> type >> idx;
+		if ( type == 1 ){
+			cin >> in;
+			update ( 1, n, idx, in, 1 );
+		}
+		else
+			modify ( 1, n, idx, 1 );
 	}
+
+	print ( 1, n, 1 );
 }
