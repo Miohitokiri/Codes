@@ -62,32 +62,28 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
+
+typedef map < string, int > msi;
+
+inline bool isN ( char n ){
+	return '0' <= n && n <= '9';
+}
+
+inline bool isS ( char n ){
+	return 'a' <= n && n <= 'z';
+}
+
+inline msi dfs ( string str ){
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-
-	int n, l, w, x, y, ans = 0;
-	cin >> n >> l >> w;
-	vec < pii > data[maxN], dou;
-	si used;
-	REPP ( i, 0, n ){
-		cin >> x >> y;
-		data[y].pb ( pii ( x, i ) );
-		used.insert ( y );
-		dou.pb ( pii ( x, y ) );
-	}
-
-	queue < int > q;
-	REPALL ( i, used ){
-		sort ( ALL ( data[i] ) );
-		while ( dou[q.front()].S <= i - w )
-			q.pop();
-	}
 }

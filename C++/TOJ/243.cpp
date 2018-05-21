@@ -63,37 +63,23 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 1000005
+#define maxN 100005
 
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
 
-int place[maxN];
-inline void fail ( string b ){
-	int len = SZ ( b );
-	place[0] = -1;
-	for ( int i = 1, pos = -1 ; i < len ; i++ ){
-		while ( ~pos && b[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( b[i] == b[pos + 1] )
-			pos++;
-		place[i] = pos;
-	}
-}
+struct node{
+	int au, ag, cu;
+};
 
-inline bool match ( string a, string b ){
-	int lenA = SZ ( a ), lenB = SZ ( b ) - 1;
-	for ( int i = 1, pos = -1 ; i < lenA ; i++ ){
-		while ( ~pos && a[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( a[i] == b[pos + 1] )
-			pos++;
-		if ( pos == lenB )
-			return true;
+inline bool cmp ( node a, node b ){
+	if ( a.au == b.au ){
+		if ( a.ag == b.ag )
+			return a.cu > b.cu;
+		return a.ag > a.ag;
 	}
-
-	return false;
+	return a.au > b.au;
 }
 
 int main(){
@@ -101,15 +87,10 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n;
-	string str, index;
+	int n, t;
 	cin >> t;
 	while ( t-- ){
-		cin >> str >> n;
-		fail ( str );
-		while ( n-- ){
-			cin >> index;
-			cout << ( match ( str, index ) ? 'y' : 'n' ) << '\n';
-		}
+		cin >> n;
+		vec < node > data;
 	}
 }

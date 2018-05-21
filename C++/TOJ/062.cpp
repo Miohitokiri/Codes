@@ -68,67 +68,109 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
-vi data[6];
+vec < pii > data[6];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, in, ans;
-	bool check;
+	int n, t, in, cnt;
 	set < pii > used;
+	bool check;
 	cin >> t;
 	while ( t-- ){
-		ans = 0;
-		REPP ( i, 0, 5 ){
-			REPP ( j, 0, 6 ){
+		REPP ( i, 0, 6 ){
+			CLR ( data[i] );
+		}
+		REPP ( j, 0, 5 ){
+			REPP ( i, 0, 6 ){
 				cin >> in;
-				data[j].pb ( in );
+				data[i].pb ( pii ( j, in ) );
 			}
 		}
-
 		REPP ( i, 0, 6 ){
 			REV ( ALL ( data[i] ) );
 		}
+		REPP ( i, 0, 6 ){ // del
+			REPALL ( i, data[i] ) cout << i.S << ' '; // del
+			cout << '\n'; // del
+		} // del
+		cout << "=====\n"; // del
+		cnt = 0;
 
 		do{
-			// debuger; // del
-			check = false;
-			REPP ( i, 0, 6 ) RSZ ( data[i], 5 );
-			REPP ( i, 0, 3 ){
-				REPP ( j, 0, 5 ){
-					if ( data[i][j] == data[i + 1][j] && data[i + 1][j] == data[i + 2][j] && data[i][j] ){
+			CLR ( used );
+			REPP ( i, 0, 4 ){
+				if ( EMP ( data[i] ) ){
+					continue;
+				}
+				REPP ( j, 0, min ( min ( SZ ( data[i] ), SZ ( data[i + 1] ) ), SZ ( data[i + 2] ) ) ){
+					if ( data[i][j].S == data[i + 1][j].S && data[i + 1][j].S == data[i + 2][j].S ){
 						check = true;
-						if ( !( FID ( used, pii ( i, j ) ) || FID ( used, pii ( i + 1, j ) ) || FID ( used, pii ( i + 1, j ) ) ) )
-							ans++;
-						used.insert ( pii ( i, j ) );
-						used.insert ( pii ( i + 1, j ) );
-						used.insert ( pii ( i + 2, j ) );
+						REPP ( k, 0, 3 ){
+							if ( !FID ( used, pii ( i + k, data[i + k][j].F ) ) )
+								used.insert ( pii ( i + k, data[i + k][j].F ) );
+							else
+								check = false;
+						}
+
+						if ( check )
+							cnt++;
 					}
 				}
 			}
 
 			REPP ( i, 0, 6 ){
-				REPP ( j, 0, 2 ){
-					if ( data[i][j] == data[i][j + 1] && data[i][j + 1] == data[i][j + 2] && data[i][j] ){
+				if ( EMP ( data[i] ) ){
+					continue;
+				}
+				REPP ( j, 0, SZ ( data[i] ) - 2 ){
+					if ( data[i][j].S == data[i][j + 1].S && data[i][j + 1].S == data[i][j + 2].S ){
 						check = true;
-						if ( !( FID ( used, pii ( i, j ) ) || FID ( used, pii ( i, j + 1 ) ) || FID ( used, pii ( i, j + 2 ) ) ) )
-							ans++;
-						used.insert ( pii ( i, j ) );
-						used.insert ( pii ( i, j + 1 ) );
-						used.insert ( pii ( i, j + 2 ) );
+						REPP ( k, 0, 3 ){
+							if ( !FID ( used, pii ( i, data[i][j + k].F ) ) )
+								used.insert ( pii ( i, data[i][j + k].F ) );
+							else
+								check = false;
+						}
+
+						if ( check )
+							cnt++;
 					}
 				}
 			}
 
-			for ( auto i = used.rbegin() ; i != used.rend() ; i++ ){
-				// cout << i -> F << ' ' << i -> S << '\n'; // del
-				data[i -> F].erase ( ( BEG ( data[i -> F] ) + i -> S ) );
-			}
-			CLR ( used );
-		} while ( check );
+			cout << SZ ( used ) << '\n'; // del
+			REPALL ( i, used ){
+				cout << i.F << ' ' << i.S << '\n'; // del
+				int idx = 0;
+				for ( idx = 0 ; idx < SZ ( data[i.F] ) ; idx++ ){
+					if ( data[i.F][idx].F == i.S )
+						break;
+				}
 
-		cout << ans << '\n';
+				data[i.F].erase ( BEG ( data[i.F] ) + idx );
+			}
+
+			REPP ( i, 0, 6 ){ // del
+				REPALL ( i, data[i] ) cout << i.S << ' '; // del
+				cout << '\n'; // del
+			} // del
+			cout << "=====\n"; // del
+
+			check = true;
+			REPALL ( i, data ){
+				if ( !EMP ( i ) ){
+					check = false;
+					break;
+				}
+			}
+
+			if ( check )
+				break;
+		} while ( !EMP ( used ) );
+
+		cout << cnt << '\n';
 	}
 }

@@ -62,19 +62,69 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define maxN 1005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
+
+struct node{
+	int w, x, y;
+};
+
+inline bool cmp ( node a, node b ){
+	return a.w < b.w;
+}
+
+int dp[maxN][maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, q;
+	int n, m, q, x1, x2, y1, y2, fk, x, y;
+	vec < pii > may;
+	bool check;
 	cin >> n >> m;
-	REPP ( i, 0, n ) REPP ( j, 0, m ){
+	vec < node > www;
+	for ( int i = 1 ; i <= m ; i++ )
+		for ( int j = 1 ; j <= n ; j++ )
+			cin >> dp[i][j];
+
+	for ( int i = 1 ; i <= m ; i++ )
+		for ( int j = 1 ; j <= n ; j++ )
+			dp[i][j] += dp[i - 1][j];
+
+	for ( int i = 1 ; i <= m ; i++ )
+		for ( int j = 1 ; j <= n ; j++ )
+			dp[i][j] += dp[i][j - 1];
+
+	for ( int i = 1; i <= m ; i++ )
+		for ( int j = 1 ; j <= n ; j++ )
+			www.pb ( node { dp[i][j], i, j } );
+
+	sort ( ALL ( www ), cmp );
+
+	cin >> q;
+	while ( q-- ){
+		cin >> y1 >> x1 >> y2 >> x2;
+		if ( x1 > x2 )
+			swap ( x1, x2 );
+		if ( y1 > y2 )
+			swap ( y1, y2 );
+		fk = dp[x2][y2] - dp[x1 - 1][y2] - dp[x2][y1 - 1] + dp[x1 - 1][y1 - 1];
+
+		check = false;
+		REPALL ( i, www ){
+			if ( i.w > fk )
+				break;
+			if ( i.w == fk && ( i.x < x1 || i.y < y ) ){
+				check = true;
+				break;
+			}
+		}
+
+		cout << ( check ? 'Y' : 'N' ) << '\n';
 	}
 }

@@ -13,6 +13,7 @@ typedef long long LL;
 #define REPM(i,f,s) for ( int i = f ; i >= s ; i-- )
 #define REPALL(i,n) for ( auto &i: n )
 #define debuger cout << "111\n"
+#define SP(a,b) swap ( a, b )
 #define MEM(n,i) memset ( n, i, sizeof n )
 
 // define pair
@@ -37,7 +38,6 @@ typedef vec < LL > vl;
 #define RSZ(n,s) n.resize ( s )
 #define ALL(n) BEG ( n ), END ( n )
 #define PIO(n) REPALL ( i, n ) cout << i << ' '; cout << '\n'
-#define GETDATA(data,n) RSZ ( data, n ); REPALL ( i, data ) cin >> i
 
 // define set
 typedef set < int > si;
@@ -62,54 +62,46 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define NEG_INF 0x8f8f8f8f
 #define maxN 1000005
 
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
 
-int place[maxN];
-inline void fail ( string b ){
-	int len = SZ ( b );
-	place[0] = -1;
-	for ( int i = 1, pos = -1 ; i < len ; i++ ){
-		while ( ~pos && b[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( b[i] == b[pos + 1] )
-			pos++;
-		place[i] = pos;
-	}
-}
-
-inline bool match ( string a, string b ){
-	int lenA = SZ ( a ), lenB = SZ ( b ) - 1;
-	for ( int i = 1, pos = -1 ; i < lenA ; i++ ){
-		while ( ~pos && a[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( a[i] == b[pos + 1] )
-			pos++;
-		if ( pos == lenB )
-			return true;
-	}
-
-	return false;
-}
+bitset < maxN > num;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n;
-	string str, index;
-	cin >> t;
-	while ( t-- ){
-		cin >> str >> n;
-		fail ( str );
-		while ( n-- ){
-			cin >> index;
-			cout << ( match ( str, index ) ? 'y' : 'n' ) << '\n';
+	vec < int > bubble, prime, past;
+	num[0] = num[1] = true;
+	REPP ( i, 2, maxN ) if ( !num[i] ){
+		prime.pb ( i );
+		for ( int j = i ; j < maxN ; j += i )
+			num[j] = true;
+	}
+	int n, T, p, sz = SZ ( prime ), now;
+	si used;
+	cin >> T;
+	while ( T-- ){
+		CLR ( used );
+		cin >> n >> p;
+		if ( p == 1 ){
+			cout << "1\n";
+			continue;
 		}
+		used.insert ( now = n );
+		REPP ( i, 1, sz ){
+			if ( prime[i] > p )
+				break;
+			now = prime[i] * ( ( int ) n / prime[i] );
+			while ( FID ( used, now ) )
+				now -= prime[i];
+			used.insert ( now );
+		}
+
+		cout << now << '\n';
 	}
 }
