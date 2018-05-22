@@ -71,7 +71,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 int seg[maxN << 2];
 
-inline void update ( int l, int r, int index, int value, int n ){
+void update ( int l, int r, int index, int value, int n ){
 	if ( l == r )
 		seg[n] += value;
 	else{
@@ -85,7 +85,7 @@ inline void update ( int l, int r, int index, int value, int n ){
 	}
 }
 
-inline void modify ( int l, int r, int nowL, int nowR, int n, int value ){
+void modify ( int l, int r, int nowL, int nowR, int value, int n ){
 	if ( seg[n] < value )
 		return;
 	if ( nowL == nowR )
@@ -93,12 +93,12 @@ inline void modify ( int l, int r, int nowL, int nowR, int n, int value ){
 	else{
 		int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 		if ( r <= mid )
-			modify ( l, r, nowL, mid, leftSon, value );
+			modify ( l, r, nowL, mid, value, leftSon );
 		else if ( mid < l )
-			modify ( l, r, mid + 1, nowR, rightSon, value );
+			modify ( l, r, mid + 1, nowR, value, rightSon );
 		else{
-			modify ( l, r, nowL, mid, leftSon, value );
-			modify ( l, r, mid + 1, nowR, rightSon, value );
+			modify ( l, mid, nowL, mid, value, leftSon );
+			modify ( mid + 1, r, mid + 1, nowR, value, rightSon );
 		}
 
 		seg[n] = max ( seg[leftSon], seg[rightSon] );
@@ -110,27 +110,26 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, v, type, l, r;
+	int n, m, type, l, r, x, in;
 	cin >> n;
 	n--;
 	for ( int i = 0 ; i <= n ; i++ ){
-		cin >> v;
-		update ( 0, n, i, v, 1 );
+		cin >> in;
+		update ( 0, n, i, in, 1 );
 	}
 
 	cin >> m;
 	while ( m-- ){
 		cin >> type;
-		if ( type == 3 )
-			cout << seg[1] << '\n';
-		else{
+		if ( type == 1 ){
 			cin >> l >> r;
-			if ( type == 2 ){
-				cin >> v;
-				modify ( l, r, 0, n, 1, v );
-			}
-			else
-				update ( 0, n, r, l, 1 );
+			update ( 0, n, r, l, 1 );
+		}		
+		else if ( type == 2 ){
+			cin >> l >> r >> x;
+			modify ( l, r, 0, n, x, 1 );
 		}
+		else
+			cout << seg[1] << '\n';
 	}
 }
