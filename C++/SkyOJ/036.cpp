@@ -77,7 +77,7 @@ int main(){
 	string a, b, c;
 	int dp[205][205][205], x, y, z;
 	while ( cin >> a >> b >> c ){
-		memset ( dp, 0, sizeof ( dp ) );
+		dp[0][0][0] = 0;
 		x = SZ ( a ), y = SZ ( b ), z = SZ ( c );
 
 		for ( int i = 1 ; i <= x ; i++ )
