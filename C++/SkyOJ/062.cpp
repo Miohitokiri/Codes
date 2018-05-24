@@ -42,7 +42,7 @@ typedef vec < LL > vl;
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
-#define FID(n,Index) n.find ( Index ) != n.end()
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
 
 // graph
 #define GRE(T,edge) vec < T > edge[maxN]
@@ -62,37 +62,36 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
+
+int cnt[105];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n, stop, data[105], ma;
+	int t, n, in, mi;
 	cin >> t;
-	t++;
-	REPP ( tms, 1, t ){
+	for ( int i = 1 ; i <= t ; i++ ){
+		cout << "Case " << i << ":\n";
 		cin >> n;
-		MEM ( data, 0 );
-		ma = -1;
-		while ( n-- ){
-			cin >> stop;
-			data[stop]++;
-			ma = max ( stop, ma );
+		MEM ( cnt, 0 );
+		mi = INF;
+		REPP ( j, 0, n ){
+			cin >> in;
+			cnt[in]++;
+			mi = min ( mi, in );
 		}
-		cout << "Case " << tms << ":\n";
-		REPP ( i, 1, 101 ){
-			if ( i == ma ){
-				REPP ( j, 0, data[i] - 1 ) cout << i << ' ';
-				cout << i;
-				break;
-			}
-			REPP ( j, 0, data[i] ) cout << i << ' ';
+		cout << mi;
+		cnt[mi]--;
+		REPP ( j, 0, 105 ){
+			REPP ( k, 0, cnt[j] ) cout << ' ' << j;
 		}
 		cout << '\n';
 	}
