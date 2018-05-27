@@ -63,53 +63,54 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 200010
+#define maxN 200005
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
 GRE ( int, edges );
-int where[maxN], value[maxN], link[maxN], pa[maxN], D[maxN], cnt, seg[maxN << 2], siz[maxN], maxSon[maxN];
+int value[maxN], seg[maxN << 2], pa[maxN], sz[maxN], ma[maxN], where[maxN], cnt, link[maxN], D[maxN];
 
 inline void init ( void ){
 	REPALL ( i, edges ) CLR ( i );
-	MEM ( where, -1 );
 	MEM ( value, NEG_INF );
+	MEM ( pa, -1 );
+	MEM ( where, -1 );
+	MEM ( link, -1 );
+	MEM ( ma, -1 );
 	MEM ( D, 0 );
-	MEM ( maxSon, -1 );
 	cnt = 0;
 }
 
-inline void findMaxSon ( int u ){
-	siz[u] = 1;
-	maxSon[u] = -1;
-	REPALL ( i, edges[u] ){
-		if ( i == pa[u] )
+void findFa ( int n ){
+	sz[n] = 1;
+	REPALL ( i, edges[n] ){
+		if ( i == pa[n] )
 			continue;
-		pa[i] = u;
-		D[i] = D[u] + 1;
-		findMaxSon ( i );
-		if ( maxSon[u] == -1 || siz[i] > siz[maxSon[u]] )
-			maxSon[u] = i;
-		siz[u] += siz[i];
+		pa[i] = n;
+		D[i] = D[n] + 1;
+		findFa ( i );
+		if ( ma[n] == -1 || sz[i] > sz[ma[n]] )
+			ma[n] = i;
+		sz[n] += sz[i];
 	}
 }
 
-inline void dfs ( int n, int p ){
+void dfs ( int n, int p ){
 	link[n] = p;
 	where[n] = ++cnt;
-	if ( maxSon[n] == -1 )
+	if ( ma[n] == -1 )
 		return;
-	dfs ( maxSon[n], p );
+	dfs ( ma[n], p );
 	REPALL ( i, edges[n] ){
-		if ( i == maxSon[n] || i == pa[n] )
+		if ( i == ma[n] || i == pa[n] )
 			continue;
 		dfs ( i, i );
 	}
 }
 
-inline void update ( int l, int r, int index, int value, int n ){
+void update ( int l, int r, int index, int value, int n ){
 	if ( l == r )
 		seg[n] = value;
 	else{
@@ -123,7 +124,7 @@ inline void update ( int l, int r, int index, int value, int n ){
 	}
 }
 
-inline int query ( int l, int r, int nowL, int nowR, int n ){
+int query ( int l, int r, int nowL, int nowR, int n ){
 	if ( l <= nowL && nowR <= r )
 		return seg[n];
 	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
@@ -131,7 +132,7 @@ inline int query ( int l, int r, int nowL, int nowR, int n ){
 		return query ( l, r, nowL, mid, leftSon );
 	if ( mid < l )
 		return query ( l, r, mid + 1, nowR, rightSon );
-	return max ( query ( l, r, mid + 1, nowR, rightSon ), query ( l, r, nowL, mid, leftSon ) );
+	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
 }
 
 int main(){
@@ -139,7 +140,7 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n, u, v, uPa, vPa, ma, N;
+	int t, n, u, v, w, N;
 	string type;
 	cin >> t;
 	while ( t-- ){
@@ -148,37 +149,39 @@ int main(){
 		N--;
 		init();
 		REPP ( i, 1, n ){
-			cin >> u >> v >> value[n + i];
-			UNI ( u, n + i, edges );
+			cin >> u >> v >> w;
+			UNI ( u, i + n, edges );
 			UNI ( n + i, v, edges );
+			value[n + i] = w;
 		}
 
 		pa[1] = 1;
-		findMaxSon ( 1 );
+		findFa ( 1 );
 		dfs ( 1, 1 );
-		REPP ( i, 1, ( n << 1 ) ) update ( 1, N, where[i], value[i], 1 );
+		REPP ( i, 1, ( n << 1 ) ){
+			update ( 1, N, where[i], value[i], 1 );
+		}
+
 		while ( cin >> type ){
 			if ( type == "DONE" )
 				break;
 			cin >> u >> v;
 			if ( type == "QUERY" ){
-				uPa = u, vPa = v;
-				ma = -1;
-
-				while ( link[vPa] != link[uPa] ){
-					if ( D[link[vPa]] > D[link[uPa]] ){
-						ma = max ( ma, query ( where[link[vPa]], where[vPa], 1, N, 1 ) );
-						vPa = pa[link[vPa]];
+				int uPa = u, vPa = v, ans = -1;
+				while ( link[uPa] != link[vPa] ){
+					if ( D[link[uPa]] > D[link[vPa]] ){
+						ans = max ( ans, query ( where[link[uPa]], where[uPa], 1, N, 1 ) );
+						uPa = pa[link[uPa]];
 					}
 					else{
-						ma = max ( ma, query ( where[link[uPa]], where[uPa], 1, N, 1 ) );
-						uPa = pa[link[uPa]];
+						ans = max ( ans, query ( where[link[vPa]], where[vPa], 1, N, 1 ) );
+						vPa = pa[link[vPa]];
 					}
 				}
 
 				if ( D[uPa] > D[vPa] )
 					swap ( uPa, vPa );
-				cout << max ( ma, query ( where[uPa], where[vPa], 1, N, 1 ) ) << '\n';
+				cout << max ( ans, query ( where[uPa], where[vPa], 1, N, 1 ) ) << '\n';
 			}
 			else
 				update ( 1, N, where[n + u], v, 1 );
