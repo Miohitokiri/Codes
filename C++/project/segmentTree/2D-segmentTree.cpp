@@ -42,7 +42,7 @@ typedef vec < LL > vl;
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
-#define FID(n,Index) n.find ( Index ) != n.end()
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
 
 // graph
 #define GRE(T,edge) vec < T > edge[maxN]
@@ -62,111 +62,106 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 105
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
 struct D1{
-	int seg[maxN << 2], basic[maxN], sz;
+	int seg[maxN << 2];
 
-	inline void Init ( void ){
-		MEM ( seg, 0 );
-		MEM ( basic, 0 );
-	}
-
-	inline void update ( int l, int r, int n, int Index, int value ){
+	void update ( int l, int r, int index, int value, int n ){
 		if ( l == r )
-			basic[l] = seg[n] = value;
+			seg[n] = value;
 		else{
 			int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-			if ( Index <= mid )
-				update ( l, mid, leftSon, Index, value );
+			if ( index <= mid )
+				update ( l, mid, index, value, leftSon );
 			else
-				update ( mid + 1, r, rightSon, Index, value );
+				update ( mid + 1, r, index, value, rightSon );
 
-			seg[n] = min ( seg[leftSon], seg[rightSon] );
+			seg[n] = max ( seg[leftSon], seg[rightSon] );
 		}
 	}
 
-	inline int query ( int l, int r, int nowL, int nowR, int n ){
+	int query ( int l, int r, int nowL, int nowR, int n ){
 		if ( l <= nowL && nowR <= r )
 			return seg[n];
 		int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 		if ( r <= mid )
 			return query ( l, r, nowL, mid, leftSon );
-		else if ( mid < l )
+		if ( mid < l )
 			return query ( l, r, mid + 1, nowR, rightSon );
-		else
-			return min ( query ( l, mid, nowL, mid, leftSon ), query ( mid + 1, r, mid, nowL, rightSon ) );
+		return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
+	}
+
+	void merge ( D1 &a, D1 &b, int l, int r, int n ){
+		seg[n] = max ( a.seg[n], b.seg[n] );
+		if ( l == r )
+			return;
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		merge ( a, b, l, mid, leftSon );
+		merge ( a, b, mid + 1, r, rightSon );
 	}
 };
 
-inline D1 merge ( D1 a, D1 b ){
-	int n = a.sz, m = n - 1;
-	REPP ( i, 0, n ) a.update ( 0, m, 1, i, b.basic[i] );
-	return a;
-}
-
 struct D2{
 	D1 seg[maxN << 2];
+	int sz;
 
-	inline void markSz ( int l, int r, int n, int value ){
-		seg[n].sz = value;
-		seg[n].Init();
+	void update ( int l, int r, int x, int y, int value, int n ){
 		if ( l == r )
-			return;
-		int mid = ( l + r ) >> 1;
-		markSz ( l, mid, n * 2, value );
-		markSz ( mid + 1, r, n * 2 + 1, value );
-	}
-
-	inline void update ( int l, int r, int u, int d, int x, int y, int value, int n ){
-		if ( l == r )
-			seg[n].update ( u, d, 1, y, value );
+			seg[n].update ( 0, sz, y, value, 1 );
 		else{
 			int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 			if ( x <= mid )
-				update ( l, mid, u, d, x, y, value, leftSon );
+				update ( l, mid, x, y, value, leftSon );
 			else
-				update ( mid + 1, r, u, d, x, y, value, rightSon );
+				update ( mid + 1, r, x, y, value, rightSon );
 
-			seg[n] = merge ( seg[leftSon], seg[rightSon] );
+			seg[n].merge ( seg[leftSon], seg[rightSon], 0, sz, 1 );
 		}
 	}
 
-	inline int query ( int l, int r, int nowL, int nowR, int n, int u, int d ){
+	int query ( int l, int r, int u, int d, int nowL, int nowR, int n ){
 		if ( l <= nowL && nowR <= r )
-			return seg[n].query ( u, d, 0, seg[n].sz - 1, 1 );
+			return seg[n].query ( u, d, 0, sz, 1 );
 		int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 		if ( r <= mid )
-			return query ( l, r, nowL, mid, leftSon, u, d );
-		else if ( mid < l )
-			return query ( l, r, mid + 1, nowR, rightSon, u, d );
-		else
-			return min ( query ( l, mid, nowL, mid, leftSon, u, d ), query ( mid + 1, r, mid + 1, nowR, rightSon, u, d ) );
+			return query ( l, r, u, d, nowL, mid, leftSon );
+		if ( mid < l )
+			return query ( l, r, u, d, mid + 1, nowR, rightSon );
+		return max ( query ( l, r, u, d, nowL, mid, leftSon ), query ( l, r, u, d, mid + 1, nowR, rightSon ) );
 	}
-} seg;
+};
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, q, value, l, r, u, d;
-	cin >> n >> m;
-	REPP ( i, 0, n ){
-		seg.markSz ( 1, n, 1, m );
-		REPP ( j, 0, m ){
-			cin >> value;
-			seg.update ( 1, n, 1, m, i, j, value, 1 );
+	int n, m, k, in, x1, y1, x2, y2;
+	D2 seg;
+	cin >> n >> m >> k;
+	n--, m--;
+	seg.sz = m;
+	for ( int i = 0 ; i <= n ; i++ ){
+		for ( int j = 0 ; j <= m ; j++ ){
+			cin >> in;
+			seg.update ( 0, n, i, j, in, 1 );
 		}
 	}
 
-	cin >> q;
-	while ( q-- ){
-		cin >> l >> r >> u >> d;
-		cout << seg.query ( l, r, 1, n, 1, u, d ) << '\n';
+	while ( k-- ){
+		cin >> x1 >> y1 >> x2 >> y2;
+		cout << seg.query ( x1, x2, y1, y2, 0, n, 1 ) << '\n';
+	}
+	for ( int i = 0 ; i < n << 2 ; i++ ){
+		for ( int j = 0 ; j <= m << 2 ; j++ ){
+			cout << seg.seg[i].seg[j] << ' ';
+		}
+		cout << '\n';
 	}
 }
