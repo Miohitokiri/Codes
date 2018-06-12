@@ -62,34 +62,42 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define maxN 20005
 
 // ready~ go!
 // let's coding and have fun!
 // I can solve this problem!
+
+bool lib[maxN], stop[maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, in;
+	int n, q, in, sum = 0;
 	cin >> n >> q;
-	si lib, stop;
-	lib.insert ( 0 );
+	lib[10000] = true;
 	while ( n-- ){
 		cin >> in;
-		REPALL ( i, lib ){
-			stop.insert ( i + in );
-			stop.insert ( i - in );
+		MEM ( stop, 0 );
+		REPP ( i, 9999 - sum, sum + 10001 ){
+			if ( lib[i] ){
+				stop[i + in] = stop[i - in] = true;
+			}
 		}
+		sum += in;
 
-		CLR ( lib );
-		swap ( lib, stop );
+		memcpy ( lib, stop, sizeof lib );
 	}
 
 	while ( q-- ){
 		cin >> in;
-		cout << *lower_bound ( ALL ( lib ), in ) << '\n';
+		in += 10000;
+		while ( !lib[in] ){
+			in++;
+		}
+		in -= 10000;
+		cout << in << '\n';
 	}
 }

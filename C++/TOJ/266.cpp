@@ -3,6 +3,7 @@
 
 #pragma GCC optimize ( "O3" )
 #pragma loop_opt ( on )
+#pragma GCC optimize ( "Ofast, unroll-loops, no-stack-protector" )
 
 using namespace std;
 
@@ -62,42 +63,58 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 10005
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-MaxHeap < int > data[100005];
+MaxHeap < int > lib[maxN];
+pii seg[maxN << 2];
+
+inline pii up ( pii l, pii r ){
+	if ( l.F == r.F ){
+		if ( l.S > r.S )
+			return l;
+		else
+			return r;
+	}
+	if ( l.F > r.F )
+		return l;
+	else
+		return r;
+}
+
+void udpate ( int l, int r, int index, int value, int n ){
+	if ( l == r )
+		seg[n] = pii ( value, l );
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( index <= mid )
+			update ( l, mid, index, value, leftSon );
+		else
+			update ( mid + 1, r, index, value, rightSon );
+
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
+	}
+}
+
+inline pii modify ( int l, int r, int nowL, int nowR, int n ){
+	if ( l <= nowL && nowR <= r )
+		return seg[n];
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, type, x, v, l, r, ans, t;
-	cin >> n >> q;
-	while ( q-- ){
-		cin >> type;
-		if ( !type ){
-			cin >> x >> v;
-			data[x].push ( v );
-			continue;
-		}
-		ans = t = -1;
-		cin >> l >> r;
-		if ( l > r )
-			swap ( l, r );
-		for ( int i = l ; i <= r ; i++ )
-			if ( !data[i].empty() && data[i].top() >= ans ){
-				t = i;
-				ans = data[i].top();
-			}
-		if ( t == -1 ){
-			cout << -1 << '\n';
-			continue;
-		}
-		data[t].pop();
-		cout << ans << '\n';
+	int n, m;
+	cin >> n >> m;
+	n--;
+	for ( int i = 0 ; i <= n ; i++ ){
+		cin >> in;
+		update ( 0, n, i, in, 1 );
 	}
 }
