@@ -97,36 +97,28 @@ int main(){
 		REPALL ( j, lib[i].F ){
 			sum += j;
 		}
-		REPALL ( j, lib[i].F ){
+		REPP ( fk, 0, n ){
+			int j = lib[i].F[fk];
+			if ( FID ( used, sum - j ) ){
+				int a = *BEG ( num[sum - j] ), idx;
+				if ( a == i )
+					goto FuckYou;
+				cout << "YES\n";
+				REPP ( i, 0, SZ ( lib[a].F ) ){
+					if ( lib[a].S - lib[a].F[i] == sum - j ){
+						idx = i;
+						break;
+					}
+				}
+
+				cout << i + 1 << ' ' << fk + 1 << '\n' << a + 1 << ' ' << idx + 1 << '\n';
+				return 0;
+			}
+			FuckYou:
 			num[sum - j].insert ( i );
 			used.insert ( sum - j );
 		}
 		lib[i].S = sum;
-	}
-
-	REPALL ( nxt, used ){
-		if ( SZ ( num[nxt] ) < 2 )
-			continue;
-		else{
-			int a = *num[nxt].begin(), b = *num[nxt].rbegin(), idxA, idxB;
-			REPP ( i, 0, SZ ( lib[a].F ) ){
-				if ( lib[a].S - lib[a].F[i] == nxt ){
-					idxA = i;
-					break;
-				}
-			}
-
-			REPP ( i, 0, SZ ( lib[b].F ) ){
-				if ( lib[b].S - lib[b].F[i] == nxt ){
-					idxB = i;
-					break;
-				}
-			}
-
-			a++, idxA++, b++, idxB++;
-			cout << "YES\n" << a << ' ' << idxA << '\n' << b << ' ' << idxB << '\n';
-			return 0;
-		}
 	}
 
 	cout << "NO\n";

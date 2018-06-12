@@ -125,6 +125,8 @@ int main(){
 		return 0;
 	}
 
+	if ( zero < 0 )
+		zero = INF;
 	if ( seven < 0 )
 		seven = INF;
 	if ( two < 0 )
@@ -133,8 +135,6 @@ int main(){
 		zeroSec = INF;
 	else
 		ans = min ( ans, zero + zeroSec - 1 );
-
-	mi = min ( min ( seven, two ), zero );
 
 	if ( zero < five )
 		ans = min ( ans, zero + five - 1 );

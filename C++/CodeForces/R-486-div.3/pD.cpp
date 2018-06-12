@@ -71,14 +71,12 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 bool used[maxN];
 
-inline bool check ( vi data ){
+inline bool check ( vi data, int n ){
 	double d;
 	REPP ( i, 0, SZ ( data ) ){
-		REPP ( j, 0, i ){
-			d = log2 ( abs ( data[i] - data[j] ) );
-			if ( d != ( int ) d && d != 0 )
-				return false;
-		}
+		d = log2 ( abs ( data[i] - n ) );
+		if ( d != ( int ) d && d != 0 )
+			return false;
 	}
 
 	return true;
@@ -91,7 +89,7 @@ int main(){
 
 	int n;
 	cin >> n;
-	vi data, ans, now, stop;
+	vi data, ans, now;
 	GETDATA ( data, n );
 	REPP ( i, 0, n ){
 		if ( used[i] )
@@ -100,13 +98,11 @@ int main(){
 		now.pb ( data[i] );
 		used[i] = true;
 		REPP ( j, 0, n ){
-			if ( used[j] || data[i] == data[j] )
+			if ( used[j] )
 				continue;
-			stop = now;
-			stop.pb ( data[j] );
-			if ( check ( stop ) ){
+			if ( check ( now, data[j] ) ){
 				used[i] = true;
-				now = stop;
+				now.pb ( data[j] );
 			}
 		}
 
