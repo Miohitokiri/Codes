@@ -5,38 +5,35 @@ using namespace std;
 
 typedef pair < int, int > pii;
 
-struct disjoinSet{
-	int dis[maxN], rank[maxN];
+int dis[maxN], rk[maxN];
 
-	inline void Init ( int n ){
-		for ( int i = 0 ; i <= n ; i++ ){
-			dis[i] = i;
-			rank[i] = 1;
-		}
+inline void init ( void ){
+	for ( int i = 0 ; i < maxN ; i++ ){
+		dis[i] = i;
+		rk[i] = 1;
 	}
+}
 
-	inline int find ( int n ){
-		return dis[n] == n ? n : dis[n] = find ( dis[n] );
-	}
+int find ( int n ){
+	return dis[n] == n ? n : dis[n] = find ( dis[n] );
+}
 
-	inline void Union ( int a, int b ){
-		a = find ( a ), b = find ( b );
-		dis[a] = b;
-		rank[b] += rank[a];
-	}
+inline void Union ( int a, int b ){
+	a = find ( a ), b = find ( b );
+	dis[a] = b;
+	rk[b] += rk[a];
+}
 
-	inline bool same ( int a, int b ){
-		return find ( a ) == find ( b );
-	}
+inline bool same ( int a, int b ){
+	return find ( a ) == find ( b );
+}
 
-	inline int getLider ( void ){
-		return rank[find ( 0 )];
-	}
-} dis;
+inline int getLider ( void ){
+	return rk[find ( 0 )];
+}
 
 struct edgeData{
 	int u, v, w;
-	edgeData ( int a, int b, int c ): u ( a ), v ( b ), w ( c ){}
 };
 
 vector < edgeData > edge;
@@ -47,11 +44,12 @@ inline bool cmp ( edgeData a, edgeData b ){
 }
 
 inline void Dijsktra ( void ){
+	init();
 	sort ( edge.begin(), edge.end(), cmp );
 	for ( auto i: edge ){
-		if ( dis.same ( i.u, i.v ) )
+		if ( same ( i.u, i.v ) )
 			continue;
-		dis.Union ( i.u, i.v );
+		Union ( i.u, i.v );
 		mstValue += i.w;
 	}
 }
@@ -64,11 +62,10 @@ int main(){
 	cin >> k >> r;
 	while ( r-- ){
 		cin >> u >> v >> w;
-		edge.push_back ( edgeData ( u, v, w ) );
+		edge.push_back ( edgeData { u, v, w } );
 	}
 
-	dis.Init ( k );
 	Dijsktra();
 
-	cout << ( dis.getLider() == k ? mstValue : -1 ) << '\n';
+	cout << ( getLider() == k ? mstValue : -1 ) << '\n';
 }
