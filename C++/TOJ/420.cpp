@@ -86,7 +86,7 @@ inline void init ( void ){
 	REPP ( i, 0, maxN ) dis[i] = i;
 }
 
-inline int find ( int n ){
+int find ( int n ){
 	return dis[n] == n ? n : dis[n] = find ( dis[n] );
 }
 
