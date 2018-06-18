@@ -2,8 +2,6 @@
 
 using namespace std;
 
-#define int long long
-
 int dis[100005];
 
 inline int find ( int a ){
@@ -14,12 +12,9 @@ inline void Union ( int a, int b ){
 	dis[find ( dis[b] )] = find ( dis[a] );
 }
 
-#undef int
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
-	#define int long long
 
 	int n, m, t, a, b;
 	cin >> t;
