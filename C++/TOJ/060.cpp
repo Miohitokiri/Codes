@@ -126,6 +126,8 @@ int main(){
 			cnt++;
 			ans += i.w;
 		}
+		else if ( i.w < 0 )
+			ans += i.w;
 	}
 
 	cout << ans << '\n';
