@@ -18,7 +18,7 @@ vec < pii > bridge;
 int L[maxN], parent[maxN], D[maxN];
 bool go[maxN];
 
-inline void dfs ( int n, int d ){
+void dfs ( int n, int d ){
 	go[n] = true;
 	D[n] = L[n] = d++;
 	int child = 0;
