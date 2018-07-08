@@ -104,7 +104,7 @@ inline int fashPow ( int n ){
 		base = multi ( base, base );
 		n >>= 1;
 		res += ans.m[0][1];
-		cout << res << '\n';
+		// cout << res << '\n';
 	}
 
 	return res;
