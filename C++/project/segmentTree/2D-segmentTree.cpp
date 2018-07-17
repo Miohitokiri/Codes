@@ -63,7 +63,12 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 105
+#define maxN 100005
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
 // let's go coding and have fun!
@@ -96,72 +101,66 @@ struct D1{
 			return query ( l, r, mid + 1, nowR, rightSon );
 		return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
 	}
-
-	void merge ( D1 &a, D1 &b, int l, int r, int n ){
-		seg[n] = max ( a.seg[n], b.seg[n] );
-		if ( l == r )
-			return;
-		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-		merge ( a, b, l, mid, leftSon );
-		merge ( a, b, mid + 1, r, rightSon );
-	}
 };
+
+void merge ( D1 &res, D1 a, D1 b, int l, int r, int n ){
+	if ( l == r )
+		res.seg[n] = max ( a.seg[n], b.seg[n] );
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		merge ( res, a, b, l, mid, leftSon );
+		merge ( res, a, b, mid + 1, r, rightSon );
+		res.seg[n] = max ( res.seg[leftSon], res.seg[rightSon] );
+	}
+}
 
 struct D2{
 	D1 seg[maxN << 2];
-	int sz;
 
-	void update ( int l, int r, int x, int y, int value, int n ){
+	void update ( int l, int r, int idx, int idy, int u, int d, int value, int n ){
+		cout << l << ' ' << r << '\n';
 		if ( l == r )
-			seg[n].update ( 0, sz, y, value, 1 );
+			seg[n].update ( u, d, idy, value, 1 );
 		else{
 			int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-			if ( x <= mid )
-				update ( l, mid, x, y, value, leftSon );
+			if ( idx <= mid )
+				update ( l, mid, idx, idy, u, d, value, leftSon );
 			else
-				update ( mid + 1, r, x, y, value, rightSon );
+				update ( mid + 1, r, idx, idy, u, d, value, rightSon );
 
-			seg[n].merge ( seg[leftSon], seg[rightSon], 0, sz, 1 );
+
+			merge ( seg[n], seg[leftSon], seg[rightSon], u, d, 1 );
 		}
 	}
 
-	int query ( int l, int r, int u, int d, int nowL, int nowR, int n ){
+	int query ( int l, int r, int nowL, int nowR, int u, int d, int nowU, int nowD, int n ){
 		if ( l <= nowL && nowR <= r )
-			return seg[n].query ( u, d, 0, sz, 1 );
+			return seg[n].query ( u, d, nowU, nowD, 1 );
 		int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
 		if ( r <= mid )
-			return query ( l, r, u, d, nowL, mid, leftSon );
+			return query ( l, r, nowL, mid, u, d, nowU, nowD, leftSon );
 		if ( mid < l )
-			return query ( l, r, u, d, mid + 1, nowR, rightSon );
-		return max ( query ( l, r, u, d, nowL, mid, leftSon ), query ( l, r, u, d, mid + 1, nowR, rightSon ) );
+			return query ( l, r, mid + 1, nowR, u, d, nowU, nowD, rightSon );
+		return max ( query ( l, r, nowL, mid, u, d, nowU, nowD, leftSon ), query ( l, r, mid + 1, nowR, u, d, nowU, nowD, rightSon ) );
 	}
-};
+} seg;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, k, in, x1, y1, x2, y2;
-	D2 seg;
-	cin >> n >> m >> k;
-	n--, m--;
-	seg.sz = m;
-	for ( int i = 0 ; i <= n ; i++ ){
-		for ( int j = 0 ; j <= m ; j++ ){
+	int n, m, in, q, l, r, u, d;
+	cin >> n >> m >> q;
+	for ( int i = 1 ; i <= n ; i++ ){
+		for ( int j = 1 ; j <= m ; j++ ){
 			cin >> in;
-			seg.update ( 0, n, i, j, in, 1 );
+			seg.update ( 1, n, i, j, 1, m, in, 1 );
 		}
 	}
 
-	while ( k-- ){
-		cin >> x1 >> y1 >> x2 >> y2;
-		cout << seg.query ( x1, x2, y1, y2, 0, n, 1 ) << '\n';
-	}
-	for ( int i = 0 ; i < n << 2 ; i++ ){
-		for ( int j = 0 ; j <= m << 2 ; j++ ){
-			cout << seg.seg[i].seg[j] << ' ';
-		}
-		cout << '\n';
+	while ( q-- ){
+		cin >> l >> r >> u >> d;
+		cout << seg.query ( l, r, 1, n, u, d, 1, m, 1 ) << '\n';
 	}
 }
