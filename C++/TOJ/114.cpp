@@ -63,97 +63,44 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 105
+#define maxN 100005
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
 
-#undef mp
-
-int dis[maxN], mp[maxN][maxN];
-vi ansData;
-vi dp[maxN][maxN];
-
-inline int find ( int a ){
-	return dis[a] == a ? a : dis[a] = find ( dis[a] );
-}
-
-inline void Union ( int a, int b ){
-	dis[find ( a )] = find ( b );
-}
-
-inline bool same ( int a, int b ){
-	return find ( a ) == find ( b );
-}
-
-inline vi merge ( vi a, vi b ){
-	vi res;
-	REPALL ( i, a ) res.pb ( i );
-	REPALL ( i, b ) res.pb ( i );
-	return res;
-}
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int short
 
-	int n, m, s, u, v, w, q, cnt, now;
-	cin >> n >> m >> s;
-	MEM ( mp, INF );
-	while ( m-- ){
-		cin >> u >> v >> w;
-		mp[u][v] = mp[v][u] = w;
-		dp[u][v].pb ( w );
-		dp[v][u].pb ( w );
-		Union ( u, v );
-	}
-
-	REPP ( k, 0, n ){
-		REPP ( i, 0, n ){
-			REPP ( j, 0, n ){
-				if ( mp[i][k] + mp[k][j] < mp[i][j] ){
-					mp[i][j] = mp[i][k] + mp[k][j];
-					dp[i][j] = merge ( dp[i][k], dp[k][j] );
-				}
-			}
+	int data[5][6];
+	bool attack = false;
+	REPP ( i, 0, 5 ){
+		REPP ( j, 0, 6 ){
+			cin >> data[i][j];
 		}
 	}
 
-	REPP ( i, 0, n ){
-		REPP ( j, 0, n ) cout << mp[i][j] << ' ';
-		cout << '\n';
+	REPP ( i, 0, 5 ){
+		REPP ( j, 0, 4 ){
+			if ( data[i][j] == data[i][j + 1] && data[i][j + 1] == data[i][j + 2] )
+				attack = true;
+		}
 	}
 
-	cin >> q;
-	while ( q-- ){
-		cin >> u >> v;
-		if ( u == v ){
-			cout << "1\n";
-			continue;
+	REPP ( i, 0, 6 ){
+		REPP ( j, 0, 3 ){
+			if ( data[i][j] == data[i + 1][j] && data[i + 2][j] == data[i + 1][j] )
+				attack = true;
 		}
-		if ( !same ( u, v ) ){
-			cout << "Impossible\n";
-			continue;
-		}
-		now = s, cnt = 1;
-
-		REPALL ( i, dp[u][v] ){
-			if ( now < i ){
-				now = s;
-				cnt++;
-			}
-			if ( now < i ){
-				cnt = -1;
-				break;
-			}
-			now -= i;
-		}
-
-		if ( cnt == -1 )
-			cout << "Impossible\n";
-		else
-			cout << cnt << '\n';
 	}
+
+	cout << ( attack ? "Yes" : "No" ) << '\n';
 }

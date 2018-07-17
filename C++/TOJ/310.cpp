@@ -76,16 +76,15 @@ inline bool dfs ( int n, int p, int Index ){
 		data.pb ( n );
 		return true;
 	}
-	bool check = false;
 	REPALL ( i, edge[n] ){
 		if ( i == p )
 			continue;
-		if ( dfs ( i, n, Index ) )
-			check = true;
+		if ( dfs ( i, n, Index ) ){
+			data.pb ( n );
+			return true;
+		}
 	}
-	if ( check )
-		data.pb ( n );
-	return check;
+	return false;
 }
 
 int main(){
