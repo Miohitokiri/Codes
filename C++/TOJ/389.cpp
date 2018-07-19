@@ -76,7 +76,6 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 GRE ( int, edges );
 int value[maxN], D[maxN], L[maxN], p[maxN];
-vi AP;
 
 void dfs ( int n, int dep ){
 	D[n] = L[n] = dep++;
