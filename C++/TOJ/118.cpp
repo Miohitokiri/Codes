@@ -1,21 +1,22 @@
-#include<cstdio>
-#include<map>
-using std::map;
+#include<stdio.h>
+
+int data[1005];
+
 int main(){
+	short n, a;
 	int b;
-	short a, n;
-	map < short, int > data;
 	scanf ( "%hd", &n );
 	while ( n-- ){
 		scanf ( "%hd%d", &a, &b );
-		data[a] = a * b;
+		data[a] = b * a;
 	}
 	scanf ( "%hd", &n );
 	while ( n-- ){
 		scanf ( "%hd%d", &a, &b );
-		if ( data[a] == b )
-			printf ("The shopkeeper is honest.\n" );
+		b -= data[a];
+		if ( b )
+			printf ( "%d\n", b );
 		else
-			printf ( "%d\n", b - data[a] );
+			puts ( "The shopkeeper is honest." );
 	}
 }
