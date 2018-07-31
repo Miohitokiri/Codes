@@ -62,29 +62,61 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 10005
+#define maxLog 20
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-GRE ( int, edge );
-vi data;
+GRE ( int, edges );
+int dp[maxN][maxLog], D[maxN];
 
-inline bool dfs ( int n, int p, int Index ){
-	if ( n == Index ){
-		data.pb ( n );
-		return true;
-	}
-	REPALL ( i, edge[n] ){
+void dfs ( int n, int p, int dep ){
+	D[n] = dep++;
+	dp[n][0] = p;
+	REPALL ( i, edges ){
 		if ( i == p )
 			continue;
-		if ( dfs ( i, n, Index ) ){
-			data.pb ( n );
-			return true;
-		}
+		dfs ( i, n, dep );
 	}
-	return false;
+}
+
+inline void buildLCA ( int n ){
+	MEM ( dp, -1 );
+	MEM ( D, 0 );
+	dfs ( 0, -1, 0 );
+	REPP ( k, 1, maxLog ) REPP ( i, 0, n ) if ( dp[i][k - 1] != -1 ) dp[i][k] = dp[dp[i][k - 1]][k - 1];
+}
+
+inline int findLCA ( int x, int y ){
+	if ( D[x] < D[y] )
+		swap ( x, y );
+
+	LL dist = 0, base = pow ( 2, maxLog - 1 );
+	REPM ( i, maxLog - 1, 0 ){
+		if ( dp[x][i] != -1 && D[dp[x][i]] >= D[y] ){
+			dist += base;
+			x = dp[x][i];
+		}
+		base >>= 1;
+	}
+
+	if ( x == y )
+		return dist;
+
+	REPM ( i, maxLog - 1, 0 ){
+		if ( dp[x][i] != dp[y][i] )
+			x = dp[x][i], y = dp[y][i];
+	}
+
+	return dp[x][0];
 }
 
 int main(){
@@ -92,28 +124,12 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, u, v, dis;
+	int n, q, u, v;
 	cin >> n >> q;
 	REPP ( i, 1, n ){
 		cin >> u >> v;
-		UNI ( u, v, edge );
+		UNI ( edges, u, v );
 	}
 
-	while ( q-- ){
-		cin >> u >> v;
-		if ( u == v ){
-			cout << u << '\n';
-			continue;
-		}
-		CLR ( data );
-		dfs ( u, -1, v );
-		if ( SZ ( data ) & 1 )
-			cout << data[SZ ( data ) / 2] << '\n';
-		else{
-			u = data[SZ ( data ) / 2], v = data[SZ ( data ) / 2 - 1];
-			if ( u > v )
-				swap ( u, v );
-			cout << u << ' ' << v << '\n';
-		}
-	}
+	buildLCA();
 }

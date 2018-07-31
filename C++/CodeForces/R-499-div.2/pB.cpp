@@ -42,7 +42,7 @@ typedef vec < LL > vl;
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
-#define FID(n,Index) n.find ( Index ) != n.end()
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
 
 // graph
 #define GRE(T,edge) vec < T > edge[maxN]
@@ -62,48 +62,26 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 105
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-#define maxLog 20
+int cnt[maxN], n;
 
-GRE ( int, edges );
-int parent[maxN], dp[maxN][maxLog], D[maxN], n;
-
-void dfs ( int d, int p, int dep ){
-	D[d] = dep++;
-	dp[d][0] = p;
-	REPALL ( i, edges[d] ) if ( i != p ) dfs ( i, d, dep );
-}
-
-inline void buildLCA ( void ){
-	MEM ( dp, -1 );
-	MEM ( D, 0 );
-	dfs ( 0, -1, 0 );
-	REPP ( k, 1, maxLog ) REPP ( i, 0, n ) if ( dp[i][k - 1] != -1 ) dp[i][k] = dp[dp[i][k - 1]][k - 1];
-}
-
-inline int findLCA ( int x, int y ){
-	if ( D[x] < D[y] )
-		swap ( x, y );
-
-	REPM ( i, maxLog - 1, 0 ){
-		if ( dp[x][i] != -1 && D[dp[x][i]] >= D[y] )
-			x = dp[x][i];
-	}
-
-	if ( x == y )
-		return x;
-
-	REPM ( i, maxLog - 1, 0 ){
-		if ( dp[x][i] != dp[y][i] )
-			x = dp[x][i], y = dp[y][i];
-	}
-
-	return dp[x][0];
+inline bool check ( int m ){
+	if ( !m )
+		return true;
+	int sum = 0;
+	REPP ( i, 1, 101 ) sum += cnt[i] / m;
+	return sum >= n;
 }
 
 int main(){
@@ -111,17 +89,27 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int u, v, m;
-	cin >> n;
-	REPP ( i, 1, n ){
-		cin >> u >> v;
-		UNI  ( u, v, edges );
+	int m, in, l = 0, r = 100, mid = ( l + r ) >> 1;
+	cin >> n >> m;
+	REPP ( i, 0, m ){
+		cin >> in;
+		cnt[in]++;
 	}
 
-	buildLCA();
-	cin >> m;
-	while ( m-- ){
-		cin >> u >> v;
-		cout << u << ' ' << v << ' ' << findLCA ( u, v ) << '\n';
+	while ( true ){
+		if ( r - l < 3 ){
+			mid = l;
+			while ( mid <= r && check ( mid ) )
+				mid++;
+			mid--;
+			break;
+		}
+		mid = ( l + r ) >> 1;
+		if ( check ( mid ) )
+			l = mid;
+		else
+			r = mid;
 	}
+
+	cout << mid << '\n';
 }

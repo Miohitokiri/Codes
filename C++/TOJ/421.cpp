@@ -69,7 +69,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-LL seg[maxN << 4];
+LL seg[maxN * 4];
 
 void update ( int l, int r, int index, LL value, int n ){
 	if ( l == r )
@@ -94,7 +94,7 @@ LL query ( int l, int r, int nowL, int nowR, int n ){
 	if ( mid < l )
 		return query ( l, r, mid + 1, nowR, rightSon );
 
-	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
+	return max ( query ( l, mid, nowL, mid, leftSon ), query ( mid + 1, r, mid + 1, nowR, rightSon ) );
 }
 
 int main(){

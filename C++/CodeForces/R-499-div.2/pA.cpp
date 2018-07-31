@@ -42,7 +42,7 @@ typedef vec < LL > vl;
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
-#define FID(n,Index) n.find ( Index ) != n.end()
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
 
 // graph
 #define GRE(T,edge) vec < T > edge[maxN]
@@ -62,48 +62,31 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-#define maxLog 20
+bool used[50];
 
-GRE ( int, edges );
-int parent[maxN], dp[maxN][maxLog], D[maxN], n;
-
-void dfs ( int d, int p, int dep ){
-	D[d] = dep++;
-	dp[d][0] = p;
-	REPALL ( i, edges[d] ) if ( i != p ) dfs ( i, d, dep );
-}
-
-inline void buildLCA ( void ){
-	MEM ( dp, -1 );
-	MEM ( D, 0 );
-	dfs ( 0, -1, 0 );
-	REPP ( k, 1, maxLog ) REPP ( i, 0, n ) if ( dp[i][k - 1] != -1 ) dp[i][k] = dp[dp[i][k - 1]][k - 1];
-}
-
-inline int findLCA ( int x, int y ){
-	if ( D[x] < D[y] )
-		swap ( x, y );
-
-	REPM ( i, maxLog - 1, 0 ){
-		if ( dp[x][i] != -1 && D[dp[x][i]] >= D[y] )
-			x = dp[x][i];
+int dfs ( int n, int value, int la ){
+	if ( !n )
+		return value;
+	int mi = INF;
+	n--;
+	REPP ( i, la + 2, 27 ){
+		if ( used[i] )
+			mi = min ( mi, dfs ( n, value + i, i ) );
 	}
 
-	if ( x == y )
-		return x;
-
-	REPM ( i, maxLog - 1, 0 ){
-		if ( dp[x][i] != dp[y][i] )
-			x = dp[x][i], y = dp[y][i];
-	}
-
-	return dp[x][0];
+	return mi;
 }
 
 int main(){
@@ -111,17 +94,27 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int u, v, m;
-	cin >> n;
-	REPP ( i, 1, n ){
-		cin >> u >> v;
-		UNI  ( u, v, edges );
+	int n, k, ans, cnt = 0, cnt2 = 0;
+	string str;
+	cin >> n >> k >> str;
+	REPALL ( i, str ){
+		if ( !used[i - 'a' + 1] )
+			cnt2++;
+		used[i - 'a' + 1] = true;
 	}
 
-	buildLCA();
-	cin >> m;
-	while ( m-- ){
-		cin >> u >> v;
-		cout << u << ' ' << v << ' ' << findLCA ( u, v ) << '\n';
+	for ( int i = 2 ; i <= 27 ; i += 2 ){
+		if ( used[i] && used[i - 1] )
+			cnt++;
 	}
+
+	if ( cnt2 - cnt < k ){
+		cout << "-1\n";
+		return 0;
+	}
+
+	ans = dfs ( k, 0, -1 );
+	if ( !ans )
+		ans--;
+	cout << ans << '\n';
 }
