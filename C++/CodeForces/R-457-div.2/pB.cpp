@@ -42,7 +42,7 @@ typedef vec < LL > vl;
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
-#define FID(n,Index) n.find ( Index ) != n.end()
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
 
 // graph
 #define GRE(T,edge) vec < T > edge[maxN]
@@ -62,15 +62,17 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
-// ready~ go!
-// let's coding and have fun!
-// I can solve this problem!
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
-inline bool cmp ( int a, int b ){
-	return a > b;
-}
+// ready~ go!
+// let's go coding and have fun!
+// I can solve this problem!
 
 int main(){
 	ios::sync_with_stdio ( false );
@@ -78,28 +80,46 @@ int main(){
 	cout.tie ( 0 );
 
 	LL x, n, lg;
-	MaxHeap < LL > pq;
+	MaxHeap < int > pq;
+	vi v;
 	cin >> x >> n;
-	while ( x > 0 ){
-		lg = log2 ( x );
-		pq.push ( lg );
-		x -= pow ( 2, lg );
+	REPM ( i, 62, 0 ){
+		if ( x & ( 1LL << i ) ){
+			pq.push ( i );
+		}
 	}
 	if ( SZ ( pq ) > n ){
 		cout << "No\n";
 		return 0;
 	}
 	cout << "Yes\n";
-	while ( SZ ( pq ) < n ){
-		lg = pq.top();
+	while ( SZ ( pq ) != n ){
+		int t = pq.top();
 		pq.pop();
-		lg--;
-		pq.push ( lg );
-		pq.push ( lg );
+		t--;
+		pq.push ( t );
+		pq.push ( t );
 	}
+	int en = pq.top();
 	while ( !EMP ( pq ) ){
-		cout << pq.top() << ' ';
+		v.pb ( pq.top() );
 		pq.pop();
+	}
+	REPP ( i, 0, SZ ( v ) ){
+		if ( v[i] == en ){
+			cout << v[i] << ' ';
+			continue;
+		}
+		if ( i != SZ ( v ) - 1 && i != SZ ( v ) - 2 && v[i] == v[i + 1] ){
+			cout << v[i] + 1 << ' ';
+			i++;
+			int en = v.back();
+			v.pop_back();
+			v.pb ( en - 1 );
+			v.pb ( en - 1 );
+		}
+		else
+			cout << v[i] << ' ';
 	}
 	cout << '\n';
 }

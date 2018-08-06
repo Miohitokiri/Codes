@@ -42,7 +42,7 @@ typedef vec < LL > vl;
 // define set
 typedef set < int > si;
 typedef set < LL > sl;
-#define FID(n,Index) n.find ( Index ) != n.end()
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
 
 // graph
 #define GRE(T,edge) vec < T > edge[maxN]
@@ -62,58 +62,62 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 40000005
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-GRE ( pii, edge );
+struct node{
+	int u, v, w;
+};
+
+bitset < maxN > lib;
 vi prime;
+vec < node > edges;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int now, cnt = 1, sqt;
-	bool isPrime;
-	prime.pb ( 2 );
-	prime.pb ( 3 );
-	prime.pb ( 5 );
-	while ( SZ ( prime ) < maxN ){
-		now = cnt * 6 + 1;
-		sqt = sqrt ( now );
-		isPrime = true;
-		REPALL ( i, prime ){
-			if ( i > sqt )
-				break;
-			if ( now % i == 0 ){
-				isPrime = false;
-				break;
-			}
-		}
+	srand ( clock() );
 
-		if ( isPrime )
-			prime.pb ( now );
-
-		now += 4;
-		sqt = sqrt ( now );
-		isPrime = true;
-		REPALL ( i, prime ){
-			if ( i > sqt )
-				break;
-			if ( now % i == 0 ){
-				isPrime = false;
-				break;
-			}
-		}
-
-		if ( isPrime )
-			prime.pb ( now );
-		cnt++;
+	// prime
+	lib[0] = lib[1] = true;
+	for ( LL i = 2 ; i < maxN ; i++ ){
+		if ( lib[i] )
+			continue;
+		for ( LL j = i << 1 ; j < maxN ; j += i )
+			lib[j] = true;
+		prime.pb ( i );
 	}
 
-	int n, m;
+	int n, m, u = 1, v = 3, val;
 	cin >> n >> m;
+	val = n;
+	while ( lib[val] ){
+		val++;
+	}
+
+	cout << val << ' ' << val << '\n';
+
+	REPP ( i, 1, n ){
+		edges.pb ( node { i, i + 1, 1 } );
+	}
+
+	( END ( edges ) - 1 ) -> w = val - n + 2;
+
+	for ( int i = 1 ; i < n && SZ ( edges ) < m ; i++ ){
+		for ( int j = i + 2 ; j <= n && SZ ( edges ) < m ; j++ )
+			edges.pb ( node { i, j, val } );
+	}
+
+	REPALL ( i, edges ) cout << i.u << ' ' << i.v << ' ' << i.w << '\n';
 }
