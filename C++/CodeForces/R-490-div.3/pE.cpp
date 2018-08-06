@@ -73,13 +73,13 @@ GRE ( int, edges );
 int pa[maxN];
 bool used[maxN];
 
-void dfs ( int n ){
+void dfs ( int n, int p ){
 	used[n] = true;
+	pa[n] = p;
 	REPALL ( i, edges[n] ){
 		if ( used[i] )
 			continue;
-		pa[i] = pa[n];
-		dfs ( i );
+		dfs ( i, p );
 	}
 }
 
@@ -95,14 +95,12 @@ int main(){
 		edges[u].pb ( v );
 	}
 
-	pa[s] = s;
-	dfs ( s );
+	dfs ( s, s );
 	n++;
 	REPP ( i, 1, n ){
 		if ( pa[i] == 0 ){
-			pa[i] = i;
 			MEM ( used, 0 );
-			dfs ( i );
+			dfs ( i, i );
 		}
 	}
 

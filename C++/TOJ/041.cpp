@@ -1,71 +1,135 @@
+// by. MiohitoKiri5474
 #include<bits/stdc++.h>
-#define maxN 1005
+
+#pragma GCC optimize ( "O3" )
+#pragma loop_opt ( on )
 
 using namespace std;
 
+typedef long long LL;
+
+// define tools
+#define REPP(i,f,s) for ( int i = f ; i < s ; i++ )
+#define REPM(i,f,s) for ( int i = f ; i >= s ; i-- )
+#define REPALL(i,n) for ( auto &i: n )
+#define debuger cout << "111\n"
+#define MEM(n,i) memset ( n, i, sizeof n )
+
+// define pair
+typedef pair < LL, LL > pll;
 typedef pair < int, int > pii;
+#define F first
+#define S second
+#define mp make_pair
 
-int dis[maxN], rk[maxN];
+// define vector && some stl's api
+template < class T > using vec = vector < T >;
+typedef vec < int > vi;
+typedef vec < LL > vl;
+#define pb push_back
+#define ep emplace_back
+#define REV reverse
+#define SZ(n) ( int ) n.size()
+#define CLR(n) n.clear()
+#define BEG(n) n.begin()
+#define END(n) n.end()
+#define EMP(n) n.empty()
+#define RSZ(n,s) n.resize ( s )
+#define ALL(n) BEG ( n ), END ( n )
+#define PIO(n) REPALL ( i, n ) cout << i << ' '; cout << '\n'
+#define GETDATA(data,n) RSZ ( data, n ); REPALL ( i, data ) cin >> i
 
-inline void init ( void ){
-	for ( int i = 0 ; i < maxN ; i++ ){
+// define set
+typedef set < int > si;
+typedef set < LL > sl;
+#define FID(n,Index) ( n.find ( Index ) != n.end() )
+
+// graph
+#define GRE(T,edge) vec < T > edge[maxN]
+#define UNI(u,v,edge) edge[u].pb ( v ), edge[v].pb ( u )
+#define UNIw(u,v,w,edge) edge[u].pb ( mp ( v, w ) ), edge[v].pb ( mp ( u, w ) )
+
+// IO
+#define GL(n) getline ( cin, n )
+
+// define stack, queue, pri-queue
+template < class T > using stack = stack < T, vec < T > >;
+template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
+template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
+
+// define stringstream
+#define sstr stringstream
+
+// number~ remember change maxN
+#define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
+#define maxN 1005
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
+// ready~ go!
+// let's go coding and have fun!
+// I can solve this problem!
+
+struct node{
+	int u, v, w;
+};
+
+inline bool cmp ( node a, node b ){
+	return a.w < b.w;
+}
+
+vec < node > edges;
+int dis[maxN], sz[maxN], ans;
+
+inline void init ( int k ){
+	REPP ( i, 0, k ){
 		dis[i] = i;
-		rk[i] = 1;
+		sz[i] = 1;
 	}
 }
 
-int find ( int n ){
-	return dis[n] == n ? n : dis[n] = find ( dis[n] );
+int find ( int a ){
+	return dis[a] == a ? a : dis[a] = find ( dis[a] );
 }
 
 inline void Union ( int a, int b ){
 	a = find ( a ), b = find ( b );
 	dis[a] = b;
-	rk[b] += rk[a];
+	sz[b] += sz[a];
 }
 
 inline bool same ( int a, int b ){
 	return find ( a ) == find ( b );
 }
 
-inline int getLider ( void ){
-	return rk[find ( 0 )];
-}
-
-struct edgeData{
-	int u, v, w;
-};
-
-vector < edgeData > edge;
-int mstValue;
-
-inline bool cmp ( edgeData a, edgeData b ){
-	return a.w < b.w;
-}
-
-inline void Dijsktra ( void ){
-	init();
-	sort ( edge.begin(), edge.end(), cmp );
-	for ( auto i: edge ){
+inline void Kruskal ( int k ){
+	init ( k );
+	sort ( ALL ( edges ), cmp );
+	REPALL ( i, edges ){
 		if ( same ( i.u, i.v ) )
 			continue;
 		Union ( i.u, i.v );
-		mstValue += i.w;
+		ans += i.w;
 	}
 }
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
+	cout.tie ( 0 );
 
-	int k, r, u, v, w;
-	cin >> k >> r;
-	while ( r-- ){
+	int n, m, u, v, w;
+	cin >> n >> m;
+	while ( m-- ){
 		cin >> u >> v >> w;
-		edge.push_back ( edgeData { u, v, w } );
+		edges.pb ( node { u, v, w } );
 	}
 
-	Dijsktra();
+	Kruskal ( n );
 
-	cout << ( getLider() == k ? mstValue : -1 ) << '\n';
+	cout << ( sz[find ( 1 )] == n ? ans : -1 ) << '\n';
 }

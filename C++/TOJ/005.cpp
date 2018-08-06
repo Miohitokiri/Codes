@@ -1,13 +1,16 @@
-#include<iostream>
-
-using namespace std;
+#include<stdio.h>
 
 int main(){
-	ios::sync_with_stdio ( false );
-	cin.tie ( 0 );
-
-	string s;
-	getline(cin, s);
-
-	cout<< "Hello ,"<<s<<" !"<<endl;
+	int cnt = 0;
+	char c[25];
+	printf ( "Hello ," );
+	while ( c[cnt] = getchar() && c[cnt] != '\n' && cnt <= 20 ){
+		cnt++;
+	}
+	// c[cnt++] = '!';
+	// c[cnt] = '\0';
+	// printf ( "%s!\n", c );
+	for ( int i = 0 ; i < cnt ; i++ )
+		putchar ( c[i] );
+	puts ( "" );
 }
