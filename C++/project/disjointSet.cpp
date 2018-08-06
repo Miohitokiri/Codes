@@ -3,10 +3,12 @@
 
 using namespace std;
 
+#define maxN 10005
+
 int dis[maxN], sz[maxN];
 
 inline void init ( void ){
-	for ( int i = 0 ; i < n ; i++ ){
+	for ( int i = 0 ; i < maxN ; i++ ){
 		dis[i] = i;
 		sz[i] = 1;
 	}
