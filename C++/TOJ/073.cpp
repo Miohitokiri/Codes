@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 105
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,38 +74,29 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int dp[maxN][maxN];
+double data[25];
+int n, p;
+
+inline double func ( double x ){
+	double res = 1.0;
+	REPP ( i, 0, n ){
+		res *= ( x - data[i] );
+	}
+	return -res;
+}
+
+inline double solve ( double l, double r ){
+	if ( fabs ( l - r ) < 1e-7 )
+		return l;
+	double L = ( l + r ) / 2, R = ( L + r ) / 2, y1 = func ( l ), y2 = func ( L ), y3 = func ( R ), y4 = func ( r );
+	if ( y3 > y2 )
+		return solve ( L, r );
+	return solve ( l, R );
+}
 
 int main(){
-	ios::sync_with_stdio ( false );
-	cin.tie ( 0 );
-	cout.tie ( 0 );
-
-	int n, m, t, u, v, q;
-	cin >> t;
-	while ( t-- ){
-		cin >> n >> m;
-		MEM ( dp, INF );
-		for ( int i = 1 ; i <= n ; i++ )
-			dp[i][i] = 0;
-		while ( m-- ){
-			cin >> u >> v >> q;
-			dp[u][v] = min ( dp[u][v], q );
-		}
-
-		for ( int k = 1 ; k <= n ; k++ )
-			for ( int i = 1 ; i <= n ; i++ )
-				for ( int j = 1 ; j <= n ; j++ )
-					dp[i][j] = min ( dp[i][j], dp[i][k] + dp[k][j] );
-
-		cin >> q;
-		while ( q-- ){
-			cin >> u >> v;
-			if ( dp[u][v] == INF )
-				cout << -1;
-			else
-				cout << dp[u][v];
-			cout << '\n';
-		}
-	}
+	scanf ( "%d", &n );
+	REPP ( i, 0, n ) scanf ( "%lf", data + i );
+	scanf ( "%d", &p );
+	printf ( "%.6f\n", solve ( data[p], data[p + 1] ) );
 }
