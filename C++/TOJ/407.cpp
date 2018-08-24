@@ -55,37 +55,3 @@ int main(){
 		cout << ans << '\n';
 	}
 }
-
-inline void dfs ( int n, int p ){
-	REPALL ( i, edges[n] ){
-		if ( i == p ){
-			continue;
-		}
-		dfs ( i, n );
-	}
-}
-
-void update ( int l, int r, int index, int value, int n ){
-	if ( l == r )
-		seg[n] = value;
-	else{
-		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-		if ( index <= mid )
-			update ( l, mid, index, value, leftSon );
-		else
-			update ( mid + 1, r, index, value, rightSon );
-
-		seg[n] = max ( seg[leftSon], seg[rightSon] );
-	}
-}
-
-int query ( int l, int r, int nowL, int nowR, int n ){
-	if ( l <= nowL && nowR <= r )
-		return seg[n];
-	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-	if ( r <= mid )
-		return query ( l, r, nowL, mid, leftSon );
-	if ( mid < l )
-		return query ( l, r, mid + 1, nowR, rightSonn );
-	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSonn ) );
-}
