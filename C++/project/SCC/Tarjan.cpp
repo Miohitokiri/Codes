@@ -6,7 +6,7 @@ using namespace std;
 
 vector < int > edges[maxN];
 int L[maxN], D[maxN], id, scc[maxN];
-stack < int > st;
+stack < int, vector < int > > st;
 bool inSt[maxN];
 
 inline void init ( void ){
