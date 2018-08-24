@@ -76,6 +76,7 @@ int main(){
 	cout.tie ( 0 );
 
 	int n, q, in, sum = 0;
+	vi data;
 	cin >> n >> q;
 	lib[10000] = true;
 	while ( n-- ){
@@ -91,13 +92,14 @@ int main(){
 		memcpy ( lib, stop, sizeof lib );
 	}
 
+	REPP ( i, 9999 - sum, sum + 10001 ){
+		if ( lib[i] ){
+			data.pb ( i - 10000 );
+		}
+	}
+
 	while ( q-- ){
 		cin >> in;
-		in += 10000;
-		while ( !lib[in] ){
-			in++;
-		}
-		in -= 10000;
-		cout << in << '\n';
+		cout << *lower_bound ( ALL ( data ), in ) << '\n';
 	}
 }
