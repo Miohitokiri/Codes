@@ -17,7 +17,6 @@ inline void init ( void ){
 	id = 0;
 	for ( auto &i: edges )
 		i.clear();
-	st.clear();
 }
 
 inline void dfs ( int n, int dep ){
