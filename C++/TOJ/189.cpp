@@ -83,28 +83,28 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, q, x1, x2, y1, y2, fk, x, y;
+	int n, m, q, x1, x2, y1, y2, fk, x, y, idx;
 	vec < pii > may;
+	vi lib;
 	bool check;
 	cin >> n >> m;
 	vec < node > www;
 	for ( int i = 1 ; i <= m ; i++ )
-		for ( int j = 1 ; j <= n ; j++ )
+		for ( int j = 1 ; j <= n ; j++ ){
 			cin >> dp[i][j];
-
-	for ( int i = 1 ; i <= m ; i++ )
-		for ( int j = 1 ; j <= n ; j++ )
 			dp[i][j] += dp[i - 1][j];
-
-	for ( int i = 1 ; i <= m ; i++ )
-		for ( int j = 1 ; j <= n ; j++ )
 			dp[i][j] += dp[i][j - 1];
+			dp[i][j] -= dp[i - 1][j - 1];
+		}
 
 	for ( int i = 1; i <= m ; i++ )
-		for ( int j = 1 ; j <= n ; j++ )
+		for ( int j = 1 ; j <= n ; j++ ){
 			www.pb ( node { dp[i][j], i, j } );
+			lib.pb ( dp[i][j] );
+		}
 
 	sort ( ALL ( www ), cmp );
+	sort ( ALL ( lib ) );
 
 	cin >> q;
 	while ( q-- ){
@@ -116,14 +116,10 @@ int main(){
 		fk = dp[x2][y2] - dp[x1 - 1][y2] - dp[x2][y1 - 1] + dp[x1 - 1][y1 - 1];
 
 		check = false;
-		REPALL ( i, www ){
-			if ( i.w > fk )
-				break;
-			if ( i.w == fk && ( i.x < x1 || i.y < y ) ){
-				check = true;
-				break;
-			}
-		}
+		for ( int i = 1 ; i <= m && !check ; i++ )
+			for ( int j = ( x1 <= i ? y1 - 1 : n ) ; j && !check ; j-- )
+				if ( dp[i][j] == fk )
+					check = true;
 
 		cout << ( check ? 'Y' : 'N' ) << '\n';
 	}
