@@ -68,30 +68,26 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
-int bit[maxN >> 1], in[maxN], out[maxN], size, cost[maxN];
-GRE ( int, data );
+int bit[100010], in[maxN], out[maxN], size, cost[maxN];
+GRE ( int, edges );
 
 inline void dfs ( int x ){
 	in[x] = ++size;
-	REPALL ( i, edge[x] )
-		if ( in[i] == -1 )
+	REPALL ( i, edges[x] )
+		if ( !in[i] )
 			dfs ( i );
 	out[x] = ++size;
 }
 
-inline void add ( int i, int value ){
-	while ( i <= size ){
+inline void add ( int x, int value ){
+	for ( int i = x ; i <= size ; i += i & -i )
 		bit[i] += value;
-		i += i & -i;
-	}
 }
 
-inline int res ( int n ){
+inline int sum ( int n ){
 	int res = 0;
-	while ( n ){
-		res += bit[n];
-		n -= n & -n;
-	}
+	for ( int i = n ; i ; i -= i & -i )
+		res += bit[i];
 	return res;
 }
 
@@ -99,4 +95,36 @@ int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+
+	int n, m, u, v, ans = 0;
+	char type;
+	cin >> n >> m;
+	REPP ( i, 1, n ){
+		cin >> u >> v;
+		UNI ( u, v, edges );
+	}
+
+	dfs ( 1 );
+
+	for ( int i = 1 ; i <= n ; i++ ){
+		cin >> cost[i];
+		add ( in[i], cost[i] );
+		add ( out[i], -cost[i] );
+	}
+
+	while ( m-- ){
+		cin >> type;
+		if ( type == 'C' ){
+			cin >> u >> v;
+			add ( in[u], v - cost[u] );
+			add ( out[u], cost[u] - v );
+			cost[u] = v;
+		}
+		else{
+			cin >> u;
+			ans += sum ( in[u] );
+		}
+	}
+
+	cout << ans << '\n';
 }
