@@ -63,7 +63,8 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 25000
+#define maxN 105
+#define mod 10009
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,30 +75,36 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define mod 24851
+struct node{
+	int m[maxN][maxN];
+} martix, init;
 
-LL dp[maxN];
+inline node operator * ( node a, node b ){
+	node res;
+	MEM ( res.m, 0 );
+	REPP ( i, 0, maxN ){
+		REPP ( j, 0, maxN ){
+			REPP ( k, 0, maxN ){
+				res.m[i][j] += a.m[i][k] * b.m[k][j];
+				res.m[i][j] %= mod;
+			}
+		}
+	}
 
-inline LL _pow ( LL a, int b ){
-	LL base = a;
+	return res;
+}
+
+inline node flash ( node a, int b ){
+	node base = a;
 	b--;
 	while ( b ){
-		if ( b & 1 ){
-			a *= base;
-			a %= mod;
-		}
-		base *= base;
-		base %= mod;
+		if ( b & 1 )
+			a = a * base;
 		b >>= 1;
+		base = base * base;
 	}
 
 	return a;
-}
-
-inline LL C ( int n, int m ){
-	if ( n < m )
-		return 0;
-	return dp[n] * _pow ( ( dp[m] * dp[n - m] ) % mod, mod - 2 ) % mod;
 }
 
 int main(){
@@ -105,20 +112,20 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	LL n, m, ans = 1;
-	cin >> n >> m;
-
-	dp[0] = 1;
-	REPP ( i, 1, maxN ){
-		dp[i] = dp[i - 1] * ( i % mod );
-		dp[i] %= mod;
+	int n, s, e, k;
+	cin >> n >> s >> e >> k;
+	REPP ( i, 0, n ){
+		REPP ( j, 0, n ){
+			cin >> martix.m[i][j];
+		}
 	}
 
-	n--, m--;
-	while ( m ){
-		ans *= C ( n % mod, m % mod );
-		ans %= mod;
-		n /= mod, m /= mod;
+	martix = flash ( martix, k );
+
+	REPP ( i, 0, n ){
+		init.m[0][i] = int ( i == s );
 	}
-	cout << ans << '\n';
+
+	init = init * martix;
+	cout << init.m[0][e] << '\n';
 }
