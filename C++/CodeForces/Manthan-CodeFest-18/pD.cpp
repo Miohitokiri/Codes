@@ -77,15 +77,6 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 GRE ( int, edges );
 int tag[maxN], pa[maxN];
 
-void dfs ( int n, int p ){
-	REPALL ( i, edges[n] ){
-		if ( i == p )
-			continue;
-		tag[i] = tag[n] + 1;
-		dfs ( i, n );
-	}
-}
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
