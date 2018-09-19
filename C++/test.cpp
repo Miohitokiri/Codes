@@ -62,54 +62,52 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
-
-// あの日見渡した渚を　今も思い出すんだ
-// 砂の上に刻んだ言葉　君の後ろ姿
-// 寄り返す波が　足元をよぎり何かを攫う
-// 夕凪の中　日暮れだけが通り過ぎて行く
+#define maxN 100005
 
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+inline string change ( int a ){
+	string str;
+	while ( a ){
+		str += char ( a % 10 + '0' );
+		a /= 10;
+	}
+	return str;
+}
+
+inline bool check ( int n ){
+	string str = change ( n );
+	n /= 100;
+	if ( n == 9 )
+		return true;
+	sort ( ALL ( str ) );
+	if ( str[0] == str[1] && str[1] == str[2] )
+		return true;
+	return false;
+}
+
+inline int gcd ( int a, int b ){
+	while ( a % b && b % a )
+		a > b ? a %= b : b %= a;
+
+	return min ( a, b );
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
-		}
+	int ans = 0;
+	for ( int i = 100 ; i <= 999 ; i++ ){
+		if ( check ( i ) )
+			ans++;
 	}
-
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
-	}
+	int n = 900;
+	int g = gcd ( n, ans );
+	n /= g, ans /= g;
+	cout << ans << '/' << n << '\n';
 }
+

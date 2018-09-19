@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 10005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,85 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+struct node{
+	int u, v, w;
+};
+
+inline bool cmp ( node a, node b ){
+	return a.w < b.w;
+}
+
+vec < node > edges;
+GRE ( pii, mst );
+int t, dis[maxN], sum;
+
+inline void init ( int n ){
+	REPP ( i, 0, n ) dis[i] = i;
+}
+
+int find ( int n ){
+	return dis[n] == n ? n : dis[n] = find ( dis[n] );
+}
+
+inline void Union ( int a, int b ){
+	dis[find ( a )] = find ( b );
+}
+
+inline bool same ( int a, int b ){
+	return find ( a ) == find ( b );
+}
+
+void dfs ( int n, int p, int ma ){
+	if ( n == t ){
+		sum = ma;
+		return;
+	}
+	REPALL ( i, mst[n] ){
+		if ( i.F == p )
+			continue;
+		dfs ( i.F, n, max ( ma, i.S ) );
+	}
+}
+
+inline void Kruskal ( int n, int s ){
+	sort ( ALL ( edges ), cmp );
+	init ( n );
+	vec < node > unused;
+	REPALL ( i, edges ){
+		if ( same ( i.u, i.v ) ){
+			unused.pb ( i );
+			continue;
+		}
+		UNIw ( i.u, i.v, i.w, mst );
+		Union ( i.u, i.v );
+	}
+	dfs ( s, -1, -1 );
+	UNIw ( unused[0].u, unused[0].v, unused[0].w, mst );
+	cout << sum << ' ' << sum << '\n';
+	sum = 0;
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
-		}
+	int n, m, s, u, v, w;
+	cin >> n >> m >> s >> t;
+	REPP ( i, 0, m ){
+		cin >> u >> v >> w;
+		edges.pb ( node { u, v, w } );
 	}
 
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
+	bool tf = true;
+	REPP ( i, 0, m ){
+		if ( edges[i].w != edges[i - 1].w )
+			tf = false;
 	}
+
+	if ( tf ){
+		cout << edges[0].w << ' ' << edges[0].w << '\n';
+		return 0;
+	}
+	Kruskal ( n, s );
 }

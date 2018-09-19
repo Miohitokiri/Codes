@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 20
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,48 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+int lib[maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
+	REPP ( i, 0, 10 ){
+		lib[i] = 300005;
+	}
+	lib[0] = 0;
+	int n, w, res;
+	string str;
+	cin >> n;
+	REPP ( i, 0, n ){
+		cin >> w >> str;
+		sort ( ALL ( str ) );
+		res = 0;
+		REPP ( j, 0, 3 ){
+			res <<= 1;
+			if ( *lower_bound ( ALL ( str ), 'A' + j ) == 'A' + j ){
+				res |= 1;
+			}
+		}
+		lib[res] = min ( lib[res], w );
+	}
+	// REPP ( i, 0, 8 ) cout << lib[i] << ' ';
+	// cout << '\n';
+
+	int ans = 300005;
+	REPP ( i, 0, 8 ){
+		REPP ( j, 0, 8 ){
+			REPP ( k, 0, 8 ){
+				if ( ( i | j | k ) == 7 ){
+					ans = min ( ans, lib[i] + lib[j] + lib[k] );
+				}
+			}
 		}
 	}
 
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
-	}
+	if ( ans == 300005 )
+		ans = -1;
+
+	cout << ans << '\n';
 }

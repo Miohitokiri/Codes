@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,22 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+inline LL gcd ( LL a, LL b ){
+	while ( a % b && b % a )
+		a > b ? a %= b : b %= a;
+
+	return min ( a, b );
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
-		}
-	}
-
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
-	}
+	LL x, y, a, b, g;
+	cin >> x >> y >> a >> b;
+	g = gcd ( a, b );
+	a /= g, b /= g;
+	x /= a, y /= b;
+	cout << min ( x, y ) << '\n';
 }

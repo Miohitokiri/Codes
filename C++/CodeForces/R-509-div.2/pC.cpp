@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 200005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,41 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+int res[maxN];
+map < int, int > lib;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
+	int n, m, d, in, cnt = 1, x;
+	si data;
+	cin >> n >> m >> d;
+	REPP ( i, 0, n ){
+		cin >> in;
+		data.insert ( in );
+		lib[in] = i;
+	}
+	MEM ( res, -1 );
+	while ( !EMP ( data ) ){
+		x = *BEG ( data );
+		data.erase ( x );
+		res[lib[x]] = cnt;
+		while ( true ){
+			auto idx = data.upper_bound ( x + d );
+			if ( idx == END ( data ) )
 				break;
+			x = *idx;
+			data.erase ( idx );
+			res[lib[x]] = cnt;
 		}
+		cnt++;
 	}
 
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
+	cout << --cnt << '\n';
+	REPP ( i, 0, n ){
+		cout << res[i] << ' ';
 	}
+	cout << '\n';
 }

@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,38 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+pii seg[maxN << 2];
+map < int, int > lib;
+
+void update ( int l, int r, int index, int value, int n ){
+	if ( l == r ){
+		seg[n].F++;
+		seg[n].S = value;
+	}
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( index <= mid )
+			update ( l, mid, index, value, leftSon );
+		else
+			update ( mid + 1, r, index, value, rightSon );
+
+		if ( seg[leftSon].F != seg[rightSon].F )
+			seg[n] = ( seg[leftSon].F > seg[rightSon].F ? seg[leftSon] : seg[rightSon] );
+		else
+			seg[n] = pii ( seg[leftSon].F, min ( seg[leftSon].S, seg[rightSon].S ) );
+	}
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
-		}
-	}
-
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
+	int in, idx = 0, n = 100000;
+	while ( cin >> in && in ){
+		if ( !FID ( lib, in ) )
+			lib[in] = ++idx;
+		update ( 0, n, lib[in], in, 1 );
+		cout << seg[1].F << ' ' << seg[1].S << '\n';
 	}
 }

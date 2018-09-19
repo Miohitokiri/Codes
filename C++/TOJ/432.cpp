@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 10005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,37 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+bool graph[maxN][maxN];
+pii t;
+
+bool dfs ( int x, int y ){
+	if ( t == mp ( x, y ) )
+		return true;
+	if ( !graph[x][y] )
+		return false;
+	graph[x][y] = false;
+	if ( dfs ( x + 1, y ) || dfs ( x - 1, y ) || dfs ( x, y + 1 ) || dfs ( x, y - 1 ) ){
+		return true;
+	}
+	return false;
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
-		}
+	int n, m, num, x, y, ma;
+	pii s, now;
+	cin >> n >> m >> s.F >> s.S >> t.F >> t.S >> num;
+	ma = max ( n, m ) + 1;
+	REPP ( i, 1, ma ){
+		REPP ( j, 1, ma ) graph[i][j] = true;
+	}
+	while ( num-- ){
+		cin >> x >> y;
+		graph[x][y] = false;
 	}
 
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
-	}
+	cout << ( dfs ( s.F, s.S ) ? "Cool!" : "Harakiri!" ) << '\n';
 }

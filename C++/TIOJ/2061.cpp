@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 10005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,38 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+string dp[2][maxN];
+int cnt[15];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
+	int n;
+	string a, b, ma;
+	cin >> a;
+	b = a;
+	REV ( ALL ( a ) );
+	if ( a == b ){
+		cout << b << '\n';
+		return 0;
+	}
+	n = SZ ( a );
+	REPALL ( i, a ) cnt[( int ) i - '0']++;
+	REPP ( i, 0, 10 ){
+		if ( cnt[i] >= 1000 ){
+			REPP ( j, 0, 1000 )
+				cout << i;
+			cout << '\n';
+			return 0;
 		}
 	}
+	REPP ( i, 0, n ) REPP ( j, 0, n )
+		if ( a[i] == b[j] )
+			dp[( i + 1 ) & 1][j + 1] = dp[i & 1][j] + a[i];
+		else
+			dp[( i + 1 ) & 1][j + 1] = ( SZ ( dp[i & 1][j + 1] ) > SZ ( dp[( i + 1 ) & 1][j] ) ? dp[i & 1][j + 1] : dp[( i + 1 ) & 1][j] );
 
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
-	}
+	cout << dp[n & 1][n] << '\n';
 }

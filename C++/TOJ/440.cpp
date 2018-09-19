@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,63 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+int data[5][5];
+
+inline string pp ( string in ){
+	REPP ( i, 1, SZ ( in ) + 1 ){
+		if ( in[SZ ( in ) - i] == 'e' ){
+			in[SZ ( in ) - i] = 'a';
+			continue;
+		}
+		in[SZ ( in ) - i]++;
+		break;
+	}
+
+	return in;
+}
+
+inline int match ( string a, string b ){
+	int res = 0;
+	REPP ( i, 0, SZ ( a ) - SZ ( b ) + 1 ){
+		REPP ( j, 0, SZ ( b ) ){
+			res += data[int ( a[i + j] - 'a' )][int ( b[j] - 'a' )];
+		}
+	}
+
+	return res;
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
+	string str, ans, stp, out;
+	int k, in, ma = -1, swp;
+	cin >> str >> k;
+	REPP ( i, 0, 5 ){
+		REPP ( j, 0, 5 ){
+			cin >> data[i][j];
 		}
 	}
-
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
+	REPP ( i, 0, k ){
+		ans += 'a';
+		stp += 'e';
 	}
+	while ( ans != stp ){
+		// cout << ans << '\n';
+		swp = match ( str, ans );
+		if ( ma < swp ){
+			ma = swp;
+			out = ans;
+		}
+		// cout << ans << ' ' << ma << '\n';
+		ans = pp ( ans );
+	}
+	swp = match ( str, ans );
+	if ( ma < swp ){
+		ma = swp;
+		out = ans;
+	}
+	cout << out << '\n';
 }

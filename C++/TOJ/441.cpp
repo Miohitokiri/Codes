@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10000005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,33 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int pre[maxN];
-vi prime;
+#define mod 1000000007
+  
+LL count ( LL a, LL b ){
+	if ( b == 1 )
+		return a % mod;
+	if ( !b )
+		return 1;
+	LL res = count ( a, b / 2 ) % mod;
+	res = res * res % mod;
+	if ( b % 2 )
+		res = res * a % mod;
+	return res;
+}
+
+inline LL C ( LL m, LL n ){
+	LL res = 1;
+	for ( LL i = m ; i > n ; i-- )
+		res = res * i % mod;
+	for( LL i = m - n ; i > 1 ; i-- )
+		res = res * count ( i, mod - 2 ) % mod;
+	return res;
+}
 
 int main(){
-	ios::sync_with_stdio ( false );
-	cin.tie ( 0 );
-	cout.tie ( 0 );
-
-	MEM ( pre, -1 );
-	REPP ( i, 2, maxN ){
-		if ( pre[i] < 0 )
-			prime.pb ( i );
-		for ( int j = 0 ; i * prime[j] < maxN /*&& j < SZ ( prime )*/ ; j++ ){
-			pre[i * prime[j]] = prime[j];
-			if ( i % prime[j] == 0 )
-				break;
-		}
-	}
-
-	int n, in, a, b, swp;
-	cin >> n;
-	while ( n-- ){
-		cin >> in;
-		a = -1, b = -1;
-		while ( in > 1 ){
-			swp = pre[in];
-			if ( swp < 0 )
-				swp = in;
-			if ( a < 0 || swp > a )
-				b = a, a = swp;
-			else if ( b < swp && swp != a )
-				b = swp;
-			in /= swp;
-		}
-		if ( a > b )
-			swap ( a, b );
-		cout << max ( a, 1 ) << ' ' << b << '\n';
-	}
+	int n, m;
+	cin >> m >> n;
+	LL x = C ( m + n, m );
+	LL y = x * count ( m + 1, mod - 2 ) % mod * n % mod;
+	cout << ( x + mod - y ) % mod << '\n';
 }
