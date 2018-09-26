@@ -11,10 +11,10 @@ int main(){
 	int j, l, r;
 	string str, p = "";
 	cin >> str;
-	while ( p != str ){
+	while ( p != str && !str.empty() ){
 		p = str;
-		for ( int i = 0 ; i < SZ ( str ) ; i++ ){
-			for ( j = i ; j < SZ ( str ) ; j++ ){
+		for ( int i = 0 ; i < str.size() ; i++ ){
+			for ( j = i ; j < str.size() ; j++ ){
 				if ( str[i] != str[j] )
 					break;
 			}
@@ -24,7 +24,7 @@ int main(){
 				break;
 			}
 		}
-		str.erase ( str.begin() + l, str.end() + r );
+		str.erase ( str.begin() + l, str.begin() + r + 1 );
 	}
 
 	cout << ( str.empty() ? "Yes" : "No" ) << '\n';

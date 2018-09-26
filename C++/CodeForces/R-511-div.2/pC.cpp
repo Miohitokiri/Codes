@@ -63,8 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 1500005
-#define maxM 1005
+#define maxN 15000005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -82,65 +81,49 @@ inline LL gcd ( LL a, LL b ){
 	return min ( a, b );
 }
 
-int prime[10005] = { 2, 3, 5, 7, 11, 13 }, len = 6, data[300005];
-
-void build(){
-	for ( int i = 14 ; i < 4005 ; i++ ){
-		for ( int j = 0 ; j < len ; j++ ){
-			if ( prime[j] * prime[j] > i ){
-				prime[len++] = i;
-				break;
-			}
-			else if ( i % prime[j] == 0 ){
-				break;
-			}
-		}
-	}
-}
+vi prime;
+int num[maxN];
+map < int, int > lib;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, g, g2 = 0, ans, mi, cnt = 0;
-	bool check = true;
-	cin >> n >> g;
-	data[0] = g;
-	REPP ( i, 1, n ){
-		cin >> data[i];
-		g = gcd ( data[i], g );
-		if ( data[i] != data[i - 1] )
-			check = false;
+	num[0] = 0, num[1] = 1;
+	REPP ( i,  2, maxN ){
+		if ( !num[i] ){
+			num[i] = i;
+			for ( int j = i << 1 ; j < maxN ; j += i ){
+				num[j] = i;
+			}
+		}
 	}
 
-	if ( check ){
+	int n, g, swp;
+	vi data;
+	cin >> n;
+	GETDATA ( data, n );
+	g = data[0];
+	REPALL ( i, data ){
+		g = gcd ( g, i );
+	}
+	REPALL ( i, data ){
+		i /= g;
+		while ( i != 1 ){
+			lib[swp = num[i]]++;
+			while ( i % swp == 0 )
+				i /= swp;
+		}
+	}
+
+	int ans = 0;
+	REPALL ( i, lib ){
+		ans = max ( ans, i.S );
+	}
+	if ( !ans ){
 		cout << "-1\n";
 		return 0;
 	}
-
-	build();
-	sort ( data, data + n );
-
-	for ( int i = 0 ; i < n ; i++ ){
-		data[i] /= g;
-	}
-
-	ans = n - 1;
-	REPP ( i, 0, len ){
-		if ( prime[i] * prime[i] > data[n - 1] )
-			break;
-		cnt = 0;
-		for ( int j = 0 ; j < n ; j++ ){
-			if ( data[j] % prime[i] )
-				cnt++;
-		}
-		ans = min ( cnt, ans );
-		if ( ans == 1 ){
-			cout << "1\n";
-			return 0;
-		}
-	}
-
-	cout << ans << '\n';
+	cout << n - ans << '\n';
 }
