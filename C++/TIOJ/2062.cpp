@@ -63,27 +63,66 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 1000005
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
+
+GRE ( int, edges );
+vi black, white;
+int clr[maxN];
+bool check;
+
+void dfs ( int n, bool color ){
+	if ( clr[n] != -1 )
+		return;
+	if ( color )
+		black.pb ( n );
+	else
+		white.pb ( n );
+	clr[n] = color;
+	color ^= 1;
+	REPALL ( i, edges[n] ){
+		if ( clr[i] == clr[n] )
+			check = true;
+		else
+			dfs ( i, color );
+	}
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m;
-	cin >> n;
-	vi data ( n );
-	for ( int i = 0 ; i < n ; i++ )
-		cin >> data[i];
-	sort ( ALL ( data ) );
-
-	cin >> m;
+	int n, m, u, v;
+	cin >> n >> m;
 	while ( m-- ){
-		cin >> n;
-		cout << upper_bound ( ALL ( data ), n ) - lower_bound ( ALL ( data ), n ) << '\n';
+		cin >> u >> v;
+		UNI ( u, v, edges );
+	}
+
+	MEM ( clr, -1 );
+	n++;
+	REPP ( i, 1, n ){
+		if ( clr[i] == -1 )
+			dfs ( i, 0 );
+	}
+
+	if ( check ){
+		cout << SZ ( white ) << " 0\n";
+		PIO ( white );
+		cout << "-1\n";
+	}
+	else{
+		cout << SZ ( white ) << ' ' << SZ ( black ) << '\n';
+		PIO ( white );
+		PIO ( black );
 	}
 }

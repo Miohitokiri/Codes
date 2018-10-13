@@ -65,25 +65,37 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 #define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
+
+LL Pow[15];
+map < int, int > lib;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
 
-	int n, m;
-	cin >> n;
-	vi data ( n );
-	for ( int i = 0 ; i < n ; i++ )
-		cin >> data[i];
-	sort ( ALL ( data ) );
-
-	cin >> m;
-	while ( m-- ){
-		cin >> n;
-		cout << upper_bound ( ALL ( data ), n ) - lower_bound ( ALL ( data ), n ) << '\n';
+	LL n, m, ans = 0;
+	while ( cin >> n >> m ){
+		ans = 0;
+		n++;
+		REPP ( i, 1, 11 ){
+			Pow[i] = Pow[i - 1] * 10;
+			Pow[i] %= m;
+		}
+		REPP ( i, 1, n ){
+			ans *= Pow[int ( log10 ( i ) + 1 )];
+			ans += i;
+			ans %= m;
+		}
+		cout << ans << '\n';
 	}
 }

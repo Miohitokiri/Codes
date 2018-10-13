@@ -8,8 +8,8 @@ int main(){
 
 	for ( int i = 0 ; i < 3 ; i++ )
 		for ( int j = 0 ; j < 3 ; j++ ){
-			cin >> data[3][3];
-			stop = data[3][3];
+			cin >> data[i][j];
+			stop = data[j][j];
 
 			if ( stop == 'o' )
 				o++;

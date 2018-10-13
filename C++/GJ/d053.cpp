@@ -1,39 +1,33 @@
 #include<iostream>
+#include<cmath>
 #include<vector>
+#include<bitset>
+
+#define pb push_back
 
 using namespace std;
 
 #define maxN 1000000005
 
-#define pb push_back
-
 bitset < maxN > lib;
-vector < int > prime, ans;
 
 int main(){
-	long long n;
+	ios::sync_with_stdio ( false );
+	cin.tie ( 0 );
+	cout.tie ( 0 );
+
+	int n;
 	cin >> n;
-	cout << n << " =";
-
-	lib[0] = lib[1] = true;
-
-	for ( int i = 0 ; i <= maxN ; i++ ){
-		if ( lib[i] )
-			continue;
-		for ( int j = i << 1 ; j <= maxN ; j += i )
-			lib[j] = true;
-		prime.pb ( i );
-	}
-
-	for ( int i = 0 ; n ; i++ ){
-		while ( n % prime[i] == 0 ){
-			ans.pb ( prime[i] );
-			n /= prime[i];
+	cout << n << " = ";
+	for ( int i = 2 ; i <= sqrt ( n ) + 1 ; i++ ){
+		if ( !lib[i] ){
+			for ( int j = i * 2 ; j <= sqrt ( n ) + 1 ; j += i )
+				lib[j] = true;
+			while ( n % i == 0 ){
+				cout << i << " * ";
+				n /= i;
+			}
 		}
 	}
-
-	cout << ans[0];
-	for ( int i = 1 ; i < ans.size() ; i++ )
-		cout << " * " << ans[i];
-	cout << '\n';
+	cout << n << '\n';
 }
