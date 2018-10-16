@@ -1,4 +1,4 @@
-// by. MiohitoKiri5474
+#// by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
 #pragma GCC optimize ( "O3" )
@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 200005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,42 +74,14 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-const LL mod = 998244353;
-
-LL cnt[maxN];
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	LL ans = 0;
-	int n, m, swp = 0;
-	string a, b;
-	cin >> n >> m >> a >> b;
-	REV ( ALL ( a ) );
-	a.resize ( m );
-	REV ( ALL ( a ) );
-	while ( SZ ( a ) < m ){
-		a = '0' + a;
-	}
-	n = SZ ( a );
-	REPP ( i, 0, m ){
-		if ( b[i] == '1' )
-			swp++;
-		if ( a[i] == '1' )
-			cnt[i] = swp;
-	}
-
-	REV ( cnt, cnt + n );
-
-	int idx = 1;
-	REPP ( i, 0, n ){
-		ans += cnt[i] * idx;
-		ans %= mod;
-		idx <<= 1;
-		idx %= mod;
-	}
-
-	cout << ans << '\n';
+	int n;
+	string str;
+	cin >> n >> str;
+	sort ( ALL ( str ) );
+	cout << str << '\n';
 }
