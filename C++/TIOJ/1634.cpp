@@ -62,10 +62,16 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 105
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
 int main(){
@@ -73,10 +79,13 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	srand ( clock() );
-	int n = 200000;
-	while ( n-- )
-		cout << rand() % 10;
-	cout << '\n';
+	int n, sum = 0, x;
+	cin >> n;
+	for ( int i = 0 ; i <= n ; i++ ){
+		cin >> x;
+		if ( sum >= ( 1 << i ) - 1 )
+			sum += x * ( 1 << i );
+	}
+	sum++;
+	cout << sum << '\n';
 }
-
