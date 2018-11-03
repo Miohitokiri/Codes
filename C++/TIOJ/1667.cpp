@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 1005
+#define maxN 105
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,12 +74,46 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
+int bit[maxN], n;
+
+inline void add ( int x ){
+	while ( x <= n ){
+		bit[x]++;
+		x += x & -x;
+	}
+}
+
+inline int sum ( int x ){
+	int res = 0;
+	while ( x ){
+		res += bit[x];
+		x -= x & -x;
+	}
+
+	return res;
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	
-	int n;
-	cin >> n;
-	cout << n << '\n';
+
+	int ans, idx;
+	vi data, lib;
+	while ( cin >> n ){
+		GETDATA ( data, n );
+		lib = data;
+		sort ( ALL ( lib ) );
+		unique ( ALL ( lib ) );
+		ans = 0;
+		MEM ( bit, 0 );
+		REPP ( i, 0, n ){
+			// cout << i << '\n';
+			idx = lower_bound ( ALL ( lib ), data[i] ) - BEG ( lib ) + 1;
+			ans += i - sum ( idx );
+			add ( idx );
+		}
+
+		cout << ans << '\n';
+	}
 }

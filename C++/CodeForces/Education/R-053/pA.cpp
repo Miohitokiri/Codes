@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 1005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,12 +74,26 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
+map < char, int > lib;
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	
+
 	int n;
-	cin >> n;
-	cout << n << '\n';
+	string str;
+	cin >> n >> str;
+	REPALL ( i, str ){
+		lib[i]++;
+	}
+
+	REPALL ( i, lib ){
+		if ( i.S > n / 2 ){
+			cout << "NO\n";
+			return 0;
+		}
+	}
+
+	cout << "YES\n";
 }

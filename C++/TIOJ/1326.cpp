@@ -74,12 +74,78 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
+#define int LL
+
+int dis[maxN];
+
+inline void init ( void ){
+	REPP ( i, 0, maxN ) dis[i] = i;
+}
+
+int find ( int n ){
+	return dis[n] == n ? n : dis[n] = find ( dis[n] );
+}
+
+inline void Union ( int a, int b ){
+	dis[find ( a )] = find ( b );
+}
+
+inline bool same ( int a, int b ){
+	return find ( a ) == find ( b );
+}
+
+struct node{
+	int u, v, w;
+};
+
+vec < node > lib;
+
+inline bool cmp ( node a, node b ){
+	return a.w < b.w;
+}
+
+inline LL kruskal ( void ){
+	init();
+	sort ( ALL ( lib ), cmp );
+	LL res = 0;
+	REPALL ( i, lib ){
+		if ( same ( i.u, i.v ) )
+			continue;
+
+		Union ( i.u, i.v );
+		res += i.w;
+	}
+
+	return res;
+}
+
+#undef int
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	
-	int n;
-	cin >> n;
-	cout << n << '\n';
+	#define int LL
+	#define pii pll
+
+	vec < pii > data;
+	int t, n, x, y;
+	cin >> t;
+	while ( t-- ){
+		CLR ( data );
+		CLR ( lib );
+		cin >> n;
+		REPP ( i, 0, n ){
+			cin >> x >> y;
+			data.pb ( pii ( x, y ) );
+		}
+
+		REPP ( i, 0, n ){
+			REPP ( j, 0, i ){
+				lib.pb ( node { i, j, abs ( data[i].F - data[j].F ) + abs ( data[i].S - data[j].S ) } );
+			}
+		}
+
+		cout << kruskal() << '\n';
+	}
 }

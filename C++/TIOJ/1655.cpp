@@ -73,5 +73,5 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	cout << "#include <stdio.h>\nint main() {\nprintf(\"hello world!!\n\");\n}\n";
+	cout << "#include <stdio.h>\nint main() {\n    printf(\"hello world!!\\n\");\n}\n";
 }
