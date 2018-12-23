@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 200005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,29 +74,63 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-// function start from here
+int cnt[maxN], m, k, ma;
+vi lib;
+map < int, vi > table;
 
-int32_t main(){
+inline bool check ( int tms ){
+	int res = 0;
+	REPP ( i, tms, ma ){
+		REPALL ( j, table[i] ){
+			res += cnt[j] / tms;
+		}
+	}
+
+	return res >= k;
+}
+
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n;
-	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
-	n++;
-	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
-		}
+	int n, l = 0, r = -1, mid;
+	vi data;
+	cin >> n >> k;
+	GETDATA ( data, n );
+	if ( n == k ){
+		PIO ( data );
+		return 0;
+	}
+	lib = data;
+	sort ( ALL ( lib ) );
+	lib.erase ( unique ( ALL ( lib ) ), END ( lib ) );
+	m = SZ ( lib );
+	REPALL ( i, data ){
+		cnt[lower_bound ( ALL ( lib ), i ) - BEG ( lib )]++;
+	}
+	REPP ( i, 0, m ){
+		r = max ( r, cnt[i] );
+		table[cnt[i]].pb ( i );
+	}
+	ma = ++r;
+	mid = ( l + r ) >> 1;
+	while ( r - l > 1 ){
+		if ( check ( mid ) )
+			l = mid;
+		else
+			r = mid;
+		mid = ( l + r ) >> 1;
 	}
 
-	cout << "FENDED OFF!\n";
+	l = k;
+	REPP ( i, 0, m ){
+		REPP ( j, 0, min ( cnt[i] / mid, l ) ){
+			cout << lib[i] << ' ';
+		}
+		l -= min ( cnt[i] / mid, l );
+		if ( !l )
+			break;
+	}
+	cout << '\n';
 }

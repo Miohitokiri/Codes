@@ -77,6 +77,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 #define int LL
 // function start from here
 
+
 int32_t main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
@@ -84,19 +85,10 @@ int32_t main(){
 
 	int n;
 	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
 	n++;
 	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
-		}
+		REPP ( j, 1, n - i ) cout << ' ';
+		REPP ( j, 0, i * 2 - 1 ) cout << '*';
+		cout << '\n';
 	}
-
-	cout << "FENDED OFF!\n";
 }

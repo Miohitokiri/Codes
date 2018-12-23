@@ -82,21 +82,18 @@ int32_t main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n;
-	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
-	n++;
-	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
-		}
+	string str, ans;
+	char data = char ( 'a' - 'A' );
+	while ( cin >> str ){
+		str[0] -= data;
+		cout << str;
 	}
+	cout << '\n';
+}
 
-	cout << "FENDED OFF!\n";
+inline void dfs ( int n, int p ){
+	REPALL ( i, edges[n] ){
+		if ( i == p )
+			continue;
+	}
 }

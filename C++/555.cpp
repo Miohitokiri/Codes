@@ -74,29 +74,39 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-// function start from here
 
-int32_t main(){
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n;
-	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
-	n++;
-	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
+	int n, k, sum = 0, mi = INF;
+	vi sz, p;
+	vec < pii > data;
+	cin >> n >> k;
+	GETDATA ( sz, n );
+	GETDATA ( p, n );
+	REPP ( i, 0, n ){
+		data.pb ( pii ( sz[i], p[i] ) );
+	}
+	sort ( ALL ( data ) );
+	if ( data[n - 1].F + data[n - 2].F < k ){
+		cout << "-1\n";
+		return 0;
+	}
+
+	if ( data[n - 1].F >= k ){
+		cout << "0\n";
+		return 0;
+	}
+
+	k -= data[n - 1].F;
+
+	REPP ( i, 0, n ){
+		if ( data[i].F >= k ){
+			mi = min ( mi, data[i].S );
 		}
 	}
 
-	cout << "FENDED OFF!\n";
+	cout << mi << '\n';
 }

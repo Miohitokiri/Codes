@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 200005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -77,26 +77,43 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 #define int LL
 // function start from here
 
+int cnt[maxN];
+
 int32_t main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n;
+	int n, m, ma, ans = -1, swp, idx, id;
+	vi data, lib;
 	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
-	n++;
-	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
-		}
+	GETDATA ( data, n );
+	lib = data;
+	sort ( ALL ( lib ) );
+	lib.erase ( unique ( ALL ( lib ) ), END ( lib ) );
+	m = SZ ( lib );
+	REPALL ( i, data ){
+		cnt[lower_bound ( ALL ( lib ), i ) - BEG ( lib )]++;
 	}
 
-	cout << "FENDED OFF!\n";
+	CLR ( data );
+	REPP ( i, 0, m ){
+		data.pb ( cnt[i] );
+	}
+	sort ( ALL ( data ) );
+	ma = data.back() + 1;
+
+	REPP ( i, 0, ma ){
+		swp = idx = 0;
+		for ( int j = i ; j < ma && idx < m ; j <<= 1 ){
+			id = lower_bound ( BEG ( data ) + idx, END ( data ), j ) - BEG ( data );
+			if ( id < SZ ( data ) )
+				swp += j;
+			idx = id + 1;
+		}
+
+		ans = max ( ans, swp );
+	}
+
+	cout << ans << '\n';
 }

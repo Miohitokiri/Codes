@@ -62,41 +62,36 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
-// あの日見渡した渚を　今も思い出すんだ
-// 砂の上に刻んだ言葉　君の後ろ姿
-// 寄り返す波が　足元をよぎり何かを攫う
-// 夕凪の中　日暮れだけが通り過ぎて行く
-
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
 
-#define int LL
-// function start from here
-
-int32_t main(){
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n;
-	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
-	n++;
-	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
+	srand ( clock() );
+	int n = 200000, sum = 0, stp;
+	bool flag = false;
+	si lib;
+	vi data;
+	REPP ( i, 0, n ){
+		sum += ( stp = rand() % 1000000 + 1 );
+		data.pb ( stp );
+		if ( FID ( lib, sum ) ){
+			// cout << i << '\n';
+			flag = true;
+			break;
 		}
+		lib.insert ( sum );
 	}
 
-	cout << "FENDED OFF!\n";
+	if ( !flag )
+		return 0;
+
+	cout << SZ ( data ) << '\n';
+	PIO ( data );
 }

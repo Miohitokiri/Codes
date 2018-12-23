@@ -75,28 +75,39 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // I can solve this problem!
 
 #define int LL
-// function start from here
 
-int32_t main(){
+map < int, int > lib;
+
+#undef int
+
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
 
-	int n;
+	int n, sum = 0;
+	vi data, ans;
 	cin >> n;
-	string s1, s2;
-	cin >> s1 >> s2;
-	s1 += '1';
-	s2 += '1';
-	s1 = '1' + s1;
-	s2 = '1' + s2;
-	n++;
-	REPP ( i, 1, n ){
-		if ( s1[i] == '0' && ( s2[i] == '0' || s2[i - 1] == '0' || s2[i + 1] == '0' ) ){
-			cout << "FENESTRATION FORTIFICATION FAILURE!\n";
-			return 0;
+	GETDATA ( data, n );
+	REPALL ( i, data ){
+		sum += i;
+		lib[i]++;
+	}
+	REPP ( i, 0, n ){
+		sum -= data[i];
+		if ( sum & 1 ){
+			sum += data[i];
+			continue;
 		}
+		sum >>= 1;
+		if ( ( lib[sum] == 1 && sum != data[i] ) || lib[sum] > 1 ){
+			ans.pb ( i + 1 );
+		}
+		sum <<= 1;
+		sum += data[i];
 	}
 
-	cout << "FENDED OFF!\n";
+	cout << SZ ( ans ) << '\n';
+	PIO ( ans );
 }
