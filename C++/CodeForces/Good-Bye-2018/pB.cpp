@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 200005
+#define maxN 1005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,27 +74,38 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-// function start from here
-int lib[maxN];
+map < pii, int > pt;
+inline pii _plus ( pii a, pii b ){
+	a.F += b.F;
+	a.S += b.S;
+	return a;
+}
 
-int32_t main(){
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, l, r;
+	int n, x, y;
+	vec < pii > lib, data;
 	cin >> n;
-	n++;
-	REPP ( i, 1, n ){
-		cin >> lib[i];
-		lib[i] += lib[i - 1];
+	REPP ( i, 0, n ){
+		cin >> x >> y;
+		data.pb ( pii ( x, y ) );
 	}
-	cin >> q;
-	while ( q-- ){
-		cin >> l >> r;
-		if ( l > r )
-			swap ( l, r );
-		cout << lib[r] - lib[l - 1] << '\n';
+	REPP ( i, 0, n ){
+		cin >> x >> y;
+		lib.pb ( pii ( x, y ) );
+	}
+	REPP ( i, 0, n ){
+		REPP ( j, 0, n ){
+			pt[_plus ( data[i], lib[j] )]++;
+		}
+	}
+	REPALL ( i, pt ){
+		if ( i.S == n ){
+			cout << i.F.F << ' ' << i.F.S << '\n';
+			return 0;
+		}
 	}
 }

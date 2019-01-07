@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 105
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,26 +74,33 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-// function start from here
+vi data[maxN];
+int dp[maxN][maxN];
 
-int32_t main(){
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	string str, ans;
-	char data = char ( 'a' - 'A' );
-	while ( cin >> str ){
-		str[0] -= data;
-		cout << str;
+	int n, ans = 0;
+	cin >> n;
+	REPP ( i, 0, n ){
+		GETDATA ( data[i], i + 1 );
 	}
-	cout << '\n';
-}
-
-inline void dfs ( int n, int p ){
-	REPALL ( i, edges[n] ){
-		if ( i == p )
-			continue;
+	MEM ( dp, -1 );
+	dp[0][0] = data[0][0];
+	REPP ( i, 1, n ){
+		dp[i][0] = data[i][0];
+		dp[i][0] += dp[i - 1][0];
 	}
+	REPP ( i, 1, n ){
+		REPP ( j, 1, i + 1 ){
+			dp[i][j] = max ( dp[i][j], data[i][j] );
+			dp[i][j] += max ( dp[i - 1][j], dp[i - 1][j - 1 ] );
+		}
+	}
+	REPP ( i, 0, n ){
+		ans = max ( ans, dp[n - 1][i] );
+	}
+	cout << ans << '\n';
 }

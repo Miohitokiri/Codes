@@ -4,7 +4,7 @@ using namespace std;
 
 #define maxN 100005
 
-vector < int > edges[maxN], deg[maxN];
+vector < int > edges[maxN];
 int D[maxN], L[maxN], scc[maxN], tms = 1;
 stack < int, vector < int > > st;
 bool inSt[maxN];

@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 200005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -76,25 +76,47 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 #define int LL
 // function start from here
-int lib[maxN];
+int lib[35];
 
 int32_t main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, l, r;
-	cin >> n;
-	n++;
-	REPP ( i, 1, n ){
-		cin >> lib[i];
-		lib[i] += lib[i - 1];
+	int n, k, cnt = 0, p;
+	cin >> n >> k;
+	if ( n < k ){
+		cout << "NO\n";
+		return 0;
 	}
-	cin >> q;
-	while ( q-- ){
-		cin >> l >> r;
-		if ( l > r )
-			swap ( l, r );
-		cout << lib[r] - lib[l - 1] << '\n';
+	while ( n ){
+		if ( n & 1 ){
+			k--;
+			lib[cnt]++;
+		}
+		cnt++;
+		n >>= 1;
 	}
+	p = cnt;
+	if ( k < 0 ){
+		cout << "NO\n";
+		return 0;
+	}
+	while ( k ){
+		if ( !cnt )
+			break;
+		while ( lib[cnt] && k ){
+			lib[cnt]--;
+			lib[cnt - 1] += 2;
+			k--;
+		}
+		cnt--;
+	}
+	if ( k > 0 ){
+		cout << "NO\n";
+		return 0;
+	}
+	cout << "YES\n";
+	REPP ( i, 0, p ) REPP ( tms, 0, lib[i] ) cout << ( 1 << i ) << ' ';
+	cout << '\n';
 }

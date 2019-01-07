@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 1000005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,39 +74,25 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
+const int mod = 998244353;
+
+LL dp[maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
 
-	int n, k, sum = 0, mi = INF;
-	vi sz, p;
-	vec < pii > data;
-	cin >> n >> k;
-	GETDATA ( sz, n );
-	GETDATA ( p, n );
-	REPP ( i, 0, n ){
-		data.pb ( pii ( sz[i], p[i] ) );
+	int n, swp = 1;
+	cin >> n;
+	dp[1] = 1;
+	n++;
+	REPP ( i, 2, n ){
+		swp *= i;
+		swp %= mod;
+		dp[i]=(i*dp[i-1])%mod+swp-i;
+		dp[i] %= mod;
 	}
-	sort ( ALL ( data ) );
-	if ( data[n - 1].F + data[n - 2].F < k ){
-		cout << "-1\n";
-		return 0;
-	}
-
-	if ( data[n - 1].F >= k ){
-		cout << "0\n";
-		return 0;
-	}
-
-	k -= data[n - 1].F;
-
-	REPP ( i, 0, n ){
-		if ( data[i].F >= k ){
-			mi = min ( mi, data[i].S );
-		}
-	}
-
-	cout << mi << '\n';
+	cout << dp[n - 1] << '\n';
 }

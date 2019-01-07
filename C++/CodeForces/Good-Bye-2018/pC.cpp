@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 200005
+#define maxN 1000000005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -73,28 +73,49 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
-
 #define int LL
-// function start from here
-int lib[maxN];
 
-int32_t main(){
+inline LL solve ( int n, int k ){
+	if ( n == k )
+		return 1;
+	int swp = n / k;
+	LL res = LL ( k * ( swp - 1 ) * swp / 2 + swp );
+	return res;
+}
+
+inline LL gcd ( LL a, LL b ){
+	while ( a % b && b % a )
+		a > b ? a %= b : b %= a;
+	return min ( a, b );
+}
+
+bitset < maxN > used;
+#undef int
+
+int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
 
-	int n, q, l, r;
+	int n, sq, g, swp, G;
 	cin >> n;
-	n++;
-	REPP ( i, 1, n ){
-		cin >> lib[i];
-		lib[i] += lib[i - 1];
+	sq = sqrt ( n ) + 1;
+	used[n] = used[1] = true;
+	vl data;
+	cout << 1 << ' ';
+	REPP ( i, 2, sq ){
+		if ( !used[g = gcd ( n, i )] ){
+			data.pb ( solve ( n, g ) );
+			used[g] = true;
+		}
+		if ( !used[G = gcd ( n, n / g )] ){
+			data.pb ( solve ( n, G ) );
+			used[G] = true;
+		}
 	}
-	cin >> q;
-	while ( q-- ){
-		cin >> l >> r;
-		if ( l > r )
-			swap ( l, r );
-		cout << lib[r] - lib[l - 1] << '\n';
-	}
+	sort ( ALL ( data ) );
+	unique ( ALL ( data ) );
+	REPALL ( i, data ) cout << i << ' ';
+	cout << LL ( 1 + n ) * LL ( n ) / 2 << '\n';
 }
