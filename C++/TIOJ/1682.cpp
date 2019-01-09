@@ -80,8 +80,15 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int a, b;
-	while ( cin >> a >> b ){
-		cout << ( a ^ b ? "kelvin" : "yiping" ) << '\n';
+	int n;
+	vi data;
+	while ( cin >> n ){
+		GETDATA ( data, n );
+		sort ( ALL ( data ) );
+		cout << data[0];
+		REPP ( i, 1, n ){
+			cout << ' ' << data[i];
+		}
+		cout << '\n';
 	}
 }
