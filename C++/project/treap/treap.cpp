@@ -110,20 +110,22 @@ inline int Rank ( node *&root, int k ){
 }
 
 inline void splitK ( node *o, node *&a, node *&b, int k ){
-	if ( !o )
+	if ( !o ){
 		a = b = nullptr;
-	else{
-		o -> down();
-		if ( k >= sz ( o -> leftSon ) + 1 ){
-			a = o;
-			splitK ( o -> rightSon, a -> rightSon, b, k - sz ( o -> leftSon ) - 1 );
-		}
-		else{
-			b = o;
-			splitK ( o -> leftSon, a, b -> leftSon, k );
-		}
-		o -> up();
+		return;
 	}
+	o -> down();
+	if ( sz ( o -> leftSon ) < k ){
+		a = o;
+		splitK ( a -> rightSon, a -> rightSon, b, k - sz ( o -> leftSon ) - 1 );
+		a -> up();
+	}
+	else{
+		b = o;
+		splitK ( b -> leftSon, a, b -> leftSon, k );
+		b -> up();
+	}
+	o -> up();
 }
 
 inline int kth ( node *&root, int k ){
