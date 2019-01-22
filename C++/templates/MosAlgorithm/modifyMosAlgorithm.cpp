@@ -79,8 +79,6 @@ inline void solved ( void ){
 
 		ans[i.id] = cur_ans;
 	}
-
-	// print here or in the main function
 }
 
 int main(){
