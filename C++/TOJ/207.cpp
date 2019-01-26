@@ -73,23 +73,26 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // greph
 struct bri{
 	int u, v, w;
+
+	inline bool operator < ( const bri &b ) const {
+		return w < b.w;
+	}
 };
 
-inline bool cmp ( bri a, bri b ){
-	return a.w < b.w;
-}
+// inline bool cmp ( bri a, bri b ){
+// 	return a.w < b.w;
+// }
 
 vec < bri > edges;
 GRE ( pii, mst );
 int ma, dis[maxN], n, D[maxN];
 pii dp[maxN][maxLog];
-vi LOG;
 
 inline void Init ( void ){
 	REPP ( i, 0, maxN ) dis[i] = i;
 }
 
-inline int find ( int d ){
+int find ( int d ){
 	return dis[d] == d ? d : dis[d] = find ( dis[d] );
 }
 
@@ -101,7 +104,7 @@ inline bool same ( int a, int b ){
 	return find ( a ) == find ( b );
 }
 
-inline void dfs ( int d, int p, int dep ){
+void dfs ( int d, int p, int dep ){
 	D[d] = dep++;
 	dp[d][0].F = p;
 	REPALL ( i, mst[d] ){
@@ -150,35 +153,56 @@ inline void findLCA ( int x, int y ){
 	ma = max ( ma, max ( dp[x][0].S, dp[y][0].S ) );
 }
 
-int main(){
-	ios::sync_with_stdio ( false );
-	cin.tie ( 0 );
-	cout.tie ( 0 );
-	#undef pb
-	#define pb ep
-
-	int m, t = 1, ans;
-	bri stop;
-	vi unUsed;
-	REPP ( i, 0, maxLog ){
-		LOG.pb ( t );
-		t <<= 1;
+inline int input ( void ){
+	int res = 0;
+	char c;
+	while ( true ){
+		c = getchar();
+		if ( c == ' ' || c == '\n' )
+			break;
+		res *= 10;
+		res += short ( c - '0' );
 	}
-	cin >> t;
-	while ( t-- && cin >> n >> m ){
+
+	return res;
+}
+
+inline void output ( int in ){
+	char res[10];
+	int p = 0;
+	while ( in ){
+		res[p++] = char ( '0' + in % 10 );
+		in /= 10;
+	}
+
+	while ( p ){
+		putchar ( res[p--] );
+	}
+	putchar ( res[p] );
+	putchar ( '\n' );
+}
+
+int main(){
+	int m, t = 1, ans;
+	vi unUsed;
+	t = input();
+	while ( t-- ){
+		n = input();
+		m = input();
 		Init();
-		CLR ( edges );
+		edges.resize ( m );
 		CLR ( unUsed );
 		REPP ( i, 0, n ) CLR ( mst[i] );
 		ans = INF;
 		ma = -1;
 
 		REPP ( i, 0, m ){
-			cin >> stop.u >> stop.v >> stop.w;
-			edges.pb ( stop );
+			edges[i].u = input();
+			edges[i].v = input();
+			edges[i].w = input();
 		}
 
-		sort ( ALL ( edges ), cmp );
+		sort ( ALL ( edges )/*, cmp*/ );
 		REPP ( i, 0, m ){
 			if ( same ( edges[i].u, edges[i].v ) ){
 				unUsed.pb ( i );
@@ -195,6 +219,6 @@ int main(){
 			ans = min ( ans, edges[i].w - ma );
 		}
 
-		cout << ans << '\n';
+		output ( ans );
 	}
 }

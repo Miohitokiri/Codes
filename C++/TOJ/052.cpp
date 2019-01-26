@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 30005
+#define maxN 1000005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,27 +74,43 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-bool ans[maxN];
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n, q, in;
-	vi data;
-	cin >> t;
-	while ( t-- ){
-		cin >> n;
-		GETDATA ( data, n );
-		MEM ( ans, 0 );
+	LL n, k, res = 0, ans = 0, mi = INF, swp;
+	int len;
+	vl data;
+	cin >> n >> k;
+	GETDATA ( data, n );
+	REPALL ( i, data ){
+		res += i;
+	}
+	ans += LL ( k / res ) * n;
+	k %= res;
 
-		REPP ( i, 0, n ) REPP ( j, 0, i ) ans[data[i] + data[j]] = true;
+	if ( !k ){
+		cout << ans << '\n';
+		return 0;
+	}
 
-		cin >> q;
-		while ( q-- ){
-			cin >> in;
-			cout << ( ans[in] ? "Good!" : "So Bad!" ) << '\n';
+	REPP ( i, 0, n ){
+		data.pb ( data[i] );
+	}
+
+	queue < int > q;
+	res = 0;
+	len = n;
+	REPALL ( i, data ){
+		q.push ( i );
+		res += i;
+		while ( res >= k ){
+			len = min ( len, SZ ( q ) );
+			res -= q.front();
+			q.pop();
 		}
 	}
+
+	cout << ans + len << '\n';
 }
