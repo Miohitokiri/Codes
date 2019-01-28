@@ -34,7 +34,7 @@ struct vt{
 	}
 
 	inline double cross ( vt b ){ // 外積
-		return x * b.x - y * b.y;
+		return x * b.y - y * b.x;
 	}
 
 	inline vt norman ( void ) const{ // 法向量

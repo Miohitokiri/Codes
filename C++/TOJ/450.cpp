@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 10005
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,41 +74,17 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-GRE ( pii, edges );
-int dist[maxN];
-bool inQ[maxN];
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, s, e, u, v, w, now;
-	cin >> n >> m;
-	while ( m-- ){
-		cin >> u >> v >> w;
-		UNIw ( u, v, w, edges );
-	}
-	cin >> s >> e;
-
-	queue < int > q;
-	MEM ( dist, INF );
-	dist[s] = 0;
-	inQ[s] = 0;
-	q.push ( s );
-	while ( !EMP ( q ) ){
-		inQ[now = q.front()] = false;
-		q.pop();
-		REPALL ( i, edges[now] ){
-			if ( dist[now] + i.S < dist[i.F] ){
-				dist[i.F] = dist[now] + i.S;
-				if ( !inQ[i.F] ){
-					inQ[i.F] = true;
-					q.push ( i.F );
-				}
-			}
-		}
-	}
-
-	cout << dist[e] << '\n';
+	LL x, a, b, c, d, e, f, ans;
+	cin >> x >> a >> b >> c >> d >> e >> f;
+	x >>= 1;
+	c -= a, d -= b;
+	e -= a, f -= b;
+	ans = c * f - d * e;
+	ans *= x;
+	cout << ans << '\n';
 }
