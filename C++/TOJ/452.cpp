@@ -53,7 +53,7 @@ typedef set < LL > sl;
 #define GL(n) getline ( cin, n )
 
 // define stack, queue, pri-queue
-template < class T > using stack = stack < T, vec < T > >;
+// template < class T > using stack = stack < T, vec < T > >;
 template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
 template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
 
@@ -74,18 +74,82 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
+vi edges[maxN];
+si BCC[maxN];
+int L[maxN], D[maxN], cnt;
+stack < int, vi > st;
+bool isAP[maxN];
+
+inline bool check ( int u, int v ){
+	REPALL ( i, BCC[u] ){
+		if ( FID ( BCC[v], i ) )
+			return true;
+	}
+
+	return false;
+}
+
+void dfs ( int n, int p, int dep ){
+	D[n] = L[n] = dep;
+	st.push ( n );
+	int child = 0;
+
+	for ( auto i: edges[n] ){
+		if ( i == p )
+			continue;
+		if ( D[i] == -1 ){
+			child++;
+			dfs ( i, p, dep + 1 );
+			if ( D[n] <= L[i] )
+				isAP[n] = true;
+			L[n] = min ( L[n], L[i] );
+		}
+		else
+			L[n] = min ( L[n], D[i] );
+	}
+
+	if ( ( p == -1 && child >= 2 ) || ( p != -1 && isAP[n] ) ){
+		while ( !EMP ( st ) && !isAP[st.top()] ){
+			cout << n << '\n';
+			BCC[st.top()].insert ( cnt );
+			st.pop();
+		}
+		BCC[st.top()].insert ( cnt );
+		cnt++;
+	}
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, a, b;
-	cin >> n >> a >> b;
-	if ( a == 2 ){
-		cout << 3 << '\n';
+	int n, m, q, u, v;
+	cin >> n >> m >> q;
+	while ( m-- ){
+		cin >> u >> v;
+		UNI ( u, v, edges );
 	}
-	else{
-		cout << 4 << '\n';
+
+	MEM ( D, -1 );
+	REPP ( i, 0, n ){
+		if ( D[i] == -1 ){
+			dfs ( i, -1, 0 );
+			while ( !EMP ( st ) && !isAP[st.top()] && SZ ( edges[st.top()] ) >= 2 ){
+				BCC[st.top()].insert ( cnt );
+				st.pop();
+			}
+			cnt++;
+		}
+	}
+
+	while ( q-- ){
+		cin >> u >> v;
+		cout << ( check ( u, v ) ? 'Y' : 'N' ) << '\n';
+	}
+
+	REPP ( j, 0, n ){
+		cout << j << ": ";
+		PIO ( BCC[j] );
 	}
 }

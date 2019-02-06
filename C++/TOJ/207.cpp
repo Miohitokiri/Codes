@@ -74,19 +74,16 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 struct bri{
 	int u, v, w;
 
-	inline bool operator < ( const bri &b ) const {
+	inline bool operator < ( bri &b ){
 		return w < b.w;
 	}
 };
-
-// inline bool cmp ( bri a, bri b ){
-// 	return a.w < b.w;
-// }
 
 vec < bri > edges;
 GRE ( pii, mst );
 int ma, dis[maxN], n, D[maxN];
 pii dp[maxN][maxLog];
+vi LOG;
 
 inline void Init ( void ){
 	REPP ( i, 0, maxN ) dis[i] = i;
@@ -153,56 +150,34 @@ inline void findLCA ( int x, int y ){
 	ma = max ( ma, max ( dp[x][0].S, dp[y][0].S ) );
 }
 
-inline int input ( void ){
-	int res = 0;
-	char c;
-	while ( true ){
-		c = getchar();
-		if ( c == ' ' || c == '\n' )
-			break;
-		res *= 10;
-		res += short ( c - '0' );
-	}
-
-	return res;
-}
-
-inline void output ( int in ){
-	char res[10];
-	int p = 0;
-	while ( in ){
-		res[p++] = char ( '0' + in % 10 );
-		in /= 10;
-	}
-
-	while ( p ){
-		putchar ( res[p--] );
-	}
-	putchar ( res[p] );
-	putchar ( '\n' );
-}
-
 int main(){
-	int m, t = 1, ans;
+	ios::sync_with_stdio ( false );
+	cin.tie ( 0 );
+	cout.tie ( 0 );
+	// #undef pb
+	// #define pb ep
+
+	int m, t = 1, ans, u, v, w;
 	vi unUsed;
-	t = input();
-	while ( t-- ){
-		n = input();
-		m = input();
+	REPP ( i, 0, maxLog ){
+		LOG.pb ( t );
+		t <<= 1;
+	}
+	cin >> t;
+	while ( t-- && cin >> n >> m ){
 		Init();
-		edges.resize ( m );
+		CLR ( edges );
 		CLR ( unUsed );
 		REPP ( i, 0, n ) CLR ( mst[i] );
 		ans = INF;
 		ma = -1;
 
 		REPP ( i, 0, m ){
-			edges[i].u = input();
-			edges[i].v = input();
-			edges[i].w = input();
+			cin >> u >> v >> w;
+			edges.pb ( bri { u, v, w } );
 		}
 
-		sort ( ALL ( edges )/*, cmp*/ );
+		sort ( ALL ( edges ) );
 		REPP ( i, 0, m ){
 			if ( same ( edges[i].u, edges[i].v ) ){
 				unUsed.pb ( i );
@@ -219,6 +194,6 @@ int main(){
 			ans = min ( ans, edges[i].w - ma );
 		}
 
-		output ( ans );
+		cout << ans << '\n';
 	}
 }
