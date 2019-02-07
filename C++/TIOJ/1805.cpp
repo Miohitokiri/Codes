@@ -3,7 +3,6 @@
 
 #pragma GCC optimize ( "O3" )
 #pragma loop_opt ( on )
-#pragma GCC optimize ( "Ofast, unroll-loops, no-stack-protector" )
 
 using namespace std;
 
@@ -63,29 +62,44 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
+	#define vi vl
 
-	int n, m;
-	cin >> n;
+	int t, n, res, ma;
 	vi data;
-	while ( n-- ){
-		cin >> m;
-		GETDATA ( data, m );
-		if ( m == 2 ){
-			cout << "0\n";
+	cin >> t;
+	while ( t-- ){
+		cin >> n;
+		res = 0;
+		ma = -1;
+		GETDATA ( data, n );
+		if ( n == 2 ){
+			cout << 0 << '\n';
 			continue;
 		}
+
 		sort ( ALL ( data ) );
-		cout << min ( *( END ( data ) - 1 ) - data[1], *( END ( data ) - 2 ) - data[0] ) << '\n';
+
+		int swp = lower_bound ( ALL ( data ), ( data[0] + data.back() + 1 ) / 2 ) - BEG ( data ), ans = -1;
+		if ( swp != n + 1 ) 
+			ans = max ( ans, data[n - 1] - data[swp] );
+		if ( swp != 1 )
+			ans = max ( ans, data[swp - 1] - data[0] );
+		cout << ans << '\n';
 	}
 }
