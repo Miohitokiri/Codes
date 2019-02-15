@@ -53,7 +53,7 @@ typedef set < LL > sl;
 #define GL(n) getline ( cin, n )
 
 // define stack, queue, pri-queue
-// template < class T > using stack = stack < T, vec < T > >;
+template < class T > using stack = stack < T, vec < T > >;
 template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
 template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
 
@@ -74,111 +74,71 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-GRE ( int, edges );
-GRE ( int, scclib );
-int D[maxN], L[maxN], scc[maxN];
-stack < int, vi > st;
-bool visited[maxN];
+LL dp[maxN][205];
 
-void dfs ( int n, int dep ){
-	L[n] = D[n] = dep++;
-	st.push ( n );
-	REPALL ( i, edges[n] ){
-		if ( D[i] )
-			L[n] = min ( L[n], L[i] );
-		else
-			dfs ( i, n );
-	}
+struct node{
+	int s, t, w, tp;
 
-	if ( D[n] == L[n] ){
-		int swp = -1;
-		while ( swp != n ){
-			swp = st.top();
-			st.pop();
-			scc[swp] = n;
-			scclib[n].pb ( swp );
-		}
+	inline bool operator < ( const node &b ) const{
+		return s < b.s;
 	}
-}
-
-void build ( int n ){
-	visited[n] = true;
-	REPALL ( i, edges[n] ){
-		if ( visited[i] )
-			continue;
-		if ( scc[n] != scc[i] ){
-			son[n]++;
-			deg[i]++;
-		}
-		dfs ( i );
-	}
-}
+};
 
 int main(){
-	ios::sync_with_stdio ( false );
-	cin.tie ( 0 );
-	cout.tie ( 0 );
+	// ios::sync_with_stdio ( false );
+	// cin.tie ( 0 );
+	// cout.tie ( 0 );
 
-	int n, m, u, v, ma = -1, idx = -1;
-	vi check, out;
-	cin >> n >> m;
-	while ( m-- ){
-		cin >> u >> v;
-		edges[u].pb ( v );
+	// auto tms = clock();
+
+	int n, m, k, s, t, d, w, idx = 0;
+	vec < node > data;
+	multiset < pii > ms;
+	// cin >> n >> m >> k;
+	scanf ( "%d%d%d", &n, &m, &k );
+
+	for ( int i = 0 ; i < n + 2 ; i++ ){
+		for ( int j = 0 ; j <= m ; j++ ){
+			dp[i][j] = 1e18;
+		}
+	}
+	dp[0][0] = 0;
+
+	while ( k-- ){
+		// cin >> s >> t >> d >> w;
+		scanf ( "%d%d%d%d", &s, &t, &d, &w );
+		data.pb ( node { s, d, w, 1 } );
+		data.pb ( node { t + 1, d, w, -1 } );
 	}
 
-	n++;
-	REPP ( i, 0, n ){
-		if ( !D[i] ){
-			dfs ( i, 0 );
+	if ( m >= n ){
+		puts ( "0" );
+		return 0;
+	}
+
+	sort ( ALL ( data ) );
+
+	for ( int i = 0 ; i <= n ; i++ ){
+		while ( idx != SZ ( data ) && data[idx].s == i ){
+			if ( data[idx].tp == -1 )
+				ms.erase ( ms.find ( pii ( data[idx].w, data[idx].t ) ) );
+			else
+				ms.insert ( pii ( data[idx].w, data[idx].t ) );
+			idx++;
+		}
+
+		pii p = pii ( 0, i );
+		if ( !EMP ( ms ) )
+			p = *ms.rbegin();
+		for ( int j = 0 ; j <= m ; j++ ){
+			if ( j )
+				dp[i][j] = min ( dp[i][j], dp[i][j - 1] );
+			dp[p.S + 1][j] = min ( dp[i][j] + p.F, dp[p.S + 1][j] );
+			dp[i + 1][j + 1] = min ( dp[i][j], dp[i + 1][j + 1] );
 		}
 	}
 
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) > 1 ){
-			num++;
-			ma = max ( ma, SZ ( scclib ) );
-		}
-	}
+	printf ( "%lld\n", dp[n + 1][m] );
 
-	REPP ( i, 0, n ){
-		if ( !visited[i] )
-			build ( i );
-	}
-
-	REPP ( i, 0, n ){
-		if ( !dag[n] && son[n] ){
-			check.pb ( n );
-		}
-	}
-
-	REPALL ( j, check ){
-		REPALL ( i, scclib[scc[j]] ){
-			out.pb ( i );
-		}
-	}
-
-	cout << num << '\n';
-	if ( EMP ( out ) )
-		cout << "No Leader\n";
-	else{
-		sort ( ALL ( out ) );
-		PIO ( out );
-	}
-
-	MEM ( visited, 0 );
-	CLR ( out );
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) == ma && !visited[scc[i]] ){
-			REPALL ( j, scclib[i] ) out.pb ( j );
-			visited[scc[i]] = true;
-		}
-	}
-
-	if ( EMP ( out ) )
-		cout << "None\n";
-	else{
-		sort ( ALL ( out ) ); 
-		PIO ( out );
-	}
+	// printf ( "%.6lf\n", ( clock() - tms ) / CLOCKS_PER_SEC );
 }

@@ -53,7 +53,7 @@ typedef set < LL > sl;
 #define GL(n) getline ( cin, n )
 
 // define stack, queue, pri-queue
-// template < class T > using stack = stack < T, vec < T > >;
+template < class T > using stack = stack < T, vec < T > >;
 template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
 template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
 
@@ -63,7 +63,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100005
+#define maxN 505
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -74,111 +74,29 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-GRE ( int, edges );
-GRE ( int, scclib );
-int D[maxN], L[maxN], scc[maxN];
-stack < int, vi > st;
-bool visited[maxN];
-
-void dfs ( int n, int dep ){
-	L[n] = D[n] = dep++;
-	st.push ( n );
-	REPALL ( i, edges[n] ){
-		if ( D[i] )
-			L[n] = min ( L[n], L[i] );
-		else
-			dfs ( i, n );
-	}
-
-	if ( D[n] == L[n] ){
-		int swp = -1;
-		while ( swp != n ){
-			swp = st.top();
-			st.pop();
-			scc[swp] = n;
-			scclib[n].pb ( swp );
-		}
-	}
-}
-
-void build ( int n ){
-	visited[n] = true;
-	REPALL ( i, edges[n] ){
-		if ( visited[i] )
-			continue;
-		if ( scc[n] != scc[i] ){
-			son[n]++;
-			deg[i]++;
-		}
-		dfs ( i );
-	}
-}
+bool data[maxN][maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, u, v, ma = -1, idx = -1;
-	vi check, out;
-	cin >> n >> m;
-	while ( m-- ){
-		cin >> u >> v;
-		edges[u].pb ( v );
-	}
-
-	n++;
-	REPP ( i, 0, n ){
-		if ( !D[i] ){
-			dfs ( i, 0 );
+	int n, ans = 0;
+	char c;
+	cin >> n;
+	for ( int i = 1 ; i <= n ; i++ ){
+		for ( int j = 1 ; j <= n ; j++ ){
+			cin >> c;
+			data[i][j] = ( c == 'X' );
 		}
 	}
 
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) > 1 ){
-			num++;
-			ma = max ( ma, SZ ( scclib ) );
+	for ( int i = 1 ; i <= n ; i++ ){
+		for ( int j = 1 ; j <= n ; j++ ){
+			if ( data[i][j] && data[i - 1][j - 1] && data[i - 1][j + 1] && data[i + 1][j - 1] && data[i + 1][j + 1] )
+				ans++;
 		}
 	}
 
-	REPP ( i, 0, n ){
-		if ( !visited[i] )
-			build ( i );
-	}
-
-	REPP ( i, 0, n ){
-		if ( !dag[n] && son[n] ){
-			check.pb ( n );
-		}
-	}
-
-	REPALL ( j, check ){
-		REPALL ( i, scclib[scc[j]] ){
-			out.pb ( i );
-		}
-	}
-
-	cout << num << '\n';
-	if ( EMP ( out ) )
-		cout << "No Leader\n";
-	else{
-		sort ( ALL ( out ) );
-		PIO ( out );
-	}
-
-	MEM ( visited, 0 );
-	CLR ( out );
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) == ma && !visited[scc[i]] ){
-			REPALL ( j, scclib[i] ) out.pb ( j );
-			visited[scc[i]] = true;
-		}
-	}
-
-	if ( EMP ( out ) )
-		cout << "None\n";
-	else{
-		sort ( ALL ( out ) ); 
-		PIO ( out );
-	}
+	cout << ans << '\n';
 }

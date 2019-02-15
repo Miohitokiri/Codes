@@ -53,7 +53,7 @@ typedef set < LL > sl;
 #define GL(n) getline ( cin, n )
 
 // define stack, queue, pri-queue
-// template < class T > using stack = stack < T, vec < T > >;
+template < class T > using stack = stack < T, vec < T > >;
 template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
 template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
 
@@ -74,111 +74,63 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-GRE ( int, edges );
-GRE ( int, scclib );
-int D[maxN], L[maxN], scc[maxN];
-stack < int, vi > st;
-bool visited[maxN];
-
-void dfs ( int n, int dep ){
-	L[n] = D[n] = dep++;
-	st.push ( n );
-	REPALL ( i, edges[n] ){
-		if ( D[i] )
-			L[n] = min ( L[n], L[i] );
-		else
-			dfs ( i, n );
-	}
-
-	if ( D[n] == L[n] ){
-		int swp = -1;
-		while ( swp != n ){
-			swp = st.top();
-			st.pop();
-			scc[swp] = n;
-			scclib[n].pb ( swp );
-		}
-	}
-}
-
-void build ( int n ){
-	visited[n] = true;
-	REPALL ( i, edges[n] ){
-		if ( visited[i] )
-			continue;
-		if ( scc[n] != scc[i] ){
-			son[n]++;
-			deg[i]++;
-		}
-		dfs ( i );
-	}
-}
+pll dish[maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+	#define int LL
+	#define pii pll
 
-	int n, m, u, v, ma = -1, idx = -1;
-	vi check, out;
+	int n, m, t, d, swp;
+	LL sum = 0, ans = 0;
+	vec < pii > data;
 	cin >> n >> m;
+	REPP ( i, 0, n ){
+		cin >> dish[i].F;
+		sum += dish[i].F;
+	}
+	REPP ( i, 0, n ){
+		cin >> dish[i].S;
+	}
+
+	REPP ( i, 0, n ){
+		data.pb ( pii ( dish[i].S, i ) );
+	}
+
+	sort ( ALL ( data ) );
+	REV ( ALL ( data ) );
+
 	while ( m-- ){
-		cin >> u >> v;
-		edges[u].pb ( v );
-	}
-
-	n++;
-	REPP ( i, 0, n ){
-		if ( !D[i] ){
-			dfs ( i, 0 );
+		cin >> t >> d;
+		t--;
+		if ( sum < d ){
+			sum = 0;
+			cout << "0\n";
+			continue;
 		}
-	}
-
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) > 1 ){
-			num++;
-			ma = max ( ma, SZ ( scclib ) );
+		ans = 0;
+		sum -= d;
+		if ( dish[t].F >= d ){
+			dish[t].F -= d;
+			ans += d * dish[t].S;
 		}
-	}
-
-	REPP ( i, 0, n ){
-		if ( !visited[i] )
-			build ( i );
-	}
-
-	REPP ( i, 0, n ){
-		if ( !dag[n] && son[n] ){
-			check.pb ( n );
+		else{
+			ans += dish[t].F * dish[t].S;
+			d -= dish[t].F;
+			dish[t].F = 0;
+			while ( !EMP ( data ) && d ){
+				if ( dish[data.back().S].F <= 0 )
+					data.pop_back();
+				else{
+					ans += ( swp = min ( d, dish[data.back().S].F ) ) * dish[data.back().S].S;
+					dish[data.back().S].F -= swp;
+					d -= swp;
+				}
+			}
 		}
-	}
 
-	REPALL ( j, check ){
-		REPALL ( i, scclib[scc[j]] ){
-			out.pb ( i );
-		}
-	}
-
-	cout << num << '\n';
-	if ( EMP ( out ) )
-		cout << "No Leader\n";
-	else{
-		sort ( ALL ( out ) );
-		PIO ( out );
-	}
-
-	MEM ( visited, 0 );
-	CLR ( out );
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) == ma && !visited[scc[i]] ){
-			REPALL ( j, scclib[i] ) out.pb ( j );
-			visited[scc[i]] = true;
-		}
-	}
-
-	if ( EMP ( out ) )
-		cout << "None\n";
-	else{
-		sort ( ALL ( out ) ); 
-		PIO ( out );
+		cout << ans << '\n';
 	}
 }

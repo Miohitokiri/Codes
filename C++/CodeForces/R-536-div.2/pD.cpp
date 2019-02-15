@@ -53,7 +53,7 @@ typedef set < LL > sl;
 #define GL(n) getline ( cin, n )
 
 // define stack, queue, pri-queue
-// template < class T > using stack = stack < T, vec < T > >;
+template < class T > using stack = stack < T, vec < T > >;
 template < class T > using MaxHeap = priority_queue < T, vec < T >, less < T > >;
 template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T > >;
 
@@ -75,110 +75,41 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // I can solve this problem!
 
 GRE ( int, edges );
-GRE ( int, scclib );
-int D[maxN], L[maxN], scc[maxN];
-stack < int, vi > st;
-bool visited[maxN];
-
-void dfs ( int n, int dep ){
-	L[n] = D[n] = dep++;
-	st.push ( n );
-	REPALL ( i, edges[n] ){
-		if ( D[i] )
-			L[n] = min ( L[n], L[i] );
-		else
-			dfs ( i, n );
-	}
-
-	if ( D[n] == L[n] ){
-		int swp = -1;
-		while ( swp != n ){
-			swp = st.top();
-			st.pop();
-			scc[swp] = n;
-			scclib[n].pb ( swp );
-		}
-	}
-}
-
-void build ( int n ){
-	visited[n] = true;
-	REPALL ( i, edges[n] ){
-		if ( visited[i] )
-			continue;
-		if ( scc[n] != scc[i] ){
-			son[n]++;
-			deg[i]++;
-		}
-		dfs ( i );
-	}
-}
+bool visited[maxN], inPq[maxN];
+vi ans;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, m, u, v, ma = -1, idx = -1;
-	vi check, out;
+	int n, m, u, v;
 	cin >> n >> m;
 	while ( m-- ){
 		cin >> u >> v;
-		edges[u].pb ( v );
+		UNI ( u, v, edges );
 	}
 
-	n++;
-	REPP ( i, 0, n ){
-		if ( !D[i] ){
-			dfs ( i, 0 );
+	for ( int i = 1 ; i <= n ; i++ ){
+		sort ( ALL ( edges[i] ) );
+	}
+
+	MinHeap < int > pq;
+	pq.push ( 1 );
+	while ( !EMP ( pq ) ){
+		int now = pq.top();
+		pq.pop();
+		visited[now] = true;
+		ans.pb ( now );
+		REPALL ( i, edges[now] ){
+			if ( visited[i] )
+				continue;
+			if ( inPq[i] )
+				continue;
+			pq.push ( i );
+			inPq[i] = true;
 		}
 	}
 
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) > 1 ){
-			num++;
-			ma = max ( ma, SZ ( scclib ) );
-		}
-	}
-
-	REPP ( i, 0, n ){
-		if ( !visited[i] )
-			build ( i );
-	}
-
-	REPP ( i, 0, n ){
-		if ( !dag[n] && son[n] ){
-			check.pb ( n );
-		}
-	}
-
-	REPALL ( j, check ){
-		REPALL ( i, scclib[scc[j]] ){
-			out.pb ( i );
-		}
-	}
-
-	cout << num << '\n';
-	if ( EMP ( out ) )
-		cout << "No Leader\n";
-	else{
-		sort ( ALL ( out ) );
-		PIO ( out );
-	}
-
-	MEM ( visited, 0 );
-	CLR ( out );
-	REPP ( i, 0, n ){
-		if ( SZ ( scclib[i] ) == ma && !visited[scc[i]] ){
-			REPALL ( j, scclib[i] ) out.pb ( j );
-			visited[scc[i]] = true;
-		}
-	}
-
-	if ( EMP ( out ) )
-		cout << "None\n";
-	else{
-		sort ( ALL ( out ) ); 
-		PIO ( out );
-	}
+	PIO ( ans );
 }
