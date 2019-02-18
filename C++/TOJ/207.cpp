@@ -154,8 +154,6 @@ int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	// #undef pb
-	// #define pb ep
 
 	int m, t = 1, ans, u, v, w;
 	vi unUsed;
