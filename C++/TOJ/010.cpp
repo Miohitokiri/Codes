@@ -27,7 +27,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define ep emplace_back
+#define eb emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -65,49 +65,28 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 #define NEG_INF 0x8f8f8f8f
 #define maxN 200005
 
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
 // ready~ go!
 // let's go coding and have fun!
 // I can solve this problem!
 
+int value[maxN], seg[maxN << 2], D[maxN], link[maxN], sz[maxN], ma[maxN], pos[maxN], pa[maxN], idx, rg;
 GRE ( int, edges );
-int value[maxN], seg[maxN << 2], pa[maxN], sz[maxN], ma[maxN], where[maxN], cnt, link[maxN], D[maxN];
 
 inline void init ( void ){
-	REPALL ( i, edges ) CLR ( i );
+	REPALL ( i, edges ){
+		CLR ( i );
+	}
+	MEM ( ma, -1 );
+	MEM ( pos, -1 );
+	MEM ( D, -1 );
 	MEM ( value, NEG_INF );
 	MEM ( pa, -1 );
-	MEM ( where, -1 );
-	MEM ( link, -1 );
-	MEM ( ma, -1 );
-	MEM ( D, 0 );
-	cnt = 0;
-}
-
-void findFa ( int n ){
-	sz[n] = 1;
-	REPALL ( i, edges[n] ){
-		if ( i == pa[n] )
-			continue;
-		pa[i] = n;
-		D[i] = D[n] + 1;
-		findFa ( i );
-		if ( ma[n] == -1 || sz[i] > sz[ma[n]] )
-			ma[n] = i;
-		sz[n] += sz[i];
-	}
-}
-
-void dfs ( int n, int p ){
-	link[n] = p;
-	where[n] = ++cnt;
-	if ( ma[n] == -1 )
-		return;
-	dfs ( ma[n], p );
-	REPALL ( i, edges[n] ){
-		if ( i == ma[n] || i == pa[n] )
-			continue;
-		dfs ( i, i );
-	}
+	idx = 0;
 }
 
 void update ( int l, int r, int index, int value, int n ){
@@ -135,56 +114,87 @@ int query ( int l, int r, int nowL, int nowR, int n ){
 	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
 }
 
+void dfs ( int n ){
+	sz[n] = 1;
+	REPALL ( i, edges[n] ){
+		if ( i == pa[n] )
+			continue;
+		pa[i] = n;
+		D[i] = D[n] + 1;
+		dfs ( i );
+		if ( ma[n] == -1 || sz[ma[n]] < sz[i] )
+			ma[n] = i;
+		sz[n] += sz[i];
+	}
+}
+
+void build ( int n, int p ){
+	link[n] = p;
+	pos[n] = idx++;
+	if ( ma[n] == -1 )
+		return;
+	REPALL ( i, edges[n] ){
+		if ( i == pa[n] )
+			continue;
+		build ( i, i );
+	}
+}
+
+inline int LCA ( int u, int v ){
+	if ( D[u] > D[v] )
+		swap ( u, v );
+	int ma = -1;
+	while ( link[u] != link[v] ){
+		if ( D[u] > D[v] ){
+			ma = max ( ma, query ( pos[link[u]], pos[u], 0, rg, 1 ) );
+			u = pa[link[u]];
+		}
+		else{
+			ma = max ( ma, query ( pos[link[v]], pos[v], 0, rg, 1 ) );
+			v = pa[link[v]];
+		}
+	}
+
+	if ( D[u] > D[v] )
+		swap ( u, v );
+	return max ( ma, query ( pos[u], pos[v], 0, rg, 1 ) );
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n, u, v, w, N;
-	string type;
+	int t, n, u, v, w, l, r;
+	string tp;
 	cin >> t;
 	while ( t-- ){
 		cin >> n;
-		N = n << 1;
-		N--;
 		init();
 		REPP ( i, 1, n ){
 			cin >> u >> v >> w;
-			UNI ( u, i + n, edges );
-			UNI ( n + i, v, edges );
 			value[n + i] = w;
+			UNI ( u, n + i, edges );
+			UNI ( n + 1, v, edges );
 		}
 
-		pa[1] = 1;
-		findFa ( 1 );
-		dfs ( 1, 1 );
-		REPP ( i, 1, ( n << 1 ) ){
-			update ( 1, N, where[i], value[i], 1 );
+		pa[1] = D[1] = 0;
+		dfs ( 1 );
+		build ( 1, 1 );
+
+		rg = idx - 1;
+		REPP ( i, 0, idx ){
+			update ( 0, rg, pos[i], value[i], 1 );
 		}
 
-		while ( cin >> type ){
-			if ( type == "DONE" )
+		while ( cin >> tp ){
+			if ( tp == "DONE" )
 				break;
-			cin >> u >> v;
-			if ( type == "QUERY" ){
-				int uPa = u, vPa = v, ans = -1;
-				while ( link[uPa] != link[vPa] ){
-					if ( D[link[uPa]] > D[link[vPa]] ){
-						ans = max ( ans, query ( where[link[uPa]], where[uPa], 1, N, 1 ) );
-						uPa = pa[link[uPa]];
-					}
-					else{
-						ans = max ( ans, query ( where[link[vPa]], where[vPa], 1, N, 1 ) );
-						vPa = pa[link[vPa]];
-					}
-				}
-
-				if ( D[uPa] > D[vPa] )
-					swap ( uPa, vPa );
-				cout << max ( ans, query ( where[uPa], where[vPa], 1, N, 1 ) ) << '\n';
-			}
+			cin >> l >> r;
+			if ( tp == "CHANGE" )
+				update ( 0, rg, pos[l], r, 1 );
 			else
-				update ( 1, N, where[n + u], v, 1 );
+				cout << LCA ( l, r ) << '\n';
 		}
 	}
 }
