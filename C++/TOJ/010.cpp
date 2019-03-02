@@ -27,7 +27,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define eb emplace_back
+#define ep emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -63,33 +63,53 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 200005
-
-// あの日見渡した渚を　今も思い出すんだ
-// 砂の上に刻んだ言葉　君の後ろ姿
-// 寄り返す波が　足元をよぎり何かを攫う
-// 夕凪の中　日暮れだけが通り過ぎて行く
+#define maxN 200010
 
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
 
-int value[maxN], seg[maxN << 2], D[maxN], link[maxN], sz[maxN], ma[maxN], pos[maxN], pa[maxN], idx, rg;
 GRE ( int, edges );
+int where[maxN], value[maxN], link[maxN], pa[maxN], D[maxN], cnt, seg[maxN << 2], siz[maxN], maxSon[maxN];
 
 inline void init ( void ){
-	REPALL ( i, edges ){
-		CLR ( i );
-	}
-	MEM ( ma, -1 );
-	MEM ( pos, -1 );
-	MEM ( D, -1 );
+	REPALL ( i, edges ) CLR ( i );
+	MEM ( where, -1 );
 	MEM ( value, NEG_INF );
-	MEM ( pa, -1 );
-	idx = 0;
+	MEM ( D, 0 );
+	MEM ( maxSon, -1 );
+	cnt = 0;
 }
 
-void update ( int l, int r, int index, int value, int n ){
+inline void findMaxSon ( int u ){
+	siz[u] = 1;
+	maxSon[u] = -1;
+	REPALL ( i, edges[u] ){
+		if ( i == pa[u] )
+			continue;
+		pa[i] = u;
+		D[i] = D[u] + 1;
+		findMaxSon ( i );
+		if ( maxSon[u] == -1 || siz[i] > siz[maxSon[u]] )
+			maxSon[u] = i;
+		siz[u] += siz[i];
+	}
+}
+
+inline void dfs ( int n, int p ){
+	link[n] = p;
+	where[n] = ++cnt;
+	if ( maxSon[n] == -1 )
+		return;
+	dfs ( maxSon[n], p );
+	REPALL ( i, edges[n] ){
+		if ( i == maxSon[n] || i == pa[n] )
+			continue;
+		dfs ( i, i );
+	}
+}
+
+inline void update ( int l, int r, int index, int value, int n ){
 	if ( l == r )
 		seg[n] = value;
 	else{
@@ -103,7 +123,7 @@ void update ( int l, int r, int index, int value, int n ){
 	}
 }
 
-int query ( int l, int r, int nowL, int nowR, int n ){
+inline int query ( int l, int r, int nowL, int nowR, int n ){
 	if ( l <= nowL && nowR <= r )
 		return seg[n];
 	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
@@ -111,53 +131,7 @@ int query ( int l, int r, int nowL, int nowR, int n ){
 		return query ( l, r, nowL, mid, leftSon );
 	if ( mid < l )
 		return query ( l, r, mid + 1, nowR, rightSon );
-	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
-}
-
-void dfs ( int n ){
-	sz[n] = 1;
-	REPALL ( i, edges[n] ){
-		if ( i == pa[n] )
-			continue;
-		pa[i] = n;
-		D[i] = D[n] + 1;
-		dfs ( i );
-		if ( ma[n] == -1 || sz[ma[n]] < sz[i] )
-			ma[n] = i;
-		sz[n] += sz[i];
-	}
-}
-
-void build ( int n, int p ){
-	link[n] = p;
-	pos[n] = idx++;
-	if ( ma[n] == -1 )
-		return;
-	REPALL ( i, edges[n] ){
-		if ( i == pa[n] )
-			continue;
-		build ( i, i );
-	}
-}
-
-inline int LCA ( int u, int v ){
-	if ( D[u] > D[v] )
-		swap ( u, v );
-	int ma = -1;
-	while ( link[u] != link[v] ){
-		if ( D[u] > D[v] ){
-			ma = max ( ma, query ( pos[link[u]], pos[u], 0, rg, 1 ) );
-			u = pa[link[u]];
-		}
-		else{
-			ma = max ( ma, query ( pos[link[v]], pos[v], 0, rg, 1 ) );
-			v = pa[link[v]];
-		}
-	}
-
-	if ( D[u] > D[v] )
-		swap ( u, v );
-	return max ( ma, query ( pos[u], pos[v], 0, rg, 1 ) );
+	return max ( query ( l, r, mid + 1, nowR, rightSon ), query ( l, r, nowL, mid, leftSon ) );
 }
 
 int main(){
@@ -165,36 +139,55 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n, u, v, w, l, r;
-	string tp;
+	int t, n, u, v, uPa, vPa, ma, N;
+	string type;
 	cin >> t;
 	while ( t-- ){
 		cin >> n;
+		N = n << 1;
+		N--;
 		init();
 		REPP ( i, 1, n ){
-			cin >> u >> v >> w;
-			value[n + i] = w;
+			cin >> u >> v >> value[n + i];
 			UNI ( u, n + i, edges );
-			UNI ( n + 1, v, edges );
+			UNI ( n + i, v, edges );
 		}
 
-		pa[1] = D[1] = 0;
-		dfs ( 1 );
-		build ( 1, 1 );
-
-		rg = idx - 1;
-		REPP ( i, 0, idx ){
-			update ( 0, rg, pos[i], value[i], 1 );
+		pa[1] = 1;
+		findMaxSon ( 1 );
+		dfs ( 1, 1 );
+		// return 0;
+		REPP ( i, 1, ( n << 1 ) ){
+			update ( 1, N, where[i], value[i], 1 );
 		}
-
-		while ( cin >> tp ){
-			if ( tp == "DONE" )
+		while ( cin >> type ){
+			if ( type == "DONE" )
 				break;
-			cin >> l >> r;
-			if ( tp == "CHANGE" )
-				update ( 0, rg, pos[l], r, 1 );
+			cin >> u >> v;
+			if ( type == "QUERY" ){
+				uPa = u, vPa = v;
+				ma = -1;
+				int ccc = 0;
+
+				while ( link[vPa] != link[uPa] ){
+					if ( D[link[vPa]] > D[link[uPa]] ){
+						// cout << query ( where[pa[link[vPa]]], where[vPa], 1, N, 1 ) << '\n';
+						ma = max ( ma, query ( where[link[vPa]], where[vPa], 1, N, 1 ) );
+						vPa = pa[link[vPa]];
+					}
+					else{
+						// cout << query ( where[pa[link[uPa]]], where[uPa], 1, N, 1 ) << '\n';
+						ma = max ( ma, query ( where[link[uPa]], where[uPa], 1, N, 1 ) );
+						uPa = pa[link[uPa]];
+					}
+				}
+
+				if ( D[uPa] > D[vPa] )
+					swap ( uPa, vPa );
+				cout << max ( ma, query ( where[uPa], where[vPa], 1, N, 1 ) ) << '\n';
+			}
 			else
-				cout << LCA ( l, r ) << '\n';
+				update ( 1, N, where[n + u], v, 1 );
 		}
 	}
 }
