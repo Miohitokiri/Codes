@@ -13,15 +13,14 @@ struct query{
 	query ( int _l, int _r, int _id, int _lid ):
 		l ( _l ), r ( _r ), id ( _id ), lid ( _lid ) {}
 
-	inline bool operator < ( query &b ){
+	inline bool operator < ( query &b ) const{
 		if ( lid == b.lid )
 			return r < b.r;
 		return lid < b.lid;
 	}
 };
 
-vector < int > data;
-vector < query > q;
+vector < query > Q;
 
 int cur_ans, cnt[maxN], ans[maxN];
 
@@ -37,7 +36,7 @@ inline void sub ( int x ){
 
 inline void solved ( void ){
 	int l = 1, r = 0;
-	for ( auto i: q ){
+	for ( auto i: Q ){
 		while ( r < i.r )
 			add ( data[++r] );
 		while ( i.l < l )
@@ -59,8 +58,7 @@ int main(){
 
 	int n, q, l, r, b, siz;
 	cin >> n >> q;
-	vector < int > data ( n );
-	vector < query > Q;
+	data.resize ( n );
 	for ( auto &i: data )
 		cin >> i;
 	siz = sqrt ( n );
@@ -72,6 +70,8 @@ int main(){
 			b++;
 		Q.pb ( query ( l, r, i, b ) );
 	}
+
+	sort ( Q.begin(), Q.end() );
 
 	solved();
 
