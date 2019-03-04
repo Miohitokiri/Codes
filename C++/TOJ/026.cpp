@@ -86,13 +86,15 @@ int main(){
 		REV ( ALL ( b ) );
 
 		REPP ( i, 1, sz ) REPP ( j, 1, sz ){
-			if ( a[i - 1] == b[j - 1] )
-				dp[i][j] = dp[i - 1][j - 1] + 1;
+			if ( a[i - 1] == b[j - 1] ){
+				cout << "ww" << i <<  ' ' << j << '\n';
+				dp[i % 2][j] = dp[( i - 1 ) % 2][j - 1] + 1;
+			}
 			else
-				dp[i][j] = max ( dp[i][j - 1], dp[i - 1][j] );
+				dp[i % 2][j] = max ( dp[i % 2][j - 1], dp[( i - 1 ) % 2][j] );
 		}
 
 		sz--;
-		cout << dp[sz][sz] << '\n';
+		cout << dp[sz % 2][sz] << '\n';
 	}
 }
