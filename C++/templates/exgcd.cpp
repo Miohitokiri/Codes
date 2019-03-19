@@ -79,6 +79,21 @@ inline int exgcd ( int a, int b, int *x, int *y ){
 	return res;
 }
 
+inline int _pow ( int a, int b ){
+	int res = 1, base = a, p = b;
+	while ( b ){
+		if ( b & 1 ){
+			res *= base;
+			res %= p;
+		}
+		base *= base;
+		base %= p;
+		b >>= 1;
+	}
+
+	return res;
+}
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
@@ -90,4 +105,6 @@ int main(){
 		swap ( a, b );
 	cout << exgcd ( a, b, &x, &y ) << '\n';
 	cout << x << ' ' << y << '\n';
+
+	cout << _pow ( a, b - 1 ) << '\n';
 }
