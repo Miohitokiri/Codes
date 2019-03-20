@@ -1,3 +1,4 @@
+// by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
 using namespace std;
@@ -8,9 +9,9 @@ struct node{
 	node ( int v ): leftSon ( nullptr ), rightSon ( nullptr ), value ( v ){};
 };
 
-inline node *insert ( node *p, int x );
-inline bool find ( node *p, int x );
-inline node *remove ( node *p, int x );
+node *insert ( node *p, int x );
+bool find ( node *p, int x );
+node *remove ( node *p, int x );
 
 int main(){
 	ios::sync_with_stdio ( false );
@@ -33,7 +34,7 @@ int main(){
 	}
 }
 
-inline node *insert ( node *p, int x ){
+node *insert ( node *p, int x ){
 	if ( p == nullptr ){
 		node *q = new node ( x );
 		return q;
@@ -47,7 +48,7 @@ inline node *insert ( node *p, int x ){
 	}
 }
 
-inline bool find ( node *p, int x ){
+bool find ( node *p, int x ){
 	if ( p == nullptr )
 		return false;
 	if ( x > p -> value )
@@ -59,7 +60,7 @@ inline bool find ( node *p, int x ){
 	return false;
 }
 
-inline node *remove ( node *p, int x ){
+node *remove ( node *p, int x ){
 	if ( p == nullptr )
 		return nullptr;
 	else if ( x < p -> value )
