@@ -1,6 +1,6 @@
 import base64
-a = b'aGhoe0lfTG92ZV9DdXJyeX0='
+a = b'IJZGKYLLIFGEYQ2UIZ5TS6BUHA2VMUZXO5UWS5CCLJMFKVLIJVSX2==='
 
-b = base64.b64decode ( a )
+b = base64.b32decode ( a )
 
 print ( b )

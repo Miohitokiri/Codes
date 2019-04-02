@@ -1,3 +1,9 @@
+/************************************/
+/*  Date	: 2019-04-02 11:58:27	*/
+/* Author	: MiohitoKiri5474		*/
+/* Email	: lltzpp@gmail.com		*/
+/************************************/
+
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
@@ -27,7 +33,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define ep emplace_back
+#define eb emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -62,49 +68,27 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-inline int exgcd ( int a, int b, int *x, int *y ){
-	if ( !b ){
-		*x = 1, *y = 0;
-		return a;
-	}
-	int res = exgcd ( b, a % b, x, y ), t = *x;
-	*x = *y;
-	*y = t - a / b * *y;
-	return res;
-}
-
-inline int _pow ( int a, int b ){
-	int res = 1, base = a, p = b;
-	while ( b ){
-		if ( b & 1 ){
-			res *= base;
-			res %= p;
-		}
-		base *= base;
-		base %= p;
-		b >>= 1;
-	}
-
-	return res;
-}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int a, b, x = 0, y = 0;
-	cin >> a >> b;
-	if ( b > a )
-		swap ( a, b );
-	cout << exgcd ( a, b, &x, &y ) << '\n';
-	cout << x << ' ' << y << '\n';
-
-	cout << _pow ( a, b - 1 ) << '\n';
+	int n;
+	while ( cin >> n ){
+		cout << ( char ) n;
+	}
+	cout << '\n';
 }
