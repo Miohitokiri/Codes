@@ -1,5 +1,5 @@
 /************************************/
-/*  Date	: 2019-03-31 15:40:56	*/
+/* Date		: 2019-03-31 15:40:56	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -52,44 +52,31 @@ func _gcd ( a int, b int ) int {
 	return min ( a, b )
 }
 
-func main(){
-	n := make ( chan int )
-	n <- 12
-	data := <- n
-	fmt.Println ( data )
+func main() {
+	var a, b int
+	init()
 }
 
-var seg[105 * 4] int
+var dis[1005] int
 
-func update ( l int, r int, index int, value int, n int ) {
-	if l == r {
-		seg[n] = value
-		return
+func init() {
+	for i := 0 ; i < 1005 ; i++ {
+		dis[i] = i
 	}
-	mid := ( l + r ) / 2
-	leftSon := n * 2
-	rightSon := leftSon + 1
-	if index <= mid {
-		update ( l, mid, index, value, leftSon )
-	} else {
-		update ( mid + 1, r, index, value, rightSon )
-	}
-
-	seg[n] = max ( seg[leftSon], seg[rightSon] )
 }
 
-func query ( l int, r int, nowL int, nowR int, n int ) {
-	if l <= nowL && nowR <= r {
-		return seh[n]
+func find ( n int ) {
+	if dis[n] == n {
+		return n
 	}
-	mid := ( nowL + nowR ) / 2
-	leftSon := n * 2
-	rightSon := leftSon + 1
-	if r <= mid {
-		return query ( l, r, nowL, mid, leftSon )
-	}
-	if mid < l {
-		return query ( l, r, mid + 1, nowR, rightSon )
-	}
-	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, nowL, mid, leftSon ) )
+	dis[n] = find ( dis[n] )
+	return dis[n]
+}
+
+func same ( a int, b int ) bool {
+	return find ( a ) == find ( b )
+}
+
+func Union ( a int, b int ) {
+	dis[find ( a )] = find ( b )
 }
