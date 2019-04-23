@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-04-15 08:27:33	*/
+/* Date		: 2019-04-18 23:18:16	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -80,24 +80,16 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int dis[maxN];
-
-inline void init ( void ){
-	REPP ( i, 0, maxN ){
-		dis[i] = i;
+inline LL _pow ( LL a, LL b ){
+	LL res = 1, base = a;
+	while ( b ){
+		if ( b & 1 )
+			res *= base;
+		b >>= 1;
+		base *= base;
 	}
-}
 
-int find ( int n ){
-	return dis[n] == n ? n : dis[n] = find ( dis[n] );
-}
-
-inline void Union ( int a, int b ){
-	dis[find ( a )] = find ( b );
-}
-
-inline bool same ( int a, int b ){
-	return find ( a ) == find ( b );
+	return res;
 }
 
 int main(){
@@ -105,15 +97,60 @@ int main(){
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, q, u, v, m;
-	cin >> n >> m >> q;
-	while ( m-- ){
-		cin >> u >> v;
-		Union ( u, v );
+	string str;
+	vi data;
+	LL ans = 1, res = 1, swp, cnt = 0, basic = 1;
+	cin >> str;
+	REPALL ( i, str ){
+		data.pb ( i - '0' );
+		basic *= ( i - '0' );
+		if ( !data.back() )
+			cnt++;
 	}
 
-	while ( q-- ){
-		cin >> u >> v;
-		cout << ( same ( u, v ) ? "Yes" : "No" ) << '\n';
+	if ( data[0] == 1 && cnt + 1 == SZ ( str ) ){
+		cout << _pow ( 9, cnt ) << '\n';
+		return 0;
 	}
+
+	REPP ( i, 0, SZ ( data ) ){
+		swp = _pow ( 9, ( SZ ( data ) - i - 1 ) ) * res;
+		data[i]--;
+		if ( data[i] )
+			swp *= data[i];
+		data[i]++;
+
+		ans = max ( ans, swp );
+		res *= data[i];
+	}
+
+	REV ( ALL ( data ) );
+	REPP ( i, 0, SZ ( data ) - 1 ){
+		if ( !data[i] )
+			data[i] = 9, data[i + 1]--;
+		else if ( data[i] < 0 )
+			data[i] += 10, data[i + 1]--;
+	}
+
+	while ( !data.back() )
+		data.pop_back();
+	REV ( ALL ( data ) );
+
+	res = 1;
+	REPALL ( i, data ) res *= i;
+	ans = max ( res, ans );
+
+	res = 1;
+	REPP ( i, 0, SZ ( data ) ){
+		swp = _pow ( 9, ( SZ ( data ) - i - 1 ) ) * res;
+		data[i]--;
+		if ( data[i] )
+			swp *= data[i];
+		data[i]++;
+
+		ans = max ( ans, swp );
+		res *= data[i];
+	}
+
+	cout << max ( ans, basic ) << '\n';
 }
