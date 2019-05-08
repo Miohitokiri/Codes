@@ -68,7 +68,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's coding and have fun!
 // I can solve this problem!
 
-int seg[maxN << 4];
+int seg[maxN << 2];
 
 void update ( int l, int r, int index, int value, int n ){
 	if ( l == r )

@@ -1,3 +1,9 @@
+/************************************/
+/* Date		: 2019-05-07 23:15:27	*/
+/* Author	: MiohitoKiri5474		*/
+/* Email	: lltzpp@gmail.com		*/
+/************************************/
+
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
@@ -27,7 +33,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define ep emplace_back
+#define eb emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -62,43 +68,73 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 30010
+
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-struct node{
-	int seg[maxN << 2];
-
-	inline void update ( int l, int r, int nowL, int nowR, int n ){
-		if ( l <= nowL && nowR <= r )
-			seg[n]++;
-		else{
-			int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-			if ( r <= mid )
-				update ( l, r, nowL, mid, leftSon );
-			else if ( mid < l )
-				update ( l, r, mid + 1, nowR, rightSon );
-			else{
-				update ( l, mid, nowL, mid, leftSon );
-				update ( mid + 1, r, mid + 1, nowR, rightSon );
-			}
-		}
-	}
-
-	inline int query ( int l, int r, int nowL, int nowR, int n ){
-		if ( l <= nowL && nowR <= r )
-			return seg[n];
-		else{
-			int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-			if ( r <= mid )
-		}
-	}
-};
+bool lib[maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
+
+	int t, s, q, stop;
+	vi data;
+	cin >> t;
+	while ( t-- ){
+		MEM ( lib, 0 );
+		cin >> s;
+		GETDATA ( data, s );
+		sort ( ALL ( data ) );
+
+		for ( int i = 0 ; i < s ; i++ ){
+			for ( int j = 0 ; j < i ; j++ ){
+				if ( !data[j] )
+					continue;
+				lib[data[i] + data[j]] = true;
+			}
+		}
+
+		cin >> q;
+		while ( q-- ){
+			cin >> stop;
+			cout << ( ( lib[stop] ) ? "Good!" : "So Bad!" ) << '\n';
+		}
+	}
+}
+
+int seg[maxN];
+
+void update ( int l, itn r, int index, int value, int n ){
+	if ( l == r )
+		seg[n] = value;
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( index <= mid )
+			update ( l, mid, index, value, leftSon );
+		else
+			update ( mid + 1, r, index, value, rightSon );
+
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
+	}
+}
+
+int query ( int l, int r, int nowL, int nowR, int n ){
+	if ( l <= nowL && nowR <= r )
+		return seg[n];
+	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+	if ( r <= mid )
+		return query ( l, r, nowL, mid, leftSon );
+	if ( mid < l )
+		return query ( l, r, mid + 1, nowR, rightSon );
+	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
 }

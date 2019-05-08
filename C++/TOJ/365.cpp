@@ -1,6 +1,9 @@
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
+#pragma GCC optimize ( "O3" )
+#pragma loop_opt ( on )
+
 using namespace std;
 
 #define maxN 100005
@@ -37,7 +40,7 @@ inline node up ( node L, node R ){
 	return res;
 }
 
-inline void build ( int l, int r, int n ){
+void build ( int l, int r, int n ){
 	if ( l == r )
 		seg[n].fro = seg[n].bck = seg[n].ma = piece { l, r, 1 };
 	else{
