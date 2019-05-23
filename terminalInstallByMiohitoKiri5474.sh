@@ -37,6 +37,6 @@ cd ~/.vim/bundle/YouCompleteMe
 ./install.py
 cd ~
 echo ""
-echo "please relogin you account"
+echo "please relogin your account"
 echo ""
 exec $SHELL

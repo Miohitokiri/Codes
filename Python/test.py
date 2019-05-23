@@ -1,6 +1,7 @@
 import base64
-a = b'UQklUQ1RGe1M1IDAwMTQrODF9'
+import math
 
-b = base64.b64decode ( a )
+b = 2 ** 0.5
 
 print ( b )
+
