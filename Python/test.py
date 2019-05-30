@@ -1,7 +1,8 @@
-import base64
-import math
-
-b = 2 ** 0.5
-
-print ( b )
-
+a = True
+while a:
+    b = input()
+    if b == 1:
+        a = False
+    else:
+        pass
+    print ( "still in while" )
