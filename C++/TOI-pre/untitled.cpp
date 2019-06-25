@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-05-29 23:47:44	*/
+/* Date		: 2019-06-25 00:39:44	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -80,39 +80,39 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-#define vi vl
+int seg[maxN << 2];
 
-inline vl solve ( LL n ){
-	vl res;
-	for ( LL i = 2 ; i * i <= n ; i++ ){
-		if ( n % i )
-			continue;
-		res.pb ( i );
-		if ( n / i != i )
-			res.pb ( n / i );
+void update ( int l, int r, int index, int value, int n ){
+	if ( l == r )
+		seg[n] = value;
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( index <= mid )
+			update ( l, mid, index, value, leftSon );
+		else
+			update ( mid + 1, r, index, value, rightSon );
+
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
 	}
-	sort ( ALL ( res ) );
-	return res;
 }
 
-#undef int
+void query ( int l, int r, int nowL, int nowR, int n ){
+	if ( l <= nowL && nowR <= r )
+		return seg[n];
 
+	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+	if ( r <= mid )
+		return query ( l, r, nowL, mid, leftSon );
+	if ( mid < l )
+		return query ( l, r, mid + 1, nowR, rightSon );
+	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
+}
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	#define int LL
 
-	int t, n;
-	LL c;
-	vi data;
-	cin >> t;
-	while ( t-- ){
-		cin >> n;
-		GETDATA ( data, n );
-		sort ( ALL ( data ) );
-		c = data[0] * data.back();
-		cout << ( data != solve ( c ) ? -1 : c ) << '\n';
-	}
+	int n;
+	cin >> n;
+	cout << n << '\n';
 }

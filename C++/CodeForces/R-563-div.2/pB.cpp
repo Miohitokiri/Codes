@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-05-29 23:47:44	*/
+/* Date		: 2019-06-06 09:10:30	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -80,39 +80,89 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-#define vi vl
-
-inline vl solve ( LL n ){
-	vl res;
-	for ( LL i = 2 ; i * i <= n ; i++ ){
-		if ( n % i )
-			continue;
-		res.pb ( i );
-		if ( n / i != i )
-			res.pb ( n / i );
-	}
-	sort ( ALL ( res ) );
-	return res;
-}
-
-#undef int
-
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	#define int LL
 
-	int t, n;
-	LL c;
+	int n, cnt = 0;
 	vi data;
-	cin >> t;
-	while ( t-- ){
-		cin >> n;
-		GETDATA ( data, n );
+	pii odd, even;
+	cin >> n;
+	GETDATA ( data, n );
+	REPALL ( i, data ){
+		if ( i & 1 )
+			cnt++;
+	}
+
+	if ( cnt != n && cnt )
 		sort ( ALL ( data ) );
-		c = data[0] * data.back();
-		cout << ( data != solve ( c ) ? -1 : c ) << '\n';
+	PIO ( data );
+}
+
+void dfs ( int n, int p ){
+	if ( visited[n] )
+		return;
+}
+
+inline void update ( int l, int r, int index, int value, int n ){
+	if ( l == r )
+		seg[n] = value;
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		if ( index <= mid )
+			update ( l, mid, index, value, leftSon );
+		else
+			update ( mid + 1, r, index, value, rightSon );
+
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
 	}
 }
+
+inline int query ( int l, int r, int nowL, int nowR, int n ){
+	if ( l <= nowL && nowR <= r )
+		return seg[n];
+	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+	if ( r <= mid )
+		return query ( l, r, nowL, mid, leftSon );
+	if ( mid < l )
+		return query ( l, r, mid + 1, nowR, rightSon );
+	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
+}
+
+struct node{
+	node *l, *r;
+	int value, pri, sz, ma;
+
+	node ( int _val ){
+		l = r = nullptr;
+		ma = value = _val, pri = rand(), sz = 1;
+	}
+
+	inline void up ( void ){
+		sz = 1, ma = value;
+		if ( l ){
+			sz += l -> sz;
+			ma = max ( ma, l -> ma );
+		}
+		if ( r ){
+			sz += r -> sz;
+			ma = max ( ma, r -> ma );
+		}
+	}
+}
+
+node *merge ( node *a, node *b ){
+	if ( !a || !b )
+		return a ? a : b;
+	if ( a -> pri < b -> pri ){
+		a -> r = merge ( a -> r, b );
+		a -> up();
+		return a;
+	}
+	b -> l = merge ( a, b -> l );
+	b -> up();
+	return b;
+}
+
+void split ( node *o, node *&a, node *&b, int n )

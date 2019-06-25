@@ -1,8 +1,9 @@
-a = True
-while a:
-    b = input()
-    if b == 1:
-        a = False
-    else:
-        pass
-    print ( "still in while" )
+import tensorflow as tf
+
+matrix1 = tf.constant ( [[3,3]] )
+matrix2 = tf.constant ( [[2],[2]] )
+
+product = tf.matmul ( matrix1, matrix2 )
+
+with tf.Session() as sess:
+    print ( sess.run ( product ) )

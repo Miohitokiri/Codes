@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-05-29 23:47:44	*/
+/* Date		: 2019-06-06 09:18:03	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -80,39 +80,24 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-#define int LL
-#define vi vl
-
-inline vl solve ( LL n ){
-	vl res;
-	for ( LL i = 2 ; i * i <= n ; i++ ){
-		if ( n % i )
-			continue;
-		res.pb ( i );
-		if ( n / i != i )
-			res.pb ( n / i );
-	}
-	sort ( ALL ( res ) );
-	return res;
-}
-
-#undef int
+int ans[maxN];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
-	#define int LL
 
-	int t, n;
-	LL c;
-	vi data;
-	cin >> t;
-	while ( t-- ){
-		cin >> n;
-		GETDATA ( data, n );
-		sort ( ALL ( data ) );
-		c = data[0] * data.back();
-		cout << ( data != solve ( c ) ? -1 : c ) << '\n';
+	int n, cnt = 0;
+	cin >> n;
+	for ( int i = 2 ; i <= n ; i++ ){
+		if ( ans[i] )
+			continue;
+		cnt++;
+		for ( int j = i ; j <= n ; j += i )
+			ans[j] = cnt;
 	}
+
+	for ( int i = 2 ; i <= n ; i++ )
+		cout << ans[i] << ' ';
+	cout << '\n';
 }

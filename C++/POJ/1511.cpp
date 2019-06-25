@@ -74,7 +74,6 @@ int main(){
 		for ( int i = 1 ; i <= n ; i++ )
 			ans += ma[i];
 
-
 		for ( int i = 2 ; i <= n ; i++ )
 			edges[i].clear();
 		memset ( ma, INF, sizeof ma );
