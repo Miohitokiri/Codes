@@ -12,11 +12,11 @@ sudo sudo sh -c "echo $(which zsh) >> /etc/shells"
 chsh -s $(which zsh)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 rm -rf .oh-my-zsh
-git clone https://github.com/Miohitokiri/.oh-my-zsh.git
+git clone https://github.com/Miohitokiri5474/.oh-my-zsh.git
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 sudo rm -rf ~/.zshrc
 sudo cp ~/.oh-my-zsh/.zshrc ~/
-git clone https://github.com/Miohitokiri/nerd-fonts-backup.git
+git clone https://github.com/Miohitokiri5474/nerd-fonts-backup.git
 cd nerd-fonts-backup
 sudo mv * /usr/share/fonts
 cd ~
@@ -24,12 +24,12 @@ echo ""
 echo "tmux install"
 echo ""
 sudo apt install tmux
-git clone https://github.com/Miohitokiri/.tmux.git
+git clone https://github.com/Miohitokiri5474/.tmux.git
 mv ~/.tmux/.tmux.conf.local ~/
 echo ""
 echo "vim install"
 echo ""
-git clone https://github.com/Miohitokiri/.vim.git
+git clone https://github.com/Miohitokiri5474/.vim.git
 cp ~/.vim/vimrc ~/
 cd ~
 mv vimrc .vimrc
