@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-06-25 00:39:44	*/
+/* Date		: 2019-06-27 10:20:05	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -80,51 +80,25 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int seg[maxN << 2];
-
-void update ( int l, int r, int index, int value, int n ){
-	if ( l == r )
-		seg[n] = value;
-	else{
-		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-		if ( index <= mid )
-			update ( l, mid, index, value, leftSon );
-		else
-			update ( mid + 1, r, index, value, rightSon );		
-		seg[n] = max ( seg[leftSon], seg[rightSon] );
+inline bool check ( int n ){
+	int res = 0;
+	while ( n ){
+		res += n % 10;
+		n /= 10;
 	}
+
+	return !bool ( res % 4 );
 }
 
+int main(){
+	ios::sync_with_stdio ( false );
+	cin.tie ( 0 );
+	cout.tie ( 0 );
 
-int query ( int l, int r, int nowL, int nowR, int n ){
-	if ( l <= nowL && nowR <= r )
-		return seg[n];
-	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-	if ( r <= mid )
-		return query ( l, r, nowL, mid, leftSon );
-	if ( mid < l )
-		return query ( l, r, mid + 1, nowR, rightSon );
-	return max ( query ( l, r, nowL, mid, leftSon ), query ( l, r, mid + 1, nowR, rightSon ) );
-}
-
-int dis[maxN];
-
-inline void init ( int n ){
-	for ( int i = 0 ; i <= n ; i++ )
-		seg[i] = i;
-}
-
-inline int find ( int n ){
-	while ( dis[n] != n )
-		n = dis[n];
-
-	return n;
-}
-
-inline void Union ( int a, int b ){
-	dis[find ( a )] = find ( b );
-}
-
-inline bool same ( int a, int b ){
-	return find ( a ) == find ( b );
+	int n;
+	cin >> n;
+	while ( !check ( n ) ){
+		n++;
+	}
+	cout << n << '\n';
 }
