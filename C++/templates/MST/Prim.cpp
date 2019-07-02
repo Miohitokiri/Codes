@@ -24,7 +24,6 @@ int find ( int n ){
 	return dis[n] == n ? n : dis[n] = find ( dis[n] );
 }
 
-
 inline void Union ( int a, int b ){
 	a = find ( a ), b = find ( b );
 	dis[a] = b;
