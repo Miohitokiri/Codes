@@ -1,3 +1,5 @@
+// Kruskal
+// by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
 using namespace std;
