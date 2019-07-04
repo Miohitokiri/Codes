@@ -11,9 +11,7 @@ typedef pait < int, int > pii;
 typedef pair < int, pii > pipii;
 const int maxN = 100005;
 
-vector < pii > edges[maxN], mst[maxN];
 int dis[maxN];
-bool pushed[maxN];
 
 inline void init ( void ){
 	for ( int i = 0 ; i < maxN ; i++ )
@@ -33,6 +31,9 @@ inline void Union ( int a, int b ){
 inline bool same ( int a, int b ){
 	return find ( a ) == find ( b );
 }
+
+vector < pii > edges[maxN], mst[maxN];
+bool pushed[maxN];
 
 inline void Pirm ( int n ){
 	priority_queue < pipii, vector < pipii >, greater < pipii > > pq;
