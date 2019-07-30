@@ -1,3 +1,9 @@
+/************************************/
+/* Date		: 2019-07-29 09:48:33	*/
+/* Author	: MiohitoKiri5474		*/
+/* Email	: lltzpp@gmail.com		*/
+/************************************/
+
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
@@ -27,7 +33,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define ep emplace_back
+#define eb emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -62,7 +68,8 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define maxN 100005
+#define NEG_INF 0x8f8f8f8f
+#define maxN 100000
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -70,23 +77,43 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-int gcd ( int a, int b ){
-	while ( a % b && b % a )
-		a > b ? a %= b : b %= a;
-
-	return min ( a, b );
-}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int a, b;
-	while ( cin >> a >> b )
-		cout << gcd ( a, b ) << '\n';
+	int t, n, x, y, f1, f2, f3, f4;
+	bool flag;
+	cin >> t;
+	while ( t-- ){
+		int maX = maxN, miX = -maxN, maY = maxN, miY = -maxN;
+		flag = true;
+		cin >> n;
+		while ( n-- ){
+			cin >> x >> y >> f1 >> f2 >> f3 >> f4;
+			if ( !flag )
+				continue;
+			// cout << miX << ' ' << x << ' ' << maX << '\n'; // del
+			// cout << miY << ' ' << y << ' ' << maY << '\n'; // del
+			if ( ( miX > x && !f3 ) || ( maX < x && !f1 ) || ( miY > y && !f2 ) || ( maY < y && !f4 ) ){
+				flag = false;
+			}
+			if ( !f1 )
+				miX = max ( miX, x );
+			if ( !f2 )
+				maY = min ( maY, y );
+			if ( !f3 )
+				maX = min ( maX, x );
+			if ( !f4 )
+				miY = max ( miY, y );
+		}
+		if ( flag )
+			cout << "1 " << maX << ' ' << maY << '\n';
+		else
+			cout << "0\n";
+	}
 }
-

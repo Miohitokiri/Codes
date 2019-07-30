@@ -1,22 +1,26 @@
 #include<bits/stdc++.h>
+
 using namespace std;
+
+int data[100];
+
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
-	#define int long long
+	cout.tie ( 0 );
 
-	int n, t, data[100];
 
-	cin >> t;
-	while ( t-- ){
-		cin >> n;
-		for ( int i = 1 ; i <= n + 1 ; i++ )
+	int n;
+	while ( cin >> n ){
+		for ( int i = 0 ; i < n ; i++ )
 			cin >> data[i];
 
-		for ( int i = n ; i > 0 ; i-- )
-			for ( int j = 1 ; j <= i ; j++ )
+		for ( int i = 0 ; i < n ; i++ ){
+			for ( int j = 0 ; j < n ; j++ ){
 				data[j] = data[j + 1] - data[j];
+			}
+		}
 
-		cout << data[1] << '\n';
-	}	
+		cout << data[0] << '\n';
+	}
 }

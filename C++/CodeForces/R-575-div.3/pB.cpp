@@ -1,3 +1,9 @@
+/************************************/
+/* Date		: 2019-07-29 09:23:23	*/
+/* Author	: MiohitoKiri5474		*/
+/* Email	: lltzpp@gmail.com		*/
+/************************************/
+
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
@@ -27,7 +33,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define ep emplace_back
+#define eb emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -62,6 +68,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
@@ -70,23 +77,35 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-int gcd ( int a, int b ){
-	while ( a % b && b % a )
-		a > b ? a %= b : b %= a;
-
-	return min ( a, b );
-}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int a, b;
-	while ( cin >> a >> b )
-		cout << gcd ( a, b ) << '\n';
+	int tms, n, m;
+	cin >> tms;
+	while ( tms-- ){
+		cin >> n >> m;
+		vi pos;
+		for ( int i = 1, in ; i <= n ; i++ ){
+			cin >> in;
+			in %= 2;
+			if ( in )
+				pos.pb ( i );
+		}
+		if ( SZ ( pos ) % 2 == m % 2 ){
+			if ( SZ ( pos ) >= m ){
+				cout << "YES\n";
+				for ( int i = 0 ; i < m - 1 ; i++ )
+					cout << pos[i] << ' ';
+				cout << n << '\n';
+				continue;
+			}
+		}
+		cout << "NO\n";
+	}
 }
-

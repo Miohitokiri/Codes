@@ -77,7 +77,7 @@ inline void up ( node *o ){
 	pullUp ( o, o, o -> r );
 }
 
-inline node *merge ( node *a, node *b ){
+node *merge ( node *a, node *b ){
 	if ( !a || !b )
 		return a ? a : b;
 	if ( a -> pri < b -> pri ){
@@ -92,7 +92,7 @@ inline node *merge ( node *a, node *b ){
 	return b;
 }
 
-inline void split ( node *o, node *&a, node *&b, int k ){
+void split ( node *o, node *&a, node *&b, int k ){
 	if ( !o ){
 		a = b = nullptr;
 		return;
@@ -178,3 +178,7 @@ int main(){
 			cout << ( root ? root -> maSum : 0 ) << '\n';
 	}
 }
+
+STL, sort
+C++11~ only
+經驗傳承

@@ -1,3 +1,9 @@
+/************************************/
+/* Date		: 2019-07-29 09:14:12	*/
+/* Author	: MiohitoKiri5474		*/
+/* Email	: lltzpp@gmail.com		*/
+/************************************/
+
 // by. MiohitoKiri5474
 #include<bits/stdc++.h>
 
@@ -27,7 +33,7 @@ template < class T > using vec = vector < T >;
 typedef vec < int > vi;
 typedef vec < LL > vl;
 #define pb push_back
-#define ep emplace_back
+#define eb emplace_back
 #define REV reverse
 #define SZ(n) ( int ) n.size()
 #define CLR(n) n.clear()
@@ -62,6 +68,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
+#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
@@ -70,23 +77,27 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // 夕凪の中　日暮れだけが通り過ぎて行く
 
 // ready~ go!
-// let's coding and have fun!
+// let's go coding and have fun!
 // I can solve this problem!
 
-int gcd ( int a, int b ){
-	while ( a % b && b % a )
-		a > b ? a %= b : b %= a;
-
-	return min ( a, b );
-}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int a, b;
-	while ( cin >> a >> b )
-		cout << gcd ( a, b ) << '\n';
+	LL n, a, b, c;
+	vector < LL > data ( 3 );
+	cin >> n;
+	while ( n-- ){
+		REPALL ( i, data ){
+			cin >> i;
+		}
+		sort ( ALL ( data ) );
+		a = data[0], b = data[1], c = data[2];
+		c -= b - a;
+		a = b;
+		// cout << a << ' ' << b << ' '<< c << '\n';
+		cout << a + LL ( c / 2 ) << '\n';
+	}
 }
-
