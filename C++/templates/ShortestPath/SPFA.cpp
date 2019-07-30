@@ -17,6 +17,7 @@ inline void SPFA ( int start ){
 	memset ( dis, 0x3f3f3f, sizeof dis );
 	queue < int > q;
 	q.push ( start );
+	dis[start] = 0;
 	inQueue[start] = true;
 	while ( !q.empty() ){
 		int now = q.front();
