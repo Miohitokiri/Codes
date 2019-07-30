@@ -22,6 +22,9 @@ int main(){
 		graph[u][v] = graph[v][u] = w;
 	}
 
+	for ( int i = 0 ; i < n ; i++ )
+		graph[1][1] = 0;
+
 	for ( int k = 0 ; k < n ; k++ )
 		for ( int i = 0 ; i < n ; i++ )
 			for ( int j = 0 ; j < n ; j++ )

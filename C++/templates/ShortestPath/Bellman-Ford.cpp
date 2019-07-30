@@ -14,6 +14,7 @@ int dis[maxN];
 inline void BellmanFord ( int start ){
 	memset ( dis, 0x3f3f3f, sizeof dis );
 	queue < int > q;
+	dis[start] = 0;
 	q.push ( start );
 	while ( !q.empty() ){
 		int now = q.front();

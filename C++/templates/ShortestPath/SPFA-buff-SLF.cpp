@@ -18,6 +18,7 @@ inline void SPFA ( int start ){
 	memset ( dis, 0x3f3f3f, sizeof dis );
 	deque < int > q; // 因為要支援雙向操作，所以用deque
 	q.push_back ( start );
+	dis[start] = 0;
 	inQueue[start] = true;
 	while ( !q.empty() ){
 		int now = q.front();

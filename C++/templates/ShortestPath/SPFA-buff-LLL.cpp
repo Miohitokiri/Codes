@@ -18,6 +18,7 @@ inline void SPFA ( int start ){
 	memset ( dis, 0x3f3f3f, sizeof dis );
 	queue < int > q;
 	q.push ( start );
+	dis[start] = 0;
 	inQueue[start] = true;
 	while ( !q.empty() ){
 		// LLL 優化，因為一定有一個點的長度小於平均值，所以就一路往後丟
