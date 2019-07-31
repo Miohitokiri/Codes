@@ -12,23 +12,23 @@ int D[maxN], L[maxN], tms;
 vector < int > AP;
 vector < pii > bridge;
 
-void dfs ( int n, int p ){
-	D[n] = V[n] = tms++;
+void dfs ( int n, int p, int dep ){
+	D[n] = L[n] = dep++;
 	int cnt = 0;
 	bool isAP = false;
 
 	for ( auto i: edges[n] ){
-		if ( i == p )
-			continue;
 		if ( !D[i] ){
-			dfs ( i, n );
+			dfs ( i, n, dep );
 			cnt++;
 			if ( D[n] <= L[i] )
 				isAP = true;
 			if ( D[n] < L[i] )
-				bridge.pb ( pii ( v, w ) );
+				bridge.pb ( pii ( n, i ) );
 			L[n] = min ( L[n], L[i] );
 		}
+		else if ( i != p )
+			L[n] = min ( L[n], D[i] );
 	}
 	if ( n == p && cnt < 2 )
 		isAP = false;
