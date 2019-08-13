@@ -69,47 +69,49 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int place[maxN];
-inline void fail ( string b ){
-	int len = SZ ( b );
-	place[0] = -1;
-	for ( int i = 1, pos = -1 ; i < len ; i++ ){
-		while ( ~pos && b[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( b[i] == b[pos + 1] )
-			pos++;
-		place[i] = pos;
+struct node{
+	node *lib[30];
+
+	node(){
+		REPP ( i, 0, 30 ){
+			lib[i] = nullptr;
+		}
 	}
+} *root = nullptr;
+
+void insert ( node *&o, string str, int idx ){
+	if ( idx == SZ ( str ) )
+		return;
+	int swp = int ( str[idx] - 'a' );
+	if ( !( o -> lib[swp] ) )
+		o -> lib[swp] = new node();
+	insert ( o -> lib[swp], str, idx + 1 );
 }
 
-inline bool match ( string a, string b ){
-	int lenA = SZ ( a ), lenB = SZ ( b ) - 1;
-	for ( int i = 1, pos = -1 ; i < lenA ; i++ ){
-		while ( ~pos && a[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( a[i] == b[pos + 1] )
-			pos++;
-		if ( pos == lenB )
-			return true;
+bool match ( node *o, string str ){
+	int idx = 0;
+	while ( idx < SZ ( str ) && o -> lib[int ( str[idx] - 'a')] ){
+		o = o -> lib[int ( str[idx] - 'a' )];
+		idx++;
 	}
-
-	return false;
+	return SZ ( str ) == idx - 1;
 }
 
 int main(){
-	ios::sync_with_stdio ( false );
+	ios::sync_with_stdio ( false );;
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int t, n;
-	string str, index;
-	cin >> t;
-	while ( t-- ){
-		cin >> str >> n;
-		fail ( str );
-		while ( n-- ){
-			cin >> index;
-			cout << ( match ( str, index ) ? 'y' : 'n' ) << '\n';
-		}
+	int n, m;
+	string str;
+	cin >> n;
+	root = new node();
+	while ( n-- ){
+		cin >> str;
+		insert ( root, str, 0 );
+	}
+	cin >> m;
+	while ( m-- ){
+		cout << ( match ( root, str ) ? 'y' : 'n' ) << '\n';
 	}
 }

@@ -178,7 +178,3 @@ int main(){
 			cout << ( root ? root -> maSum : 0 ) << '\n';
 	}
 }
-
-STL, sort
-C++11~ only
-經驗傳承
