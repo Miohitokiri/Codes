@@ -26,11 +26,11 @@ int main(){
 	}
 }
 
-inline void update ( int l, int r, int n ){
+void update ( int l, int r, int n ){
 	if ( l == r )
 		seg[n] = value;
 	else{
-		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		int mid = ( l + r ) / 2, leftSon = n * 2, rightSon = leftSon + 1;
 		if ( mid < Index )
 			update ( mid + 1, r, rightSon );
 		else
@@ -39,14 +39,37 @@ inline void update ( int l, int r, int n ){
 	}
 }
 
-inline int query ( int l, int r, int nowL, int nowR, int n ){
+
+int query ( int l, int r, int nowL, int nowR, int n ){
 	if ( l <= nowL && nowR <= r )
 		return seg[n];
-	int nowMid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon + 1;
-	if ( r <= nowMid )
+	int nowMid = ( nowL + nowR ) / 2, leftSon = n * 2, rightSon = leftSon + 1;
+	if ( r <= nowMid ) // 1
 		return query ( l, r, nowL, nowMid, leftSon );
-	else if ( nowMid < l )
+	else if ( nowMid < l ) // 2
 		return query ( l, r, nowMid + 1, nowR, rightSon );
-	else
+	else // 3
 		return max ( query ( l, r, nowL, nowMid, leftSon ), query ( l, r, nowMid + 1, nowR, rightSon ) );
 }
+
+/*
+
+1:
+nowL   nowMid     nowR
+|_________|_________|
+  |___|
+  l   r
+
+2:
+nowL   nowMid     nowR
+|_________|_________|
+  			|___|
+  			l   r
+
+3:
+nowL   nowMid     nowR
+|_________|_________|
+  	|___________|
+  	l           r
+
+*/
