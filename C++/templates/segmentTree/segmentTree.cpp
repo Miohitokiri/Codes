@@ -63,13 +63,13 @@ nowL   nowMid     nowR
 2:
 nowL   nowMid     nowR
 |_________|_________|
-  			|___|
-  			l   r
+            |___|
+            l   r
 
 3:
 nowL   nowMid     nowR
 |_________|_________|
-  	|___________|
-  	l           r
+    |___________|
+    l           r
 
 */
