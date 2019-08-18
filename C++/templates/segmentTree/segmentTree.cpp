@@ -31,14 +31,27 @@ void update ( int l, int r, int n ){
 		seg[n] = value;
 	else{
 		int mid = ( l + r ) / 2, leftSon = n * 2, rightSon = leftSon + 1;
-		if ( mid < Index )
+		if ( mid < Index ) // 1
 			update ( mid + 1, r, rightSon );
-		else
+		else // 2
 			update ( l, mid, leftSon );
 		seg[n] = max ( seg[leftSon], seg[rightSon] );
 	}
 }
 
+/*
+
+1:
+l   mid   r
+|____|____|
+        ^
+
+2:
+l   mid   r
+|____|____|
+  ^
+
+*/
 
 int query ( int l, int r, int nowL, int nowR, int n ){
 	if ( l <= nowL && nowR <= r )
@@ -49,9 +62,8 @@ int query ( int l, int r, int nowL, int nowR, int n ){
 	else if ( nowMid < l ) // 2
 		return query ( l, r, nowMid + 1, nowR, rightSon );
 	else // 3
-		return max ( query ( l, r, nowL, nowMid, leftSon ), query ( l, r, nowMid + 1, nowR, rightSon ) );
+		return max ( seg[leftSon], query ( l, r, nowMid + 1, nowR, rightSon ) );
 }
-
 /*
 
 1:
