@@ -1,7 +1,7 @@
 #include<stdio.h>
 
 int main(){
-	char *str;
+	char str[100];
 	char swp;
 	int idx = 0;
 	while ( 1 ){
