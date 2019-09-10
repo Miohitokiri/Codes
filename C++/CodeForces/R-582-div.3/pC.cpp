@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-07-28 21:26:33	*/
+/* Date		: 2019-09-05 15:45:56	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -69,7 +69,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -80,86 +80,154 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int dis[maxN], sz[maxN];;
-
-inline void init ( void ){
-	REPP ( i, 0, maxN ){
-		dis[i] = i;
-		sz[i] = 1;
-	}
-}
-
-int find ( int n ){
-	return dis[n] == n ? n : dis[n] = find ( dis[n] );
-}
-
-inline void Union ( int a, int b ){
-	a = find ( a ), b = find ( b );
-	dis[a] = b;
-	sz[b] += sz[a];
-}
-
-inline bool same ( int a, int b ){
-	return find ( a ) == find ( b );
-}
-
-inline int translate ( string str ){
-	int res = 0;
-	REPALL ( i, str ){
-		res *= 10;
-		res += int ( i - '0' );
-	}
-
-	return res;
-}
+vi data[15];
+int sum[15];
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, u, v, idx;
-	bool flag;
-	set < int > lib;
-	string str, swp, num;
-	cin >> n;
-	GL ( str );
-	while ( n-- ){
-		init();
-		lib.clear();
-		flag = true;
-		GL ( str );
-		swp = "";
-		sstr ss;
-		ss << str;
-		while ( ss >> swp ){
-			num = "";
-			for ( int i = 0 ; i < SZ ( swp ) ; i++ ){
-				if ( swp[i] == ',' ){
-					idx = i;
-					break;
-				}
-				num += swp[i];
-			}
-			u = translate ( num );
+	// 1
+	REPP ( i, 1, 10 ){
+		data[1].pb ( i );
+		sum[1] += i;
+	}
+	data[1].pb ( 0 );
 
-			idx++;
-			num = "";
-			for ( int i = idx ; i < SZ ( swp ) ; i++ )
-				num += swp[i];
-			v = translate ( num );
-			if ( same ( u, v ) ){
-				flag = false;
-				break;
-			}
-			Union ( u, v );
-			lib.insert ( u );
-			lib.insert ( v );
+	// debuger; // del
+
+	// 2
+	for ( int i = 2 ; i <= 10 ; i += 2 ){
+		if ( i >= 10 )
+			i %= 10;
+		data[2].pb ( i );
+		sum[2] += i;
+		if ( !i )
+			break;
+	}
+
+	// cout << "222\n"; // del
+
+	// 3
+	for ( int i = 3 ; i ; i += 3 ){
+		if ( i >= 10 )
+			i %= 10;
+		data[3].pb ( i );
+		sum[3] += i;
+		if ( !i )
+			break;
+	}
+
+	// cout << "333\n"; // del
+
+	//4
+	for ( int i = 4 ; i ; i += 4 ){
+		if ( i >= 10 )
+			i %= 10;
+		data[4].pb ( i );
+		sum[4] += i;
+		if ( !i )
+			break;
+	}
+
+	// cout << "444\n"; // del
+
+	// 5
+	for ( int i = 5 ; i < 10 ; i += 5 ){
+		data[5].pb ( i );
+		sum[5] += i;
+	}
+	data[5].pb ( 0 );
+
+	// cout << "555\n"; // del
+
+	// 6
+	int cnt = 0;
+	for ( int i = 6 ; i ; i += 6 ){
+		if ( i >= 10 )
+			i %= 10;
+		data[6].pb ( i );
+		sum[6] += i;
+		if ( !i )
+			break;
+	}
+
+	// cout << "666\n"; // del
+
+	// 7
+	for ( int i = 7 ; i ; i += 7 ){
+		if ( i >= 10 )
+			i %= 10;
+		data[7].pb ( i );
+		sum[7] += i;
+		if ( !i )
+			break;
+	}
+
+	// cout << "777\n"; // del
+
+	// 8
+	for ( int i = 8 ; i ; i += 8 ){
+		if ( i >= 10 )
+			i %= 10;
+		data[8].pb ( i );
+		sum[8] += i;
+		if ( !i )
+			break;
+	}
+
+	// cout << "888\n"; // del
+
+	// 9
+	REPM ( i, 9, 0 ){
+		data[9].pb ( i );
+		sum[9] += i;
+	}
+
+	// cout << "999\n"; // del
+
+	LL t, n, m, ans, div;
+	cin >> t;
+	while ( t-- ){
+		cin >> n >> m;
+		ans = 0;
+		if ( n < m ){
+			cout << "0\n";
+			continue;
+		}
+		div = n / m;
+		m %= 10;
+
+		if ( !m ){
+			cout << "0\n";
+			continue;
 		}
 
-		if ( sz[find ( u )] != SZ ( lib ) )
-			flag = false;
+		ans = sum[m] * ( div / SZ ( data[m] ) );
+		div %= SZ ( data[m] );
+		REPP ( i, 0, div ){
+			ans += data[m][i];
+		}
 
-		cout << ( flag ? 'T' : 'F' ) << '\n';
+		cout << ans << '\n';
 	}
 }
+
+/*
+0
+45
+153
+294
+3359835
+0
+427262129093995
+
+1
+45
+153
+294
+3359835
+0
+427262129093995
+*/

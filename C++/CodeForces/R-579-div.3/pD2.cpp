@@ -1,5 +1,5 @@
 /************************************/
-/* Date		: 2019-07-28 21:26:33	*/
+/* Date		: 2019-08-13 23:09:20	*/
 /* Author	: MiohitoKiri5474		*/
 /* Email	: lltzpp@gmail.com		*/
 /************************************/
@@ -69,7 +69,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 100
+#define maxN 100005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -80,86 +80,44 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-int dis[maxN], sz[maxN];;
-
-inline void init ( void ){
-	REPP ( i, 0, maxN ){
-		dis[i] = i;
-		sz[i] = 1;
-	}
-}
-
-int find ( int n ){
-	return dis[n] == n ? n : dis[n] = find ( dis[n] );
-}
-
-inline void Union ( int a, int b ){
-	a = find ( a ), b = find ( b );
-	dis[a] = b;
-	sz[b] += sz[a];
-}
-
-inline bool same ( int a, int b ){
-	return find ( a ) == find ( b );
-}
-
-inline int translate ( string str ){
-	int res = 0;
-	REPALL ( i, str ){
-		res *= 10;
-		res += int ( i - '0' );
-	}
-
-	return res;
-}
+map < char, vi > lib;
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	int n, u, v, idx;
-	bool flag;
-	set < int > lib;
-	string str, swp, num;
-	cin >> n;
-	GL ( str );
-	while ( n-- ){
-		init();
-		lib.clear();
-		flag = true;
-		GL ( str );
-		swp = "";
-		sstr ss;
-		ss << str;
-		while ( ss >> swp ){
-			num = "";
-			for ( int i = 0 ; i < SZ ( swp ) ; i++ ){
-				if ( swp[i] == ',' ){
-					idx = i;
-					break;
-				}
-				num += swp[i];
-			}
-			u = translate ( num );
-
-			idx++;
-			num = "";
-			for ( int i = idx ; i < SZ ( swp ) ; i++ )
-				num += swp[i];
-			v = translate ( num );
-			if ( same ( u, v ) ){
-				flag = false;
-				break;
-			}
-			Union ( u, v );
-			lib.insert ( u );
-			lib.insert ( v );
-		}
-
-		if ( sz[find ( u )] != SZ ( lib ) )
-			flag = false;
-
-		cout << ( flag ? 'T' : 'F' ) << '\n';
+	string t, s;
+	int ans = 0, l, r;
+	cin >> s >> t;
+	if ( t == s ){
+		cout << "0\n";
+		return 0;
 	}
+	if ( SZ ( t ) == 1 ){
+		cout << SZ ( s ) - 1 << '\n';
+		return 0;
+	}
+	REPP ( i, 0, SZ ( s ) ){
+		lib[s[i]].pb ( i );
+	}
+
+	REPP ( i, 1, SZ ( t ) - 1 ){
+		l = lower_bound ( ALL ( lib[t[i]] ), lib[t[i + 1]].back() ) - BEG ( lib[t[i]] );
+		r = upper_bound ( ALL ( lib[t[i]] ), lib[t[i - 1]][0] ) - BEG ( lib[t[i]] );
+		if ( l == SZ ( lib[t[i]] ) )
+			l--;
+		ans = max ( ans, lib[t[i]][r] - lib[t[i]][l] );
+	}
+
+	l = lower_bound ( ALL ( lib[t[0]] ), lib[t[1]].back() ) - BEG ( lib[t[0]] );
+	if ( l == SZ ( lib[t[0]] ) )
+		l--;
+	ans = max ( ans, lib[t[0]][l] );
+	cout << lower_bound ( ALL ( lib[t[0]] ), lib[t[1]].back() ) - BEG ( lib[t[0]] ) << '\n';
+	cout << '\t' << ans << '\n';
+	if ( SZ ( t ) > 2 )
+		ans = max ( ans, SZ ( s ) - *upper_bound ( ALL ( lib[t[SZ ( t ) - 1]] ), lib[SZ ( t ) - 2][0] ) );
+
+	cout << ans << '\n';
 }
