@@ -5,8 +5,8 @@ using namespace std;
 
 const int maxLog = 20, maxN = 100005;
 
-vector < int > edges;
-int parent[maxN], dp[maxN][maxLog], D[maxN], n;
+vector < int > edges[maxN];
+int dp[maxN][maxLog], D[maxN], n;
 
 void dfs ( int d, int p, int dep ){
 	D[d] = dep++;
@@ -19,7 +19,7 @@ void dfs ( int d, int p, int dep ){
 inline void buildLCA ( void ){
 	memset ( dp, -1, sizeof dp );
 	dfs ( 0, -1, 0 );
-	for ( int k = 1 ; k <= maxLog ; k++ )
+	for ( int k = 1 ; k < maxLog ; k++ )
 		for ( int i = 0 ; i < n ; i++ )
 			if ( dp[i][k - 1] != -1 )
 				dp[i][k] = dp[dp[i][k - 1]][k - 1];
