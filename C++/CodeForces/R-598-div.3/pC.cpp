@@ -71,15 +71,6 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 #define NEG_INF 0x8f8f8f8f
 #define maxN 10005
 
-
-
-
-
-
-
-
-
-
 int ans[maxN];
 int len[maxN];
 
