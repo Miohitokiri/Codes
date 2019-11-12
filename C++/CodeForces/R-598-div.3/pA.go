@@ -39,5 +39,5 @@ func main() {
 		ans += "No\n"
 	}
 
-	fmt.Printf ( ans );
+	fmt.Printf ( ans )
 }
