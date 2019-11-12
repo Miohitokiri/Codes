@@ -81,7 +81,6 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // I can solve this problem!
 
 bitset < maxN > lib;
-vi prime;
 
 int main(){
 	ios::sync_with_stdio ( false );
@@ -91,7 +90,7 @@ int main(){
 
 	LL n, sq, ans = 0;
 	cin >> n;
-	if ( ans == 1 ){
+	if ( n == 1 ){
 		cout << "1\n";
 		return 0;
 	}
@@ -104,7 +103,6 @@ int main(){
 			ans = i;
 			break;
 		}
-		prime.pb ( i );
 		for ( int j = i * i ; j < sq ; j += i )
 			lib[j] = true;
 	}
