@@ -4,7 +4,7 @@ using namespace std;
 
 int data[8], swp[8];
 
-// easy version
+// basic version
 void mergeSort ( int l, int r ){
 	if ( l == r )
 		return ;
