@@ -5,7 +5,7 @@
 using namespace std;
 
 #define maxN 100005
-vector < pair < int, int > > edges[maxN];
+vector < int > edges[maxN];
 vector < int > output;
 bool used[maxN];
 
@@ -25,8 +25,8 @@ int main(){
 	cin >> n >> m;
 	while ( m-- ){
 		cin >> u >> v >> w;
-		edges[u].push_back ( make_pair ( v, w ) );
-		edges[v].push_back ( make_pair ( u, w ) );
+		edges[u].push_back ( v );
+		edges[v].push_back ( u );
 	}
 	dfs ( 0 );
 	for ( auto i: output )
