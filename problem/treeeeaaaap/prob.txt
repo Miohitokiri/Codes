@@ -1,5 +1,0 @@
-type 1: 給定區間 l, r，將 [ l, r ] 之間的數字刪除
-type 2: 給定位置 idx 以及一數字 n，接著會有 n 個數字，將這 n 個數字插入位置 idx 後
-type 3: 給定區間 l, r 以及一位置 idx，將 l, r 複製到位置 idx 後
-type 4: 給定區間 l, r，將 [ l, r ] 反轉
-type 5: 給定區間 l, r，將 [ l, r ] 輸出
