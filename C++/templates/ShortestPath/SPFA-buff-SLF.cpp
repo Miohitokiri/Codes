@@ -32,7 +32,7 @@ inline void SPFA ( int start ){
 					// 如果點沒有在queue中，再加入queue，並記錄已經在queue中
 					inQueue[i.first] = true;
 					// SLF 加速
-					q.front() < dis[i.first] ? q.push_front ( i.first ) : q.push_back ( i.first );
+					dis[i.first] < dis[q.front()] ? q.push_front ( i.first ) : q.push_back ( i.first );
 				}
 			}
 		}
