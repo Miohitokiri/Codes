@@ -16,6 +16,7 @@ int main(){
 		edges[u].push_back ( v );
 		edges[v].push_back ( u );
 	}
+	
 	queue < int > q;
 	q.push ( 0 );
 	while ( !q.empty() ){

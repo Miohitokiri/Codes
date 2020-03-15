@@ -69,7 +69,7 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
 #define NEG_INF 0x8f8f8f8f
-#define maxN 3005
+#define maxN 1000005
 
 // あの日見渡した渚を　今も思い出すんだ
 // 砂の上に刻んだ言葉　君の後ろ姿
@@ -80,18 +80,61 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 // let's go coding and have fun!
 // I can solve this problem!
 
-pii dp[maxN][maxN];
+int pre[maxN], dis[maxN];
+
+inline void init ( int n ){
+	for ( int i = 0 ; i <= n ; ++i )
+		dis[i] = i;
+}
+
+int find ( int n ){
+	return n == dis[n] ? n : dis[n] = find ( dis[n] );
+}
+
+inline void Union ( int a, int b ){
+	dis[find ( a )] = find ( b );
+}
+
+inline bool same ( int a, int b ){
+	return find ( a ) == find ( b );
+}
 
 int main(){
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	LL n, l, ans = 0, p = 0;
-	cin >> n >> l;
-	vi data;
-	GETDATA ( data, n );
-	for ( int i = 0 ; i < n ; i++ ){
-		for ( int j = 0 ; j < p ; j++ )
+	int n, l, r, w, ma = -1, ans;
+	cin >> n;
+	while ( n-- ){
+		cin >> l >> r >> w;
+		pre[l] += w;
+		pre[r + 1] -= w;
+		ma = max ( ma, r );
 	}
+	REPP ( i, 0, ma ) cout << pre[i] << ' '; // del
+	cout << '\n'; // del
+	ans = pre[0];
+	l = 0;
+	init ( ma );
+	REPP ( i, 1, ma ){
+		pre[i] += pre[i - 1];
+		if ( ans < pre[i] )
+			l = i, ans = pre[i];
+		if ( pre[i] == pre[i - 1] )
+			Union ( i - 1, i );
+	}
+	cout << l << ' ' << find ( l ) << '\n' << ans << '\n';
+	cout << "idx: ";
+	for ( int i = 0 ; i <= ma ; i++ ){
+		cout << i << ' ';
+	}
+	cout << '\n';
+	cout << "val: ";
+	for ( int i = 0 ; i <= ma ; i++ ){
+		if ( i >= 10 )
+			cout << ' ';
+		cout << pre[i] << ' ';
+	}
+	cout << '\n';
 }

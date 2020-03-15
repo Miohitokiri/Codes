@@ -4,9 +4,7 @@
 using namespace std;
 
 #define maxN 10005
-
 int dis[maxN], sz[maxN];
-
 inline void init ( void ){
 	for ( int i = 0 ; i < maxN ; i++ ){
 		dis[i] = i;
@@ -14,8 +12,10 @@ inline void init ( void ){
 	}
 }
 
-inline int find ( int n ){
-	return dis[n] == n ? n : dis[n] = find ( dis[n] );
+int find ( int n ){
+	if ( dis[n] == n )
+		return n;
+	return dis[n] = find ( dis[n] );
 }
 
 inline void Union ( int a, int b ){
