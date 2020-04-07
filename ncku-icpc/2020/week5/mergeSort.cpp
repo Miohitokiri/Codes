@@ -14,7 +14,7 @@ void mergeSort ( int l, int r ){
 	mergeSort ( l, m );
 	mergeSort ( m + 1, r );
 	
-	while ( p <= m || q <= r )
+	while ( p <= m && q <= r )
 		if ( p <= m && data[p] <= data[q] )
 			swp[idx++] = data[p++];
 		else
@@ -40,7 +40,7 @@ void mergeSort ( int l, int r ){
 	mergeSort ( l, m );
 	mergeSort ( m + 1, r );
 	
-	while ( p <= m || q <= r )
+	while ( p <= m && q <= r )
 		if ( p <= m && ( q > r || data[p] <= data[q] ) )
 			swap ( swp[index++], data[p++] );
 		else
