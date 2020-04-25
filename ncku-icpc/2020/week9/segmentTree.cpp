@@ -71,3 +71,37 @@ nowL    mid    nowR
        |___|
        l   r
 */
+
+
+int data[maxN];
+void build ( int l, int r, int n ){
+	if ( l == r )
+		seg[n] = data[l];
+	else{
+		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
+		build ( l, mid, leftSon );
+		build ( mid + 1, r, rightSon );
+		seg[n] = max ( seg[leftSon], seg[rightSon] );
+	}
+}
+
+int main(){
+	ios::sync_with_stdio ( false );
+	cin.tie ( 0 );
+	cout.tie ( 0 );
+
+	int n, m, l, r, value, type;
+	cin >> n >> m;
+	for ( int i = 1 ; i <= n ; i++ ){
+		cin >> data[i];
+	}
+	build ( 1, n, 1 );
+
+	while ( m-- ){
+		cin >> type >> l >> r;
+		if ( type == 1 )
+			update ( 1, n, l, r, 1 );
+		else
+			cout << query ( l, r, 1, n, 1 ) << '\n';
+	}
+}

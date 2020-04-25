@@ -9,7 +9,7 @@ int bit[maxN], basic[maxN];
 int n;
 
 void add ( int idx, int delta ){
-	while ( idx < n ){
+	while ( idx <= n ){
 		bit[idx] += delta;
 		idx += idx & -idx;
 	}
