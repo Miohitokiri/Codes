@@ -5,7 +5,7 @@ using namespace std;
 int data[100005], stop[100005];
 long long ans;
 
-inline void mergeSort ( int l, int r ){
+void mergeSort ( int l, int r ){
 	if ( l == r )
 		return ;
 	int m = ( l + r ) / 2, p = l, q = m + 1, index = l;

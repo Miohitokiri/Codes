@@ -3,6 +3,7 @@
 using namespace std;
 
 int BIT[1000005], n;
+// O ( log N )
 
 inline int sum ( int w ){
 	int res = 0;

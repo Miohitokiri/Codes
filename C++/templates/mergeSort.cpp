@@ -14,7 +14,7 @@ void mergeSort ( int l, int r ){
 	mergeSort ( l, m );
 	mergeSort ( m + 1, r );
 	
-	while ( p <= m || q <= r )
+	while ( p <= m && q <= r )
 		if ( p <= m && data[p] <= data[q] )
 			swp[idx++] = data[p++];
 		else
@@ -30,24 +30,26 @@ void mergeSort ( int l, int r ){
 		data[i] = swp[i];
 }
 
-// advanced version
-void mergeSort ( int l, int r ){
-	if ( l == r )
-		return ;
+// // advanced version
+// void mergeSort ( int l, int r ){
+// 	if ( l == r )
+// 		return ;
 
-	int m = ( l + r ) / 2, p = l, q = m + 1, index = l;
+// 	int m = ( l + r ) / 2, p = l, q = m + 1, index = l;
 
-	mergeSort ( l, m );
-	mergeSort ( m + 1, r );
+// 	mergeSort ( l, m );
+// 	mergeSort ( m + 1, r );
 	
-	while ( p <= m || q <= r )
-		if ( p <= m && ( q > r || data[p] <= data[q] ) )
-			swap ( swp[index++], data[p++] );
-		else
-			swap ( swp[index++], data[q++] );
+// 	while ( p <= m || q <= r )
+// 		if ( p <= m && ( q > r || data[p] <= data[q] ) )
+// 			swap ( swp[index++], data[p++] );
+// 		else
+// 			swap ( swp[index++], data[q++] );
 	
-	memcpy ( data + l, swp + l, sizeof ( int ) * ( r - l + 1 ) );
-}
+// 	memcpy ( data + l, swp + l, sizeof ( int ) * ( r - l + 1 ) );
+// 	// memcpy ( 想要複製的位置ptr, 來源ptr, size );
+// 	// memcpy ( data, swp, sizeof ( data ) );
+// }
 
 int main(){
 	ios::sync_with_stdio ( false );
