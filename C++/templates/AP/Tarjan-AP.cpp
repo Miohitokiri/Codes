@@ -3,7 +3,7 @@
 
 using namespace std;
 
-const int maxN = 100005;
+#define maxN 100005
 typedef pair < int, int > pii;
 #define pb push_back
 
