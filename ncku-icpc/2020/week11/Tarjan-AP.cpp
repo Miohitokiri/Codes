@@ -19,10 +19,10 @@ void dfs ( int n, int p ){
 		if ( !D[i] ){
 			dfs ( i, n );
 			cnt++;
-			if ( D[n] <= L[i] )
+			if ( D[n] <= L[i] ){
 				isAP = true;
-			if ( D[n] <= L[i] )
 				bridge.push_back ( make_pair ( n, i ) );
+			}
 			L[n] = min ( L[n], L[i] );
 		}
 	}
@@ -31,4 +31,8 @@ void dfs ( int n, int p ){
 		isAP = false;
 	if ( isAP )
 		AP.push_back ( n );
+}
+
+int main(){
+	dfs ( 0, 0 );
 }
