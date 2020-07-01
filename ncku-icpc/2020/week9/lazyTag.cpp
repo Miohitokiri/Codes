@@ -24,7 +24,7 @@ void update ( int l, int r, int index, int value, int n ){
 		seg[n].F = value;
 	else{
 		int mid = ( l + r ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-		push ( n );
+		push ( n ); // lazy tag
 		if ( index <= mid )
 			update ( l, mid, index, value, leftSon );
 		else
@@ -38,7 +38,7 @@ int query ( int l, int r, int nowL, int nowR, int n ){
 	if ( l <= nowL && nowR <= r )
 		return seg[n].F;
 	int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-	push ( n );
+	push ( n ); // lazy tag
 	if ( r <= mid )
 		return query ( l, r, nowL, mid, leftSon );
 	if ( mid < l )
@@ -51,7 +51,7 @@ void modify ( int l, int r, int nowL, int nowR, int value, int n ){
 		seg[n].F += value, seg[n].S += value;
 	else{
 		int mid = ( nowL + nowR ) >> 1, leftSon = n << 1, rightSon = leftSon | 1;
-		push ( n );
+		push ( n ); // lazy tag
 		if ( r <= mid )
 			modify ( l, r, nowL, mid, value, leftSon );
 		else if ( mid < l )
