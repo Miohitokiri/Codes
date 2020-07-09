@@ -8,7 +8,7 @@ echo ""
 echo "zsh install"
 echo ""
 sudo apt install zsh
-sudo sudo sh -c "echo $(which zsh) >> /etc/shells"
+sudo sh -c "echo $(which zsh) >> /etc/shells"
 chsh -s $(which zsh)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 rm -rf .oh-my-zsh
@@ -40,3 +40,4 @@ echo ""
 echo "please relogin your account"
 echo ""
 exec $SHELL
+sudo reboot
