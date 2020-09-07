@@ -1,0 +1,92 @@
+
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.023  000.023: --- NVIM STARTING ---
+007.707  007.684: locale set
+022.512  014.805: inits 1
+022.554  000.043: window checked
+022.566  000.012: parsing arguments
+022.917  000.351: expanding arguments
+023.539  000.622: inits 2
+024.374  000.835: init highlight
+024.584  000.210: waiting for UI
+028.490  003.906: done waiting for UI
+028.518  000.028: initialized screen early for UI
+030.958  000.625  000.625: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/ftoff.vim
+032.718  001.361  001.361: sourcing /Users/miohitokiri5474/.vim/bundle/vundle/autoload/vundle.vim
+035.742  002.105  002.105: sourcing /Users/miohitokiri5474/.vim/bundle/vundle/autoload/vundle/config.vim
+039.818  000.788  000.788: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/syntax/syncolor.vim
+040.048  001.576  000.788: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/syntax/synload.vim
+040.537  000.371  000.371: sourcing /Users/miohitokiri5474/.vim/filetype.vim
+053.837  013.122  013.122: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/filetype.vim
+053.979  016.103  001.034: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/syntax/syntax.vim
+056.635  000.031  000.031: sourcing /Users/miohitokiri5474/.vim/filetype.vim
+056.866  000.037  000.037: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/filetype.vim
+058.696  000.036  000.036: sourcing /Users/miohitokiri5474/.vim/filetype.vim
+058.943  000.032  000.032: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/filetype.vim
+059.843  000.410  000.410: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/ftplugin.vim
+060.726  000.450  000.450: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/indent.vim
+060.974  031.218  010.026: sourcing /Users/miohitokiri5474/.vimrc
+060.986  032.123  000.905: sourcing /Users/miohitokiri5474/.config/nvim/init.vim
+060.993  000.352: sourcing vimrc file(s)
+069.005  006.743  006.743: sourcing /Users/miohitokiri5474/.vim/bundle/vim-devicons/plugin/webdevicons.vim
+071.119  000.710  000.710: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/init.vim
+072.306  000.458  000.458: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/parts.vim
+074.933  000.717  000.717: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/util.vim
+075.170  005.803  003.918: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/plugin/airline.vim
+075.868  000.328  000.328: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline-themes/plugin/airline-themes.vim
+078.315  000.482  000.482: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/autoload/provider/pythonx.vim
+209.404  000.846  000.846: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/autoload/remote/host.vim
+209.569  132.547  131.219: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/autoload/provider/python.vim
+293.355  083.517  083.517: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/autoload/provider/python3.vim
+293.538  217.283  001.219: sourcing /Users/miohitokiri5474/.vim/bundle/tabnine-vim/plugin/youcompleteme.vim
+295.427  001.606  001.606: sourcing /Users/miohitokiri5474/.vim/bundle/taglist.vim/plugin/taglist.vim
+296.580  000.870  000.870: sourcing /Users/miohitokiri5474/.vim/plugin/template.vim
+298.569  000.767  000.767: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/gzip.vim
+299.005  000.340  000.340: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/health.vim
+299.979  000.849  000.849: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/man.vim
+302.076  000.553  000.553: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/pack/dist/opt/matchit/plugin/matchit.vim
+302.176  002.097  001.544: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/matchit.vim
+302.737  000.470  000.470: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/matchparen.vim
+303.798  000.978  000.978: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/netrwPlugin.vim
+304.328  000.384  000.384: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/rplugin.vim
+304.740  000.326  000.326: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/shada.vim
+305.015  000.189  000.189: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/spellfile.vim
+305.456  000.344  000.344: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/tarPlugin.vim
+305.957  000.404  000.404: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/tohtml.vim
+306.291  000.245  000.245: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/tutor.vim
+306.730  000.357  000.357: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/plugin/zipPlugin.vim
+306.857  005.481: loading plugins
+307.012  000.156: loading packages
+308.663  000.433  000.433: sourcing /Users/miohitokiri5474/.vim/bundle/vim/autoload/dracula.vim
+308.682  001.046  000.613: sourcing /Users/miohitokiri5474/.vim/bundle/vim/after/plugin/dracula.vim
+308.687  000.630: loading after plugins
+308.710  000.023: inits 3
+313.714  005.003: reading ShaDa
+315.670  001.339  001.339: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions.vim
+316.288  000.438  000.438: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/quickfix.vim
+317.038  000.595  000.595: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline.vim
+317.711  000.458  000.458: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/netrw.vim
+318.740  000.311  000.311: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/section.vim
+319.597  000.634  000.634: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/highlighter.vim
+319.837  001.946  001.000: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/term.vim
+320.869  000.440  000.440: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/whitespace.vim
+321.538  000.163  000.163: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/po.vim
+321.931  000.235  000.235: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/wordcount.vim
+322.343  000.153  000.153: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/keymap.vim
+331.064  000.276  000.276: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/themes.vim
+331.874  001.648  001.373: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/themes/dark.vim
+355.169  001.210  001.210: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/builder.vim
+356.282  000.544  000.544: sourcing /Users/miohitokiri5474/.vim/bundle/vim-airline/autoload/airline/extensions/default.vim
+370.973  048.091: opening buffers
+371.005  000.032: BufEnter autocommands
+371.008  000.003: editing files in windows
+371.213  000.205: VimEnter autocommands
+371.216  000.003: UIEnter autocommands
+372.280  000.832  000.832: sourcing /usr/local/Cellar/neovim/0.4.4/share/nvim/runtime/autoload/provider/clipboard.vim
+372.294  000.247: before starting main loop
+941.590  569.296: first screen update
+941.594  000.004: --- NVIM STARTED ---
