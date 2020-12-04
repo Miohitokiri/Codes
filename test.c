@@ -16,7 +16,7 @@ node pts[10];
 
 pii translate ( char str[] ) {
 	pii res;
-	if ( '2' <= str[0] && str[0] <= '9' )
+	if ( '0' <= str[0] && str[0] <= '9' )
 		res.F = str[0] - '0';
 	else if ( str[0] == 't' )
 		res.F = 10;
@@ -133,11 +133,14 @@ int main() {
 					ma = cnt[j], idx = j;
 
 			int flag = 1;
-			for ( int j = 1 ; j < 5 ; j++ )
+			for ( int j = 1 ; j < 5 ; j++ ) {
+				// printf ( "%d %d\n", lib[i][j].F, lib[i][j - 1].F );
 				if ( lib[i][j].F - 1 != lib[i][j - 1].F ) {
 					flag = 0;
 					break;
 				}
+			}
+			// puts ( "---\n" );
 
 			pts[i].highest = highestCard;
 			if ( ma == 5 ) {
@@ -158,6 +161,6 @@ int main() {
 	for ( int i = 3 ; i >= 0 ; i-- )
 		printf ( "%c ", 'A' + pts[i].idx );
 
-	for ( int i = 3 ; i >= 0 ; i-- )
-			printf ( "%c %d\n", 'A' + pts[i].idx, pts[i].pts );
+	// for ( int i = 3 ; i >= 0 ; i-- )
+	//		printf ( "%c %d\n", 'A' + pts[i].idx, pts[i].pts );
 }
