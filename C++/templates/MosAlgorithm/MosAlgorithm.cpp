@@ -21,7 +21,7 @@ struct query{
 };
 
 vector < query > Q;
-
+vector < int > data;
 int cur_ans, cnt[maxN], ans[maxN];
 
 inline void add ( int x ){

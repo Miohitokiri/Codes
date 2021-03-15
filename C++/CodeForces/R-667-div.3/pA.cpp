@@ -62,49 +62,23 @@ template < class T > using MinHeap = priority_queue < T, vec < T >, greater < T 
 
 // number~ remember change maxN
 #define INF 0x3f3f3f3f
-#define NEG_INF 0x8f8f8f8f
 #define maxN 100005
 
+// あの日見渡した渚を　今も思い出すんだ
+// 砂の上に刻んだ言葉　君の後ろ姿
+// 寄り返す波が　足元をよぎり何かを攫う
+// 夕凪の中　日暮れだけが通り過ぎて行く
+
 // ready~ go!
-// let's go coding and have fun!
+// let's coding and have fun!
 // I can solve this problem!
 
-int place[maxN];
-inline void fail ( string b ){
-	int len = b.size();
-	place[0] = -1;
-	for ( int i = 1, pos = -1 ; i < len ; i++ ){
-		while ( ~pos && b[i] != b[pos + 1] )
-			pos = place[pos];
-		if ( b[i] == b[pos + 1] )
-			pos++;
-		place[i] = pos;
-	}
-}
-
-inline bool match ( string a, string b ){
-	int lenA = a.size(), lenB = b.size();
-	for ( int i = 0, pos = -1 ; i < lenA ; i++ ){
-		while ( ~pos && a[i] != b[pos + 1] ){
-			pos = place[pos];
-		}
-		if ( a[i] == b[pos + 1] )
-			pos++;
-		if ( pos + 1 == lenB )
-			return true;
-	}
-
-	return false;
-}
-
-int main(){
+int main() {
 	ios::sync_with_stdio ( false );
 	cin.tie ( 0 );
 	cout.tie ( 0 );
 
-	string a, b;
-	cin >> a >> b;
-	fail ( b );
-
-	cout << match ( a, b ) << '\n';
+	int n;
+	cin >> n;
+	cout << n << endl;
 }

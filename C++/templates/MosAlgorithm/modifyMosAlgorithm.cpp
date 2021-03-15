@@ -26,7 +26,7 @@ struct modify{
 	int idx, x, la;
 
 	modify ( int _idx, int _x, int _la ):
-		idx ( _idx ), x ( _x ), id ( _la ) {}
+		idx ( _idx ), x ( _x ), la ( _la ) {}
 };
 
 vector < query > q;
@@ -47,16 +47,16 @@ inline void sub ( int x ){
 
 inline void addTime ( int l, int r, int t ){
 	modify swp = m[t];
-	if ( l <= m.idx && m.idx <= r )
-		sub ( data[m.idx] ), add ( m.x );
-	data[m.idx] = m.x;
+	if ( l <= swp.idx && swp.idx <= r )
+		sub ( data[swp.idx] ), add ( swp.x );
+	data[swp.idx] = swp.x;
 }
 
 inline void subTime ( int l, int r, int t ){
 	modify swp = m[t];
-	if ( l <= m.idx && m.idx <= r )
-		sub ( data[m.idx] ), add ( m.la );
-	data[m.idx] = m.la;
+	if ( l <= swp.idx && swp.idx <= r )
+		sub ( data[swp.idx] ), add ( swp.la );
+	data[swp.idx] = swp.la;
 }
 
 inline void solved ( void ){
